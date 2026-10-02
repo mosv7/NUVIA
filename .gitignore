@@ -1,0 +1,41 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Temporary tools and local source proposal
+.tools/
+AI_Powered_Customer_Feedback_Analytics_&_Business_Intelligence_Platform.pdf
+
+# Dependencies and generated output
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage/
+htmlcov/
+dist/
+build/
+.next/
+*.log
+
+# Local/private data and model artifacts
+data/private/
+data/raw/
+models/
+exports/
+artifacts/
+*.sqlite
+*.sqlite3
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
