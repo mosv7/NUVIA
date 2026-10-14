@@ -852,3 +852,13 @@ footer button {
     line-height: 1.45;
   }
 }
+
+/* Mobile account screens omit the desktop utility footer. */
+@media (max-width: 850px) {
+  .auth-layout .auth-panel > footer {
+    display: none;
+  }
+  .auth-layout .auth-panel {
+    justify-content: flex-start;
+  }
+}
