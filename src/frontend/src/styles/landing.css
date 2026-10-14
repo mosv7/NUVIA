@@ -1045,3 +1045,136 @@
     justify-self: center;
   }
 }
+/* Keep mobile hero artwork inside its gutters in both text directions. */
+@media (max-width: 700px) {
+  .landing-hero .hero-dashboard {
+    position: relative;
+    width: 100%;
+    max-width: min(367.429px, calc(100vw - 48px));
+    align-self: center;
+    direction: ltr;
+  }
+  .landing-hero .hero-dashboard .dashboard-render {
+    position: absolute;
+    inset-inline-start: auto;
+    top: 0;
+    left: 0;
+    right: auto;
+  }
+  /* The reference has one compact row: language, copyright, social links. */
+  .landing-footer {
+    background: #05152e;
+    margin-bottom: 0;
+  }
+  .landing-footer .footer-bottom {
+    display: block;
+    padding: 12px 0 max(8px, env(safe-area-inset-bottom, 0px));
+  }
+  .landing-footer .footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 60px 20px;
+    padding: 30px 14px 38px;
+  }
+  .landing-footer .footer-description {
+    grid-column: 1/-1;
+  }
+  .landing-footer .footer-description p {
+    width: 240px;
+    max-width: 100%;
+    font-size: 14.92px;
+    line-height: 26.4px;
+    margin-top: 15px;
+    font-weight: 400;
+  }
+  .landing-footer .footer-column h3 {
+    font-size: 20.92px;
+    line-height: 1.5;
+  }
+  .landing-footer .footer-column button {
+    font-size: 15.08px;
+    line-height: 1.55;
+  }
+  .landing-footer .footer-bottom > .landing-wrap {
+    width: calc(100% - 36px);
+    padding: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .landing-footer .footer-bottom > .landing-wrap > button {
+    display: none;
+  }
+  .landing-footer .footer-bottom .language {
+    min-width: 0;
+    gap: 5px;
+  }
+  .landing-footer .footer-bottom .language select {
+    font-size: clamp(12px, 3.6vw, 14px);
+    max-width: 100%;
+    padding: 0;
+    color: white;
+  }
+  .landing-footer .footer-bottom > .landing-wrap > span {
+    margin: 0;
+    white-space: nowrap;
+    color: white;
+    font-size: clamp(12px, 3.5vw, 14px);
+    direction: ltr;
+    unicode-bidi: isolate;
+    flex-shrink: 0;
+  }
+  .landing-footer .social-links {
+    margin: 0;
+    gap: clamp(10px, 3.5vw, 14px);
+    flex-wrap: nowrap;
+  }
+  .landing-footer .social-links button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    flex-shrink: 0;
+  }
+  html:has(.landing),
+  body:has(.landing) {
+    background: white;
+    overscroll-behavior-y: none;
+  }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
+  .landing .feature-card.reveal.is-visible,
+  .landing .step-card.reveal.is-visible {
+    animation: mobile-card-enter 0.85s cubic-bezier(0.2, 0.75, 0.25, 1) backwards;
+  }
+  .landing .feature-card:nth-child(3n + 2),
+  .landing .step-card:nth-child(3n + 2) {
+    animation-delay: 0.1s;
+  }
+  .landing .feature-card:nth-child(3n + 3),
+  .landing .step-card:nth-child(3n + 3) {
+    animation-delay: 0.18s;
+  }
+  .landing .feature-card > button,
+  .landing .hero-explore {
+    transition:
+      transform 0.18s ease,
+      background 0.18s ease;
+  }
+  .landing .feature-card > button:active,
+  .landing .hero-explore:active {
+    transform: scale(0.96);
+  }
+}
+@keyframes mobile-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -32,11 +32,11 @@ export default function LandingPage({ language, setLanguage }) {
           }
         });
       },
-      { threshold: 0.08 },
+      { threshold: window.matchMedia('(max-width:700px)').matches ? 0.18 : 0.08 },
     );
     pageRef.current.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [language]);
   useEffect(() => {
     if (selected !== null) dialogRef.current?.showModal();
     else dialogRef.current?.close();
@@ -48,12 +48,14 @@ export default function LandingPage({ language, setLanguage }) {
     );
     observer.observe(previewRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [language]);
   const scroll = (id) =>
-    document.getElementById(id)?.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-      block: 'start',
-    });
+    document
+      .getElementById(id)
+      ?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
   const change = (e) => {
     setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
     setErrors((v) => ({ ...v, [e.target.name]: undefined }));

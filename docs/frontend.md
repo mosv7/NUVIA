@@ -83,3 +83,7 @@ The desktop landing caps typography and hero scaling on wide screens and reduces
 ## UI review screenshots
 
 English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
+
+## Mobile refinements
+
+Account screens hide the desktop utility footer on small screens. The mobile landing footer follows the Figma language/copyright/social row, and the hero preview keeps equal gutters in English and Arabic. Bottom padding is reduced, the mobile browser theme stays white, and root vertical overscroll is disabled on landing pages to avoid exposing a blank area during bounce scrolling. Card entry animations are more visible on mobile, restart correctly after switching language, and respect reduced-motion preferences. The iPhone-specific browser bounce still needs confirmation on the user's actual Safari device.
