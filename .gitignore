@@ -39,3 +39,6 @@ artifacts/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Generated standalone frontend previews
+previews/
