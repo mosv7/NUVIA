@@ -6,6 +6,7 @@ export default defineConfig({
   resolve: { preserveSymlinks: true },
   test: {
     environment: 'jsdom',
+    pool: 'threads',
     include: ['../../tests/frontend/**/*.test.jsx'],
     setupFiles: ['../../tests/frontend/setup.js'],
     restoreMocks: true,
