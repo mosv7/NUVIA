@@ -50,12 +50,10 @@ export default function LandingPage({ language, setLanguage }) {
     return () => observer.disconnect();
   }, [language]);
   const scroll = (id) =>
-    document
-      .getElementById(id)
-      ?.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        block: 'start',
-      });
+    document.getElementById(id)?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
   const change = (e) => {
     setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
     setErrors((v) => ({ ...v, [e.target.name]: undefined }));

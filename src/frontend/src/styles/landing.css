@@ -1147,15 +1147,15 @@
 @media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
   .landing .feature-card.reveal.is-visible,
   .landing .step-card.reveal.is-visible {
-    animation: mobile-card-enter 0.85s cubic-bezier(0.2, 0.75, 0.25, 1) backwards;
+    animation: mobile-card-enter 0.28s ease-out;
   }
   .landing .feature-card:nth-child(3n + 2),
   .landing .step-card:nth-child(3n + 2) {
-    animation-delay: 0.1s;
+    animation-delay: 0s;
   }
   .landing .feature-card:nth-child(3n + 3),
   .landing .step-card:nth-child(3n + 3) {
-    animation-delay: 0.18s;
+    animation-delay: 0s;
   }
   .landing .feature-card > button,
   .landing .hero-explore {
@@ -1171,10 +1171,83 @@
 @keyframes mobile-card-enter {
   from {
     opacity: 0;
-    transform: translateY(28px) scale(0.975);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* Compact phone typography; desktop and artwork keep their existing dimensions. */
+@media (max-width: 700px) {
+  .landing .hero-copy h1 {
+    font-size: 30px;
+  }
+  [dir='rtl'] .landing .hero-copy h1 {
+    font-size: 28px;
+  }
+  .landing .section-heading h2 {
+    font-size: 30px;
+  }
+  .landing .language-copy h2 {
+    font-size: 29px;
+  }
+  .landing .demo-copy h2 {
+    font-size: 28px;
+  }
+  [dir='rtl'] .landing h2 {
+    font-size: 26px;
+  }
+  .landing .section-heading > p:last-child:not(.section-label),
+  .landing .language-copy > p:not(.section-label),
+  .landing .demo-copy > p:last-child {
+    font-size: 15px;
+  }
+  .landing .feature-card h3 {
+    font-size: 17px;
+  }
+  .landing .feature-card > p,
+  .landing .step-card p {
+    font-size: 14px;
+  }
+  .landing .step-card h3 {
+    font-size: 20px;
+  }
+  .landing .footer-column h3 {
+    font-size: 19px;
+  }
+  .landing .footer-column button,
+  .landing .footer-description p {
+    font-size: 14px;
+  }
+  .landing .reveal.is-visible {
+    animation: none;
+  }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
+  .landing .feature-card.reveal.is-visible,
+  .landing .step-card.reveal.is-visible {
+    animation: mobile-card-enter 0.28s ease-out;
+    animation-delay: 0s;
+  }
+}
+/* Keep the phone navigation available without changing the hero's starting position. */
+@media (max-width: 700px) {
+  .landing .landing-top {
+    padding-top: 120px;
+  }
+  .landing .landing-nav {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 50;
+    width: 100%;
+    padding: 16px 28px;
+    background: #fff;
+    box-shadow: 0 1px 8px #0d326d0a;
+  }
+  .landing [id] {
+    scroll-margin-top: 90px;
   }
 }

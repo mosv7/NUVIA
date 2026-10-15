@@ -865,3 +865,24 @@
     line-height: 1.45;
   }
 }
+
+/* Phone setup screens omit the desktop copyright footer. */
+@media (max-width: 850px) {
+  .business-onboarding .setup-footer {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  .business-onboarding .setup-content h1 {
+    font-size: 26px;
+  }
+  .business-onboarding .setup-sidebar h2 {
+    font-size: 23px;
+  }
+  [dir='rtl'] .business-onboarding .setup-content h1 {
+    font-size: 26px;
+  }
+  [dir='rtl'] .business-onboarding .setup-sidebar h2 {
+    font-size: 23px;
+  }
+}
