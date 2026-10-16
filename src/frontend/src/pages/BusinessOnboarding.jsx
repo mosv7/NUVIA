@@ -61,6 +61,22 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
   return (
     <div className="business-onboarding" data-step={step}>
       <header className="setup-header">
+        <a
+          className="setup-mobile-back back"
+          href="#/landing"
+          aria-label={language === 'ar' ? 'العودة إلى الموقع' : 'Back to website'}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="m14 6-6 6 6 6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
         <a className="brand" href="#/landing">
           <span>
             <img src={icon('header-nuvia-logo')} alt="" />
@@ -130,6 +146,7 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
         <span>© 2026 Nuvia</span>
         <div>
           <label className="language">
+            <img src={asset('login-imgGlobe')} alt="" />
             <select
               aria-label="Language / اللغة"
               value={language}

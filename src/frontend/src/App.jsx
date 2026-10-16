@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Field from './components/Field.jsx';
 import { en, ar } from './i18n.js';
 import { submitDemo } from './services/auth.js';
@@ -21,6 +21,7 @@ const currentRoute = () => {
   return routes.includes(value) ? value : 'landing';
 };
 export default function App() {
+  const requestGeneration = useRef(0);
   const [business, setBusiness] = useState({
     businessName: '',
     industry: '',
@@ -46,13 +47,18 @@ export default function App() {
     isForgot = page === 'forgot';
   useEffect(() => {
     const listener = () => {
+      requestGeneration.current += 1;
+      setBusy(false);
       setPage(currentRoute());
       setErrors({});
       setNotice('');
       setValues({ name: '', email: '', password: '', confirm: '', terms: false, remember: false });
     };
     addEventListener('hashchange', listener);
-    return () => removeEventListener('hashchange', listener);
+    return () => {
+      removeEventListener('hashchange', listener);
+      requestGeneration.current += 1;
+    };
   }, []);
   useEffect(() => {
     document.documentElement.lang = language;
@@ -97,13 +103,17 @@ export default function App() {
     setErrors(next);
     setNotice('');
     if (Object.keys(next).length) return;
+    const generation = ++requestGeneration.current;
+    const isCurrentRequest = () =>
+      generation === requestGeneration.current && currentRoute() === page;
     setBusy(true);
     try {
       const result = await submitDemo(page, values);
+      if (!isCurrentRequest()) return;
       if (result.field) setErrors({ [result.field]: result.error });
       else setNotice(result.error || result.message);
     } finally {
-      setBusy(false);
+      if (isCurrentRequest()) setBusy(false);
     }
   }
   const title = isLogin
@@ -151,6 +161,7 @@ export default function App() {
           </div>
           <button
             className="back"
+            aria-label={t.back}
             onClick={() => {
               location.hash = '/landing';
             }}
@@ -159,7 +170,7 @@ export default function App() {
               src={asset(isForgot || page === 'reset' ? 'imgBackArrow' : 'imgArrowLeft')}
               alt=""
             />
-            {t.back}
+            <span className="back-text">{t.back}</span>
           </button>
         </header>
         <div className={`auth-content ${isSignup ? 'signup' : ''} ${isLogin ? 'login' : ''}`}>

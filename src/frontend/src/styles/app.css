@@ -852,11 +852,28 @@ footer button {
     line-height: 1.45;
   }
 }
-/* Mobile account screens omit the desktop utility footer. */
+/* Mobile account screens retain language without desktop utility links. */
 @media (max-width: 850px) {
   .auth-layout .auth-panel > footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 0 0;
+    flex-shrink: 0;
+  }
+  .auth-layout .auth-panel > footer > span,
+  .auth-layout .auth-panel > footer > div > button {
     display: none;
   }
+  .auth-layout .auth-panel > footer .language select {
+    color: var(--primary);
+    font-size: 14px;
+    min-height: 32px;
+  }
+  .auth-layout .auth-panel > footer .language img {
+    filter: brightness(0) saturate(100%) invert(34%) sepia(95%) saturate(2702%) hue-rotate(212deg)
+      brightness(96%) contrast(95%);
+  }
+
   .auth-layout .auth-panel {
     justify-content: flex-start;
   }
@@ -1028,5 +1045,17 @@ footer button {
   }
   .auth-layout .signup .intro p {
     line-height: 1.4;
+  }
+}
+
+@media (max-width: 850px) {
+  .auth-layout .auth-panel > header .brand,
+  .auth-layout .back-text {
+    display: none;
+  }
+  .auth-layout .back {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
   }
 }

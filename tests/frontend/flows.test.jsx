@@ -1,8 +1,9 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import App from '../../src/frontend/src/App.jsx';
+import * as auth from '../../src/frontend/src/services/auth.js';
 
 function openRoute(route) {
   history.replaceState(null, '', '/#/' + route);
@@ -87,4 +88,53 @@ describe('bilingual frontend flows', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Hide password' }));
     expect(password).toHaveAttribute('type', 'password');
   });
+});
+
+it('ignores a pending login response after navigating to signup, including its busy state', async () => {
+  let finishLogin, finishSignup;
+  vi.spyOn(auth, 'submitDemo')
+    .mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishLogin = resolve;
+        }),
+    )
+    .mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishSignup = resolve;
+        }),
+    );
+  openRoute('login');
+  fireEvent.change(screen.getByLabelText('Work email'), { target: { value: 'demo@example.com' } });
+  fireEvent.change(screen.getByLabelText('Password', { exact: true }), {
+    target: { value: 'Synthetic123' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Log in', exact: true }));
+  await waitFor(() => expect(finishLogin).toBeTypeOf('function'));
+  await act(async () => {
+    history.replaceState(null, '', '/#/signup');
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  });
+  expect(screen.getByRole('button', { name: 'Create account', exact: true })).toBeEnabled();
+  fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'Demo owner' } });
+  fireEvent.change(screen.getByLabelText('Work email'), { target: { value: 'demo@example.com' } });
+  fireEvent.change(screen.getByLabelText('Password', { exact: true }), {
+    target: { value: 'Synthetic123' },
+  });
+  fireEvent.change(screen.getByLabelText('Confirm password'), {
+    target: { value: 'Synthetic123' },
+  });
+  fireEvent.click(screen.getByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Create account', exact: true }));
+  await waitFor(() => expect(finishSignup).toBeTypeOf('function'));
+  await act(async () => {
+    finishLogin({ error: 'loginFailed' });
+  });
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(document.querySelector('.signup button[type=submit]')).toBeDisabled();
+  await act(async () => {
+    finishSignup({ message: 'accountDemo' });
+  });
+  expect(screen.getByRole('status')).toHaveTextContent('No account was created.');
 });

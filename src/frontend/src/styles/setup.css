@@ -866,10 +866,21 @@
   }
 }
 
-/* Phone setup screens omit the desktop copyright footer. */
+/* Phone setup screens retain language without desktop copyright links. */
 @media (max-width: 850px) {
   .business-onboarding .setup-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 24px 12px;
+  }
+  .business-onboarding .setup-footer > span,
+  .business-onboarding .setup-footer > div > button {
     display: none;
+  }
+  .business-onboarding .setup-footer .language select {
+    color: var(--primary);
+    font-size: 14px;
+    min-height: 32px;
   }
 }
 @media (max-width: 700px) {
@@ -884,5 +895,37 @@
   }
   [dir='rtl'] .business-onboarding .setup-sidebar h2 {
     font-size: 23px;
+  }
+}
+
+.setup-mobile-back {
+  display: none;
+}
+@media (max-width: 850px) {
+  .business-onboarding .setup-header > .brand {
+    display: none;
+  }
+  .business-onboarding .setup-mobile-back {
+    display: flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+  [dir='rtl'] .business-onboarding .setup-mobile-back svg {
+    transform: scaleX(-1);
+  }
+  .business-onboarding .setup-footer .language img {
+    filter: brightness(0) saturate(100%) invert(34%) sepia(95%) saturate(2702%) hue-rotate(212deg)
+      brightness(96%) contrast(95%);
+  }
+}
+
+.business-onboarding .setup-footer .language img {
+  display: none;
+}
+@media (max-width: 850px) {
+  .business-onboarding .setup-footer .language img {
+    display: block;
   }
 }
