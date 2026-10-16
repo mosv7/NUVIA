@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Field from './components/Field.jsx';
+import LanguageIcon from './components/LanguageIcon.jsx';
 import { en, ar } from './i18n.js';
 import { submitDemo } from './services/auth.js';
 import LandingPage from './pages/LandingPage.jsx';
@@ -296,6 +297,7 @@ export default function App() {
             <button onClick={() => setNotice('unavailable')}>{t.privacy}</button>
             <button onClick={() => setNotice('unavailable')}>{t.help}</button>
             <label className="language">
+              <LanguageIcon />
               <img
                 src={asset(isForgot || page === 'reset' ? 'imgLanguageIcon' : 'imgGlobe')}
                 alt=""

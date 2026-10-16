@@ -874,7 +874,7 @@
     padding: 8px 24px 12px;
   }
   .business-onboarding .setup-footer > span,
-  .business-onboarding .setup-footer > div > button {
+  .business-onboarding .setup-footer > div > button:not(.setup-mobile-help) {
     display: none;
   }
   .business-onboarding .setup-footer .language select {
@@ -927,5 +927,34 @@
 @media (max-width: 850px) {
   .business-onboarding .setup-footer .language img {
     display: block;
+  }
+}
+
+.setup-mobile-help {
+  display: none;
+}
+@media (max-width: 850px) {
+  .business-onboarding .setup-header .setup-help {
+    display: none;
+  }
+  .business-onboarding .setup-footer .language-icon {
+    display: block;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+  .business-onboarding .setup-footer .language select {
+    min-height: 44px;
+  }
+  .business-onboarding .setup-footer > div {
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .business-onboarding .setup-footer .setup-mobile-help {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px;
+    color: var(--primary);
   }
 }

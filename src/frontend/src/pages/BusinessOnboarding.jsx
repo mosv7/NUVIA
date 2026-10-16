@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { asset } from '../assets.js';
 import { setupCopy } from '../setup-copy.js';
 import SetupSidebar from '../components/SetupSidebar.jsx';
+import LanguageIcon from '../components/LanguageIcon.jsx';
 import BusinessInformationPage from './BusinessInformationPage.jsx';
 import SetupPage from './SetupPage.jsx';
 import GetStartedPage from './GetStartedPage.jsx';
@@ -146,7 +147,7 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
         <span>© 2026 Nuvia</span>
         <div>
           <label className="language">
-            <img src={asset('login-imgGlobe')} alt="" />
+            <LanguageIcon />
             <select
               aria-label="Language / اللغة"
               value={language}
@@ -156,6 +157,9 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
               <option value="ar">العربية</option>
             </select>
           </label>
+          <button className="setup-mobile-help" onClick={() => setNotice(c.helpNotice)}>
+            {c.help}
+          </button>
           <button onClick={() => setNotice(c.reserved)}>{c.privacy}</button>
           <button onClick={() => setNotice(c.reserved)}>{c.terms}</button>
         </div>

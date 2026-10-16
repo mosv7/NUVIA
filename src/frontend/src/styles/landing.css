@@ -1251,3 +1251,13 @@
     scroll-margin-top: 90px;
   }
 }
+/* Compact the phone landing sign-in link while retaining its touch target. */
+@media (max-width: 700px) {
+  .landing .landing-signin {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 8px 12px;
+    min-height: 44px;
+    min-width: 80px;
+  }
+}
