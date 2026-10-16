@@ -14,7 +14,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run --config src/frontend/vitest.config.js",
     "test:watch": "vitest --config src/frontend/vitest.config.js",
-    "previews": "node src/frontend/scripts/create-previews.mjs"
+    "previews": "node src/frontend/scripts/create-previews.mjs",
+    "screenshots": "node src/frontend/scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.0.0",
@@ -34,6 +35,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
     "jsdom": "^27.4.0",
+    "playwright": "1.62.1",
     "prettier": "^3.9.10",
     "vitest": "^4.1.11"
   }
