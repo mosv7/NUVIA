@@ -138,3 +138,19 @@ it('ignores a pending login response after navigating to signup, including its b
   });
   expect(screen.getByRole('status')).toHaveTextContent('No account was created.');
 });
+
+it('uses the Arabic return direction on password recovery screens', () => {
+  localStorage.setItem('nuvia-language', 'ar');
+  openRoute('forgot');
+  const back = screen.getByRole('link', { name: 'العودة إلى تسجيل الدخول' });
+  expect(back.querySelector('[aria-hidden=true]')).toHaveTextContent('→');
+});
+it('uses Arabic numerals and complete Arabic labels in business onboarding', () => {
+  localStorage.setItem('nuvia-language', 'ar');
+  openRoute('business-information');
+  expect(screen.getByText('الخطوة ١ من ٣')).toBeVisible();
+  expect(
+    screen.getByLabelText('خطوات الإعداد').querySelector('.progress-marker'),
+  ).toHaveTextContent('١');
+  expect(screen.getByLabelText('Language / اللغة')).toHaveValue('ar');
+});

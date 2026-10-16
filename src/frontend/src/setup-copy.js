@@ -98,7 +98,7 @@ export const setupCopy = {
     question: 'كيف كانت زيارتك اليوم؟',
     moments: 'لحظات صغيرة. رؤى مهمة.',
     ratings: ['غير راضٍ', 'محايد', 'راضٍ', 'راضٍ جدًا'],
-    stepLabel: (n) => `الخطوة ${n} من ٣`,
+    stepLabel: (n) => `الخطوة ${n.toLocaleString('ar', { numberingSystem: 'arab' })} من ٣`,
     infoTitle: 'معلومات النشاط',
     infoBody: 'أخبرنا قليلًا عن نشاطك. سنستخدم هذه المعلومات لتخصيص مساحة عملك.',
     required: 'الحقول المعلّمة بـ * مطلوبة.',
@@ -133,7 +133,7 @@ export const setupCopy = {
       ['شاركه مع عملائك', 'أرسل رابطًا أو ضع رمز QR في فرعك.', 'guide-share-survey'],
       [
         'حوّل الإجابات إلى رؤى باستخدام NUVIA AI',
-        'افهم عملاءك وتابع آرائهم حسب الفرع.',
+        'افهم عملاءك وتابع آراءهم حسب الفرع.',
         'guide-analyze-responses',
       ],
       [

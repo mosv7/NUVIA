@@ -280,7 +280,9 @@ export default function App() {
                 {t.existing} <a href="#/login">{t.login}</a>
               </>
             ) : (
-              <a href="#/login">← {t.backLogin}</a>
+              <a href="#/login">
+                <span aria-hidden="true">{language === 'ar' ? '→' : '←'}</span> {t.backLogin}
+              </a>
             )}
           </p>
           {isSignup && (

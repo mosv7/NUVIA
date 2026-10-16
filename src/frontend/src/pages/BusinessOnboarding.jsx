@@ -101,7 +101,13 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
               aria-current={i === step ? 'step' : undefined}
             >
               <span className="progress-marker">
-                {i < step ? <img src={icon('progress-completed-check')} alt="" /> : i + 1}
+                {i < step ? (
+                  <img src={icon('progress-completed-check')} alt="" />
+                ) : language === 'ar' ? (
+                  (i + 1).toLocaleString('ar', { numberingSystem: 'arab' })
+                ) : (
+                  i + 1
+                )}
               </span>
               <span>{name}</span>
             </li>

@@ -3,6 +3,7 @@ import { createServer } from 'vite';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import crypto from 'node:crypto';
 
 const appRoot = fileURLToPath(new URL('../', import.meta.url));
 const output = fileURLToPath(new URL('../../../docs/ui/frontend/', import.meta.url));
@@ -13,6 +14,7 @@ const routes = [
   'forgot',
   'reset',
   'business-information',
+  'business-error',
   'business-setup',
   'get-started',
 ];
@@ -35,14 +37,32 @@ const browser = await chromium.launch({
     : {}),
 });
 const captured = new Set();
+const manifest = [];
 const errors = [];
 try {
   await fs.mkdir(output, { recursive: true });
   const page = await browser.newPage({ reducedMotion: 'reduce', deviceScaleFactor: 1 });
   page.on('pageerror', (error) => errors.push(error.message));
   const capture = async (name, fullPage = true) => {
-    await page.screenshot({ path: path.join(output, name), fullPage, animations: 'disabled' });
+    const bytes = await page.screenshot({
+      path: path.join(output, name),
+      fullPage,
+      animations: 'disabled',
+    });
     captured.add(name);
+    const actual = await page.evaluate(() => ({
+      language: document.documentElement.lang,
+      route: location.hash.slice(2),
+      scrollY,
+    }));
+    manifest.push({
+      file: name,
+      ...actual,
+      viewport: page.viewportSize(),
+      image: { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) },
+      fullPage,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+    });
   };
   for (const language of ['en', 'ar']) {
     for (const mobile of [false, true]) {
@@ -71,7 +91,23 @@ try {
         const checks = await page.evaluate(
           ({ mobile, route }) => {
             if (document.documentElement.scrollWidth > innerWidth) return 'Horizontal overflow';
-            if (!mobile) return '';
+            if (!mobile) {
+              if (document.querySelector('.business-onboarding')) {
+                const header = document.querySelector('.setup-header'),
+                  brand = header.querySelector('.brand'),
+                  back = header.querySelector('.setup-mobile-back');
+                const r = brand.getBoundingClientRect(),
+                  h = header.getBoundingClientRect(),
+                  style = getComputedStyle(header);
+                const offset =
+                  document.documentElement.dir === 'rtl'
+                    ? r.right - (h.right - parseFloat(style.paddingRight))
+                    : r.left - (h.left + parseFloat(style.paddingLeft));
+                if (getComputedStyle(back).display !== 'none' || Math.abs(offset) > 1)
+                  return 'Desktop business logo displaced by mobile arrow';
+              }
+              return '';
+            }
             if (route === 'landing') {
               const link = document.querySelector('.landing-signin');
               if (
@@ -106,6 +142,8 @@ try {
           { mobile, route },
         );
         if (checks) throw new Error(`${language} ${width} ${route}: ${checks}`);
+        if ((await page.evaluate(() => document.documentElement.lang)) !== language)
+          throw new Error('Screenshot language mismatch');
         const name = mobile
           ? route === 'landing'
             ? `${language}-mobile.png`
@@ -126,6 +164,10 @@ try {
   );
   if (stale.length) throw new Error(`Unrefreshed screenshots: ${stale.join(', ')}`);
   if (errors.length) throw new Error(errors.join('\n'));
+  await fs.writeFile(
+    path.join(output, 'capture-manifest.json'),
+    JSON.stringify({ capturedAt: new Date().toISOString(), screenshots: manifest }, null, 2) + '\n',
+  );
   console.log(`Updated all ${captured.size} screenshots, including every existing PNG.`);
 } finally {
   await browser.close();

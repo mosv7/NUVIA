@@ -898,7 +898,8 @@
   }
 }
 
-.setup-mobile-back {
+/* Keep the mobile-only arrow hidden despite the shared .back display rule. */
+.business-onboarding .setup-mobile-back {
   display: none;
 }
 @media (max-width: 850px) {
