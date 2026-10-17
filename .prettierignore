@@ -1,0 +1,12 @@
+AGENTS.md
+docs/ai-pipeline.md
+docs/api-contracts.md
+docs/architecture.md
+docs/database.md
+docs/requirements.md
+docs/team-workflow.md
+node_modules/
+**/dist/
+**/previews/
+**/public/assets/
+package-lock.json

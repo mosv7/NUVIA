@@ -6,21 +6,21 @@ NUVIA helps businesses turn free-text customer feedback into aspect scores, recu
 
 ## Project status
 
-This repository is in the planning and documentation phase. It has no application code, dependency manifest, migrations, trained models, configured CI, or executable tests yet. The documents describe the intended system, not deployed functionality.
+This repository now includes the supplied bilingual React frontend prototype, its build/lint/format tooling, critical-flow tests, and frontend CI configuration. Backend services, database migrations, trained models, and real authentication are not implemented. The system documents describe the intended platform, not deployed functionality.
 
 The source proposal is `AI_Powered_Customer_Feedback_Analytics_&_Business_Intelligence_Platform.pdf`, supplied in the original workspace. The initial public repository contains the documentation derived from it; the PDF remains local. Technical choices and numerical targets introduced in these documents are **proposed baselines** for team review.
 
 ## Documentation
 
-| Document | Purpose |
-| --- | --- |
-| [Requirements](docs/requirements.md) | Product scope, priorities, acceptance criteria, and open decisions |
-| [Architecture](docs/architecture.md) | Components, boundaries, data flow, deployment, and failure handling |
+| Document                               | Purpose                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| [Requirements](docs/requirements.md)   | Product scope, priorities, acceptance criteria, and open decisions             |
+| [Architecture](docs/architecture.md)   | Components, boundaries, data flow, deployment, and failure handling            |
 | [API contracts](docs/api-contracts.md) | Proposed HTTP interface, payloads, errors, access rules, and asynchronous jobs |
-| [Database](docs/database.md) | Tenant model, entities, integrity rules, storage, and migration strategy |
-| [AI pipeline](docs/ai-pipeline.md) | Processing, scoring, evaluation, provenance, and safeguards |
-| [Team workflow](docs/team-workflow.md) | Responsibilities, delivery sequence, reviews, and definition of done |
-| [Repository guidelines](AGENTS.md) | Existing contributor instructions, preserved unchanged |
+| [Database](docs/database.md)           | Tenant model, entities, integrity rules, storage, and migration strategy       |
+| [AI pipeline](docs/ai-pipeline.md)     | Processing, scoring, evaluation, provenance, and safeguards                    |
+| [Team workflow](docs/team-workflow.md) | Responsibilities, delivery sequence, reviews, and definition of done           |
+| [Repository guidelines](AGENTS.md)     | Existing contributor instructions, preserved unchanged                         |
 
 ## Planned capabilities
 
@@ -34,7 +34,7 @@ See the requirements document for the delivery order. Later stages remain part o
 
 ## Proposed implementation baseline
 
-A React/TypeScript dashboard, Python FastAPI backend, Python AI workers, PostgreSQL with pgvector, Redis-backed asynchronous jobs, and object storage are proposed. The proposal specifies Python NLP tooling but leaves concrete backend and frontend frameworks open. No framework is installed or committed by this setup.
+A React/TypeScript dashboard, Python FastAPI backend, Python AI workers, PostgreSQL with pgvector, Redis-backed asynchronous jobs, and object storage are proposed. The proposal specifies Python NLP tooling but leaves concrete backend and frontend frameworks open. The imported frontend uses React with JavaScript/JSX and Vite; the TypeScript baseline and backend/AI choices remain proposals. See [the frontend integration decision](docs/decisions/0001-frontend-prototype.md).
 
 ## Repository layout
 
@@ -42,6 +42,11 @@ A React/TypeScript dashboard, Python FastAPI backend, Python AI workers, Postgre
 NUVIA/
   AGENTS.md
   README.md
+  package.json
+  package-lock.json
+  src/frontend/       # React app, configuration, and public assets
+  tests/frontend/     # Critical-flow UI tests
+  .github/workflows/  # Frontend checks
   docs/
     architecture.md
     api-contracts.md
@@ -51,11 +56,24 @@ NUVIA/
     team-workflow.md
 ```
 
-When implementation starts, use `src/` for application code, `tests/` for automated tests, and `assets/` for static resources. Model evaluation material belongs under `tests/ai/`; supporting documentation belongs under `docs/`.
+Application code lives in `src/frontend/` and automated tests in `tests/frontend/`. Frontend static resources use Vite's `src/frontend/public/assets/` directory, as documented in the integration decision. Future backend/AI modules belong under `src/`; model evaluation material belongs under `tests/ai/`.
 
 ## Development setup
 
-There are no working local development, build, formatting, or test commands yet. The first implementation change must configure a formatter, linter, and test framework, verify all commands from a clean checkout, and document prerequisites and exact commands here.
+Use Node.js 22.12 or later and npm 10 or later. Run these commands from the repository root:
+
+```sh
+npm ci
+npm run dev
+```
+
+Open the Local URL printed in the terminal. For a phone on the same Wi-Fi, run `npm run dev:network` and use its Network URL. `npm run build` creates the production bundle; `npm run preview` serves it locally.
+
+Checks: `npm run format:check`, `npm run lint`, `npm test`, and `npm run build`. Use `npm run format` to apply formatting and `npm run test:watch` for iterative tests.
+
+For double-clickable HTML review files, run `npm run build` followed by `npm run previews`; open `previews/landing.html` or `previews/business.html`. Generated previews and bundles are not committed.
+
+See [Frontend development and review](docs/frontend.md) for routes, source locations, demo limitations, and mobile review. The current UI validates inputs locally; it does not create accounts, send email, save business data, or run analytics/AI.
 
 Never commit credentials, customer responses, private datasets, or local environment files. Commit placeholder configuration examples when actual configuration is introduced.
 
