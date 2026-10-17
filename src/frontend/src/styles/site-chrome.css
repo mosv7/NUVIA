@@ -1,0 +1,136 @@
+/* Approved NUVIA logo, shared by all page headers. */
+.brand > span,
+.brand > img,
+.ds-overview [data-name='NUVIA home'] > [data-name='Brand mark'] {
+  display: none !important;
+}
+.brand strong,
+.ds-overview [data-name='NUVIA home'] > p {
+  font-size: 0 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+}
+.brand strong::after,
+.ds-overview [data-name='NUVIA home'] > p::after {
+  content: '';
+  display: block;
+  width: 172px;
+  height: 47.86px;
+  background: url('/assets/brand/nuvia-logo.svg') center/contain no-repeat;
+}
+.ds-overview [data-name='NUVIA home'] {
+  padding-inline: 10px;
+  min-height: 36px;
+  overflow: visible;
+}
+.landing-footer .brand strong::after {
+  background-image: url('/assets/brand/nuvia-logo-on-dark.svg');
+}
+@media (max-width: 850px) {
+  .auth-layout .auth-panel > header .brand,
+  .business-onboarding .setup-header > .brand {
+    display: flex !important;
+  }
+}
+/* Persistent headers on desktop and mobile. */
+.auth-layout .auth-panel > header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: #fff;
+  padding-block: 12px;
+  flex-shrink: 0;
+}
+.business-onboarding .setup-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: #fff;
+  flex-shrink: 0;
+}
+.ds-overview .product-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  background: #fff;
+}
+@media (min-width: 701px) {
+  .landing .landing-top {
+    padding-top: 96px;
+  }
+  .landing .landing-nav {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 60;
+    width: 100%;
+    height: 96px;
+    margin: 0;
+    padding: 24px 3.7%;
+    background: #fff;
+    box-sizing: border-box;
+    box-shadow: 0 1px 8px #0d326d0a;
+  }
+  .landing [id] {
+    scroll-margin-top: 112px;
+  }
+}
+@media (max-width: 700px) {
+  .landing .landing-nav {
+    z-index: 60;
+  }
+}
+
+/* One header scale across page families, including zoomed dashboard layouts. */
+:root {
+  --site-header-height: 76px;
+  --site-logo-width: 172px;
+  --site-logo-height: 47.86px;
+}
+.landing .landing-nav,
+.auth-layout .auth-panel > header,
+.business-onboarding .setup-header,
+.ds-overview .product-topbar {
+  height: var(--site-header-height);
+  min-height: var(--site-header-height);
+  max-height: var(--site-header-height);
+  padding-block: 0;
+  align-items: center;
+  box-sizing: border-box;
+}
+.landing .landing-top {
+  padding-top: var(--site-header-height);
+}
+.landing [id] {
+  scroll-margin-top: calc(var(--site-header-height) + 16px);
+}
+.brand strong::after,
+.ds-overview [data-name='NUVIA home'] > p::after {
+  width: var(--site-logo-width);
+  height: var(--site-logo-height);
+}
+@media (max-width: 850px) {
+  :root {
+    --site-header-height: 72px;
+  }
+  .landing .landing-nav {
+    padding-inline: 20px;
+    gap: 12px;
+  }
+  .auth-layout .auth-panel > header,
+  .business-onboarding .setup-header {
+    gap: 12px;
+  }
+}
+@media (min-width: 1440px) {
+  .ds-overview .product-topbar {
+    height: calc(var(--site-header-height) / var(--overview-scale, 1));
+    min-height: calc(var(--site-header-height) / var(--overview-scale, 1));
+    max-height: calc(var(--site-header-height) / var(--overview-scale, 1));
+  }
+  .ds-overview [data-name='NUVIA home'] > p::after {
+    width: calc(var(--site-logo-width) / var(--overview-scale, 1));
+    height: calc(var(--site-logo-height) / var(--overview-scale, 1));
+  }
+}

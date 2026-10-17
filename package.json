@@ -15,7 +15,7 @@
     "test": "vitest run --config src/frontend/vitest.config.js",
     "test:watch": "vitest --config src/frontend/vitest.config.js",
     "previews": "node src/frontend/scripts/create-previews.mjs",
-    "screenshots": "node src/frontend/scripts/capture-screenshots.mjs"
+    "screenshots": "npm run build -- --configLoader runner && node src/frontend/scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.0.0",

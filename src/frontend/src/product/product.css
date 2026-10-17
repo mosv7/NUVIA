@@ -1,0 +1,730 @@
+.product-page {
+  position: relative;
+  isolation: isolate;
+  background: #fff;
+  --native-direction: 1;
+}
+[dir='rtl'] .product-page {
+  --native-direction: -1;
+}
+.product-view {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: normal;
+  color: var(--dark);
+  isolation: auto;
+}
+.product-view * {
+  border-width: 0;
+  border-style: solid;
+  box-sizing: border-box;
+}
+.product-view p {
+  margin: 0;
+}
+.product-view button {
+  font: inherit;
+  text-align: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+.product-view input,
+.product-view select {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-width: 0;
+  outline-offset: 4px;
+  appearance: none;
+}
+.product-view input {
+  width: 100%;
+}
+.product-view [hidden] {
+  display: none !important;
+}
+.product-view [dir='ltr'] {
+  --native-direction: 1;
+}
+[dir='rtl'] .product-view [data-node-id] {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  letter-spacing: 0;
+}
+.product-mobile-toggle,
+.product-menu-backdrop {
+  display: none;
+}
+@media (max-width: 1439px) {
+  .product-view.ds-overview {
+    width: 100%;
+    min-height: 100dvh;
+  }
+  .ds-overview .product-workspace {
+    position: relative;
+    inset: auto;
+    margin-inline-start: 232px;
+    width: calc(100% - 232px);
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Overview content'] {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: auto;
+    padding: 28px;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Overview content'] > div {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+  .ds-overview [data-node-id='127:360'] {
+    order: 0;
+    display: flex !important;
+    flex-direction: column;
+  }
+  .ds-overview [data-node-id='127:428'] {
+    order: 1;
+  }
+  .ds-overview [data-node-id='127:506'] {
+    order: 2;
+  }
+  .ds-overview [data-node-id='127:718'] {
+    order: 3;
+  }
+  .ds-overview [data-node-id='127:645'] {
+    order: 4;
+  }
+  .ds-overview [data-node-id='127:586'] {
+    order: 5;
+  }
+  .ds-overview [data-name='Overview content'] > div > div {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .ds-overview [data-name='Overview introduction'] {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .ds-overview [data-name='Overview actions'] {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .ds-overview [data-name='Key metrics'] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ds-overview .product-card {
+    overflow: auto;
+    height: auto;
+    min-height: 0;
+  }
+  .ds-overview [data-name='Weekly trend chart'] {
+    flex-shrink: 0;
+  }
+  .ds-overview [data-name='Workspace header'] {
+    padding-inline: 24px;
+    gap: 20px;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Header actions'] {
+    gap: 12px;
+  }
+  .ds-overview [data-name='Search'] {
+    width: 190px;
+  }
+  .ds-overview [data-name='Sentiment breakdown'] {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Product navigation'] {
+    height: 100%;
+    min-height: 100dvh;
+    overflow: auto;
+  }
+}
+@media (max-width: 1100px) {
+  .ds-overview [data-name='Overview content'] > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ds-overview [data-name='Profile'] [data-name='Account'],
+  .ds-overview [data-name='Search'] {
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  .product-mobile-toggle {
+    display: flex;
+    position: fixed;
+    inset-inline-start: 12px;
+    top: 14px;
+    z-index: 91;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .product-menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 79;
+    background: #10213d66;
+  }
+  .ds-overview .product-navigation {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    height: 100dvh;
+    min-height: 0;
+    z-index: 80;
+    overflow: auto;
+    transform: translateX(calc(-100% * var(--native-direction)));
+    padding-top: 76px;
+    transition: transform 0.2s ease;
+  }
+  .product-page[data-menu-open='true'] .product-navigation {
+    transform: none;
+  }
+  .ds-overview .product-workspace {
+    margin: 0;
+    width: 100%;
+    min-height: 100dvh;
+  }
+  .ds-overview .product-topbar {
+    padding-inline: 72px 16px;
+    min-height: 72px;
+    height: auto;
+  }
+  .ds-overview [data-name='Header actions'] {
+    gap: 10px;
+  }
+  .ds-overview [data-name='Profile'],
+  .ds-overview [data-name='Header actions'] > [data-name='Divider'],
+  .ds-overview [data-name='Notifications'] {
+    display: none;
+  }
+  .ds-overview [data-name='Breadcrumb'] {
+    gap: 6px;
+    font-size: 11px;
+  }
+  .ds-overview [data-name='Overview content'] {
+    padding: 24px 16px;
+    gap: 16px;
+  }
+  .ds-overview [data-name='Overview content'] > div {
+    gap: 16px;
+  }
+  .ds-overview [data-name='Welcome'] {
+    width: 100%;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Welcome'] p {
+    white-space: normal;
+  }
+  .ds-overview [data-name='Overview actions'] {
+    width: 100%;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Key metrics'] {
+    gap: 10px;
+  }
+  .ds-overview [data-name='Feedback metric'] {
+    padding: 16px;
+    height: auto;
+    min-height: 136px;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Metric heading'] p {
+    white-space: normal;
+    font-size: 11px;
+  }
+  .ds-overview [data-name='Change'] {
+    flex-wrap: wrap;
+    white-space: normal;
+    gap: 4px;
+  }
+  .ds-overview [data-name='Change'] p {
+    white-space: normal;
+  }
+  .ds-overview .product-card {
+    padding: 20px;
+    max-width: 100%;
+    overflow: auto;
+  }
+  .ds-overview [data-name='Feedback header'],
+  .ds-overview [data-name='Assistant heading'],
+  .ds-overview [data-name='Section heading'] {
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 10px;
+  }
+  .ds-overview [data-name='Response content'] p {
+    white-space: normal;
+  }
+  .ds-overview [data-name='Action item'] {
+    overflow: visible;
+  }
+  .ds-overview [data-name='Action title'] {
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Action title'] p {
+    white-space: normal;
+  }
+  .ds-overview [data-name='Comparison table'] {
+    min-width: 500px;
+  }
+  .ds-overview [data-name='Feedback footer'] {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-page * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Fill wide screens while preserving the Figma desktop proportions. */
+@media (min-width: 1440px) {
+  .product-view.ds-overview {
+    width: 1440px;
+    max-width: none;
+    margin-inline: 0;
+    zoom: var(--overview-scale, 1);
+  }
+}
+
+/* Make the entire language control clickable, including both icons. */
+.ds-overview [data-name='Language'] {
+  min-height: 32px;
+  cursor: pointer;
+}
+.ds-overview [data-name='Language'] select.product-language-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+.ds-overview [data-name='Language']:focus-within {
+  outline: 2px solid #1e68ef;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Slightly smaller dashboard navigation labels. */
+.ds-overview .product-navigation [data-name='Navigation item'] > p {
+  font-size: 14px;
+}
+
+/* Keep desktop navigation in view while the dashboard content scrolls. */
+@media (min-width: 851px) {
+  .ds-overview .product-navigation {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    height: 100dvh;
+    min-height: 0;
+    z-index: 80;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .ds-overview .product-navigation > [data-name='Workspace destinations'] {
+    flex-shrink: 1;
+    min-height: 88px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .ds-overview .product-navigation > [data-name='Flexible space'] {
+    min-height: 0;
+  }
+}
+@media (min-width: 1440px) {
+  .ds-overview .product-navigation {
+    height: calc(100dvh / var(--overview-scale, 1));
+  }
+}
+/* Compact desktop sidebar: keep all destinations visible without internal scrolling. */
+@media (min-width: 851px) {
+  .ds-overview .product-navigation {
+    gap: clamp(4px, calc((100dvh / var(--overview-scale, 1) - 560px) / 8), 16px);
+    padding-block: 16px;
+    overflow: hidden;
+  }
+  .ds-overview .product-navigation > [data-name='Workspace destinations'] {
+    flex-shrink: 0;
+    min-height: 0;
+    overflow: visible;
+    gap: 3px;
+  }
+  .ds-overview .product-navigation [data-name='Navigation item'] {
+    height: 32px;
+    min-height: 32px;
+  }
+  .ds-overview .product-navigation [data-name='Navigation item'] > p {
+    font-size: 14px;
+  }
+  .ds-overview .product-navigation > [data-name='Account destinations'] {
+    gap: 2px;
+  }
+  .ds-overview .product-navigation > [data-name='Plan usage'] {
+    padding: 10px;
+    gap: 6px;
+  }
+  .ds-overview .product-navigation [data-name='Workspace switcher'] {
+    padding-block: 8px;
+  }
+}
+
+.ds-overview .dashboard-link-arrow {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-inline: 3px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* Consistent medium weight for dashboard detail/action links. */
+.ds-overview button .dashboard-arrow-label {
+  font-weight: 500;
+}
+/* Reserve room for the assistant arrow instead of letting the input push it out. */
+.ds-overview [data-name='Assistant follow-up'] {
+  gap: 10px;
+}
+.ds-overview [data-name='Assistant follow-up'] > input {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+}
+.ds-overview [data-name='Assistant follow-up'] > [data-name='arrow-up'] {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
+/* Let branch progress tracks share space with the complete review counts. */
+.ds-overview [data-name='Branch metric'] {
+  gap: 8px;
+  min-width: 0;
+}
+.ds-overview [data-name='Branch metric'] > [data-name='Branch sentiment track'] {
+  flex: 1 1 0;
+  min-width: 24px;
+  width: auto;
+}
+.ds-overview [data-name='Branch metric'] > p {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.ds-overview [data-name='Branch sentiment track'] > .f229 {
+  width: 62%;
+}
+.ds-overview [data-name='Branch sentiment track'] > .f232 {
+  width: 82%;
+}
+.ds-overview [data-name='Branch sentiment track'] > .f233 {
+  width: 74%;
+}
+/* Shared badge typography, spacing and semantic palette. */
+.ds-overview [data-name='Status'][data-tone] {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.ds-overview [data-name='Status'][data-tone] > p {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+.ds-overview [data-tone='positive'] {
+  color: var(--positive);
+  background: #eaf7f1;
+}
+.ds-overview [data-tone='negative'] {
+  color: var(--negative);
+  background: #fff0f0;
+}
+.ds-overview [data-tone='warning'] {
+  color: #996514;
+  background: #fff5db;
+}
+.ds-overview [data-tone='neutral'] {
+  color: var(--gray101);
+  background: #f0f3f7;
+}
+.ds-overview [data-tone='info'] {
+  color: #1e68ef;
+  background: #eaf2ff;
+}
+/* Arabic text needs natural card heights rather than fixed English frame heights. */
+[dir='rtl'] .ds-overview [data-name='Live survey'],
+[dir='rtl'] .ds-overview [data-name='Latest responses'] {
+  height: auto;
+  overflow: visible;
+}
+[dir='rtl'] .ds-overview [data-name='Response content'] p {
+  white-space: normal;
+  line-height: 1.6;
+  width: 100%;
+  min-width: 0;
+}
+[dir='rtl'] .ds-overview [data-name='Response metadata'] {
+  flex-wrap: wrap;
+}
+[dir='rtl'] .ds-overview [data-name='Live survey'] > p {
+  white-space: normal;
+  line-height: 1.6;
+}
+@media (min-width: 1440px) {
+  [dir='rtl'] .ds-overview .product-workspace {
+    position: relative;
+    inset: auto;
+    margin-inline-start: 232px;
+    width: 1208px;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  [dir='rtl'] .ds-overview [data-name='Overview content'] {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+    height: auto;
+    overflow: visible;
+  }
+  [dir='rtl'] .ds-overview [data-name='Overview content'] > div {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+  [dir='rtl'] .ds-overview [data-node-id='127:360'] {
+    order: 0;
+  }
+  [dir='rtl'] .ds-overview [data-node-id='127:428'] {
+    order: 1;
+  }
+  [dir='rtl'] .ds-overview [data-node-id='127:506'] {
+    order: 2;
+  }
+  [dir='rtl'] .ds-overview [data-node-id='127:718'] {
+    order: 3;
+    display: flex;
+    gap: 24px;
+  }
+  [dir='rtl'] .ds-overview [data-node-id='127:645'] {
+    order: 4;
+  }
+  [dir='rtl'] .ds-overview [data-node-id='127:586'] {
+    order: 5;
+  }
+  [dir='rtl'] .ds-overview [data-name='Overview content'] > div:not([data-node-id='127:360']) {
+    align-items: stretch;
+  }
+  [dir='rtl'] .ds-overview [data-name='Overview content'] > div > .product-card {
+    position: relative;
+    inset: auto;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+/* Slightly larger, equally sized metric icons. */
+.ds-overview [data-name='Metric heading'] {
+  gap: 8px;
+  overflow: visible;
+  min-height: 20px;
+}
+.ds-overview [data-name='Metric heading'] > .f35 {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  transform: none;
+}
+.ds-overview [data-name='Metric heading'] > p {
+  min-width: 0;
+  flex: 1 1 auto;
+  white-space: normal;
+}
+.ds-overview [data-name='Key metrics'] {
+  align-items: stretch;
+}
+.ds-overview [data-name='Feedback metric'] {
+  height: auto;
+  min-height: 136px;
+}
+[dir='rtl'] .ds-overview [data-name='Latest customer responses'] {
+  height: auto;
+  overflow: visible;
+}
+[dir='rtl'] .ds-overview [data-name='Response list'] {
+  overflow: visible;
+}
+[dir='rtl'] .ds-overview [data-name='Change'] {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+[dir='rtl'] .ds-overview [data-name='Change'] p,
+[dir='rtl'] .ds-overview [data-name='Sentiment change'] p {
+  white-space: normal;
+  line-height: 1.6;
+}
+
+.ds-overview [data-name='Metric heading'] > .f35 > img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.ds-overview .account-avatar-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+/* Secondary export action with a soft blue treatment. */
+.ds-overview [data-node-id='127:376'] {
+  background: #f0f5ff;
+  border-color: #cbdcf7;
+  color: #1e5dcc;
+}
+.ds-overview [data-node-id='127:376'] > p {
+  color: inherit;
+}
+.ds-overview [data-node-id='127:376']:hover {
+  background: #e4edff;
+  border-color: #abc7f2;
+}
+.ds-overview [data-node-id='127:376']:focus-visible {
+  outline: 2px solid #1e68ef;
+  outline-offset: 3px;
+}
+
+/* Shared color variables from the Figma dashboard. */
+.product-page {
+  --primary-color: #1e68ef;
+  --dark: #10213d;
+  --gray101: #64738a;
+  --positive: #23765c;
+  --negative: #b34d50;
+}
+.ds-overview .product-navigation [data-name='Workspace destinations'] > p {
+  color: #64738a;
+}
+
+/* Keep workspace controls visible while scrolling the dashboard. */
+.ds-overview .product-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  background: #fff;
+}
+
+/* Match the overview heading color to its Figma dark token. */
+.ds-overview [data-node-id='127:363'] {
+  color: var(--dark);
+}
+
+/* Keep action rows within the available workspace at tablet widths. */
+@media (max-width: 1439px) {
+  .ds-overview [data-name='Overview actions'] {
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Overview actions'] > * {
+    max-width: 100%;
+  }
+}
+@media (max-width: 1100px) {
+  .ds-overview [data-name='Overview actions'] {
+    width: 100%;
+    flex-basis: 100%;
+    justify-content: flex-start;
+  }
+  .ds-overview [data-name='Welcome'] {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+/* Let supporting text and links wrap rather than disappear on phones. */
+@media (max-width: 850px) {
+  .ds-overview [data-name='Collection status'],
+  .ds-overview [data-name='Comparison link'],
+  .ds-overview [data-name='Evidence link'] {
+    height: auto;
+    min-height: 32px;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow: visible;
+    white-space: normal;
+    text-align: start;
+  }
+  .ds-overview [data-name='Collection status'] > p,
+  .ds-overview [data-name='Comparison link'] > p,
+  .ds-overview [data-name='Evidence link'] > p {
+    white-space: normal;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .ds-overview [data-name='Collection status'] > p {
+    flex: 1;
+  }
+  .ds-overview [data-name='Action evidence'],
+  .ds-overview [data-name='Response content'] {
+    min-width: 0;
+    overflow: visible;
+  }
+  .ds-overview [data-name='Overview actions'] [data-name='Action'] {
+    height: auto;
+    min-height: 40px;
+    padding-block: 10px;
+  }
+  .ds-overview [data-name='Overview actions'] [data-name='Action'] > p {
+    white-space: normal;
+    min-width: 0;
+  }
+}
+/* Short viewports must keep subscription and help destinations reachable. */
+@media (min-width: 851px) {
+  .ds-overview .product-navigation {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}

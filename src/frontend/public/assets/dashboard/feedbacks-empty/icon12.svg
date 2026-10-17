@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon" clip-path="url(#clip0_0_50)">
+<path id="Glyph" d="M14.4 8C14.4 11.5346 11.5346 14.4 8 14.4M14.4 8C14.4 4.46538 11.5346 1.6 8 1.6M14.4 8H10.56M8 14.4C4.46538 14.4 1.6 11.5346 1.6 8M8 14.4C6.35663 12.6745 5.44 10.3829 5.44 8M8 14.4C9.64337 12.6745 10.56 10.3829 10.56 8M8 1.6C6.35663 3.32554 5.44 5.61711 5.44 8M8 1.6C9.64337 3.32554 10.56 5.61711 10.56 8M8 1.6C4.46538 1.6 1.6 4.46538 1.6 8M10.56 8H5.44M5.44 8H1.6" stroke-width="1.7" stroke-linecap="round" stroke="#64738A"/>
+</g>
+<defs>
+<clipPath id="clip0_0_50">
+<rect width="16" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>

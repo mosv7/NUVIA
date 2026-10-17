@@ -1,5 +1,16 @@
 # Responsive and Arabic UI review
 
+## Current product refresh
+
+- Added Overview, feedback list, empty collection and response details to the routed prototype.
+- Applied the approved geometric logo with the original icon, blue V and a dark-background variant.
+- Persistent headers share 76 px desktop and 72 px mobile heights; wide-screen dashboard scaling is compensated.
+- Improved tablet action wrapping, phone evidence links, feedback cards up to 1100 px and short-screen sidebar reachability.
+- Regenerated all 55 browser screenshots across 13 routes, English/Arabic and desktop/phone. Every checksum and PNG dimension matches the capture manifest.
+- Format, lint, eight flow tests and production build pass. Sample data remains local; no backend or AI integration is claimed.
+
+The sections below record the earlier nine-route review; the current matrix supersedes its scope and screenshot counts.
+
 ## Corrections
 
 - The shared `.back` display rule exposed the mobile-only back arrow on desktop business screens. That extra flex item pushed the logo into the middle of the header. The scoped default rule now hides the arrow on desktop while preserving the mobile override. Logo alignment is checked against the actual header padding in English and Arabic.

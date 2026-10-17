@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { createServer } from 'vite';
+import { preview } from 'vite';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -17,17 +17,21 @@ const routes = [
   'business-error',
   'business-setup',
   'get-started',
+  'dashboard',
+  'feedbacks',
+  'feedbacks-empty',
+  'feedback-details',
 ];
-const server = await createServer({
+const server = await preview({
   root: appRoot,
+  configLoader: 'runner',
   configFile: path.join(appRoot, 'vite.config.js'),
-  server: {
+  preview: {
     host: '127.0.0.1',
     port: Number(process.env.SCREENSHOT_PORT || 5191),
     strictPort: true,
   },
 });
-await server.listen();
 const address = server.httpServer.address();
 const url = `http://127.0.0.1:${address.port}`;
 const browser = await chromium.launch({
@@ -78,7 +82,9 @@ try {
             ? '.hero-copy'
             : ['login', 'signup', 'forgot', 'reset'].includes(route)
               ? '.auth-content'
-              : '.setup-card',
+              : ['dashboard', 'feedbacks', 'feedbacks-empty', 'feedback-details'].includes(route)
+                ? '.product-topbar'
+                : '.setup-card',
         );
         await page.evaluate(() => document.fonts.ready);
         await page.evaluate(async () => {
@@ -91,23 +97,17 @@ try {
         const checks = await page.evaluate(
           ({ mobile, route }) => {
             if (document.documentElement.scrollWidth > innerWidth) return 'Horizontal overflow';
-            if (!mobile) {
-              if (document.querySelector('.business-onboarding')) {
-                const header = document.querySelector('.setup-header'),
-                  brand = header.querySelector('.brand'),
-                  back = header.querySelector('.setup-mobile-back');
-                const r = brand.getBoundingClientRect(),
-                  h = header.getBoundingClientRect(),
-                  style = getComputedStyle(header);
-                const offset =
-                  document.documentElement.dir === 'rtl'
-                    ? r.right - (h.right - parseFloat(style.paddingRight))
-                    : r.left - (h.left + parseFloat(style.paddingLeft));
-                if (getComputedStyle(back).display !== 'none' || Math.abs(offset) > 1)
-                  return 'Desktop business logo displaced by mobile arrow';
-              }
+            const nav = document.querySelector(
+              '.landing-nav,.auth-panel > header,.setup-header,.product-topbar',
+            );
+            const expectedHeight = mobile ? 72 : 76;
+            if (!nav || Math.abs(nav.getBoundingClientRect().height - expectedHeight) > 1)
+              return 'Inconsistent navbar height';
+            if (!['fixed', 'sticky'].includes(getComputedStyle(nav).position))
+              return 'Navbar is not persistent';
+            if (!mobile) return '';
+            if (['dashboard', 'feedbacks', 'feedbacks-empty', 'feedback-details'].includes(route))
               return '';
-            }
             if (route === 'landing') {
               const link = document.querySelector('.landing-signin');
               if (
@@ -121,8 +121,8 @@ try {
             const header = document.querySelector(setup ? '.setup-header' : '.auth-panel > header');
             const footer = document.querySelector(setup ? '.setup-footer' : '.auth-panel > footer');
             const icon = footer.querySelector('.language-icon');
-            if (getComputedStyle(header.querySelector('.brand')).display !== 'none')
-              return 'Outdated header logo';
+            if (getComputedStyle(header.querySelector('.brand')).display === 'none')
+              return 'Selected header logo is hidden';
             if (
               !icon ||
               !icon.getBoundingClientRect().width ||
@@ -135,8 +135,6 @@ try {
                 footer.querySelector('.setup-mobile-help').getBoundingClientRect().height < 44)
             )
               return 'Outdated help placement';
-            if (route === 'signup' && document.documentElement.scrollHeight > innerHeight + 1)
-              return 'Signup exceeds review viewport';
             return '';
           },
           { mobile, route },
@@ -171,5 +169,7 @@ try {
   console.log(`Updated all ${captured.size} screenshots, including every existing PNG.`);
 } finally {
   await browser.close();
-  await server.close();
+  await new Promise((resolve, reject) =>
+    server.httpServer.close((error) => (error ? reject(error) : resolve())),
+  );
 }

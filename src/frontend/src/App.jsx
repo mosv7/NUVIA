@@ -4,10 +4,16 @@ import LanguageIcon from './components/LanguageIcon.jsx';
 import { en, ar } from './i18n.js';
 import { submitDemo } from './services/auth.js';
 import LandingPage from './pages/LandingPage.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
+import FeedbacksPage from './pages/FeedbacksPage.jsx';
 import { asset as resolveAsset } from './assets.js';
 import BusinessOnboarding from './pages/BusinessOnboarding.jsx';
 const routes = [
   'landing',
+  'dashboard',
+  'feedbacks',
+  'feedbacks-empty',
+  'feedback-details',
   'login',
   'signup',
   'forgot',
@@ -18,7 +24,7 @@ const routes = [
   'get-started',
 ];
 const currentRoute = () => {
-  const value = location.hash.slice(2);
+  const value = location.hash.slice(2).split('?')[0];
   return routes.includes(value) ? value : 'landing';
 };
 export default function App() {
@@ -139,6 +145,16 @@ export default function App() {
         ? '159-1831'
         : 'login';
   const asset = (name, extension = 'svg') => resolveAsset(`${assetPrefix}-${name}.${extension}`);
+  if (['feedbacks', 'feedbacks-empty', 'feedback-details'].includes(page))
+    return (
+      <FeedbacksPage
+        key={location.hash}
+        page={page}
+        language={language}
+        setLanguage={setLanguage}
+      />
+    );
+  if (page === 'dashboard') return <DashboardPage language={language} setLanguage={setLanguage} />;
   if (page === 'landing') return <LandingPage language={language} setLanguage={setLanguage} />;
   if (['business-information', 'business-error', 'business-setup', 'get-started'].includes(page))
     return (

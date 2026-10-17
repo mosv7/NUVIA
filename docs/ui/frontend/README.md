@@ -12,7 +12,7 @@ npx playwright install chromium
 npm run screenshots
 ```
 
-The script serves `src/frontend/` on local port 5191, waits for bundled fonts, images, and dashboard sizing, and captures every route in both languages. It validates the compact phone sign-in link, arrow-only mobile account/setup headers, exact blue SVG language icon, bottom help placement, absence of horizontal overflow, and signup fit. It also fails if an existing PNG was not refreshed, so older aliases cannot silently remain stale. It does not alter application code or the separate color preview.
+The command builds and serves the production frontend bundle on local port 5191, waits for bundled fonts, images, and dashboard sizing, and captures every route in both languages. It validates the compact phone sign-in link, visible approved logos and persistent account/setup headers, exact blue SVG language icon, bottom help placement, absence of horizontal overflow, and consistent navbar height. It also fails if an existing PNG was not refreshed, so older aliases cannot silently remain stale. It does not alter application code or the separate color preview.
 
 Set `SCREENSHOT_PORT` if the default port is occupied. `PLAYWRIGHT_CHROMIUM_EXECUTABLE` optionally selects an existing Chromium executable; otherwise Playwright uses its installed Chromium. Reduced motion and disabled screenshot animations make captures stable.
 
@@ -31,6 +31,10 @@ Replace `{lang}` with `en` or `ar`.
 | Business information error | `{lang}-business-error.png`       | `{lang}-mobile-business-error.png`       |
 | Business setup             | `{lang}-business-setup.png`       | `{lang}-mobile-business-setup.png`       |
 | Get started                | `{lang}-get-started.png`          | `{lang}-mobile-get-started.png`          |
+| Overview                   | `{lang}-dashboard.png`            | `{lang}-mobile-dashboard.png`            |
+| Feedback list              | `{lang}-feedbacks.png`            | `{lang}-mobile-feedbacks.png`            |
+| Feedback empty state       | `{lang}-feedbacks-empty.png`      | `{lang}-mobile-feedbacks-empty.png`      |
+| Feedback details           | `{lang}-feedback-details.png`     | `{lang}-mobile-feedback-details.png`     |
 
 The existing detail filenames are preserved and recaptured from the same run:
 
@@ -38,6 +42,6 @@ The existing detail filenames are preserved and recaptured from the same run:
 - `active-ar-mobile-footer.png`: Arabic landing scrolled to the footer.
 - `active-en-mobile-footer.png`: English landing scrolled to the footer.
 
-All 39 PNGs are refreshed together. The original 17 filenames remain valid; unchanged desktop views may produce identical files. The additional 22 captures complete the route/language/viewport matrix. Business screens show the initial empty prototype state and do not imply saved workspace data.
+All 55 PNGs are refreshed together. The original 17 filenames remain valid; unchanged desktop views may produce identical files. The complete matrix now covers all 13 routes in both languages and viewport sizes. Business screens show the initial empty prototype state and do not imply saved workspace data.
 
 `capture-manifest.json` records the actual route, language, viewport, image dimensions, scroll position and SHA-256 for each capture. The `active-*` files are deliberate viewport details of the full landing image, not different screen designs. All other filenames map to the route/locale/viewport matrix above.

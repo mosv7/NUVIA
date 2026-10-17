@@ -14,9 +14,13 @@ The frontend is a React/JSX + Vite prototype. It supports English and Arabic/RTL
 | `#/business-information` | Required business name and industry                                     |
 | `#/business-error`       | Direct preview of the information error state                           |
 | `#/business-setup`       | Single/multiple branch selection and primary-branch validation          |
-| `#/get-started`          | In-memory setup summary; survey/dashboard integration remains pending   |
+| `#/get-started`          | In-memory setup summary                                                 |
+| `#/dashboard`            | Overview metrics, branch/date filters, CSV export and sample feedback   |
+| `#/feedbacks`            | Feedback list with search, filters, selection and pagination            |
+| `#/feedbacks-empty`      | Empty feedback collection and survey-sharing demo                       |
+| `#/feedback-details`     | Sample response details and aspect analysis                             |
 
-Use the language selector in the footer to change language. From signup, the business-setup preview link opens onboarding without pretending that an account was created. Form values clear on reload; do not enter real credentials for demo review. The landing's demo form validates input locally and sends no booking or email.
+Use the language selector in the footer or dashboard header to change language. From signup, the business-setup preview link opens onboarding without pretending that an account was created. Form values clear on reload; do not enter real credentials for demo review. The landing's demo form validates input locally and sends no booking or email.
 
 ## Source map
 
@@ -76,7 +80,7 @@ npm run build
 
 Use `npm run format` to format the code and `npm run test:watch` for test development. The GitHub workflow runs the same checks after a clean install.
 
-Automated UI tests cover language/RTL persistence, invalid signup without password persistence, required business/branch inputs and step progression, and keyboard password visibility. Browser review additionally checks desktop/mobile layout, image loading, fixed onboarding-card geometry, and the absence of internal signup scrolling. This is not a complete accessibility audit or backend/system acceptance.
+Automated UI tests cover language/RTL persistence, invalid signup without password persistence, required business/branch inputs and step progression, and keyboard password visibility. Browser review additionally checks desktop/mobile layout, image loading, a visible shared logo, consistent persistent navbar height, and no page-level horizontal overflow. This is not a complete accessibility audit or backend/system acceptance.
 
 The desktop landing caps typography and hero scaling on wide screens and reduces the excess top space. The blue glow stays behind the hero copy. Onboarding uses a consistent desktop introduction card across steps. Small screens use stacked layouts; taller forms may use normal page scrolling instead of an internal form scrollbar.
 
@@ -94,4 +98,10 @@ Login and signup use compact spacing at common screen heights, with no internal 
 
 ## Mobile language and pending account requests
 
-At widths up to 850 px, account and business screens keep a blue language control at the bottom, hide the header logo, and provide an arrow-only return control with an accessible name and RTL direction. Desktop header content remains unchanged. Changing account routes invalidates pending submissions and resets loading state; stale results cannot overwrite notices or clear a newer request. The regression test resolves an old login request while a new signup request is pending.
+At widths up to 850 px, account and business screens keep a blue language control at the bottom, show the approved logo, and provide an arrow-only return control with an accessible name and RTL direction. Desktop header content remains unchanged. Changing account routes invalidates pending submissions and resets loading state; stale results cannot overwrite notices or clear a newer request. The regression test resolves an old login request while a new signup request is pending.
+
+## Shared branding and responsive product screens
+
+The approved logo combines the original blue icon with the selected geometric NUVIA lettering and blue V. Transparent SVG variants for light and dark backgrounds live in `src/frontend/public/assets/brand/`. `src/frontend/src/styles/site-chrome.css` applies the same mark across headers and the landing footer. All top bars remain visible while scrolling and share a 76 px desktop height and 72 px height at widths up to 850 px. Dashboard zoom is compensated so wide screens keep the same physical header and logo size.
+
+Overview and feedback use synthetic sample data; no analytics backend or AI service is connected. Feedback rows become cards on widths up to 1100 px, mobile navigation uses a drawer, and short desktop viewports keep subscription/help links reachable by scrolling. Detailed charts and analysis tables may scroll inside their cards.

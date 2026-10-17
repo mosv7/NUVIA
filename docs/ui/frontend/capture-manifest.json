@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-16T19:08:28.309Z",
+  "capturedAt": "2026-10-17T18:19:01.606Z",
   "screenshots": [
     {
       "file": "en-landing.png",
@@ -12,10 +12,10 @@
       },
       "image": {
         "width": 1440,
-        "height": 4212
+        "height": 4204
       },
       "fullPage": true,
-      "sha256": "3c5f891913a25b86a190c72c696555ee0ac8509b147301225920448da038dfb6"
+      "sha256": "9ed4c381f6ead169dc8255c2109e4301068bc174760ecea4409f5fdfdaccd7e4"
     },
     {
       "file": "en-login.png",
@@ -31,7 +31,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "ae468e6f2ccdba6d9af405055ee9f9643d82e534a749026994bb6d1e6a234b47"
+      "sha256": "c7531a30a514e052d870b8297b3b442d1ddffc58fac92f3de2395ce804ed4ce4"
     },
     {
       "file": "en-signup.png",
@@ -44,10 +44,10 @@
       },
       "image": {
         "width": 1440,
-        "height": 986
+        "height": 1026
       },
       "fullPage": true,
-      "sha256": "f6174e6ca900b648cd68698ebc30e54835b72227badf2dd916871a35ad23fa20"
+      "sha256": "bbdfbe22f7003eb71ce59a5ac05c96c17fb3d864ebba621b92e7ab3ac5aca817"
     },
     {
       "file": "en-forgot.png",
@@ -63,7 +63,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "f7aa29e293b137cc081cd980607275bea6c24460158742463a83c2712a27bb83"
+      "sha256": "d3e9d986bfc9e843c450b2ce0e47045d260ada018e4fb045fe0afa66905254c8"
     },
     {
       "file": "en-reset.png",
@@ -79,7 +79,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "e0dafdbc30b6cb2c72dc5adfe61e7f104562835ad8faf2a4b9d290ef82ea636a"
+      "sha256": "6db1a955265d06f12031b05a00e4d4dd451e9a200737ef4f3869dd600fd198ef"
     },
     {
       "file": "en-business-information.png",
@@ -95,7 +95,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "647bf056364e3a6333364a76fab8b9193838f95d7def29ea0d5239ccd6798796"
+      "sha256": "d8684661e94af2fa01fa8e16f2e04d8ee28efb202c982af8745e0d793e6d6b7d"
     },
     {
       "file": "en-business-error.png",
@@ -111,7 +111,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "bef5b62fe62faf7e5d7d2accb1b285701108dc5a5ccd0a0ca4a06c0bdf88d3de"
+      "sha256": "462149ea5b4bae8bf56ca1d62d9324e93a46c1a3a9a427983aa3b6798bd3f392"
     },
     {
       "file": "en-business-setup.png",
@@ -127,7 +127,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "c4641180bb2015ced4db04c7b0cb74b1a834739f03b1ac2849542005d51acb7f"
+      "sha256": "40a4429b830c9a2604dc5d6f765b063e1fffd2d9ebd145df2b5fd3d31e361812"
     },
     {
       "file": "en-get-started.png",
@@ -143,7 +143,71 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "999afb36539d72a114b5ecba0ba09f0dc9afc75ed24f7084d9c6bc8cd3a68bbb"
+      "sha256": "48ac7cdc7b5bb6fd13e55561206937cd6e7fdca8b64adeffe7913fbaee5f0f01"
+    },
+    {
+      "file": "en-dashboard.png",
+      "language": "en",
+      "route": "dashboard",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 2210
+      },
+      "fullPage": true,
+      "sha256": "f6ffe71633936688043b70f2f0f8d42efe1e796e5db52035acf9a51d6c185087"
+    },
+    {
+      "file": "en-feedbacks.png",
+      "language": "en",
+      "route": "feedbacks",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 1142
+      },
+      "fullPage": true,
+      "sha256": "c54f3bf8824d580c2d8816de6ec59ec48fa546d7b70cf3034d6a7fa5793c8ae2"
+    },
+    {
+      "file": "en-feedbacks-empty.png",
+      "language": "en",
+      "route": "feedbacks-empty",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 1114
+      },
+      "fullPage": true,
+      "sha256": "2e699d4645b21ade77c2e2fc8dfa7586436ef38004ab231a68afca74bdefa769"
+    },
+    {
+      "file": "en-feedback-details.png",
+      "language": "en",
+      "route": "feedback-details",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 1109
+      },
+      "fullPage": true,
+      "sha256": "3befbb9e1658aaea2216f8be945a8df7e25a38a0b544b16f69237487c4c64167"
     },
     {
       "file": "en-mobile.png",
@@ -156,16 +220,16 @@
       },
       "image": {
         "width": 393,
-        "height": 6508
+        "height": 6472
       },
       "fullPage": true,
-      "sha256": "cda1e466a56a190cd359e7e0da1fdac32c17d242de52e7a46d31b326b3298ca4"
+      "sha256": "9b0868010a37e308f9a03639f4a498271c425e28164d2e393a69fb8accfa21de"
     },
     {
       "file": "active-en-mobile-footer.png",
       "language": "en",
       "route": "landing",
-      "scrollY": 5708,
+      "scrollY": 5672,
       "viewport": {
         "width": 393,
         "height": 800
@@ -175,7 +239,7 @@
         "height": 800
       },
       "fullPage": false,
-      "sha256": "6cd2c3834913e2c3e06dd7a8445c2e2514d95b76f55bc7e2defbfdcde82bb2ee"
+      "sha256": "1fb1133e3aeb6c466096bd75ff59a45546d90dd05150226af6ce81e603e026ea"
     },
     {
       "file": "en-mobile-login.png",
@@ -191,7 +255,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "e1b950fddfbbb3be29569f81fad1e2b4b7272459181004ef7bc7bbea95bf85b6"
+      "sha256": "076ed47dfe89e7de68429277c89619ab87ce1bfa4d13547371be5b8360621ef8"
     },
     {
       "file": "en-mobile-signup.png",
@@ -207,7 +271,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "1c100647d36356f2a60ea6e94bfde8efaa71e61af8db7891231818eb6894a8ab"
+      "sha256": "1f661d336bac65b6232cb17ecc024a86211320ce743dc25c423cdc1cdfc33747"
     },
     {
       "file": "en-mobile-forgot.png",
@@ -223,7 +287,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "a34a010e5a4ddbe5fe1234c4f30c4985b01561a36f6a1d998567b5e08c00ce2a"
+      "sha256": "152d2c9337f0f75c753133bd060c6f8d4c535031c6e8ec9262fbd1ab5b38f3ce"
     },
     {
       "file": "en-mobile-reset.png",
@@ -239,7 +303,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "6b12b3713194400840a6778bab9888cca0570fd9c721039e0936ec8b69280945"
+      "sha256": "8d7c6ba2e89919ea03356b529a7f01a7790a2821b6ff05347c0242cdd01af964"
     },
     {
       "file": "en-mobile-business-information.png",
@@ -252,10 +316,10 @@
       },
       "image": {
         "width": 393,
-        "height": 1201
+        "height": 1205
       },
       "fullPage": true,
-      "sha256": "6742f3e5ba26f0bd1b7d3223c1e22100ec78323ffa89850be49552fce7f6bc61"
+      "sha256": "b8708350d71c865f50e3866741cbb103f50d0ccbb2c8b9c7bb1b3ff35d36f3f7"
     },
     {
       "file": "en-mobile-business-error.png",
@@ -268,10 +332,10 @@
       },
       "image": {
         "width": 393,
-        "height": 1246
+        "height": 1250
       },
       "fullPage": true,
-      "sha256": "21fe2d0ee506315622a8e9a4800de2f2f9d5a69db010b0ff406232291fa11aea"
+      "sha256": "84023ba6873e93d914cd359fbb8c69b3013b2abda33729b3d556126d5c29ebda"
     },
     {
       "file": "en-mobile-business-setup.png",
@@ -284,10 +348,10 @@
       },
       "image": {
         "width": 393,
-        "height": 1331
+        "height": 1335
       },
       "fullPage": true,
-      "sha256": "4f02d487c823171a6d3c9b812c6b5b60c5a51e8246d52677fd8fa0e77f822bd1"
+      "sha256": "c6907c2a66b129553a4ced3d654888ae3b39908557f6090a575a8e64e0061077"
     },
     {
       "file": "en-mobile-get-started.png",
@@ -300,10 +364,74 @@
       },
       "image": {
         "width": 393,
-        "height": 1401
+        "height": 1405
       },
       "fullPage": true,
-      "sha256": "cd9aff4980ee5b3bee0e121527c9c6d5515ae15f61d3e8d9c0d1546337cf7be9"
+      "sha256": "4fd620f446d3a81a7bb89ce79b8713e566d6c19674bc4b0162e7da3011b5d403"
+    },
+    {
+      "file": "en-mobile-dashboard.png",
+      "language": "en",
+      "route": "dashboard",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 4641
+      },
+      "fullPage": true,
+      "sha256": "dea92438861f69c25dfad5bbe9e1ac2214c487c9fda326b33301b9aaf88cfc6b"
+    },
+    {
+      "file": "en-mobile-feedbacks.png",
+      "language": "en",
+      "route": "feedbacks",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 2377
+      },
+      "fullPage": true,
+      "sha256": "9da099d4086327d36fa7604489592d93b84a75856af763356c46c5673bc6fc65"
+    },
+    {
+      "file": "en-mobile-feedbacks-empty.png",
+      "language": "en",
+      "route": "feedbacks-empty",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 1356
+      },
+      "fullPage": true,
+      "sha256": "659abff7e3f73b93036de81813d09b176850d8d26cccaa3a313be1525fbe0dec"
+    },
+    {
+      "file": "en-mobile-feedback-details.png",
+      "language": "en",
+      "route": "feedback-details",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 2133
+      },
+      "fullPage": true,
+      "sha256": "4ced2d861d1ffd18e91bb44919d90b6d96087c821ff80239a557788c6fad7731"
     },
     {
       "file": "ar-landing.png",
@@ -316,10 +444,10 @@
       },
       "image": {
         "width": 1440,
-        "height": 4169
+        "height": 4149
       },
       "fullPage": true,
-      "sha256": "02474cd521af279904e0fd7c1a8fca92acdc61529a5d04013706d67f6ede6274"
+      "sha256": "5128f2ebd9408b55b6efb4463fb9a5a039805c04f21b2ccc4b197300b5b23bc1"
     },
     {
       "file": "ar-login.png",
@@ -335,7 +463,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "b85036b58ac4717f612cd2ce95fe6f061cccdcaa3610a65942fde4fa1c4eb46c"
+      "sha256": "9009b1f2bdbba41a7618b05baf26e752ea4559b062a2edd3fe030ab34cf36a67"
     },
     {
       "file": "ar-signup.png",
@@ -348,10 +476,10 @@
       },
       "image": {
         "width": 1440,
-        "height": 1000
+        "height": 1040
       },
       "fullPage": true,
-      "sha256": "073496704fce4d07cfe7f6788e86a61b0fbbe9eb42079b2ea74e5e11134098ed"
+      "sha256": "e1627c9df17700b1fabedaeef4c5ec73b54ec4d41d67e9c00555d663e296b828"
     },
     {
       "file": "ar-forgot.png",
@@ -367,7 +495,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "2c94ca8450a26d7b38362bafef3da699c121a1bf02a39030fedb7443cd91f7b3"
+      "sha256": "f2eb95c436bebd4eddb9dad6208d54754f827761cb16b63fe6c0a399eb0a089d"
     },
     {
       "file": "ar-reset.png",
@@ -383,7 +511,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "f5d0066e826a4ffffd65c3eae205d4003dddda5ad58184c539d11422cb36e290"
+      "sha256": "c5051979deb0614615130b037e57a24c172b464d8741f9d143e6b9533c432524"
     },
     {
       "file": "ar-business-information.png",
@@ -399,7 +527,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "d6fba70ae98669580a0b5b62f0f398729d3a9b538e5ed8e94191f7c619d875bf"
+      "sha256": "ef18584030492704399bfd0976c184d7e0dc702d396753ab96c410a1cedbf807"
     },
     {
       "file": "ar-business-error.png",
@@ -415,7 +543,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "2f08c60e6804b5e36c726924f890206bf8f52f3fcd850e8ccf3794c0d8f8d350"
+      "sha256": "e2e480dcfcd6e14ac8034a8dc95f0c820df43b085ecdea0d4852f1967e2013df"
     },
     {
       "file": "ar-business-setup.png",
@@ -431,7 +559,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "1a58b4f0d503499bbd55320c17bc53287fa820c5fc4efab69e616551060ccf72"
+      "sha256": "c1253e9c1fa3d4378e41f0ffa0923f727bf92c66788ae513e4fda4d2328e7001"
     },
     {
       "file": "ar-get-started.png",
@@ -447,7 +575,71 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "39b4ff73ebe8993bb7604e8877a8c0c7192a7bc9c4a3bb5c3bd8f678ba2b6674"
+      "sha256": "1de18df9ae2457d04b7e6a32caec772ade3f62bdfd06bb71380e50438ddbc8d9"
+    },
+    {
+      "file": "ar-dashboard.png",
+      "language": "ar",
+      "route": "dashboard",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 2397
+      },
+      "fullPage": true,
+      "sha256": "bb2a5eeec697544a73b3c88c5fb92b84a4349fbf183293429595b2cc6e7333f8"
+    },
+    {
+      "file": "ar-feedbacks.png",
+      "language": "ar",
+      "route": "feedbacks",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 1157
+      },
+      "fullPage": true,
+      "sha256": "b7301aa8295ec2a92f0193ef54c36faf541f092dba69403eab59b98852da2034"
+    },
+    {
+      "file": "ar-feedbacks-empty.png",
+      "language": "ar",
+      "route": "feedbacks-empty",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 1136
+      },
+      "fullPage": true,
+      "sha256": "255b9c678781be8bf4c94d2cba936642bc39c53449c439dbec813df6fc74811b"
+    },
+    {
+      "file": "ar-feedback-details.png",
+      "language": "ar",
+      "route": "feedback-details",
+      "scrollY": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "image": {
+        "width": 1440,
+        "height": 1160
+      },
+      "fullPage": true,
+      "sha256": "892ecf0e7e732d295de23f6a537bb4c8a0904daaed97c14de39ea46188ff0f91"
     },
     {
       "file": "ar-mobile.png",
@@ -460,10 +652,10 @@
       },
       "image": {
         "width": 393,
-        "height": 6332
+        "height": 6296
       },
       "fullPage": true,
-      "sha256": "06d99caca1ae87af41b91e3df250ea8fbe4314969b96dc6c9b2425f7fa60a2de"
+      "sha256": "be2337ffd6e3db83bb1494ebd8e0fcf63e0b04fe8fcb2bd9d5f78d647b730f4c"
     },
     {
       "file": "active-ar-mobile-hero.png",
@@ -479,13 +671,13 @@
         "height": 800
       },
       "fullPage": false,
-      "sha256": "1793b1d809113cc4ad252c4bb94c1f969f33f1adf9062c086c2a4e9e4960fc7a"
+      "sha256": "b2a50c0bade24a6875ab7fe01f9ded5387611fe65f29ed35db475278644a1144"
     },
     {
       "file": "active-ar-mobile-footer.png",
       "language": "ar",
       "route": "landing",
-      "scrollY": 5532,
+      "scrollY": 5496,
       "viewport": {
         "width": 393,
         "height": 800
@@ -495,7 +687,7 @@
         "height": 800
       },
       "fullPage": false,
-      "sha256": "62227f67fea1c92754c16c68ed48baeae954c05aa3f015bb7e6a81ec547a152d"
+      "sha256": "62a392bdd01af59cdefa9b6f417605250f8e555da836f2d0a51a00055dfd021c"
     },
     {
       "file": "ar-mobile-login.png",
@@ -511,7 +703,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "6d7cc6d17a6b2f7a6013b95fae5e8920e0f3ddf08bd7dee263f9a1214ab7f202"
+      "sha256": "68b1ef592ef01c4fa46238c8452f82f7c52d5f0b575161a847857822e4583184"
     },
     {
       "file": "ar-mobile-signup.png",
@@ -524,10 +716,10 @@
       },
       "image": {
         "width": 393,
-        "height": 800
+        "height": 827
       },
       "fullPage": true,
-      "sha256": "4c8778ac55b1c311b9de20fd52bfa80fb99659c54a29d822724a6be9ab9ec49d"
+      "sha256": "0bb69525ba22b8dea04882c1dd16875d00818cd77f54f5d7586fb4d4cc98ce61"
     },
     {
       "file": "ar-mobile-forgot.png",
@@ -543,7 +735,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "4f6291324d9dd95d7ca872bd1ffe3c42edbce121f5f91bf0b72247166b987777"
+      "sha256": "79a9f8212f2b7b4d3559a9e49267738ff0169a1f96f5194627e21c60e9e6aed5"
     },
     {
       "file": "ar-mobile-reset.png",
@@ -559,7 +751,7 @@
         "height": 800
       },
       "fullPage": true,
-      "sha256": "83083419773dd7961be6f043472b6cf2cc819923f6ac15080407671e8fe36310"
+      "sha256": "6ed987346f1a215cf58e44e9afe08573b0d9954a02a4a611f9f0ce2fb3e61eea"
     },
     {
       "file": "ar-mobile-business-information.png",
@@ -572,10 +764,10 @@
       },
       "image": {
         "width": 393,
-        "height": 1234
+        "height": 1238
       },
       "fullPage": true,
-      "sha256": "9b76083c97a8721734cfe37ecf52b413114061bf7b004074e6e9562b14ef9909"
+      "sha256": "29207b5be4e8dcb1966895602aafea6680a13afb644949c95d353cfb2935feb7"
     },
     {
       "file": "ar-mobile-business-error.png",
@@ -588,10 +780,10 @@
       },
       "image": {
         "width": 393,
-        "height": 1272
+        "height": 1276
       },
       "fullPage": true,
-      "sha256": "46d27e17e8ab93ad0917c02b410446990a50ec50aa69e1ee51db7638bb1437ec"
+      "sha256": "7c750d72b5644e81a7d54ed502bcab6831bb8820d420c53f3ac7ee4cc029a261"
     },
     {
       "file": "ar-mobile-business-setup.png",
@@ -604,10 +796,10 @@
       },
       "image": {
         "width": 393,
-        "height": 1334
+        "height": 1338
       },
       "fullPage": true,
-      "sha256": "03679db15e644475daa6d63ad09577914342d095c2155cdcd372e40f7251b50d"
+      "sha256": "87ca3afaca4a422b8d7573d35eb1d7940df56cf5ba798bb607151fc020615f3f"
     },
     {
       "file": "ar-mobile-get-started.png",
@@ -620,10 +812,74 @@
       },
       "image": {
         "width": 393,
-        "height": 1398
+        "height": 1402
       },
       "fullPage": true,
-      "sha256": "ccef2ca36b0b9a50e5a0e7cd34229e4433fddc11558c8ed6b204e634547cc89d"
+      "sha256": "0fc3c8cce055a92d5600107095310bd7d188f5afd17e7e344331f97d9f7be7f3"
+    },
+    {
+      "file": "ar-mobile-dashboard.png",
+      "language": "ar",
+      "route": "dashboard",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 4750
+      },
+      "fullPage": true,
+      "sha256": "63ad64194f8ed89499f686a62618f3dd2a4a30efbf87fd0b71584bc6096c7d67"
+    },
+    {
+      "file": "ar-mobile-feedbacks.png",
+      "language": "ar",
+      "route": "feedbacks",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 2310
+      },
+      "fullPage": true,
+      "sha256": "317feb4be007e8574872b62bee0d6554d6d02c79dea6b0fec4b71bc457a9be44"
+    },
+    {
+      "file": "ar-mobile-feedbacks-empty.png",
+      "language": "ar",
+      "route": "feedbacks-empty",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 1293
+      },
+      "fullPage": true,
+      "sha256": "324b474c737c6885613619b79165c8151c0ed7c82227ee81cb199b90799c8b11"
+    },
+    {
+      "file": "ar-mobile-feedback-details.png",
+      "language": "ar",
+      "route": "feedback-details",
+      "scrollY": 0,
+      "viewport": {
+        "width": 393,
+        "height": 800
+      },
+      "image": {
+        "width": 393,
+        "height": 2142
+      },
+      "fullPage": true,
+      "sha256": "f300aa5a878d927b468479540b5cf5cde3ec7640d08ac1fb4223bb7467adbf9b"
     }
   ]
 }
