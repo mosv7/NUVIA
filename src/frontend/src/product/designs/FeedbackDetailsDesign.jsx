@@ -1,3 +1,4 @@
+import { LanguageMenu } from '../../components/ChoiceMenu.jsx';
 import React from 'react';
 import { asset } from '../../assets.js';
 import { useProductView } from '../ProductContext.jsx';
@@ -220,7 +221,7 @@ export default function FeedbackDetailsDesign() {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Segments')}
+              {tr('Business & Teams')}
             </p>
           </button>
           <div className="f21" data-node-id="266:14333" data-name="Divider" />
@@ -438,19 +439,7 @@ export default function FeedbackDetailsDesign() {
               <div className="f33" data-node-id="267:14860" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon12} />
               </div>
-              <select
-                className="f34"
-                data-node-id="267:14862"
-                style={{
-                  fontVariationSettings: '"opsz" 14',
-                }}
-                aria-label="Language / اللغة"
-                value={ui.language}
-                onChange={(event) => ui.setLanguage(event.target.value)}
-              >
-                <option value="en">EN</option>
-                <option value="ar">العربية</option>
-              </select>
+              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
               <div className="f45" data-node-id="267:14863" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon13} />
               </div>
@@ -602,19 +591,7 @@ export default function FeedbackDetailsDesign() {
                     {tr('Original Feedback')}
                   </p>
                   <div className="f71" data-node-id="267:14901" data-name="Language">
-                    <select
-                      className="f43"
-                      data-node-id="267:14902"
-                      style={{
-                        fontVariationSettings: '"opsz" 14',
-                      }}
-                      aria-label="Language / اللغة"
-                      value={ui.language}
-                      onChange={(event) => ui.setLanguage(event.target.value)}
-                    >
-                      <option value="en">EN</option>
-                      <option value="ar">العربية</option>
-                    </select>
+                    <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
                   </div>
                 </div>
                 <div className="f72" data-node-id="267:14903" data-name="Customer words">

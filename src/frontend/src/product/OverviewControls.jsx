@@ -1,3 +1,4 @@
+import ChoiceMenu from '../components/ChoiceMenu.jsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { asset } from '../assets.js';
@@ -8,19 +9,16 @@ import './overview-controls.css';
 export function OverviewBranchSelect() {
   const { tr, dashboard } = useProductView();
   return (
-    <select
-      className="overview-branch-select"
-      aria-label={tr('Branch')}
+    <ChoiceMenu
+      overlay
       value={dashboard.filters.branch}
-      onChange={(e) => dashboard.setFilters((old) => ({ ...old, branch: e.target.value }))}
-    >
-      <option value="all">{tr('All 3 branches')}</option>
-      {overviewBranches.map((branch) => (
-        <option key={branch} value={branch}>
-          {tr(branch)}
-        </option>
-      ))}
-    </select>
+      onChange={(branch) => dashboard.setFilters((old) => ({ ...old, branch }))}
+      label={tr('Branch')}
+      options={[
+        { value: 'all', label: tr('All 3 branches'), description: tr('All branches') },
+        ...overviewBranches.map((branch) => ({ value: branch, label: tr(branch) })),
+      ]}
+    />
   );
 }
 export function overviewDateLabel(filters, language) {

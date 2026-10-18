@@ -2,6 +2,15 @@
 
 These are real browser captures of the current React source, in English and Arabic. They are review evidence, not generated UI mockups. Desktop captures use 1440 × 960; phone captures use 393 × 800. Full-page images may be taller than the viewport.
 
+## Browse in order
+
+1. [Mobile — English](mobile-en.md)
+2. [Mobile — Arabic](mobile-ar.md)
+3. [Desktop — English](desktop-en.md)
+4. [Desktop — Arabic](desktop-ar.md)
+
+Each gallery follows the same flow: landing, account screens, business setup, overview, feedback, empty feedback and response details. Additional landing detail images are listed separately below.
+
 ## Regenerate the complete set
 
 From the repository root:
@@ -32,6 +41,7 @@ Replace `{lang}` with `en` or `ar`.
 | Business setup             | `{lang}-business-setup.png`       | `{lang}-mobile-business-setup.png`       |
 | Get started                | `{lang}-get-started.png`          | `{lang}-mobile-get-started.png`          |
 | Overview                   | `{lang}-dashboard.png`            | `{lang}-mobile-dashboard.png`            |
+| Overview — Empty State     | `{lang}-dashboard-empty.png`      | `{lang}-mobile-dashboard-empty.png`      |
 | Feedback list              | `{lang}-feedbacks.png`            | `{lang}-mobile-feedbacks.png`            |
 | Feedback empty state       | `{lang}-feedbacks-empty.png`      | `{lang}-mobile-feedbacks-empty.png`      |
 | Feedback details           | `{lang}-feedback-details.png`     | `{lang}-mobile-feedback-details.png`     |
@@ -42,6 +52,6 @@ The existing detail filenames are preserved and recaptured from the same run:
 - `active-ar-mobile-footer.png`: Arabic landing scrolled to the footer.
 - `active-en-mobile-footer.png`: English landing scrolled to the footer.
 
-All 55 PNGs are refreshed together. The original 17 filenames remain valid; unchanged desktop views may produce identical files. The complete matrix now covers all 13 routes in both languages and viewport sizes. Business screens show the initial empty prototype state and do not imply saved workspace data.
+All 63 PNGs are refreshed together. The original 17 filenames remain valid; unchanged desktop views may produce identical files. The complete matrix now covers all 14 routes in both languages and viewport sizes, plus the open shared assistant in each language/viewport combination. Business screens show the initial empty prototype state and do not imply saved workspace data.
 
 `capture-manifest.json` records the actual route, language, viewport, image dimensions, scroll position and SHA-256 for each capture. The `active-*` files are deliberate viewport details of the full landing image, not different screen designs. All other filenames map to the route/locale/viewport matrix above.

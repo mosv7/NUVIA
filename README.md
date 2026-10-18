@@ -6,7 +6,7 @@ NUVIA helps businesses turn free-text customer feedback into aspect scores, recu
 
 ## Project status
 
-This repository now includes the supplied bilingual React frontend prototype, its build/lint/format tooling, critical-flow tests, and frontend CI configuration. Backend services, database migrations, trained models, and real authentication are not implemented. The system documents describe the intended platform, not deployed functionality.
+This repository now includes the supplied bilingual React frontend prototype, the updated Overview and Feedback screens, a shared assistant, refreshed language/branch menus, its build/lint/format tooling, critical-flow tests, and frontend CI configuration. Backend services, database migrations, trained models, and real authentication are not implemented. The system documents describe the intended platform, not deployed functionality.
 
 The source proposal is `AI_Powered_Customer_Feedback_Analytics_&_Business_Intelligence_Platform.pdf`, supplied in the original workspace. The initial public repository contains the documentation derived from it; the PDF remains local. Technical choices and numerical targets introduced in these documents are **proposed baselines** for team review.
 
@@ -80,3 +80,9 @@ Never commit credentials, customer responses, private datasets, or local environ
 ## Contribution and licensing
 
 Use focused issues and pull requests following [the team workflow](docs/team-workflow.md). Public visibility does not establish an open-source license; no license has been selected. The project owner must choose a license before external reuse is encouraged.
+
+## Review the current screens
+
+Browse the [ordered screen galleries](docs/ui/frontend/README.md): mobile English, mobile Arabic, desktop English, then desktop Arabic. Each gallery follows the same screen order.
+
+The current Overview places AI Daily Insight on the left and Aspect Scores on the right, followed by recommendations and Quick Actions. The sidebar uses **Business & Teams**. The first-time empty Overview is available at `#/dashboard-empty`, with a survey illustration, creation action and getting-started steps.

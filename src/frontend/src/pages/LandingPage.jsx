@@ -1,3 +1,4 @@
+import { LanguageMenu } from '../components/ChoiceMenu.jsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { landingCopy } from '../landing-copy.js';
 import { en, ar } from '../i18n.js';
@@ -268,14 +269,7 @@ export default function LandingPage({ language, setLanguage }) {
           <div className="landing-wrap">
             <label className="language">
               <img src={icon('imgIcon8')} alt="" />
-              <select
-                aria-label="Language / اللغة"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="en">English</option>
-                <option value="ar">العربية</option>
-              </select>
+              <LanguageMenu value={language} onChange={setLanguage} />
             </label>
             <button onClick={reserved}>{c.terms}</button>
             <button onClick={reserved}>{c.security}</button>

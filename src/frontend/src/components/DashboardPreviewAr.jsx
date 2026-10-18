@@ -8,18 +8,11 @@ export default function DashboardPreviewAr() {
           <div className="dp332" data-node-id="79:7350">
             <div className="dp333">
               <div className="dp334" data-name="Link - NUVIA home">
-                <div className="dp335" data-node-id="79:7351" data-name="Text">
-                  <div className="dp336" data-node-id="79:7352" data-name="revsense_logo_1E68EF 1">
-                    <div className="dp337" data-node-id="79:7353" data-name="Group">
-                      <img alt="" className="dp338" src={asset('land-ar-imgGroup4.svg')} />
-                    </div>
-                  </div>
-                </div>
-                <div className="dp339" data-node-id="79:7357" data-name="Text">
-                  <p className="dp340" data-node-id="79:7358">
-                    NUVIA
-                  </p>
-                </div>
+                <img
+                  className="dashboard-preview-logo"
+                  src={asset('brand/nuvia-logo.svg')}
+                  alt="NUVIA"
+                />
               </div>
             </div>
           </div>

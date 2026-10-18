@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { asset } from '../assets.js';
 import { ProductProvider } from '../product/ProductContext.jsx';
 import OverviewDesign from '../product/designs/OverviewDesign.jsx';
+import Assistant from '../product/Assistant.jsx';
+import '../product/assistant.css';
 import '../product/product.css';
-import FeedbackShell from '../product/FeedbackShell.jsx';
-import { FilteredOverview, OverviewDateDialog } from '../product/OverviewControls.jsx';
+
+import { OverviewDateDialog } from '../product/OverviewControls.jsx';
 import { defaultOverviewFilters, getOverviewReport } from '../product/overview-report.js';
 import arabic from '../product/ar.json';
-export default function DashboardPage({ language, setLanguage }) {
+export default function DashboardPage({ language, setLanguage, empty = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [filters, setFilters] = useState(() => ({ ...defaultOverviewFilters }));
   const [dateOpen, setDateOpen] = useState(false);
@@ -16,6 +18,8 @@ export default function DashboardPage({ language, setLanguage }) {
     filters.start !== defaultOverviewFilters.start ||
     filters.end !== defaultOverviewFilters.end;
   const dashboard = {
+    isFiltered: filtered,
+    reset: () => setFilters({ ...defaultOverviewFilters }),
     filters,
     setFilters,
     report: getOverviewReport(filters),
@@ -66,13 +70,8 @@ export default function DashboardPage({ language, setLanguage }) {
             onClick={() => setMenuOpen(false)}
           />
         )}
-        {filtered ? (
-          <FeedbackShell title="Overview">
-            <FilteredOverview />
-          </FeedbackShell>
-        ) : (
-          <OverviewDesign />
-        )}
+        <OverviewDesign empty={empty} />
+        <Assistant />
         <OverviewDateDialog
           open={dateOpen}
           onClose={() => setDateOpen(false)}

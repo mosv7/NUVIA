@@ -1,0 +1,625 @@
+.nuvia-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border: 0;
+  border-radius: 30px;
+  background: #1e68ef;
+  color: #fff;
+  font:
+    600 14px 'DM Sans',
+    sans-serif;
+  box-shadow: 0 6px 24px #1e68ef44;
+  cursor: pointer;
+}
+.nuvia-launcher img {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+}
+.nuvia-assistant {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(440px, 100vw);
+  height: 100dvh;
+  max-height: 100dvh;
+  max-width: 100vw;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid #dfe7f2;
+  background: #fff;
+  color: #10213d;
+  box-shadow: -15px 0 60px #10213d20;
+  font:
+    14px/1.6 'DM Sans',
+    sans-serif;
+  overflow: hidden;
+}
+.nuvia-assistant::backdrop {
+  background: #10213d45;
+}
+.nuvia-assistant-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.nuvia-assistant header {
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf1f7;
+}
+.nuvia-assistant header > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.assistant-mark {
+  font-size: 32px;
+  color: #1e68ef;
+}
+.nuvia-assistant h2 {
+  font:
+    600 19px/1.4 Manrope,
+    sans-serif;
+  letter-spacing: 0;
+  margin: 0;
+}
+.nuvia-assistant header p {
+  font-size: 11px;
+  color: #64738a;
+  margin: 4px 0 0;
+}
+.nuvia-assistant header button {
+  border: 0;
+  background: #f4f7fb;
+  color: #53647d;
+  border-radius: 8px;
+  font-size: 24px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+.assistant-demo {
+  padding: 10px 20px;
+  background: #f3f7ff;
+  color: #53647d;
+  font-size: 11px;
+}
+.assistant-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.assistant-welcome {
+  padding: 20px 0 10px;
+}
+.assistant-welcome > span {
+  font-size: 36px;
+  color: #1e68ef;
+}
+.assistant-welcome h3 {
+  font:
+    500 24px/1.4 Manrope,
+    sans-serif;
+  letter-spacing: -0.6px;
+  margin: 12px 0;
+}
+.assistant-welcome p {
+  color: #64738a;
+  font-size: 13px;
+  margin: 0;
+}
+.assistant-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.assistant-prompts button {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  text-align: start;
+  border: 1px solid #dfe7f2;
+  border-radius: 12px;
+  background: #fff;
+  color: #10213d;
+  font: 13px/1.5 inherit;
+  cursor: pointer;
+}
+.assistant-prompts button span {
+  color: #1e68ef;
+}
+.assistant-message {
+  padding: 15px;
+  border-radius: 12px;
+  background: #f5f8fd;
+}
+.assistant-message.user {
+  margin-inline-start: 36px;
+  background: #eaf2ff;
+}
+.assistant-message small {
+  font-weight: 600;
+  font-size: 11px;
+  color: #53647d;
+}
+.assistant-message p {
+  margin: 8px 0;
+  font-size: 13px;
+}
+.assistant-message a {
+  font-size: 12px;
+  color: #1e68ef;
+}
+.nuvia-assistant form {
+  padding: 18px 22px 22px;
+  border-top: 1px solid #edf1f7;
+}
+.assistant-compose {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #d3deed;
+  border-radius: 12px;
+  gap: 10px;
+}
+.assistant-compose textarea {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  resize: none;
+  font:
+    13px/1.5 'DM Sans',
+    sans-serif;
+  background: transparent;
+  color: #10213d;
+  padding: 6px;
+  outline: none;
+}
+.assistant-compose:focus-within {
+  outline: 2px solid #1e68ef;
+}
+.assistant-compose button {
+  border: 0;
+  border-radius: 8px;
+  background: #1e68ef;
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  font-size: 22px;
+  cursor: pointer;
+}
+.assistant-compose button:disabled {
+  opacity: 0.4;
+}
+.nuvia-assistant form > small {
+  display: block;
+  text-align: center;
+  color: #64738a;
+  font-size: 10px;
+  margin-top: 9px;
+}
+[dir='rtl']
+  :is(
+    .nuvia-assistant,
+    .nuvia-assistant h2,
+    .assistant-welcome h3,
+    .assistant-compose textarea,
+    .nuvia-launcher
+  ) {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  letter-spacing: 0;
+}
+.nuvia-launcher:focus-visible,
+.nuvia-assistant button:focus-visible {
+  outline: 2px solid #1e68ef;
+  outline-offset: 4px;
+}
+/* Compact floating chat keeps the dashboard available while the assistant is open. */
+.nuvia-assistant {
+  inset: auto 24px 96px auto;
+  width: 370px;
+  height: min(560px, calc(100dvh - 120px));
+  max-height: calc(100dvh - 120px);
+  border: 1px solid #dfe7f2;
+  border-radius: 20px;
+  box-shadow: 0 16px 60px #10213d26;
+  z-index: 96;
+}
+.nuvia-assistant header {
+  padding: 16px 18px;
+}
+.nuvia-assistant header > div {
+  gap: 10px;
+}
+.nuvia-assistant h2 {
+  font-size: 17px;
+}
+[dir='rtl'] .nuvia-assistant h2 {
+  font-size: 17px;
+}
+.assistant-mark {
+  font-size: 28px;
+}
+.assistant-demo {
+  padding: 8px 18px;
+  font-size: 10px;
+}
+.assistant-messages {
+  padding: 18px;
+  gap: 14px;
+}
+.assistant-welcome {
+  padding: 0;
+}
+.assistant-welcome > span {
+  font-size: 28px;
+}
+.assistant-welcome h3 {
+  font-size: 20px;
+  margin: 8px 0;
+}
+.assistant-welcome p {
+  font-size: 12px;
+}
+.assistant-prompts {
+  gap: 8px;
+}
+.assistant-prompts button {
+  padding: 11px 12px;
+  font-size: 12px;
+}
+.nuvia-assistant form {
+  padding: 12px 16px 14px;
+}
+.assistant-compose textarea {
+  font-size: 12px;
+}
+.assistant-compose {
+  padding: 6px;
+}
+.nuvia-assistant header,
+.assistant-demo,
+.nuvia-assistant form {
+  flex-shrink: 0;
+}
+@media (max-width: 850px) {
+  .nuvia-assistant {
+    inset: auto 16px 88px auto;
+    width: calc(100vw - 32px);
+    height: min(550px, calc(100dvh - 110px));
+    max-height: calc(100dvh - 110px);
+    border-radius: 18px;
+  }
+  .nuvia-assistant header {
+    padding: 14px 16px;
+  }
+  .assistant-welcome h3 {
+    font-size: 20px;
+  }
+}
+@media (max-width: 850px) {
+  .nuvia-assistant {
+    width: calc(100% - 32px);
+  }
+}
+
+.nuvia-launcher {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 50%;
+}
+.nuvia-launcher span {
+  display: none;
+}
+.nuvia-assistant h2 {
+  font-size: 17px;
+  line-height: 1.4;
+}
+[dir='rtl'] .nuvia-assistant h2 {
+  font-size: 17px;
+  line-height: 1.4;
+}
+.assistant-prompts button {
+  font-family: inherit;
+  line-height: 1.5;
+}
+@media (max-width: 850px) {
+  .nuvia-launcher {
+    right: 16px;
+    bottom: 18px;
+  }
+}
+
+/* A slightly roomier floating chat, without changing the dashboard width. */
+.nuvia-assistant {
+  width: 400px;
+  height: min(590px, calc(100dvh - 120px));
+}
+.nuvia-symbol {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+.nuvia-launcher .nuvia-symbol {
+  width: 27px;
+  height: 27px;
+}
+.assistant-mark {
+  display: flex;
+  align-items: center;
+  color: #1e68ef;
+}
+.assistant-mark .nuvia-symbol {
+  width: 27px;
+  height: 27px;
+}
+.assistant-question {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.assistant-question > .nuvia-symbol {
+  color: #1e68ef;
+}
+.assistant-question h3 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+  min-width: 0;
+  letter-spacing: -0.4px;
+}
+.assistant-message small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.assistant-message small > .nuvia-symbol {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  color: #1e68ef;
+}
+.assistant-welcome p {
+  margin: 0;
+}
+.assistant-prompts button {
+  font-family: inherit;
+  line-height: 1.5;
+}
+@media (max-width: 850px) {
+  .nuvia-assistant {
+    width: calc(100% - 32px);
+    height: min(580px, calc(100dvh - 110px));
+  }
+  .assistant-question {
+    gap: 8px;
+  }
+  .assistant-question h3 {
+    font-size: 18px;
+  }
+}
+.nuvia-assistant header > button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 1;
+  flex: 0 0 34px;
+}
+.assistant-close-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+.assistant-prompts button {
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+}
+.assistant-prompt-arrow {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  align-self: center;
+  color: #1e68ef;
+  margin-inline-start: auto;
+}
+.nuvia-assistant-inner[dir='rtl'] .assistant-prompt-arrow {
+  transform: scaleX(-1);
+}
+/* Refined summary and composer; no suggested-question list. */
+.product-page .nuvia-assistant {
+  height: min(540px, calc(100dvh - 120px));
+  border-radius: 18px;
+}
+.product-page .nuvia-assistant header {
+  padding: 16px 18px;
+}
+.product-page .nuvia-assistant header > button {
+  padding: 0;
+  background: #f5f8fd;
+}
+.product-page .nuvia-assistant .assistant-mark {
+  width: 34px;
+  height: 34px;
+  justify-content: center;
+  background: #eaf2ff;
+  border-radius: 10px;
+}
+.product-page .nuvia-assistant .assistant-mark img {
+  width: 22px;
+  height: 22px;
+}
+.assistant-summary {
+  padding: 16px;
+  border: 1px solid #dbe7fb;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f3f7ff, #fff);
+  color: #10213d;
+}
+.assistant-summary-label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.7px;
+  font-weight: 700;
+  color: #64738a;
+  margin-bottom: 8px;
+}
+.nuvia-assistant .assistant-summary h3 {
+  font:
+    600 15px/1.5 Manrope,
+    sans-serif;
+  margin: 0 0 8px;
+  letter-spacing: 0;
+}
+.nuvia-assistant .assistant-summary > p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #53647d;
+  margin: 0;
+}
+.assistant-summary blockquote {
+  margin: 14px 0 12px;
+  padding: 10px 12px;
+  border-inline-start: 2px solid #1e68ef;
+  border-radius: 0 7px 7px 0;
+  background: #ffffffc9;
+}
+.nuvia-assistant .assistant-summary blockquote p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 0 0 5px;
+}
+.assistant-summary cite {
+  font-style: normal;
+  font-size: 10px;
+  color: #64738a;
+}
+.assistant-summary a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1e68ef;
+  text-decoration: none;
+}
+.assistant-summary a:hover {
+  text-decoration: underline;
+}
+.assistant-summary a svg {
+  flex-shrink: 0;
+}
+.product-page .nuvia-assistant .assistant-messages {
+  padding: 16px;
+  gap: 12px;
+}
+.product-page .nuvia-assistant form {
+  padding: 12px 16px 14px;
+}
+.product-page .nuvia-assistant .assistant-compose {
+  padding: 6px 8px;
+  gap: 8px;
+  background: #fff;
+}
+.product-page .nuvia-assistant .assistant-compose textarea {
+  min-height: 44px;
+  padding: 10px 4px;
+  font-size: 12px;
+}
+.product-page .nuvia-assistant .assistant-compose button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex: 0 0 34px;
+  background: #1e68ef;
+  border-radius: 9px;
+  color: #fff;
+}
+.product-page .nuvia-assistant form > small {
+  font-size: 9px;
+  color: #7c8ba1;
+  margin-top: 8px;
+}
+[dir='rtl'] .nuvia-assistant .assistant-summary h3 {
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+[dir='rtl'] .assistant-summary-label {
+  letter-spacing: 0;
+}
+[dir='rtl'] .assistant-summary a svg {
+  transform: rotate(180deg);
+}
+/* Slightly smaller assistant window, keeping the composer readable. */
+.product-page .nuvia-assistant {
+  width: min(380px, calc(100vw - 32px));
+  height: min(510px, calc(100dvh - 136px));
+}
+.product-page .nuvia-assistant header {
+  padding: 14px 16px;
+}
+.product-page .nuvia-assistant .assistant-messages {
+  padding: 14px;
+}
+.nuvia-assistant .assistant-summary {
+  padding: 14px;
+}
+
+/* Mirror the launcher and its window with the application direction. */
+html[dir='rtl'] .nuvia-launcher {
+  right: auto;
+  left: 24px;
+}
+html[dir='rtl'] .product-page .nuvia-assistant {
+  right: auto;
+  left: 24px;
+}
+@media (max-width: 850px) {
+  html[dir='rtl'] .nuvia-launcher,
+  html[dir='rtl'] .product-page .nuvia-assistant {
+    right: auto;
+    left: 16px;
+  }
+}
+/* Uniform viewport-based launcher dimensions on every application page. */
+.product-page > .nuvia-launcher {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  padding: 0;
+  box-sizing: border-box;
+}
+.product-page > .nuvia-launcher .nuvia-symbol {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+}
+/* Slightly roomier window; launcher dimensions stay unchanged. */
+.product-page .nuvia-assistant {
+  width: min(392px, calc(100vw - 32px));
+  height: min(530px, calc(100dvh - 124px));
+}
+/* A little more vertical room, preserving window width and launcher size. */
+.product-page .nuvia-assistant {
+  height: min(554px, calc(100dvh - 112px));
+}

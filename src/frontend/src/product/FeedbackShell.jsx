@@ -1,3 +1,4 @@
+import { LanguageMenu } from '../components/ChoiceMenu.jsx';
 import React from 'react';
 import { asset } from '../assets.js';
 import { useProductView } from './ProductContext.jsx';
@@ -271,7 +272,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Segments')}
+              {tr('Business & Teams')}
             </p>
           </button>
           <div className="f23" data-node-id="127:301" data-name="Divider" />
@@ -460,22 +461,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
               <div className="f35" data-node-id="127:341" data-name="globe">
                 <img alt="" className="f5" src={imgGlobe} />
               </div>
-              <span className="f36" aria-hidden="true">
-                {ui.language === 'ar' ? 'العربية' : 'EN'}
-              </span>
-              <select
-                className="f36 product-language-select"
-                data-node-id="127:343"
-                style={{
-                  fontVariationSettings: '"opsz" 14',
-                }}
-                aria-label="Language / اللغة"
-                value={ui.language}
-                onChange={(event) => ui.setLanguage(event.target.value)}
-              >
-                <option value="en">EN</option>
-                <option value="ar">العربية</option>
-              </select>
+              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="127:344" data-name="chevron-down">
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>

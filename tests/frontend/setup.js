@@ -18,3 +18,10 @@ beforeEach(() => {
 });
 
 afterEach(() => cleanup());
+
+// Browser-only APIs used by the shared analytics assistant.
+HTMLDialogElement.prototype.show = function () {
+  this.open = true;
+};
+Element.prototype.scrollIntoView = function () {};
+window.scrollTo = function () {};

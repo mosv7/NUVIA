@@ -1,3 +1,4 @@
+import { LanguageMenu } from '../../components/ChoiceMenu.jsx';
 import React from 'react';
 import { asset } from '../../assets.js';
 import { useProductView } from '../ProductContext.jsx';
@@ -220,7 +221,7 @@ export default function FeedbacksEmptyDesign() {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Segments')}
+              {tr('Business & Teams')}
             </p>
           </button>
           <div className="f21" data-node-id="266:13109" data-name="Divider" />
@@ -420,19 +421,7 @@ export default function FeedbacksEmptyDesign() {
               <div className="f33" data-node-id="266:13148" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon12} />
               </div>
-              <select
-                className="f34"
-                data-node-id="266:13150"
-                style={{
-                  fontVariationSettings: '"opsz" 14',
-                }}
-                aria-label="Language / اللغة"
-                value={ui.language}
-                onChange={(event) => ui.setLanguage(event.target.value)}
-              >
-                <option value="en">EN</option>
-                <option value="ar">العربية</option>
-              </select>
+              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
               <div className="f45" data-node-id="266:13151" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon13} />
               </div>

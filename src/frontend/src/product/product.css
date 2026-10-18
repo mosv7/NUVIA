@@ -728,3 +728,67 @@
     overscroll-behavior: contain;
   }
 }
+/* Hide the Arabic sidebar's internal scrollbar, retaining keyboard and wheel access. */
+[dir='rtl'] .product-navigation,
+[dir='rtl'] .product-navigation [data-name='Workspace destinations'] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+[dir='rtl'] .product-navigation::-webkit-scrollbar,
+[dir='rtl'] .product-navigation [data-name='Workspace destinations']::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+/* The Arabic page scrollbar sits beside the sidebar; hide its track too. */
+html[dir='rtl'] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html[dir='rtl']::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+/* Fit the fixed design width inside the available viewport, including its scrollbar. */
+.product-page .product-view.ds-overview {
+  max-width: 100%;
+}
+.product-page .ds-overview .product-workspace {
+  max-width: calc(100% - 232px);
+}
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: clip;
+}
+@media (max-width: 850px) {
+  .product-page .ds-overview .product-workspace {
+    max-width: 100%;
+  }
+}
+/* Keep scrolling available without visible page or sidebar scrollbar tracks. */
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-x: clip !important;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.product-navigation,
+.product-navigation [data-name='Workspace destinations'] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.product-navigation::-webkit-scrollbar,
+.product-navigation [data-name='Workspace destinations']::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

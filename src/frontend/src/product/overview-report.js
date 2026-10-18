@@ -52,6 +52,15 @@ weekly.forEach((week, w) => {
     });
   });
 });
+// Allocate the original 1,451 demo starts consistently across aggregate buckets.
+let allocatedStarts = 0,
+  allocatedResponses = 0;
+aggregates.forEach((row) => {
+  allocatedResponses += row.total;
+  const cumulative = Math.round((allocatedResponses / 1248) * 1451);
+  row.starts = cumulative - allocatedStarts;
+  allocatedStarts = cumulative;
+});
 feedbackRows.forEach((row) =>
   aggregates.push({
     date: row.date,

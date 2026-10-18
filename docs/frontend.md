@@ -16,6 +16,7 @@ The frontend is a React/JSX + Vite prototype. It supports English and Arabic/RTL
 | `#/business-setup`       | Single/multiple branch selection and primary-branch validation          |
 | `#/get-started`          | In-memory setup summary                                                 |
 | `#/dashboard`            | Overview metrics, branch/date filters, CSV export and sample feedback   |
+| `#/dashboard-empty`      | First-time Overview with no responses and first-survey guidance         |
 | `#/feedbacks`            | Feedback list with search, filters, selection and pagination            |
 | `#/feedbacks-empty`      | Empty feedback collection and survey-sharing demo                       |
 | `#/feedback-details`     | Sample response details and aspect analysis                             |
@@ -105,3 +106,15 @@ At widths up to 850 px, account and business screens keep a blue language contro
 The approved logo combines the original blue icon with the selected geometric NUVIA lettering and blue V. Transparent SVG variants for light and dark backgrounds live in `src/frontend/public/assets/brand/`. `src/frontend/src/styles/site-chrome.css` applies the same mark across headers and the landing footer. All top bars remain visible while scrolling and share a 76 px desktop height and 72 px height at widths up to 850 px. Dashboard zoom is compensated so wide screens keep the same physical header and logo size.
 
 Overview and feedback use synthetic sample data; no analytics backend or AI service is connected. Feedback rows become cards on widths up to 1100 px, mobile navigation uses a drawer, and short desktop viewports keep subscription/help links reachable by scrolling. Detailed charts and analysis tables may scroll inside their cards.
+
+## Current Overview and shared controls
+
+The approved Overview keeps the existing logo, metric icon colors, blue export action and bold arrows. AI Daily Insight appears on the left and Aspect Scores on the right, followed by What to do next and Quick Actions. Branch attention, Key Insights, Ask NUVIA content cards, recent-response panels and customer-segment panels are omitted from this layout. Medium recommendation priority uses a yellow treatment. Aspect scores currently show positive-share percentages; they are not the proposed 0–10 metric.
+
+Branch and date selections retain the Overview layout and recalculate illustrative metrics and charts. Cards without detailed scoped aggregates show an unavailable/empty message instead of repeating all-branch insights. CSV export reflects the selected overview scope.
+
+The shared assistant opens in a white panel from the same compact floating button on Overview and Feedback screens. It moves to the left in Arabic and remains on the right in English. It includes a summary, an input and canned demo replies without suggested-question buttons; no retrieval or AI service is implemented.
+
+Language and branch controls use keyboard-accessible custom lists with selected-state indicators. The sidebar label is Business & Teams (النشاط التجاري والفِرق in Arabic). This is a label update, not a delivered team-management route. Existing prototype boundaries still apply.
+
+The approved first-time empty Overview is available at `#/dashboard-empty`, retaining the shared navigation, language and branch controls, and floating assistant. It shows a compact survey illustration, no-response message, first-survey action, and three onboarding steps. The existing no-results state after filtering remains available.

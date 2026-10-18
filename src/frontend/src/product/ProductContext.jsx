@@ -29,6 +29,10 @@ export function ProductProvider({
   const tr = (text) =>
     language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
   const action = (label) => {
+    if (label === 'NUVIA Assistant') {
+      window.dispatchEvent(new Event('nuvia:ask'));
+      return;
+    }
     const feedbackLabels = [
       'Feedbacks',
       'Feedbacks 12',
@@ -47,12 +51,33 @@ export function ProductProvider({
       return;
     }
     if (label === 'Export report') {
-      const blob = new Blob(
-        [
-          '\uFEFFMetric,Value\nTotal responses,1248\nPositive sentiment,78%\nCustomer satisfaction,4.6/5\nCompletion rate,86%',
-        ],
-        { type: 'text/csv;charset=utf-8' },
-      );
+      const r = dashboard?.report,
+        f = dashboard?.filters;
+      const rows = r
+        ? [
+            ['Data', 'Illustrative preview data'],
+            ['Branch', f.branch],
+            ['Start date', f.start],
+            ['End date', f.end],
+            ['Total responses', r.total],
+            ['Positive sentiment', Math.round(r.positivePercent) + '%'],
+            ['Customer satisfaction', r.rating === null ? '' : r.rating.toFixed(1) + '/5'],
+            ['Completion rate', r.completion === null ? '' : Math.round(r.completion) + '%'],
+          ]
+        : [
+            ['Total responses', 1248],
+            ['Positive sentiment', '78%'],
+            ['Customer satisfaction', '4.6/5'],
+            ['Completion rate', '86%'],
+          ];
+      const csv =
+        '\uFEFFMetric,Value\n' +
+        rows
+          .map((row) =>
+            row.map((value) => '"' + String(value).replaceAll('"', '""') + '"').join(','),
+          )
+          .join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

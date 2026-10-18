@@ -134,3 +134,12 @@
     height: calc(var(--site-logo-height) / var(--overview-scale, 1));
   }
 }
+
+/* Keep branding inside the illustrative dashboard in sync with the application. */
+.dashboard-render .dashboard-preview-logo {
+  display: block;
+  width: 79.0625px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}

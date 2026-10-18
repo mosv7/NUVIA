@@ -8,18 +8,11 @@ export default function DashboardPreviewEn() {
           <div className="dp2" data-node-id="74:6038">
             <div className="dp3">
               <div className="dp4" data-name="Link - NUVIA home">
-                <div className="dp5" data-node-id="74:6039" data-name="Text">
-                  <div className="dp6" data-node-id="74:6040" data-name="revsense_logo_1E68EF 1">
-                    <div className="dp7" data-node-id="74:6041" data-name="Group">
-                      <img alt="" className="dp8" src={asset('land-en-imgGroup3.svg')} />
-                    </div>
-                  </div>
-                </div>
-                <div className="dp9" data-node-id="74:6045" data-name="Text">
-                  <p className="dp10" data-node-id="74:6046">
-                    NUVIA
-                  </p>
-                </div>
+                <img
+                  className="dashboard-preview-logo"
+                  src={asset('brand/nuvia-logo.svg')}
+                  alt="NUVIA"
+                />
               </div>
             </div>
           </div>

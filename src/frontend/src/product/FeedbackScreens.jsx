@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { asset } from '../assets.js';
 import { useProductView } from './ProductContext.jsx';
 import { feedbackRows, firstAnalysis } from './feedback-data.js';
@@ -139,24 +139,28 @@ export function FeedbackList({ empty = false }) {
     [selected, setSelected] = useState(() => new Set(empty ? [] : [1248])),
     [descending, setDescending] = useState(true),
     [page, setPage] = useState(0);
-  const data = empty ? [] : feedbackRows;
-  const filtered = data
-    .filter((row) => {
-      const q = normalizeFeedbackSearch(ui.query);
-      const searchable = normalizeFeedbackSearch(
-        [row.text, row.id, tr(row.branch), tr(row.sentiment), ...row.aspects.map(tr)].join(' '),
-      );
-      return (
-        (!q || searchable.includes(q)) &&
-        (filters.sentiment === 'all' || row.sentiment === filters.sentiment) &&
-        (filters.language === 'all' || row.language === filters.language) &&
-        (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
-        (filters.branch === 'all' || row.branch === filters.branch) &&
-        (filters.segment === 'all' || row.segment === filters.segment) &&
-        (filters.date !== '1' || row.date === '2026-10-16')
-      );
-    })
-    .sort((a, b) => (descending ? b.id - a.id : a.id - b.id));
+  const data = useMemo(() => (empty ? [] : feedbackRows), [empty]);
+  const filtered = useMemo(
+    () =>
+      data
+        .filter((row) => {
+          const q = normalizeFeedbackSearch(ui.query);
+          const searchable = normalizeFeedbackSearch(
+            [row.text, row.id, tr(row.branch), tr(row.sentiment), ...row.aspects.map(tr)].join(' '),
+          );
+          return (
+            (!q || searchable.includes(q)) &&
+            (filters.sentiment === 'all' || row.sentiment === filters.sentiment) &&
+            (filters.language === 'all' || row.language === filters.language) &&
+            (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
+            (filters.branch === 'all' || row.branch === filters.branch) &&
+            (filters.segment === 'all' || row.segment === filters.segment) &&
+            (filters.date !== '1' || row.date === '2026-10-16')
+          );
+        })
+        .sort((a, b) => (descending ? b.id - a.id : a.id - b.id)),
+    [data, ui.query, filters, descending, tr],
+  );
   const pageSize = 8,
     visible = filtered.slice(page * pageSize, (page + 1) * pageSize),
     visibleSelected = filtered.filter((r) => selected.has(r.id)),

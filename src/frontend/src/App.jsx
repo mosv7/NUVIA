@@ -1,3 +1,4 @@
+import { LanguageMenu } from './components/ChoiceMenu.jsx';
 import React, { useEffect, useRef, useState } from 'react';
 import Field from './components/Field.jsx';
 import LanguageIcon from './components/LanguageIcon.jsx';
@@ -11,6 +12,7 @@ import BusinessOnboarding from './pages/BusinessOnboarding.jsx';
 const routes = [
   'landing',
   'dashboard',
+  'dashboard-empty',
   'feedbacks',
   'feedbacks-empty',
   'feedback-details',
@@ -154,7 +156,14 @@ export default function App() {
         setLanguage={setLanguage}
       />
     );
-  if (page === 'dashboard') return <DashboardPage language={language} setLanguage={setLanguage} />;
+  if (page === 'dashboard' || page === 'dashboard-empty')
+    return (
+      <DashboardPage
+        language={language}
+        setLanguage={setLanguage}
+        empty={page === 'dashboard-empty'}
+      />
+    );
   if (page === 'landing') return <LandingPage language={language} setLanguage={setLanguage} />;
   if (['business-information', 'business-error', 'business-setup', 'get-started'].includes(page))
     return (
@@ -320,14 +329,7 @@ export default function App() {
                 src={asset(isForgot || page === 'reset' ? 'imgLanguageIcon' : 'imgGlobe')}
                 alt=""
               />
-              <select
-                aria-label="Language / اللغة"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="en">English</option>
-                <option value="ar">العربية</option>
-              </select>
+              <LanguageMenu value={language} onChange={setLanguage} />
             </label>
           </div>
         </footer>

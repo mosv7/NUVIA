@@ -16,7 +16,7 @@ The supplied frontend is an existing React and Vite prototype with approved Arab
 
 ## Boundaries
 
-This PR delivers the UI prototype, not the foundation or analytics acceptance stages described in requirements. Authentication, Google sign-in, password recovery, workspace persistence, questionnaires, analytics, and AI services are not integrated. Dashboard content in the hero is an illustrative preview, not an authenticated analytics screen.
+This PR delivers the UI prototype, not the foundation or analytics acceptance stages described in requirements. Authentication, Google sign-in, password recovery, workspace persistence, questionnaires, analytics, and AI services are not integrated. Dashboard content in the hero remains illustrative. Dedicated Overview and Feedback routes are now present with synthetic sample data and local interactions; they are not authenticated analytics services.
 
 The demo adapter never sends credentials or stores passwords. It intentionally returns demo/error notices. Business details remain in React memory, and only the language preference is saved locally. Future identity and workspace integration must follow agreed API contracts; this import does not invent authentication endpoints.
 

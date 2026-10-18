@@ -1,0 +1,450 @@
+.product-view.ds-overview [data-name='Overview actions'],
+.product-view.ds-overview [data-name='Overview introduction'] {
+  overflow: visible;
+}
+.overview-scope-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #64738a;
+  min-width: 0;
+  width: 100%;
+}
+.overview-scope-status > span {
+  white-space: normal;
+  min-width: 0;
+}
+.product-view .overview-scope-status > button {
+  padding: 5px 8px;
+  background: #f3f7ff;
+  border: 1px solid #dfe7f2;
+  border-radius: 7px;
+  color: #1e68ef;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.scope-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+.product-view .scope-heading h2 {
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-weight: 600;
+  margin: 0;
+  color: #10213d;
+}
+.scope-heading > p,
+.scope-note,
+.scope-metric-note {
+  font-size: 11px;
+  line-height: 1.65;
+  color: #64738a;
+  white-space: normal;
+  max-width: 100%;
+}
+.scope-number {
+  unicode-bidi: isolate;
+}
+.scope-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 22px 12px;
+  min-height: 160px;
+  width: 100%;
+  text-align: center;
+  color: #64738a;
+}
+.scope-empty img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.65;
+}
+.scope-empty strong {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #53647d;
+  font-weight: 500;
+}
+.scope-empty p {
+  font-size: 11px;
+  line-height: 1.8;
+  max-width: 340px;
+  margin: 0;
+}
+.scope-note {
+  margin-top: auto !important;
+  width: 100%;
+}
+.ds-overview [data-name='Weekly trend chart']:has(.scope-trend),
+.ds-overview [data-name='Weekly trend chart']:has(.scope-empty) {
+  width: 100%;
+  height: 170px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+}
+.scope-trend {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.scope-trend text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  fill: #64738a;
+}
+.scope-trend text.scope-bar-count {
+  fill: #10213d;
+}
+.scope-sentiment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+  margin-block: 6px;
+}
+.scope-donut {
+  display: block;
+  width: 150px;
+  height: 150px;
+  flex: 0 0 150px;
+}
+.scope-donut text {
+  font-size: 10px;
+  fill: #64738a;
+  font-family: inherit;
+}
+.scope-donut text.scope-donut-value {
+  font-size: 27px;
+  fill: #10213d;
+}
+.scope-sentiment-legend {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 13px;
+}
+.scope-sentiment-legend > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  min-width: 0;
+}
+.scope-sentiment-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 7px;
+}
+.scope-sentiment-legend span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.scope-sentiment-legend small {
+  font-size: 10px;
+  color: #64738a;
+}
+.scope-sentiment-legend b {
+  margin-inline-start: auto;
+  font-size: 11px;
+  font-weight: 500;
+}
+.scope-branches,
+.scope-segments,
+.scope-responses,
+.scope-evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+.scope-branches > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.scope-branches > div > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.scope-branches small,
+.scope-segments small,
+.scope-responses small,
+.scope-evidence small {
+  font-size: 10px;
+  color: #64738a;
+  line-height: 1.6;
+}
+.scope-branch-value {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.scope-branch-value > span {
+  flex: 1;
+  background: #edf1f7;
+  height: 6px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.scope-branch-value i {
+  display: block;
+  height: 100%;
+  background: #1e68ef;
+  border-radius: 4px;
+}
+.scope-branch-value b {
+  font-weight: 500;
+  min-width: 34px;
+}
+.scope-segments > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-block: 12px;
+  border-bottom: 1px solid #edf1f7;
+  font-size: 12px;
+}
+.scope-segments > div > span {
+  margin-inline-start: auto;
+}
+.scope-segments small {
+  width: 100%;
+}
+.scope-responses > div,
+.scope-evidence > div {
+  padding-block: 10px;
+  border-bottom: 1px solid #edf1f7;
+  min-width: 0;
+}
+.scope-responses p {
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 10px 0;
+  color: #10213d;
+}
+.scope-responses a {
+  color: inherit;
+  text-decoration: none;
+}
+.scope-responses a:hover {
+  text-decoration: underline;
+}
+.scope-evidence blockquote {
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 10px 0;
+  color: #10213d;
+}
+.scope-badge {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+.scope-badge.positive {
+  background: #eaf7f1;
+  color: #23765c;
+}
+.scope-badge.negative {
+  background: #fff0f0;
+  color: #b34d50;
+}
+.scope-badge.neutral {
+  background: #f0f3f7;
+  color: #64738a;
+}
+.scope-badge.mixed {
+  background: #fff5db;
+  color: #996514;
+}
+.scope-survey {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 12px;
+  max-width: 100%;
+}
+.scope-survey > p {
+  font-size: 11px;
+  color: #64738a;
+}
+.scope-survey code {
+  font:
+    11px 'DM Sans',
+    sans-serif;
+  background: #f3f7ff;
+  padding: 10px;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.product-view .scope-survey button {
+  padding: 9px 12px;
+  border: 1px solid #dfe7f2;
+  border-radius: 8px;
+  font-size: 11px;
+  color: #1e68ef;
+}
+[dir='rtl'] .branch-dropdown,
+[dir='rtl'] .overview-scope-status,
+[dir='rtl'] .scope-heading,
+[dir='rtl'] .scope-empty,
+[dir='rtl'] .scope-note,
+[dir='rtl'] .scope-metric-note {
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+.product-view [dir='rtl'] .scope-heading h2 {
+  font-size: 15px;
+}
+@media (max-width: 850px) {
+  .branch-dropdown-popup {
+    width: 248px;
+  }
+  .scope-sentiment {
+    gap: 12px;
+  }
+  .scope-donut {
+    width: 140px;
+    height: 140px;
+    flex-basis: 140px;
+  }
+  .overview-scope-status {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .scope-empty {
+    padding: 18px 8px;
+    min-height: 150px;
+  }
+  .scope-sentiment-legend {
+    gap: 12px;
+  }
+  .scope-sentiment-legend > div {
+    font-size: 10px;
+  }
+}
+.scoped-insight-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 8px;
+  text-align: center;
+  color: #64738a;
+}
+.scoped-insight-empty strong {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #53647d;
+}
+.scoped-insight-empty p {
+  font-size: 11px;
+  line-height: 1.8;
+  max-width: 360px;
+  white-space: normal;
+}
+.scoped-empty-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  background: #eaf2ff;
+  color: #1e68ef;
+  border-radius: 9px;
+  font-size: 17px;
+}
+.scoped-data-note {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #64738a;
+  white-space: normal;
+  width: 100%;
+  margin-top: auto !important;
+}
+.scoped-branch-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.scoped-branch-rows > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.scoped-branch-rows > div > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.scoped-branch-rows p,
+.scoped-branch-rows small {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #64738a;
+}
+.scoped-branch-track {
+  height: 6px;
+  border-radius: 4px;
+  background: #eaf2ff;
+  overflow: hidden;
+}
+.scoped-branch-track span {
+  display: block;
+  height: 100%;
+  background: #1e68ef;
+  border-radius: 4px;
+}
+.product-page .ds-overview [data-name='Overview introduction'] {
+  overflow: visible;
+}
+.product-page .ds-overview [data-name='Feedback metric']:has(.scope-number) {
+  gap: 16px;
+  padding: 20px;
+  min-height: 136px;
+}
+.product-page .ds-overview [data-name='Sentiment distribution']:has(.scope-sentiment) {
+  padding: 20px;
+  gap: 14px;
+}
+.scope-sentiment {
+  flex-wrap: wrap;
+}
+.product-page .ds-overview .overview-scope-status {
+  padding: 0;
+  min-height: 24px;
+}

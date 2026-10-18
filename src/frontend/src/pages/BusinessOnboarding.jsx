@@ -1,3 +1,4 @@
+import { LanguageMenu } from '../components/ChoiceMenu.jsx';
 import React, { useEffect, useState } from 'react';
 import { asset } from '../assets.js';
 import { setupCopy } from '../setup-copy.js';
@@ -154,14 +155,7 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
         <div>
           <label className="language">
             <LanguageIcon />
-            <select
-              aria-label="Language / اللغة"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-            >
-              <option value="en">English</option>
-              <option value="ar">العربية</option>
-            </select>
+            <LanguageMenu value={language} onChange={setLanguage} />
           </label>
           <button className="setup-mobile-help" onClick={() => setNotice(c.helpNotice)}>
             {c.help}

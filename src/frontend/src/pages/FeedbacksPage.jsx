@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { asset } from '../assets.js';
 import { ProductProvider } from '../product/ProductContext.jsx';
 import FeedbackShell from '../product/FeedbackShell.jsx';
+import Assistant from '../product/Assistant.jsx';
+import '../product/assistant.css';
 import { FeedbackList, FeedbackDetail } from '../product/FeedbackScreens.jsx';
 export default function FeedbacksPage({ page, language, setLanguage }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -59,6 +61,7 @@ export default function FeedbacksPage({ page, language, setLanguage }) {
             <FeedbackList key={page} empty={page === 'feedbacks-empty'} />
           )}
         </FeedbackShell>
+        <Assistant />
       </div>
     </ProductProvider>
   );

@@ -14,7 +14,8 @@ describe('bilingual frontend flows', () => {
   it('switches the landing page to Arabic and persists the language preference', async () => {
     const user = userEvent.setup();
     openRoute('landing');
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Language / اللغة' }), 'ar');
+    await user.click(screen.getByRole('button', { name: 'Language / اللغة' }));
+    await user.click(screen.getByRole('option', { name: /العربية/ }));
     expect(document.documentElement).toHaveAttribute('dir', 'rtl');
     expect(document.documentElement).toHaveAttribute('lang', 'ar');
     expect(localStorage.getItem('nuvia-language')).toBe('ar');
@@ -152,5 +153,31 @@ it('uses Arabic numerals and complete Arabic labels in business onboarding', () 
   expect(
     screen.getByLabelText('خطوات الإعداد').querySelector('.progress-marker'),
   ).toHaveTextContent('١');
-  expect(screen.getByLabelText('Language / اللغة')).toHaveValue('ar');
+  expect(screen.getByRole('button', { name: 'Language / اللغة' })).toHaveTextContent('AR');
+});
+
+it('shows first-time Overview guidance without populated analytics', () => {
+  openRoute('dashboard-empty');
+  expect(screen.getByRole('heading', { name: 'No responses yet' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Create Your First Survey' })).toBeVisible();
+  expect(screen.queryByText('Total responses', { exact: true })).not.toBeInTheDocument();
+  expect(screen.queryByText('AI Daily Insight', { exact: true })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Business & Teams' })).toBeInTheDocument();
+});
+
+it('keeps Overview layout when selecting a branch and updates the sample totals', async () => {
+  const user = userEvent.setup();
+  openRoute('dashboard');
+  await user.click(screen.getByRole('button', { name: 'Branch', exact: true }));
+  await user.click(screen.getByRole('option', { name: /Cairo/ }));
+  expect(screen.getByText('420', { exact: true })).toBeVisible();
+  expect(screen.getByText('AI Daily Insight', { exact: true })).toBeVisible();
+  expect(screen.getByText('Aspect scores', { exact: true })).toBeVisible();
+  expect(screen.getByText('What to do next', { exact: true })).toBeVisible();
+  expect(
+    screen.queryByText(
+      '104 September reviews mention delays — 2× August’s 52. Review peak-hour coverage as a next step.',
+    ),
+  ).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Open Ask NUVIA' })).toBeVisible();
 });

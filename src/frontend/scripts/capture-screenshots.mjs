@@ -18,6 +18,7 @@ const routes = [
   'business-setup',
   'get-started',
   'dashboard',
+  'dashboard-empty',
   'feedbacks',
   'feedbacks-empty',
   'feedback-details',
@@ -82,7 +83,13 @@ try {
             ? '.hero-copy'
             : ['login', 'signup', 'forgot', 'reset'].includes(route)
               ? '.auth-content'
-              : ['dashboard', 'feedbacks', 'feedbacks-empty', 'feedback-details'].includes(route)
+              : [
+                    'dashboard',
+                    'dashboard-empty',
+                    'feedbacks',
+                    'feedbacks-empty',
+                    'feedback-details',
+                  ].includes(route)
                 ? '.product-topbar'
                 : '.setup-card',
         );
@@ -106,7 +113,15 @@ try {
             if (!['fixed', 'sticky'].includes(getComputedStyle(nav).position))
               return 'Navbar is not persistent';
             if (!mobile) return '';
-            if (['dashboard', 'feedbacks', 'feedbacks-empty', 'feedback-details'].includes(route))
+            if (
+              [
+                'dashboard',
+                'dashboard-empty',
+                'feedbacks',
+                'feedbacks-empty',
+                'feedback-details',
+              ].includes(route)
+            )
               return '';
             if (route === 'landing') {
               const link = document.querySelector('.landing-signin');
@@ -148,6 +163,16 @@ try {
             : `${language}-mobile-${route}.png`
           : `${language}-${route}.png`;
         await capture(name);
+        if (route === 'dashboard') {
+          await page.locator('.nuvia-launcher').click();
+          await page.locator('.nuvia-assistant').waitFor({ state: 'visible' });
+          await capture(
+            mobile
+              ? `${language}-mobile-dashboard-assistant.png`
+              : `${language}-dashboard-assistant.png`,
+          );
+          await page.locator('.nuvia-assistant header button').click();
+        }
         if (mobile && route === 'landing') {
           if (language === 'ar') await capture('active-ar-mobile-hero.png', false);
           await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
