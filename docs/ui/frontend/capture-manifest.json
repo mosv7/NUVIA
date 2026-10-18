@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-18T15:04:38.852Z",
+  "capturedAt": "2026-10-18T15:10:32.102Z",
   "screenshots": [
     {
       "file": "en-landing.png",
@@ -127,7 +127,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "008c5f5ea89922c4177ebab3b0bffe7225a3ea45572ddc350c688b8b2d202072"
+      "sha256": "4b561df7e2e75f67111ae1fafaa32bc38c4a648f5bef163fdd8a44236ed638cb"
     },
     {
       "file": "en-get-started.png",
@@ -143,7 +143,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "3f61f210b3b57035bce32a0b1921de811ecd773f83e7e6d8438b9cc636a72055"
+      "sha256": "9a85d2a9362f68e87a744d338097b313c354b4e0505ba545d7a3d69e9528b1c3"
     },
     {
       "file": "en-dashboard.png",
@@ -191,7 +191,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "443f09e70eb1628202c7a4c61dafe266ccaa9e42edd2bed65ee3d48ae553567a"
+      "sha256": "944c60dcfd0ba01a9297deb0689cf009b5503ec531fff7e079eed0c45480e167"
     },
     {
       "file": "en-feedbacks.png",
@@ -256,22 +256,6 @@
       },
       "fullPage": true,
       "sha256": "e479a304c8a29ccf04b15038ec6e65ca0790adda4b2ea71554d9e69d33ed7cb2"
-    },
-    {
-      "file": "active-en-mobile-footer.png",
-      "language": "en",
-      "route": "landing",
-      "scrollY": 5672,
-      "viewport": {
-        "width": 393,
-        "height": 800
-      },
-      "image": {
-        "width": 393,
-        "height": 800
-      },
-      "fullPage": false,
-      "sha256": "25e5db3ca850b7d5903950bef9fad9790cc434ff8a52e907f53af8ddbfb810b0"
     },
     {
       "file": "en-mobile-login.png",
@@ -575,7 +559,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "655d587595360bf181355a30171a8af87ff1f21a1d33ea8f5f362ed57418a987"
+      "sha256": "a3a66747222789397b4ff87b4b99024687c7c828dfa27fd3bd7440ef2216468d"
     },
     {
       "file": "ar-business-information.png",
@@ -591,7 +575,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "0a07e31d3f33f227b84d085e9d45de9e741e70d90f94648eb0233cd620f2ed22"
+      "sha256": "53c15b0bedc0159a52fbeca89579788d05805c3a8a6909856b1b3a0e54f5ec9b"
     },
     {
       "file": "ar-business-error.png",
@@ -623,7 +607,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "e02c8d42b4ff25aea14325760beb19c91203d32639ea055c7a3ed04a11ba54f2"
+      "sha256": "aaff6c9140042e5d109f3944542c197920f7ceeb625dbc53d31f3a0d9575f6d9"
     },
     {
       "file": "ar-get-started.png",
@@ -671,7 +655,7 @@
         "height": 1662
       },
       "fullPage": true,
-      "sha256": "7493ab7896cfec5f8fcd86a2a2094dd176990a317ca44c008864707a2b112125"
+      "sha256": "f65e5f12bb4ad3a9b8cf32f8bc40127bbae1093d6c88ec7c835c085b17288170"
     },
     {
       "file": "ar-dashboard-empty.png",
@@ -687,7 +671,7 @@
         "height": 960
       },
       "fullPage": true,
-      "sha256": "3b3797cee97e422ad8198381092e094f8c30f920ca7271f75826f1dffd6c0c5c"
+      "sha256": "f5b6fb134fd66d5930da019b0b574cd048f88fed0cd67c22351c57ca7a97b2b3"
     },
     {
       "file": "ar-feedbacks.png",
@@ -752,38 +736,6 @@
       },
       "fullPage": true,
       "sha256": "ce320f31493c1a80a50dac74606d5ad645b2dc0df00d160709bd0cc9115ba7bb"
-    },
-    {
-      "file": "active-ar-mobile-hero.png",
-      "language": "ar",
-      "route": "landing",
-      "scrollY": 0,
-      "viewport": {
-        "width": 393,
-        "height": 800
-      },
-      "image": {
-        "width": 393,
-        "height": 800
-      },
-      "fullPage": false,
-      "sha256": "2fdb0326aa65fae2a65d801492102f0f7428ea948b2b748fab241f496175305c"
-    },
-    {
-      "file": "active-ar-mobile-footer.png",
-      "language": "ar",
-      "route": "landing",
-      "scrollY": 5494,
-      "viewport": {
-        "width": 393,
-        "height": 800
-      },
-      "image": {
-        "width": 393,
-        "height": 800
-      },
-      "fullPage": false,
-      "sha256": "b6a0b308a11220991a96f1bb36f6b6110f1b2c73351e89e8e55b7ee8c394debc"
     },
     {
       "file": "ar-mobile-login.png",

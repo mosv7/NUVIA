@@ -173,11 +173,6 @@ try {
           );
           await page.locator('.nuvia-assistant header button').click();
         }
-        if (mobile && route === 'landing') {
-          if (language === 'ar') await capture('active-ar-mobile-hero.png', false);
-          await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-          await capture(`active-${language}-mobile-footer.png`, false);
-        }
         console.log(`${language} ${width} ${route}: captured and checked`);
       }
     }

@@ -87,7 +87,7 @@ The desktop landing caps typography and hero scaling on wide screens and reduces
 
 ## UI review screenshots
 
-English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. Run `npx playwright install chromium` once, then `npm run screenshots` to regenerate the entire set, including existing detail-image filenames. See [the screenshot file map](ui/frontend/README.md). They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
+English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. Run `npx playwright install chromium` once, then `npm run screenshots` to regenerate the entire set, with one image per documented screen/state. See [the screenshot file map](ui/frontend/README.md). They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
 
 ## Mobile refinements
 

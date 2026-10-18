@@ -46,12 +46,6 @@ Replace `{lang}` with `en` or `ar`.
 | Feedback empty state       | `{lang}-feedbacks-empty.png`      | `{lang}-mobile-feedbacks-empty.png`      |
 | Feedback details           | `{lang}-feedback-details.png`     | `{lang}-mobile-feedback-details.png`     |
 
-The existing detail filenames are preserved and recaptured from the same run:
+All 60 PNGs are refreshed together: 14 routes in two languages and two viewport sizes, plus the open assistant in each language/viewport combination. Redundant cropped landing aliases are removed; each gallery contains one capture per screen/state. Business screens show the initial prototype state and do not imply saved workspace data.
 
-- `active-ar-mobile-hero.png`: Arabic landing at the top of the phone viewport.
-- `active-ar-mobile-footer.png`: Arabic landing scrolled to the footer.
-- `active-en-mobile-footer.png`: English landing scrolled to the footer.
-
-All 63 PNGs are refreshed together. The original 17 filenames remain valid; unchanged desktop views may produce identical files. The complete matrix now covers all 14 routes in both languages and viewport sizes, plus the open shared assistant in each language/viewport combination. Business screens show the initial empty prototype state and do not imply saved workspace data.
-
-`capture-manifest.json` records the actual route, language, viewport, image dimensions, scroll position and SHA-256 for each capture. The `active-*` files are deliberate viewport details of the full landing image, not different screen designs. All other filenames map to the route/locale/viewport matrix above.
+`capture-manifest.json` records the actual route, language, viewport, image dimensions, scroll position and SHA-256 for each capture. Each filename maps to a route, locale and viewport in the matrix above.

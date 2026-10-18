@@ -1,2 +1,5 @@
 # Preserve the existing repository instructions byte-for-byte.
 AGENTS.md -text
+
+# Store command scripts consistently; use Windows line endings when checked out.
+*.cmd text eol=crlf
