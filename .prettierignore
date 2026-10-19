@@ -1,4 +1,12 @@
 AGENTS.md
+.local/
+.superpowers/
+.codex-remote-attachments/
+atlas-credentials.env
+.env
+.env.*
+test-results/
+playwright-report/
 docs/ai-pipeline.md
 docs/api-contracts.md
 docs/architecture.md

@@ -33,20 +33,20 @@
 
 ## File Structure and Interfaces
 
-| Files | Responsibility |
-| --- | --- |
-| `src/backend/config.mjs`, `database.mjs`, `app.mjs`, `server.mjs` | Validated environment, MongoDB lifecycle, dependency-injected HTTP app, process startup/shutdown |
-| `src/backend/http/errors.mjs`, `security.mjs`, `validation.mjs`, `rate-limits.mjs` | Safe errors/request IDs, same-origin protection/security headers, strict schemas, bounded request limits |
-| `src/backend/auth/passwords.mjs`, `sessions.mjs`, `service.mjs`, `routes.mjs` | Password hashing, anonymous/authenticated sessions, account/token lifecycle and HTTP boundary |
-| `src/backend/mail/crypto.mjs`, `outbox.mjs`, `adapters.mjs`, `worker.mjs` | Encrypted transactional mail intent, delivery adapters, retry leases and dispatch |
-| `src/backend/workspaces/service.mjs`, `routes.mjs` | Owner-scoped business setup and branch invariants |
-| `src/backend/scripts/setup-local.mjs`, `check-db.mjs`, `setup-db.mjs` | Generate private development settings, safe ping, repeatable indexes/schema version |
-| `tests/backend/helpers/{database,http,mail}.mjs`, `tests/backend/run.mjs` | Isolated replica set, browser-like test client, synthetic mail, test orchestration |
-| `tests/backend/{config,passwords,sessions,auth,mail,workspaces}.test.mjs` | Unit tests and real MongoDB/API integration tests |
-| `src/frontend/src/services/{api,auth,workspace}.js`, `auth/{AuthProvider,VerificationPage}.jsx`, `auth/route-policy.js` | API boundary, session state, verification UX and route decisions |
-| Existing `App.jsx`, onboarding pages, copy dictionaries and product shell | Connect current UI; preserve layout; guard account-backed routes and separate design previews |
-| `tests/frontend/{api,auth-connected,onboarding-connected,route-policy}.test.jsx` | Transport errors, auth/RTL flows, persisted onboarding and stale-response regressions |
-| `tests/e2e/accounts.spec.mjs`, `playwright.config.mjs` | Real browser account-to-persisted-workspace flow against an isolated database |
+| Files                                                                                                                   | Responsibility                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `src/backend/config.mjs`, `database.mjs`, `app.mjs`, `server.mjs`                                                       | Validated environment, MongoDB lifecycle, dependency-injected HTTP app, process startup/shutdown         |
+| `src/backend/http/errors.mjs`, `security.mjs`, `validation.mjs`, `rate-limits.mjs`                                      | Safe errors/request IDs, same-origin protection/security headers, strict schemas, bounded request limits |
+| `src/backend/auth/passwords.mjs`, `sessions.mjs`, `service.mjs`, `routes.mjs`                                           | Password hashing, anonymous/authenticated sessions, account/token lifecycle and HTTP boundary            |
+| `src/backend/mail/crypto.mjs`, `outbox.mjs`, `adapters.mjs`, `worker.mjs`                                               | Encrypted transactional mail intent, delivery adapters, retry leases and dispatch                        |
+| `src/backend/workspaces/service.mjs`, `routes.mjs`                                                                      | Owner-scoped business setup and branch invariants                                                        |
+| `src/backend/scripts/setup-local.mjs`, `check-db.mjs`, `setup-db.mjs`                                                   | Generate private development settings, safe ping, repeatable indexes/schema version                      |
+| `tests/backend/helpers/{database,http,mail}.mjs`, `tests/backend/run.mjs`                                               | Isolated replica set, browser-like test client, synthetic mail, test orchestration                       |
+| `tests/backend/{config,passwords,sessions,auth,mail,workspaces}.test.mjs`                                               | Unit tests and real MongoDB/API integration tests                                                        |
+| `src/frontend/src/services/{api,auth,workspace}.js`, `auth/{AuthProvider,VerificationPage}.jsx`, `auth/route-policy.js` | API boundary, session state, verification UX and route decisions                                         |
+| Existing `App.jsx`, onboarding pages, copy dictionaries and product shell                                               | Connect current UI; preserve layout; guard account-backed routes and separate design previews            |
+| `tests/frontend/{api,auth-connected,onboarding-connected,route-policy}.test.jsx`                                        | Transport errors, auth/RTL flows, persisted onboarding and stale-response regressions                    |
+| `tests/e2e/accounts.spec.mjs`, `playwright.config.mjs`                                                                  | Real browser account-to-persisted-workspace flow against an isolated database                            |
 
 Shared DTOs: `UserView={id,name,email,locale,emailVerified}`, `WorkspaceView={id,businessName,industry,locale,reportingTimezone,branchType,primaryBranchId,onboardingStep,branches}`, `BranchView={id,name,archivedAt,isPrimary}`, `SessionView={user:null|UserView,workspace:null|WorkspaceView,csrfToken}`. `onboardingStep` is `information`, `branches` or `complete`. Errors use `{error:{code,message,details},request_id}`. Dates crossing HTTP are UTC ISO strings; MongoDB dates remain Date values.
 

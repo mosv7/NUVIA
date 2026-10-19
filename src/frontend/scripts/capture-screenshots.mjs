@@ -73,10 +73,10 @@ try {
     for (const mobile of [false, true]) {
       const width = mobile ? 393 : 1440;
       await page.setViewportSize({ width, height: mobile ? 800 : 960 });
-      await page.goto(url);
+      await page.goto(`${url}/preview/`);
       await page.evaluate((value) => localStorage.setItem('nuvia-language', value), language);
       for (const route of routes) {
-        await page.goto(`${url}/#/${route}`);
+        await page.goto(`${url}/preview/#/${route}`);
         await page.reload();
         await page.waitForSelector(
           route === 'landing'

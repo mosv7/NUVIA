@@ -4,7 +4,7 @@ import './overview-empty.css';
 import { asset as resolveAsset } from '../assets.js';
 const asset = (name) => resolveAsset('overview-empty/' + name + '.svg');
 export default function OverviewEmpty() {
-  const { language, action } = useProductView();
+  const { language, action, workspace, preview } = useProductView();
   const ar = language === 'ar';
   const steps = [
     [
@@ -58,8 +58,8 @@ export default function OverviewEmpty() {
         <h2 id="first-response-title">{ar ? 'لا توجد ردود بعد' : 'No responses yet'}</h2>
         <p>
           {ar
-            ? 'أنشئ استبيانًا لـ Bloom & Co. بمجرد وصول أول ردود العملاء، ستظهر هنا مؤشراتك ورسومك البيانية ورؤى الذكاء الاصطناعي.'
-            : 'Create a survey for Bloom & Co. Once your first responses arrive, your metrics, charts and AI insights will appear here.'}
+            ? `بمجرد إتاحة جمع الردود وتحليلها لـ ${preview ? 'Bloom & Co.' : workspace?.businessName || ''}، ستظهر مؤشراتك هنا.`
+            : `Once response collection and analysis are available for ${preview ? 'Bloom & Co.' : workspace?.businessName || ''}, your metrics will appear here.`}
         </p>
       </div>
       <button className="first-survey-create" onClick={() => action('Create Survey')}>

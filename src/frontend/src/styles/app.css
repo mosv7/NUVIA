@@ -15,6 +15,75 @@ body {
   margin: 0;
   background: white;
 }
+.session-state {
+  max-width: 480px;
+  margin: 8vh auto;
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+}
+.session-state form,
+.session-state label {
+  display: grid;
+  gap: 12px;
+}
+.session-state input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 44px;
+  font-size: 16px;
+}
+.session-state p {
+  line-height: 1.7;
+}
+.session-brand {
+  font-weight: 800;
+  font-size: 24px;
+}
+.preview-notice {
+  position: fixed;
+  inset-inline-end: 8px;
+  bottom: 6px;
+  z-index: 1000;
+  background: white;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  pointer-events: none;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+.workspace-account-actions {
+  position: fixed;
+  bottom: 16px;
+  inset-inline-end: 16px;
+  z-index: 100;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+}
+.workspace-action-notice {
+  position: fixed;
+  inset-inline: 16px;
+  bottom: 72px;
+  margin: auto;
+  max-width: 480px;
+  padding: 16px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  z-index: 102;
+}
+.workspace-action-notice button {
+  float: inline-end;
+}
 button,
 input,
 select {

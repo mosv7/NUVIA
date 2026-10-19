@@ -56,14 +56,14 @@ Provide an SMTP adapter for real delivery and a development-only file mailbox un
 
 ## MongoDB model and invariants
 
-| Collection | Fields and required constraints |
-| --- | --- |
-| `users` | ID, canonical email (unique), name, locale, password hash, verified timestamp, terms acceptance timestamp, created/updated timestamps |
-| `sessions` | Token digest (unique), user ID (null for anonymous CSRF contexts), CSRF digest, created/expiry/revoked timestamps; expiry TTL index |
-| `auth_tokens` | User ID, purpose, digest, expiry; unique user/purpose and token digest; expiry TTL index |
-| `mail_outbox` | Recipient user ID, kind, delivery state, retry metadata, AES-GCM payload/nonce/tag, expiry; encrypted payload removed after sending or expiry |
-| `workspaces` | ID, owner user ID (unique in this slice), name, industry, locale, reporting timezone, branch mode, primary branch ID, onboarding step, timestamps |
-| `branches` | ID, workspace ID, normalized name, display name, archived timestamp, timestamps; unique active normalized name per workspace |
+| Collection    | Fields and required constraints                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `users`       | ID, canonical email (unique), name, locale, password hash, verified timestamp, terms acceptance timestamp, created/updated timestamps             |
+| `sessions`    | Token digest (unique), user ID (null for anonymous CSRF contexts), CSRF digest, created/expiry/revoked timestamps; expiry TTL index               |
+| `auth_tokens` | User ID, purpose, digest, expiry; unique user/purpose and token digest; expiry TTL index                                                          |
+| `mail_outbox` | Recipient user ID, kind, delivery state, retry metadata, AES-GCM payload/nonce/tag, expiry; encrypted payload removed after sending or expiry     |
+| `workspaces`  | ID, owner user ID (unique in this slice), name, industry, locale, reporting timezone, branch mode, primary branch ID, onboarding step, timestamps |
+| `branches`    | ID, workspace ID, normalized name, display name, archived timestamp, timestamps; unique active normalized name per workspace                      |
 
 Workspace ownership is resolved from the authenticated session, never from a submitted owner/user ID. Every branch query includes an authorized workspace ID. Foreign workspace/branch IDs return 404. Reject unknown JSON fields and invalid identifiers before database access.
 
@@ -75,22 +75,22 @@ MongoDB Atlas supports transactions; local integration/CI tests must also use a 
 
 All payloads use JSON, UUID string IDs, locale `ar`/`en`, and ISO 8601 UTC timestamps. Validation errors use `{error:{code,message,details},request_id}`. Responses never serialize authentication internals.
 
-| Method and path | Behavior |
-| --- | --- |
-| GET `/api/v1/auth/session` | CSRF bootstrap and safe current user/workspace/setup metadata; anonymous state contains no identity |
-| POST `/api/v1/auth/register` | Validate fields, create an unverified account and verification mail intent; return 201 safe user metadata |
-| POST `/api/v1/auth/verify-email` | Consume verification token atomically; return 200 |
-| POST `/api/v1/auth/resend-verification` | Rate-limited generic 202 response; replace token and queue delivery when applicable |
-| POST `/api/v1/auth/login` | Verify credentials and email status, rotate session and set cookie; return 200 safe user/setup metadata |
-| POST `/api/v1/auth/logout` | Revoke session and clear cookie; return 204 |
-| POST `/api/v1/auth/forgot-password` | Generic 202; queue recovery delivery for an eligible account |
-| POST `/api/v1/auth/reset-password` | Consume reset token, change password and revoke sessions atomically; return 200 |
-| GET `/api/v1/workspace` | Return the verified owner's workspace and setup state, or 404 if not created |
-| PUT `/api/v1/workspace` | Save business name, industry, locale and reporting timezone; create once or update owned workspace |
-| PUT `/api/v1/workspace/setup` | Save branch mode/name and mark setup complete transactionally; return workspace and primary branch |
-| GET/POST `/api/v1/workspaces/{id}/branches` | List/create owned branches; archived records available with an explicit filter |
-| PATCH `/api/v1/workspaces/{id}/branches/{branch_id}` | Rename, archive, or select the primary branch while preserving invariants |
-| GET `/api/v1/health/live` and `/api/v1/health/ready` | Process liveness and database readiness |
+| Method and path                                      | Behavior                                                                                                  |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| GET `/api/v1/auth/session`                           | CSRF bootstrap and safe current user/workspace/setup metadata; anonymous state contains no identity       |
+| POST `/api/v1/auth/register`                         | Validate fields, create an unverified account and verification mail intent; return 201 safe user metadata |
+| POST `/api/v1/auth/verify-email`                     | Consume verification token atomically; return 200                                                         |
+| POST `/api/v1/auth/resend-verification`              | Rate-limited generic 202 response; replace token and queue delivery when applicable                       |
+| POST `/api/v1/auth/login`                            | Verify credentials and email status, rotate session and set cookie; return 200 safe user/setup metadata   |
+| POST `/api/v1/auth/logout`                           | Revoke session and clear cookie; return 204                                                               |
+| POST `/api/v1/auth/forgot-password`                  | Generic 202; queue recovery delivery for an eligible account                                              |
+| POST `/api/v1/auth/reset-password`                   | Consume reset token, change password and revoke sessions atomically; return 200                           |
+| GET `/api/v1/workspace`                              | Return the verified owner's workspace and setup state, or 404 if not created                              |
+| PUT `/api/v1/workspace`                              | Save business name, industry, locale and reporting timezone; create once or update owned workspace        |
+| PUT `/api/v1/workspace/setup`                        | Save branch mode/name and mark setup complete transactionally; return workspace and primary branch        |
+| GET/POST `/api/v1/workspaces/{id}/branches`          | List/create owned branches; archived records available with an explicit filter                            |
+| PATCH `/api/v1/workspaces/{id}/branches/{branch_id}` | Rename, archive, or select the primary branch while preserving invariants                                 |
+| GET `/api/v1/health/live` and `/api/v1/health/ready` | Process liveness and database readiness                                                                   |
 
 Use 401 for invalid/missing sessions, 403 for email verification requirements, 404 for unavailable or foreign resources, 409 for duplicate email/branch or branch-state conflicts, 422 for validation, 429 for limits, and 503 for unavailable storage. Do not leak database/SMTP errors to the browser.
 

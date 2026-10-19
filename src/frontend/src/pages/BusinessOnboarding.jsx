@@ -1,5 +1,6 @@
 import { LanguageMenu } from '../components/ChoiceMenu.jsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAuth } from '../auth/AuthProvider.jsx';
 import { asset } from '../assets.js';
 import { setupCopy } from '../setup-copy.js';
 import SetupSidebar from '../components/SetupSidebar.jsx';
@@ -9,6 +10,11 @@ import SetupPage from './SetupPage.jsx';
 import GetStartedPage from './GetStartedPage.jsx';
 import '../styles/setup.css';
 export default function BusinessOnboarding({ page, language, setLanguage, values, setValues }) {
+  const auth = useAuth();
+  const [busy, setBusy] = useState(false),
+    [saveError, setSaveError] = useState(false);
+  const controller = useRef(null);
+  useEffect(() => () => controller.current?.abort(), [page]);
   const c = setupCopy[language],
     step = page === 'business-setup' ? 1 : page === 'get-started' ? 2 : 0;
   const [errors, setErrors] = useState(() =>
@@ -17,6 +23,8 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
     [branchError, setBranchError] = useState(false),
     [notice, setNotice] = useState('');
   useEffect(() => {
+    setBusy(false);
+    setSaveError(false);
     setErrors(page === 'business-error' ? { businessName: true, industry: true } : {});
     setBranchError(false);
     setNotice('');
@@ -39,16 +47,44 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
   const go = (route) => {
     location.hash = '/' + route;
   };
-  const infoNext = (e) => {
+  const save = async (operation, payload, destination) => {
+    if (busy) return;
+    setBusy(true);
+    setSaveError(false);
+    const request = new AbortController();
+    controller.current = request;
+    try {
+      const result = await operation(payload, request.signal);
+      if (result && !request.signal.aborted) go(destination);
+    } catch (error) {
+      if (error.name !== 'AbortError' && !request.signal.aborted) setSaveError(true);
+    } finally {
+      if (!request.signal.aborted) setBusy(false);
+    }
+  };
+  const infoNext = async (e) => {
     e.preventDefault();
     const invalid = {
       businessName: !values.businessName.trim(),
       industry: !values.industry.trim(),
     };
     setErrors(invalid);
-    if (!Object.values(invalid).some(Boolean)) go('business-setup');
+    if (!Object.values(invalid).some(Boolean)) {
+      if (auth.preview) go('business-setup');
+      else
+        await save(
+          auth.saveWorkspace,
+          {
+            businessName: values.businessName,
+            industry: values.industry,
+            locale: language,
+            reportingTimezone: 'Africa/Cairo',
+          },
+          'business-setup',
+        );
+    }
   };
-  const branchNext = (e) => {
+  const branchNext = async (e) => {
     e.preventDefault();
     if (!values.businessName.trim() || !values.industry.trim()) {
       go('business-error');
@@ -58,7 +94,16 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
       setBranchError(true);
       return;
     }
-    go('get-started');
+    if (auth.preview) go('get-started');
+    else
+      await save(
+        auth.completeSetup,
+        {
+          branchType: values.branchType,
+          ...(values.branchType === 'multiple' ? { branchName: values.branchName } : {}),
+        },
+        'get-started',
+      );
   };
   return (
     <div className="business-onboarding" data-step={step}>
@@ -124,6 +169,7 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
               errors={errors}
               onContinue={infoNext}
               folder={folder}
+              busy={busy}
             />
           ) : step === 1 ? (
             <SetupPage
@@ -133,11 +179,24 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
               error={branchError}
               onContinue={branchNext}
               onBack={() => go('business-information')}
+              busy={busy}
             />
           ) : (
-            <GetStartedPage copy={c} values={values} onEdit={() => go('business-information')} />
+            <GetStartedPage
+              copy={c}
+              values={values}
+              onEdit={() => go('business-information')}
+              onStart={auth.preview ? undefined : () => go('dashboard')}
+            />
           )}
         </div>
+        {saveError && (
+          <p className="notice error-notice" role="alert">
+            {language === 'ar'
+              ? 'تعذر حفظ بياناتك. تحقق من الاتصال وحاول مرة أخرى.'
+              : 'Could not save your details. Check your connection and try again.'}
+          </p>
+        )}
         {notice && (
           <p className="notice setup-notice" role="status">
             {notice}
