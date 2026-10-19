@@ -1,6 +1,6 @@
 # Architecture
 
-Status: proposed architecture; no component is implemented. Product scope comes from the source proposal. Frameworks and deployment choices below are recommendations for team review.
+Status: historical platform architecture proposal. The delivered account/business-setup slice uses Node.js/Express and MongoDB; see [decision 0002](decisions/0002-node-mongodb-foundation.md) and [actual backend](backend.md). Python/FastAPI remains the future AI-service boundary. PostgreSQL, pgvector, Redis and the analysis components below are unimplemented proposals.
 
 ## Design approach
 

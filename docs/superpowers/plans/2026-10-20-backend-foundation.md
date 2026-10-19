@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js >=22.12, native JavaScript ES modules, Express 5, official MongoDB driver, Zod, Helmet, cookie-parser, Nodemailer, Node crypto, Node test runner, Supertest, mongodb-memory-server-core, existing React/Vite/Vitest/Playwright.
 
-**Spec:** `docs/superpowers/specs/2026-10-20-backend-foundation-design.md`, approved in chat on 2026-10-20. Implementation awaits review of this plan and selection of execution method.
+**Spec:** `docs/superpowers/specs/2026-10-20-backend-foundation-design.md`, approved in chat on 2026-10-20. Plan approved for inline execution. Delivered scope and evidence are recorded in `docs/backend.md` and `docs/backend-validation.md`; task checklists below preserve the original implementation brief.
 
 ## Global Constraints
 

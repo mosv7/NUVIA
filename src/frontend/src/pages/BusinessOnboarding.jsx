@@ -9,6 +9,22 @@ import BusinessInformationPage from './BusinessInformationPage.jsx';
 import SetupPage from './SetupPage.jsx';
 import GetStartedPage from './GetStartedPage.jsx';
 import '../styles/setup.css';
+export function ConnectedBusinessOnboarding(props) {
+  const { workspace } = useAuth();
+  const [values, setValues] = useState(() =>
+    workspace
+      ? {
+          businessName: workspace.businessName,
+          industry: workspace.industry,
+          branchType: workspace.branchType,
+          branchName:
+            workspace.branches.find((branch) => branch.id === workspace.primaryBranchId)?.name ||
+            '',
+        }
+      : { businessName: '', industry: '', branchType: 'multiple', branchName: '' },
+  );
+  return <BusinessOnboarding {...props} values={values} setValues={setValues} />;
+}
 export default function BusinessOnboarding({ page, language, setLanguage, values, setValues }) {
   const auth = useAuth();
   const [busy, setBusy] = useState(false),

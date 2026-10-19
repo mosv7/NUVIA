@@ -1,6 +1,6 @@
 # Frontend development and review
 
-The frontend is a React/JSX + Vite prototype. It supports English and Arabic/RTL and bundles its fonts and original design assets locally. It does not require an API or environment variables to run.
+The frontend uses React/JSX + Vite, supports English and Arabic/RTL, and bundles its fonts/assets locally. Account and business-onboarding routes now require the [Node/MongoDB backend](backend.md). The legacy prototype flows described below remain available under `/preview/#/<route>` without an API; sample analytics and assistant replies are preview-only. Real product routes require verified accounts and show saved workspace data plus empty/unavailable states.
 
 ## Routes
 

@@ -26,8 +26,17 @@ export function AuthProvider({ children, preview = false }) {
   }, []);
   useEffect(() => {
     const counter = generation;
+    const expired = () => {
+      counter.current++;
+      active.current?.abort();
+      active.current = null;
+      setView({ status: 'loading', user: null, workspace: null });
+      refresh().catch(() => {});
+    };
+    if (!preview) window.addEventListener('nuvia:session-expired', expired);
     if (!preview) refresh().catch(() => {});
     return () => {
+      window.removeEventListener('nuvia:session-expired', expired);
       counter.current++;
       active.current?.abort();
     };

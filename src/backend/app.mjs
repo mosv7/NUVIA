@@ -23,7 +23,7 @@ export function createApp(dependencies) {
   app.get('/api/v1/health/live', (_req, res) => res.json({ status: 'live' }));
   app.get('/api/v1/health/ready', async (_req, res) => {
     try {
-      await db.command({ ping: 1 }, { maxTimeMS: 3000 });
+      await db.command({ ping: 1 }, { timeoutMS: 3000 });
       res.json({ status: 'ready' });
     } catch {
       throw new ApiError(503, 'SERVICE_UNAVAILABLE');

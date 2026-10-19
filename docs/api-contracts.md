@@ -1,6 +1,6 @@
 # API contracts
 
-Status: proposed v1 contract, not an implemented API. Publish a machine-readable OpenAPI document and contract tests with the first backend slice.
+Status: historical platform-wide v1 proposal. The implemented owner account/business/branch endpoints use same-origin cookie sessions and CSRF, documented in [Backend development](backend.md). Its catalog supersedes this proposal for that slice. Collection, analytics, jobs/reports/exports and bearer-token contracts below are not delivered. Executable integration tests cover the delivered HTTP contract; a machine-readable platform-wide OpenAPI document remains future work.
 
 ## Conventions and authorization
 

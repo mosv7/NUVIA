@@ -45,12 +45,21 @@ export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
   if (path === '/auth/session' && method === 'GET') return bootstrapSession();
   if (method !== 'GET' && !csrfToken) await bootstrapSession();
   const version = epoch;
-  const data = await request(path, {
-    method,
-    signal,
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-    headers: method === 'GET' ? {} : { 'X-CSRF-Token': csrfToken },
-  });
+  let data;
+  try {
+    data = await request(path, {
+      method,
+      signal,
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+      headers: method === 'GET' ? {} : { 'X-CSRF-Token': csrfToken },
+    });
+  } catch (error) {
+    if (version === epoch && ['AUTH_REQUIRED', 'CSRF_REJECTED'].includes(error.code)) {
+      resetApiSession();
+      window.dispatchEvent(new Event('nuvia:session-expired'));
+    }
+    throw error;
+  }
   if (version === epoch && data?.csrfToken) csrfToken = data.csrfToken;
   if (method !== 'GET' && path === '/auth/logout') resetApiSession();
   return data;

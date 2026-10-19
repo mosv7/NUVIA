@@ -95,3 +95,20 @@ it('consumes a verification link opened while the verification page is already m
   expect(verify).toHaveBeenCalledTimes(1);
   expect(location.hash).not.toContain('token=');
 });
+it('preview verification never bootstraps sessions or sends real verification requests', async () => {
+  const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ status: 'verified' });
+  const resend = vi.spyOn(authApi, 'resend').mockResolvedValue({ status: 'accepted' });
+  history.replaceState(null, '', '/preview/#/verify-email');
+  render(<App />);
+  await act(async () => {});
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'owner@example.test' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Resend verification link' }));
+  await act(async () => {});
+  await act(async () => {
+    location.hash = '/verify-email?token=' + 'a'.repeat(64);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  });
+  expect(verify).not.toHaveBeenCalled();
+  expect(resend).not.toHaveBeenCalled();
+  expect(authApi.session).not.toHaveBeenCalled();
+});

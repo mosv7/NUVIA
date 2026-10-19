@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { authApi } from '../services/auth.js';
-export default function VerificationPage({ language }) {
+export default function VerificationPage({ language, preview = false }) {
   const ar = language === 'ar';
   const [email, setEmail] = useState(''),
     [state, setState] = useState('pending');
   const started = useRef(null);
   const token = new URLSearchParams(location.hash.split('?')[1]).get('token');
   useEffect(() => {
+    if (preview) return;
     if (!token || started.current === token) return;
     started.current = token;
     history.replaceState(null, '', `${location.pathname}#/verify-email`);
@@ -15,9 +16,13 @@ export default function VerificationPage({ language }) {
       .verify(token)
       .then(() => setState('verified'))
       .catch(() => setState('invalid'));
-  }, [token]);
+  }, [token, preview]);
   async function resend(e) {
     e.preventDefault();
+    if (preview) {
+      setState('preview');
+      return;
+    }
     setState('busy');
     try {
       await authApi.resend(email);
@@ -29,6 +34,7 @@ export default function VerificationPage({ language }) {
   const messages = ar
     ? {
         pending: 'افتح رسالة التأكيد لإكمال إنشاء حسابك.',
+        preview: 'معاينة فقط: لم يُرسل أي بريد ولم يتغير أي حساب.',
         busy: 'يرجى الانتظار…',
         verified: 'تم تأكيد بريدك. يمكنك تسجيل الدخول الآن.',
         invalid: 'رابط التأكيد غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.',
@@ -37,6 +43,7 @@ export default function VerificationPage({ language }) {
       }
     : {
         pending: 'Open the verification email to finish creating your account.',
+        preview: 'Preview only: no email was sent and no account was changed.',
         busy: 'Please wait…',
         verified: 'Email verified. You can log in now.',
         invalid: 'This verification link is invalid or expired. Request a new one.',

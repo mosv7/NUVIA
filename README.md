@@ -6,7 +6,7 @@ NUVIA helps businesses turn free-text customer feedback into aspect scores, recu
 
 ## Project status
 
-This repository now includes the supplied bilingual React frontend prototype, the updated Overview and Feedback screens, a shared assistant, refreshed language/branch menus, its build/lint/format tooling, critical-flow tests, and frontend CI configuration. Backend services, database migrations, trained models, and real authentication are not implemented. The system documents describe the intended platform, not deployed functionality.
+The bilingual React app now connects to a Node.js/Express/MongoDB backend for verified owner accounts, cookie sessions, password recovery and persistent business/branch onboarding. Product routes require authentication and display saved workspace data with empty/unavailable analytics states. Sample Overview/Feedback/assistant content lives under `/preview/`. Feedback collection, trained models, AI, live analytics and team access are not implemented.
 
 The source proposal is `AI_Powered_Customer_Feedback_Analytics_&_Business_Intelligence_Platform.pdf`, supplied in the original workspace. The initial public repository contains the documentation derived from it; the PDF remains local. Technical choices and numerical targets introduced in these documents are **proposed baselines** for team review.
 
@@ -34,7 +34,7 @@ See the requirements document for the delivery order. Later stages remain part o
 
 ## Proposed implementation baseline
 
-A React/TypeScript dashboard, Python FastAPI backend, Python AI workers, PostgreSQL with pgvector, Redis-backed asynchronous jobs, and object storage are proposed. The proposal specifies Python NLP tooling but leaves concrete backend and frontend frameworks open. The imported frontend uses React with JavaScript/JSX and Vite; the TypeScript baseline and backend/AI choices remain proposals. See [the frontend integration decision](docs/decisions/0001-frontend-prototype.md).
+The project owner selected Node.js for the application API, MongoDB for storage and Python/FastAPI for the future AI service. The frontend retains React/JavaScript/JSX and Vite. These choices supersede the earlier PostgreSQL/application-FastAPI proposals. See [the backend decision](docs/decisions/0002-node-mongodb-foundation.md) and [implemented setup/contracts](docs/backend.md).
 
 ## Repository layout
 
@@ -45,7 +45,10 @@ NUVIA/
   package.json
   package-lock.json
   src/frontend/       # React app, configuration, and public assets
+  src/backend/        # Express API, MongoDB, auth, mail and workspaces
   tests/frontend/     # Critical-flow UI tests
+  tests/backend/      # Isolated MongoDB behavior tests
+  tests/e2e/          # Real browser account/onboarding lifecycle
   .github/workflows/  # Frontend checks
   docs/
     architecture.md
@@ -64,6 +67,7 @@ Use Node.js 22.12 or later and npm 10 or later. Run these commands from the repo
 
 ```sh
 npm ci
+npm run setup:local
 npm run dev
 ```
 
@@ -73,7 +77,9 @@ Checks: `npm run format:check`, `npm run lint`, `npm test`, and `npm run build`.
 
 For double-clickable HTML review files, run `npm run build` followed by `npm run previews`; open `previews/landing.html` or `previews/business.html`. Generated previews and bundles are not committed.
 
-See [Frontend development and review](docs/frontend.md) for routes, source locations, demo limitations, and mobile review. The current UI validates inputs locally; it does not create accounts, send email, save business data, or run analytics/AI.
+For the connected application, configure MongoDB then run `npm run dev:backend` and `npm run mail:work` in two additional terminals. See [backend setup and commands](docs/backend.md). Development verification/reset messages use a private local mailbox unless SMTP is configured; real email delivery is not established by local tests. Open `/preview/#/landing` for a design-only review without backend access.
+
+Backend checks: `npm run test:backend:unit`, `npm run test:backend`, and `npm run test:e2e:accounts`. Integration tests use an isolated local MongoDB replica set and synthetic identities. See [validation evidence](docs/backend-validation.md).
 
 Never commit credentials, customer responses, private datasets, or local environment files. Commit placeholder configuration examples when actual configuration is introduced.
 

@@ -11,7 +11,7 @@ import LandingPage from './pages/LandingPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import FeedbacksPage from './pages/FeedbacksPage.jsx';
 import { asset as resolveAsset } from './assets.js';
-import BusinessOnboarding from './pages/BusinessOnboarding.jsx';
+import BusinessOnboarding, { ConnectedBusinessOnboarding } from './pages/BusinessOnboarding.jsx';
 const routes = [
   'landing',
   'dashboard',
@@ -87,21 +87,6 @@ function AppContent() {
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     localStorage.setItem('nuvia-language', language);
   }, [language]);
-  useEffect(() => {
-    if (preview) return;
-    const workspace = auth.workspace;
-    setBusiness(
-      workspace
-        ? {
-            businessName: workspace.businessName,
-            industry: workspace.industry,
-            branchType: workspace.branchType,
-            branchName:
-              workspace.branches.find((b) => b.id === workspace.primaryBranchId)?.name || '',
-          }
-        : { businessName: '', industry: '', branchType: 'multiple', branchName: '' },
-    );
-  }, [preview, auth.user?.id, auth.workspace]);
   const resetParam = new URLSearchParams(location.hash.split('?')[1]).get('token');
   useEffect(() => {
     if (page !== 'reset' || preview) return;
@@ -255,7 +240,7 @@ function AppContent() {
       </main>
     );
   }
-  if (page === 'verify-email') return <VerificationPage language={language} />;
+  if (page === 'verify-email') return <VerificationPage language={language} preview={preview} />;
   if (
     page === 'reset' &&
     !preview &&
@@ -294,13 +279,20 @@ function AppContent() {
     );
   if (page === 'landing') return <LandingPage language={language} setLanguage={setLanguage} />;
   if (['business-information', 'business-error', 'business-setup', 'get-started'].includes(page))
-    return (
+    return preview ? (
       <BusinessOnboarding
         page={page}
         language={language}
         setLanguage={setLanguage}
         values={business}
         setValues={setBusiness}
+      />
+    ) : (
+      <ConnectedBusinessOnboarding
+        key={auth.user.id}
+        page={page}
+        language={language}
+        setLanguage={setLanguage}
       />
     );
   return (
