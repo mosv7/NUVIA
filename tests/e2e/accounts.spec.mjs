@@ -56,6 +56,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByRole('heading', { name: 'Verify your email' }).waitFor();
     await page.goto(await mailLink('verify-email'));
     await page.getByText('Email verified. You can log in now.').waitFor();
+    await page.screenshot({ path: join(output, 'verification-en-desktop.png'), fullPage: true });
     assert.ok(!page.url().includes('token='));
     await page.getByRole('link', { name: 'Back to log in' }).click();
     const login = async (password) => {
