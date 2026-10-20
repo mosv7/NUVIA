@@ -1,6 +1,7 @@
 # Documentation
 
 - [Start here (Arabic)](getting-started-ar.md): local setup and screen review.
+- [Full product feature map (Arabic)](product/feature-list.md): all 51 source features, priorities, dependencies and current implementation status.
 - [Product requirements](product/requirements.md): feature scope and acceptance criteria.
 - Architecture: [overview](architecture/architecture.md), [API contracts](architecture/api-contracts.md), [database](architecture/database.md), [AI pipeline](architecture/ai-pipeline.md).
 - Development: [backend](development/backend.md), [frontend](development/frontend.md), [team workflow](development/team-workflow.md), [backend validation](development/backend-validation.md).
