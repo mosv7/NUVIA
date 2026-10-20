@@ -57,9 +57,13 @@ export default function OverviewEmpty() {
         </p>
         <h2 id="first-response-title">{ar ? 'لا توجد ردود بعد' : 'No responses yet'}</h2>
         <p>
-          {ar
-            ? `بمجرد إتاحة جمع الردود وتحليلها لـ ${preview ? 'Bloom & Co.' : workspace?.businessName || ''}، ستظهر مؤشراتك هنا.`
-            : `Once response collection and analysis are available for ${preview ? 'Bloom & Co.' : workspace?.businessName || ''}, your metrics will appear here.`}
+          {preview
+            ? ar
+              ? 'أنشئ استبيانًا لـ Bloom & Co. بمجرد وصول أول ردود العملاء، ستظهر هنا مؤشراتك ورسومك البيانية ورؤى الذكاء الاصطناعي.'
+              : 'Create a survey for Bloom & Co. Once your first responses arrive, your metrics, charts and AI insights will appear here.'
+            : ar
+              ? `بمجرد إتاحة جمع الردود وتحليلها لـ ${workspace?.businessName || ''}، ستظهر مؤشراتك هنا.`
+              : `Once response collection and analysis are available for ${workspace?.businessName || ''}, your metrics will appear here.`}
         </p>
       </div>
       <button className="first-survey-create" onClick={() => action('Create Survey')}>

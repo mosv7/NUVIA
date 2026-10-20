@@ -65,22 +65,10 @@ export default function FeedbacksPage({
           />
         )}
         <FeedbackShell title={page === 'feedback-details' ? 'Feedback details' : 'Feedbacks'}>
-          {!preview ? (
-            <section className="feedback-empty">
-              <h2>{language === 'ar' ? 'لا توجد آراء محفوظة بعد' : 'No feedback collected yet'}</h2>
-              <p>
-                {language === 'ar'
-                  ? 'ستظهر الردود هنا بعد إتاحة جمع آراء العملاء.'
-                  : 'Responses will appear here when customer feedback collection is available.'}
-              </p>
-              <a href="#/dashboard">
-                {language === 'ar' ? 'العودة إلى النظرة العامة' : 'Back to Overview'}
-              </a>
-            </section>
-          ) : page === 'feedback-details' ? (
+          {preview && page === 'feedback-details' ? (
             <FeedbackDetail key={location.hash} />
           ) : (
-            <FeedbackList key={page} empty={page === 'feedbacks-empty'} />
+            <FeedbackList key={page} empty={!preview || page === 'feedbacks-empty'} />
           )}
         </FeedbackShell>
         {preview && <Assistant />}
