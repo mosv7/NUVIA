@@ -1,5 +1,13 @@
 # Backend foundation validation
 
+## Mongoose migration validation — 2026-10-21
+
+The application persistence layer now uses seven connection-scoped Mongoose models. A clean `npm ci`, 20 backend tests, 26 frontend tests, formatting/lint/build and the browser account lifecycle passed locally after conversion. New regressions cover insert/update validation, unknown-field rejection, model isolation across databases, no implicit collection creation during connection/read-only queries, and legacy UUID/ObjectId fixtures through reconnect/login/password reset. Existing custom indexes and unique/TTL/partial-index definitions remain intact. Tests use isolated replica sets; no shared application data is used by the suites.
+
+An independent read-only review reported no actionable findings. The connected development API, mailbox worker and frontend also started against the existing persistent local database; readiness/session HTTP checks returned 200. The Atlas read-only connection check still failed on this machine, so this does not establish Atlas acceptance. SMTP delivery remains unverified. No private configuration or bulk data rewrite was required.
+
+The original foundation record below is historical; its 16/21 test counts predate the later regression tests and Mongoose migration.
+
 Recorded 2026-10-20 on Windows, Node.js v24.13.1, MongoDB 7.0.24. Node 22 Linux checks are configured in CI; remote results must be checked after pushing.
 
 - Initial frontend baseline: 10 tests passed.

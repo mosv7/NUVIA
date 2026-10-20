@@ -5,7 +5,7 @@
 NUVIA is a bilingual Arabic/English customer-feedback product. The implemented slice covers verified owner accounts, cookie sessions, password recovery, persistent business/primary-branch onboarding, owner-scoped branch APIs and connected empty workspace screens.
 
 - Frontend: React, JavaScript/JSX and Vite.
-- Application backend: Node.js, Express and MongoDB with transactions.
+- Application backend: Node.js, Express and MongoDB through connection-scoped Mongoose models, with explicit transactions.
 - AI: Python/FastAPI is selected for future work; no AI service is implemented yet.
 - Survey publishing, public response collection, live analytics/reports, team roles, Google OAuth and billing are not implemented. Sample screens and navigation do not establish completed services.
 
@@ -15,6 +15,7 @@ Read [README.md](README.md) for current capabilities and setup, [DESIGN.md](DESI
 
 - `src/frontend/`: React app, Vite configuration and frontend scripts. Runtime code is in `src/frontend/src/`; static assets are in `src/frontend/public/assets/`.
 - `src/backend/`: `.mjs` modules for configuration, database access, authentication, HTTP handling, mail and workspaces. Operational entry points are in `src/backend/scripts/`.
+- `src/backend/models/`: executable Mongoose schemas, references and indexes for the seven existing collections. Use `deps.models` in application services; preserve collection names and legacy UUID/ObjectId formats. See [the model catalog](docs/architecture/mongodb-models.md).
 - `tests/frontend/`: Vitest/React Testing Library tests, normally `*.test.jsx` or `*.test.js`.
 - `tests/backend/`: Node test runner tests, `*.test.mjs`, with isolated MongoDB helpers.
 - `tests/e2e/`: Playwright account/onboarding browser scenarios.

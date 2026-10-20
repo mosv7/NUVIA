@@ -1,5 +1,7 @@
 # Node.js and MongoDB account foundation
 
+The direct-driver application persistence choice below is superseded by [0003: Mongoose models](0003-mongoose-models.md). The application stack and service boundaries remain unchanged.
+
 Status: selected by the project owner on 2026-10-20; implemented for account/business setup.
 
 - Node.js/Express owns the application API; the official MongoDB driver and MongoDB own persistence.

@@ -9,19 +9,19 @@ const branchView = (branch, primaryId) => ({
   isPrimary: branch._id === primaryId,
 });
 async function owned(userId, id, deps, session) {
-  const workspace = await deps.db
-    .collection('workspaces')
-    .findOne({ ownerUserId: userId, ...(id ? { _id: id } : {}) }, { session });
+  const workspace = await deps.models.Workspace.findOne(
+    { ownerUserId: userId, ...(id ? { _id: id } : {}) },
+    null,
+    { session },
+  ).lean();
   if (!workspace) throw new ApiError(404, 'NOT_FOUND');
   return workspace;
 }
 export async function getWorkspace(userId, deps) {
   const w = await owned(userId, null, deps);
-  const branches = await deps.db
-    .collection('branches')
-    .find({ workspaceId: w._id, archivedAt: null })
+  const branches = await deps.models.Branch.find({ workspaceId: w._id, archivedAt: null })
     .sort({ createdAt: 1, _id: 1 })
-    .toArray();
+    .lean();
   return {
     id: w._id,
     businessName: w.name,
@@ -52,12 +52,14 @@ export async function saveWorkspace(userId, input, deps) {
     version: 1,
   };
   try {
-    await deps.db
-      .collection('workspaces')
-      .updateOne({ ownerUserId: userId }, { $set: update, $setOnInsert: create }, { upsert: true });
+    await deps.models.Workspace.updateOne(
+      { ownerUserId: userId },
+      { $set: update, $setOnInsert: create },
+      { upsert: true },
+    );
   } catch (e) {
     if (e.code !== 11000) throw e;
-    await deps.db.collection('workspaces').updateOne({ ownerUserId: userId }, { $set: update });
+    await deps.models.Workspace.updateOne({ ownerUserId: userId }, { $set: update });
   }
   return getWorkspace(userId, deps);
 }
@@ -65,13 +67,11 @@ async function mutateWorkspace(userId, workspaceId, deps, action) {
   try {
     return await transaction(deps, async (session) => {
       const workspace = await owned(userId, workspaceId, deps, session);
-      await deps.db
-        .collection('workspaces')
-        .updateOne(
-          { _id: workspace._id, ownerUserId: userId },
-          { $inc: { version: 1 }, $set: { updatedAt: deps.now() } },
-          { session },
-        );
+      await deps.models.Workspace.updateOne(
+        { _id: workspace._id, ownerUserId: userId },
+        { $inc: { version: 1 }, $set: { updatedAt: deps.now() } },
+        { session },
+      );
       return action(workspace, session);
     });
   } catch (e) {
@@ -81,7 +81,7 @@ async function mutateWorkspace(userId, workspaceId, deps, action) {
 }
 export async function completeSetup(userId, input, deps) {
   await mutateWorkspace(userId, null, deps, async (w, session) => {
-    const branches = deps.db.collection('branches');
+    const branches = deps.models.Branch;
     if (
       input.branchType === 'single' &&
       (await branches.countDocuments(
@@ -106,23 +106,22 @@ export async function completeSetup(userId, input, deps) {
       },
       { upsert: true, session },
     );
-    await deps.db
-      .collection('workspaces')
-      .updateOne(
-        { _id: w._id, ownerUserId: userId },
-        { $set: { branchMode: input.branchType, primaryBranchId: id, onboardingStep: 'complete' } },
-        { session },
-      );
+    await deps.models.Workspace.updateOne(
+      { _id: w._id, ownerUserId: userId },
+      { $set: { branchMode: input.branchType, primaryBranchId: id, onboardingStep: 'complete' } },
+      { session },
+    );
   });
   return getWorkspace(userId, deps);
 }
 export async function listBranches(userId, workspaceId, { includeArchived = false }, deps) {
   const w = await owned(userId, workspaceId, deps);
-  const items = await deps.db
-    .collection('branches')
-    .find({ workspaceId, ...(includeArchived ? {} : { archivedAt: null }) })
+  const items = await deps.models.Branch.find({
+    workspaceId,
+    ...(includeArchived ? {} : { archivedAt: null }),
+  })
     .sort({ createdAt: 1, _id: 1 })
-    .toArray();
+    .lean();
   return items.map((b) => branchView(b, w.primaryBranchId));
 }
 export async function createBranch(userId, workspaceId, { name }, deps) {
@@ -138,14 +137,14 @@ export async function createBranch(userId, workspaceId, { name }, deps) {
       createdAt: deps.now(),
       updatedAt: deps.now(),
     };
-    await deps.db.collection('branches').insertOne(branch, { session });
+    await deps.models.Branch.insertOne(branch, { session });
     return branchView(branch, w.primaryBranchId);
   });
 }
 export async function updateBranch(userId, workspaceId, branchId, input, deps) {
   return mutateWorkspace(userId, workspaceId, deps, async (w, session) => {
-    const branches = deps.db.collection('branches');
-    const branch = await branches.findOne({ _id: branchId, workspaceId }, { session });
+    const branches = deps.models.Branch;
+    const branch = await branches.findOne({ _id: branchId, workspaceId }, null, { session }).lean();
     if (!branch) throw new ApiError(404, 'NOT_FOUND');
     if (input.archived && branchId === w.primaryBranchId)
       throw new ApiError(409, 'PRIMARY_BRANCH_REQUIRED');
@@ -159,13 +158,11 @@ export async function updateBranch(userId, workspaceId, branchId, input, deps) {
     if (input.archived !== undefined) update.archivedAt = input.archived ? deps.now() : null;
     await branches.updateOne({ _id: branchId, workspaceId }, { $set: update }, { session });
     if (input.isPrimary)
-      await deps.db
-        .collection('workspaces')
-        .updateOne(
-          { _id: workspaceId, ownerUserId: userId },
-          { $set: { primaryBranchId: branchId } },
-          { session },
-        );
+      await deps.models.Workspace.updateOne(
+        { _id: workspaceId, ownerUserId: userId },
+        { $set: { primaryBranchId: branchId } },
+        { session },
+      );
     return branchView({ ...branch, ...update }, input.isPrimary ? branchId : w.primaryBranchId);
   });
 }

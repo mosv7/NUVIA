@@ -11,11 +11,11 @@ test('health readiness checks actual storage, safe failures and schema upgrades'
     const app = createApp(deps);
     await request(app).get('/api/v1/health/live').expect(200);
     await request(app).get('/api/v1/health/ready').expect(200);
-    await ensureSchema(deps.db);
+    await ensureSchema(deps.models);
     await deps.db
       .collection('schema_versions')
       .updateOne({ _id: 'foundation' }, { $set: { version: 99 } });
-    await assert.rejects(ensureSchema(deps.db));
+    await assert.rejects(ensureSchema(deps.models));
     const failed = createApp({
       ...deps,
       db: {

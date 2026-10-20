@@ -5,7 +5,7 @@ let connection;
 try {
   const config = loadConfig();
   connection = await connectDatabase(config);
-  await ensureSchema(connection.db);
+  await ensureSchema(connection.models);
   const deps = { ...connection, config, now: () => new Date() };
   let stop = false;
   for (const signal of ['SIGINT', 'SIGTERM'])

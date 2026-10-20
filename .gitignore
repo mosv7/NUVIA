@@ -34,7 +34,8 @@ build/
 # Local/private data and model artifacts
 data/private/
 data/raw/
-models/
+# Trained-model artifacts at the repository root; backend schemas are source.
+/models/
 exports/
 artifacts/
 *.sqlite

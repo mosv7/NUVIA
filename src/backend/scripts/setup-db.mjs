@@ -3,7 +3,7 @@ import { connectDatabase, ensureSchema } from '../database.mjs';
 try {
   const connection = await connectDatabase(loadConfig());
   try {
-    await ensureSchema(connection.db);
+    await ensureSchema(connection.models);
     console.log('Database indexes/schema ready.');
   } finally {
     await connection.close();

@@ -29,7 +29,7 @@ try {
     MAIL_DIRECTORY: mailDirectory,
   });
   connection = await connectDatabase(config);
-  await ensureSchema(connection.db);
+  await ensureSchema(connection.models);
   const deps = { ...connection, config, now: () => new Date() };
   apiServer = createApp(deps).listen(0, '127.0.0.1');
   await new Promise((done, reject) => {

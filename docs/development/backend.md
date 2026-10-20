@@ -76,6 +76,10 @@ Validation rejects unknown fields, operator-shaped inputs and invalid IDs. All b
 
 Collections: `schema_versions`, `users`, `sessions`, `auth_tokens`, `mail_outbox`, `workspaces`, `branches`. Unique indexes enforce canonical emails, token/session digests, owner workspaces and active normalized branch names. MongoDB Date values store UTC instants.
 
+Application persistence uses connection-scoped Mongoose models under `src/backend/models/`; see the [model catalog](../architecture/mongodb-models.md) and [migration decision](../decisions/0003-mongoose-models.md). HTTP inputs retain Zod validation. Model inserts and supported update paths are validated; unknown fields are rejected. Queries return lean objects for the existing DTO boundary. Transactions still pass an explicit session, and hashing/encryption/application timestamps stay in services.
+
+Existing collection names and UUID/ObjectId storage formats are preserved. Connection setup disables automatic collection/index creation and query buffering; schema setup explicitly creates declared indexes without dropping existing ones. This upgrade does not require a bulk data rewrite. Use the existing private URI and normal setup commands after `npm ci`.
+
 Passwords use salted scrypt (N=32768/r=8/p=1, 64-byte derived key). Opaque cookies are HttpOnly/SameSite=Lax, Secure in production, lasting 24 hours or 30 days with Remember me. Authorization checks expiry/revocation before TTL cleanup. Verification/reset tokens are hashed, expire after 24 hours/30 minutes and are consumed transactionally. Password reset advances a credential version so a racing old-password login cannot remain authorized.
 
 Encrypted mail intent uses AES-256-GCM; payloads are removed on delivery/expiry. Leases recover interrupted jobs, with at most three delivery attempts. SMTP is at-least-once across a process crash after sending and before committing success; links remain single-use. A permanent exhausted job stays visible as failed until its retention/expiry cleanup.

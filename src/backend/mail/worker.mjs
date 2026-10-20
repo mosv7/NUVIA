@@ -5,7 +5,7 @@ export async function deliverPendingMail(
   deps,
   { limit = 10, adapter = createMailAdapter(deps.config) } = {},
 ) {
-  const jobs = deps.db.collection('mail_outbox');
+  const jobs = deps.models.MailOutbox;
   await jobs.updateMany(
     { expiresAt: { $lte: deps.now() } },
     { $set: { status: 'expired' }, $unset: { payload: '' } },
@@ -13,31 +13,33 @@ export async function deliverPendingMail(
   const result = { sent: 0, failed: 0 };
   for (let i = 0; i < limit; i++) {
     const leaseId = randomUUID();
-    const job = await jobs.findOneAndUpdate(
-      {
-        expiresAt: { $gt: deps.now() },
-        attempts: { $lt: 3 },
-        $or: [
-          { status: 'pending', nextAttemptAt: { $lte: deps.now() } },
-          { status: 'sending', leaseUntil: { $lte: deps.now() } },
-        ],
-      },
-      {
-        $set: { status: 'sending', leaseId, leaseUntil: new Date(deps.now().getTime() + 60000) },
-        $inc: { attempts: 1 },
-      },
-      { sort: { createdAt: 1 }, returnDocument: 'after' },
-    );
+    const job = await jobs
+      .findOneAndUpdate(
+        {
+          expiresAt: { $gt: deps.now() },
+          attempts: { $lt: 3 },
+          $or: [
+            { status: 'pending', nextAttemptAt: { $lte: deps.now() } },
+            { status: 'sending', leaseUntil: { $lte: deps.now() } },
+          ],
+        },
+        {
+          $set: { status: 'sending', leaseId, leaseUntil: new Date(deps.now().getTime() + 60000) },
+          $inc: { attempts: 1 },
+        },
+        { sort: { createdAt: 1 }, returnDocument: 'after' },
+      )
+      .lean();
     if (!job) break;
     const match = { _id: job._id, status: 'sending', leaseId };
     try {
-      const current = await deps.db.collection('auth_tokens').findOne({
+      const current = await deps.models.AuthToken.findOne({
         userId: job.userId,
         purpose: job.kind,
         digest: job.tokenDigest,
         expiresAt: { $gt: deps.now() },
-      });
-      const user = await deps.db.collection('users').findOne({ _id: job.userId });
+      }).lean();
+      const user = await deps.models.User.findOne({ _id: job.userId }).lean();
       if (!current || !user || !job.payload) {
         await jobs.updateOne(match, {
           $set: { status: 'expired' },

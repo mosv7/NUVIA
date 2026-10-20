@@ -16,7 +16,7 @@ NUVIA is being built to collect customer feedback through surveys and turn it in
 | Design previews   | Explicit `/preview/` routes show sample dashboard, feedback, response details and assistant content separately from account data. |
 | Languages         | English and Arabic/RTL, with desktop and mobile layouts.                                                                          |
 
-The application API uses **Node.js + Express + MongoDB**. The frontend uses **React + Vite**. **Python/FastAPI** is the selected stack for the future AI service; that service is not implemented.
+The application API uses **Node.js + Express + MongoDB**, with **Mongoose** schemas/models in `src/backend/models/`. The frontend uses **React + Vite**. **Python/FastAPI** is the selected stack for the future AI service; that service is not implemented. See the [current model catalog](docs/architecture/mongodb-models.md) for collections, fields, references and compatibility rules.
 
 ## Run the current app
 
@@ -136,7 +136,7 @@ npm run test:backend
 npm run test:e2e:accounts
 ```
 
-The latest feature validation recorded **17 backend tests** and **26 frontend tests**, plus a browser account lifecycle covering verification, failed-save recovery, persistent setup, logout/login, password reset, empty Feedback, mobile overlap/overflow and EN/AR checks. Integration/browser tests use synthetic identities and isolated local databases, not your configured application database.
+The latest validation recorded **20 backend tests** and **26 frontend tests**, plus a browser account lifecycle covering verification, failed-save recovery, persistent setup, logout/login, password reset, empty Feedback, mobile overlap/overflow and EN/AR checks. Backend coverage includes Mongoose create/update validation, model isolation, read-only connection setup, legacy UUID/ObjectId data, reconnect behavior and index preservation. Integration/browser tests use synthetic identities and isolated local databases, not your configured application database.
 
 Integration tests may download MongoDB on the first run. An existing `.local/tools/mongod.exe` is reused when present; it is not committed. Browser tests use installed Edge on supported Windows paths, `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, or Playwright's Chromium. If neither browser is available, run `npx playwright install chromium`.
 
@@ -149,6 +149,7 @@ GitHub Actions runs frontend and backend/account checks. The [validation record]
 ```text
 src/frontend/         React app, Vite configuration and public assets
 src/backend/          Express API, authentication, mail and workspace services
+src/backend/models/   Mongoose schemas, references and collection indexes
 tests/frontend/       Frontend behavior and regression tests
 tests/backend/        MongoDB integration and unit tests
 tests/e2e/            Browser account/onboarding lifecycle

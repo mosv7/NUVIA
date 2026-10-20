@@ -1,8 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import dns from 'node:dns';
-import { MongoClient } from 'mongodb';
 import { loadConfig } from '../../../src/backend/config.mjs';
-import { ensureSchema } from '../../../src/backend/database.mjs';
+import { connectDatabase, ensureSchema } from '../../../src/backend/database.mjs';
 
 export function assertTestDatabase(name) {
   if (!/^nuvia_test_[0-9a-f-]{36}$/.test(name))
@@ -21,18 +20,17 @@ export async function createTestDatabase() {
     MONGODB_DATABASE: name,
     MAIL_ENCRYPTION_KEY: 'a'.repeat(64),
   });
-  const client = await new MongoClient(uri).connect();
-  const db = client.db(name);
-  await ensureSchema(db);
+  const connection = await connectDatabase(config);
+  const { db } = connection;
+  await ensureSchema(connection.models);
   return {
-    client,
-    db,
+    ...connection,
     config,
     now: () => new Date(),
     cleanup: async () => {
       assertTestDatabase(db.databaseName);
       await db.dropDatabase();
-      await client.close();
+      await connection.close();
     },
   };
 }

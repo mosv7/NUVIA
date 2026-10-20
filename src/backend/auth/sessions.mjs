@@ -31,14 +31,17 @@ export function userView(user) {
 export async function resolveSession(req, deps) {
   const raw = req.cookies?.[cookieName];
   if (!/^[a-f0-9]{64}$/.test(raw || '')) return null;
-  const session = await deps.db
-    .collection('sessions')
-    .findOne({ digest: digest(raw), expiresAt: { $gt: deps.now() }, revokedAt: null });
+  const session = await deps.models.Session.findOne({
+    digest: digest(raw),
+    expiresAt: { $gt: deps.now() },
+    revokedAt: null,
+  }).lean();
   if (!session) return null;
   if (!session.userId) return { session, raw, user: null };
-  const user = await deps.db
-    .collection('users')
-    .findOne({ _id: session.userId, credentialsVersion: session.credentialsVersion });
+  const user = await deps.models.User.findOne({
+    _id: session.userId,
+    credentialsVersion: session.credentialsVersion,
+  }).lean();
   return user ? { session, raw, user } : null;
 }
 export async function createSession(
@@ -49,7 +52,7 @@ export async function createSession(
   const raw = randomBytes(32).toString('hex'),
     csrfToken = csrfFor(raw, deps.config);
   const lifetime = (remember ? 30 : 1) * 24 * 60 * 60 * 1000;
-  await deps.db.collection('sessions').insertOne({
+  await deps.models.Session.insertOne({
     _id: randomUUID(),
     digest: digest(raw),
     csrfDigest: digest(csrfToken),
@@ -65,9 +68,10 @@ export async function createSession(
 export async function revokeSession(req, res, deps, { clearCookie = true } = {}) {
   const raw = req.cookies?.[cookieName];
   if (raw)
-    await deps.db
-      .collection('sessions')
-      .updateOne({ digest: digest(raw) }, { $set: { revokedAt: deps.now() } });
+    await deps.models.Session.updateOne(
+      { digest: digest(raw) },
+      { $set: { revokedAt: deps.now() } },
+    );
   if (clearCookie) res.clearCookie(cookieName, cookieOptions(deps.config));
 }
 export async function bootstrapSession(req, res, deps) {
