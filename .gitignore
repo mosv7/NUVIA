@@ -9,6 +9,7 @@ atlas-credentials.env
 
 # Temporary tools and local source proposal
 .tools/
+docs/references/*.pdf
 AI_Powered_Customer_Feedback_Analytics_&_Business_Intelligence_Platform.pdf
 
 # Dependencies and generated output

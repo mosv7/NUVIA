@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js >=22.12, native JavaScript ES modules, Express 5, official MongoDB driver, Zod, Helmet, cookie-parser, Nodemailer, Node crypto, Node test runner, Supertest, mongodb-memory-server-core, existing React/Vite/Vitest/Playwright.
 
-**Spec:** `docs/superpowers/specs/2026-10-20-backend-foundation-design.md`, approved in chat on 2026-10-20. Plan approved for inline execution. Delivered scope and evidence are recorded in `docs/backend.md` and `docs/backend-validation.md`; task checklists below preserve the original implementation brief.
+**Spec:** `docs/superpowers/specs/2026-10-20-backend-foundation-design.md`, approved in chat on 2026-10-20. Plan approved for inline execution. Delivered scope and evidence are recorded in `docs/development/backend.md` and `docs/development/backend-validation.md`; task checklists below preserve the original implementation brief.
 
 ## Global Constraints
 
@@ -18,7 +18,7 @@
 - Use Node crypto scrypt with a random 16-byte salt, N=32768, r=8, p=1, a 64-byte derived key, and a sufficient bounded memory allowance.
 - Session expiry is 24 hours, or 30 days with Remember me. Verification tokens expire after 24 hours; reset tokens after 30 minutes.
 - Cookie: HttpOnly, SameSite=Lax, Secure in production, Path=/. No credentials or session tokens in browser storage.
-- MongoDB, SMTP and mail-encryption credentials remain server-side; never print secrets. Keep `atlas-credentials.env`, `.local/` and `.codex-remote-attachments/` ignored.
+- MongoDB, SMTP and mail-encryption credentials remain server-side; never print secrets. Keep `.local/config/atlas-credentials.env`, `.local/` and `.codex-remote-attachments/` ignored.
 - Use the normal system resolver and TLS negotiation by default. No hard-coded DNS servers/Atlas IPs and no disabled TLS verification.
 - Work on `codex/backend-foundation`. Do not merge main. Commit exact files only, after staged whitespace validation.
 - Every implementation task follows red -> green tests -> commit; tests must verify behavior, not reproduce internal helpers.
@@ -138,7 +138,7 @@ All service functions receive a dependency object `{db,client,config,now}`. `now
 
 ## Task 8: End-to-end evidence, CI and documentation
 
-**Files:** Create browser test/config and `tests/e2e/run.mjs`, `.github/workflows/backend.yml`, `docs/decisions/0002-node-mongodb-foundation.md`, `docs/backend.md`; update README, architecture/database/contracts/frontend docs and existing frontend CI where required.
+**Files:** Create browser test/config and `tests/e2e/run.mjs`, `.github/workflows/backend.yml`, `docs/decisions/0002-node-mongodb-foundation.md`, `docs/development/backend.md`; update README, architecture/database/contracts/frontend docs and existing frontend CI where required.
 
 **Interfaces:** `npm run test:e2e:accounts` starts an isolated replica set and local API/frontend/mail worker processes, tests then shuts down only processes/storage it owns. Test mailbox remains inside that test run's temporary directory. No shared Atlas credentials in CI. `npm run test:backend` forwards runner flags after `--` and rejects unsupported arguments instead of ignoring them.
 

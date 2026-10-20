@@ -11,7 +11,7 @@ npm ci
 npm run setup:local
 ```
 
-Setup creates `.env` only if absent, with a generated private 32-byte mail-encryption key. Configure `MONGODB_URI` there or use the existing ignored `atlas-credentials.env`. Process environment overrides local files; `.env` overrides Atlas-file values. Production reads process environment only. `.env.example` lists placeholders. Never commit connection credentials.
+Setup creates `.env` only if absent, with a generated private 32-byte mail-encryption key. Configure `MONGODB_URI` there or use the existing ignored `.local/config/atlas-credentials.env`. Process environment overrides local files; `.env` overrides Atlas-file values. Production reads process environment only. `.env.example` lists placeholders. Never commit connection credentials.
 
 Atlas must permit the database user to access the configured database and the API machine's actual public IP to connect. The application does not modify Atlas access lists or system networking.
 

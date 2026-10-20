@@ -10,6 +10,6 @@ try {
     { flag: 'wx', mode: 0o600 },
   );
   console.log(
-    'Created private development .env; Atlas settings are read from atlas-credentials.env.',
+    'Created private development .env; Atlas settings belong in .local/config/atlas-credentials.env.',
   );
 }

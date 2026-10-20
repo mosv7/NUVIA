@@ -7,7 +7,7 @@ export function loadConfig(env = process.env, { rootDir = process.cwd() } = {}) 
   const mode = env.NODE_ENV || 'development';
   let local = {};
   if (mode === 'development') {
-    for (const file of ['atlas-credentials.env', '.env']) {
+    for (const file of ['atlas-credentials.env', '.local/config/atlas-credentials.env', '.env']) {
       const path = resolve(rootDir, file);
       if (existsSync(path)) local = { ...local, ...parseEnv(readFileSync(path, 'utf8')) };
     }

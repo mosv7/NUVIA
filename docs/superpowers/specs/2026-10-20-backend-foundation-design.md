@@ -28,7 +28,7 @@ The frontend calls `/api/v1` through Vite's development proxy. Production serves
 ## Configuration and startup
 
 - Use Node.js 22.12 or later, matching the frontend prerequisite; verify the installed runtime with the actual chosen dependency versions.
-- Read local `atlas-credentials.env` only in development, with normal process environment variables taking precedence. Commit only a placeholder `.env.example`; never log connection strings, passwords, reset tokens, verification links, or session cookies.
+- Read local `.local/config/atlas-credentials.env` only in development, with normal process environment variables taking precedence. Commit only a placeholder `.env.example`; never log connection strings, passwords, reset tokens, verification links, or session cookies.
 - Backend configuration includes `MONGODB_URI`, `MONGODB_DATABASE`, `PORT`, `APP_ORIGIN`, `MAIL_MODE`, `MAIL_ENCRYPTION_KEY`, SMTP settings, and optional `MONGODB_DNS_SERVERS` / `MONGODB_TLS_MAX_VERSION`. Generate a private local mail encryption key during developer setup; do not commit it.
 - DNS/TLS workarounds must be explicit, validated configuration. Use the normal system resolver and TLS negotiation by default. The prior diagnostic needed an alternate DNS resolver and TLS 1.2; repeat the connection check before deciding local values. Do not hard-code Atlas node IPs, DNS servers, or disable certificate validation.
 - Validate required settings and create indexes before accepting traffic. Shutdown closes the HTTP listener and MongoDB client.
