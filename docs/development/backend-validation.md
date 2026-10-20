@@ -8,7 +8,7 @@ Clean installation exposed an inherited `preserveSymlinks` setting that hid a Re
 
 All 60 EN/AR desktop/mobile preview candidates were generated outside the repository, with asset/font/overflow checks. Approved gallery images were preserved. The combined development launcher reached API readiness and served the web app against the existing local replica set; Ctrl+C stopped its owned services and released ports 3001/5173.
 
-The optional FastAPI scaffold passes two health tests and Ruff checks; it explicitly reports analysis unavailable. Docker Compose configuration validates, but local image builds/runtime remain unverified because the Docker daemon is unavailable. CI includes a real container build/start/health job; report its current result separately after pushing. Atlas account-flow and SMTP acceptance remain unverified.
+The optional FastAPI scaffold passes two health tests and Ruff checks; it explicitly reports analysis unavailable. Docker Compose configuration validates, but local image builds/runtime remain unverified because the Docker daemon is unavailable. The [workspace CI run](https://github.com/mosv7/NUVIA/actions/runs/39509384961) for implementation commit `01ebbc5` passed all four jobs: web, accounts, AI scaffold and containers. The container job built and started MongoDB/API/mail/nginx/FastAPI on Linux and passed same-origin API/web and scaffold health checks. This provides container smoke evidence, not production deployment or full browser acceptance inside Docker. Atlas account-flow and SMTP acceptance remain unverified.
 
 The Mongoose and foundation records below are historical snapshots preceding the monorepo layout.
 

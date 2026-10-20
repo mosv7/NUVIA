@@ -32,9 +32,9 @@ The underlying MongoDB client remains available for explicit transactions; every
 - Sessions, tokens and outbox messages retain `expireAfterSeconds: 0` indexes on `expiresAt`. Services still enforce expiry before eventual TTL removal.
 - The branch unique index remains partial on `{ archivedAt: null }`, preserving archived names/history.
 - `ensureSchema(models)` checks the `foundation` version, calls `createIndexes()` for declared indexes, then records version 1. It never calls `syncIndexes()` or drops indexes. Incompatible indexes/versions still fail for explicit review.
-- `autoIndex`, `autoCreate` and query buffering are disabled. Connection/read-only ping does not run schema setup. Startup and `npm run db:setup` explicitly prepare indexes.
+- `autoIndex`, `autoCreate` and query buffering are disabled. Connection/read-only ping does not run schema setup. Startup and `pnpm db:setup` explicitly prepare indexes.
 - No `__v` field, automatic timestamps, collection renaming, ID conversion or bulk data rewrite is introduced. Valid existing documents remain readable, and supplied legacy UUID/ObjectId fixtures are covered by reconnect/login/reset tests.
 
 Mongoose is application-level enforcement. Writes from MongoDB Compass, another service, or native test fixtures bypass its validators. A future Python/FastAPI writer must share a documented storage contract and validation strategy rather than assume Mongoose validates Python writes.
 
-The upgrade uses the existing MongoDB URI and database name. Run `npm ci`, then the normal database check/setup and three-process startup from [README](../../README.md). No data-copy migration is required for the tested existing shapes. Atlas/SMTP acceptance and deployment backup/restore remain separate from isolated test evidence.
+The upgrade uses the existing MongoDB URI and database name. Run `pnpm install --frozen-lockfile`, then the normal database check/setup and `pnpm dev` startup from [README](../../README.md). No data-copy migration is required for the tested existing shapes. Atlas/SMTP acceptance and deployment backup/restore remain separate from isolated test evidence.
