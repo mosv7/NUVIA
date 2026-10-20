@@ -1,0 +1,87 @@
+# Local development only: internal MongoDB, HTTP loopback origin, file mailbox.
+name: nuvia
+services:
+  mongo:
+    image: mongo:7.0.24
+    command: [mongod, --replSet, nuvia, --bind_ip_all]
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: [CMD, mongosh, --quiet, --eval, 'db.adminCommand({ ping: 1 }).ok']
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  mongo-init:
+    image: mongo:7.0.24
+    entrypoint: [mongosh, --host, mongo:27017, --quiet, /scripts/init-replica.js]
+    volumes:
+      - ./infra/docker/init-replica.js:/scripts/init-replica.js:ro
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/workspace.Dockerfile
+      target: api
+    environment: &api-environment
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 3001
+      MONGODB_URI: mongodb://mongo:27017/?replicaSet=nuvia
+      MONGODB_DATABASE: nuvia_development
+      APP_ORIGIN: http://127.0.0.1:5173
+      MAIL_MODE: file
+      MAIL_ENCRYPTION_KEY: ${MAIL_ENCRYPTION_KEY:?Run pnpm setup:local first}
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          --input-type=module,
+          -e,
+          "const r=await fetch('http://127.0.0.1:3001/api/v1/health/ready');process.exit(r.ok?0:1)",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mail:
+    build:
+      context: .
+      dockerfile: infra/docker/workspace.Dockerfile
+      target: api
+    command: [node, apps/api/scripts/mail-worker.mjs]
+    environment: *api-environment
+    volumes:
+      - ./.local/mail:/workspace/.local/mail
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/workspace.Dockerfile
+      target: web
+    ports:
+      - 127.0.0.1:5173:80
+    depends_on:
+      api:
+        condition: service_healthy
+
+  ai:
+    profiles: [ai]
+    build:
+      context: .
+      dockerfile: infra/docker/ai.Dockerfile
+    ports:
+      - 127.0.0.1:8000:8000
+
+volumes:
+  mongo-data:

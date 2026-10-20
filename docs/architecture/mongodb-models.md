@@ -1,18 +1,18 @@
 # MongoDB models
 
-The application uses Mongoose 9 for the existing account/workspace storage. Executable schemas and indexes live in `src/backend/models/`. They describe implemented collections, not the future survey/AI proposal.
+The application uses Mongoose 9 for the existing account/workspace storage. Executable schemas and indexes live in `apps/api/src/shared/database/models/`. They describe implemented collections, not the future survey/AI proposal.
 
 ## Model map
 
-| Model         | Collection        | Source                                                          | Main fields                                                                                                                                        |
-| ------------- | ----------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| User          | `users`           | [User.mjs](../../src/backend/models/User.mjs)                   | `_id`, name, email, locale, passwordHash, credentialsVersion, verifiedAt, termsAcceptedAt, createdAt, updatedAt                                    |
-| Session       | `sessions`        | [Session.mjs](../../src/backend/models/Session.mjs)             | `_id`, digest, csrfDigest, userId, credentialsVersion, createdAt, expiresAt, revokedAt                                                             |
-| AuthToken     | `auth_tokens`     | [AuthToken.mjs](../../src/backend/models/AuthToken.mjs)         | `_id`, userId, purpose (`verify`/`reset`), digest, expiresAt, createdAt                                                                            |
-| Workspace     | `workspaces`      | [Workspace.mjs](../../src/backend/models/Workspace.mjs)         | `_id`, ownerUserId, name, industry, locale, reportingTimezone, branchMode, primaryBranchId, onboardingStep, version, createdAt, updatedAt          |
-| Branch        | `branches`        | [Branch.mjs](../../src/backend/models/Branch.mjs)               | `_id`, workspaceId, name, normalizedName, archivedAt, createdAt, updatedAt                                                                         |
-| MailOutbox    | `mail_outbox`     | [MailOutbox.mjs](../../src/backend/models/MailOutbox.mjs)       | `_id`, userId, kind, tokenDigest, encrypted payload, status, attempts, createdAt, expiresAt, nextAttemptAt, leaseId, leaseUntil, sentAt, errorCode |
-| SchemaVersion | `schema_versions` | [SchemaVersion.mjs](../../src/backend/models/SchemaVersion.mjs) | `_id` (`foundation`), version, appliedAt                                                                                                           |
+| Model         | Collection        | Source                                                                           | Main fields                                                                                                                                        |
+| ------------- | ----------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| User          | `users`           | [User.mjs](../../apps/api/src/shared/database/models/User.mjs)                   | `_id`, name, email, locale, passwordHash, credentialsVersion, verifiedAt, termsAcceptedAt, createdAt, updatedAt                                    |
+| Session       | `sessions`        | [Session.mjs](../../apps/api/src/shared/database/models/Session.mjs)             | `_id`, digest, csrfDigest, userId, credentialsVersion, createdAt, expiresAt, revokedAt                                                             |
+| AuthToken     | `auth_tokens`     | [AuthToken.mjs](../../apps/api/src/shared/database/models/AuthToken.mjs)         | `_id`, userId, purpose (`verify`/`reset`), digest, expiresAt, createdAt                                                                            |
+| Workspace     | `workspaces`      | [Workspace.mjs](../../apps/api/src/shared/database/models/Workspace.mjs)         | `_id`, ownerUserId, name, industry, locale, reportingTimezone, branchMode, primaryBranchId, onboardingStep, version, createdAt, updatedAt          |
+| Branch        | `branches`        | [Branch.mjs](../../apps/api/src/shared/database/models/Branch.mjs)               | `_id`, workspaceId, name, normalizedName, archivedAt, createdAt, updatedAt                                                                         |
+| MailOutbox    | `mail_outbox`     | [MailOutbox.mjs](../../apps/api/src/shared/database/models/MailOutbox.mjs)       | `_id`, userId, kind, tokenDigest, encrypted payload, status, attempts, createdAt, expiresAt, nextAttemptAt, leaseId, leaseUntil, sentAt, errorCode |
+| SchemaVersion | `schema_versions` | [SchemaVersion.mjs](../../apps/api/src/shared/database/models/SchemaVersion.mjs) | `_id` (`foundation`), version, appliedAt                                                                                                           |
 
 `User` owns one `Workspace`; a workspace has branches and an optional primary branch. Sessions, auth tokens and outgoing authentication messages reference a user. Anonymous CSRF bootstrap sessions have null `userId`/`credentialsVersion`. References are schema metadata, not foreign-key enforcement or automatic population; services enforce owner scope and transactional invariants.
 
@@ -20,9 +20,9 @@ Business/account IDs remain UUID strings. Auth-token IDs remain MongoDB ObjectId
 
 ## Connection and query ownership
 
-[database.mjs](../../src/backend/database.mjs) creates a dedicated Mongoose connection. [createModels](../../src/backend/models/index.mjs) registers models on that connection and exposes them as `deps.models`. Models are not registered on the global default connection, so tests and separate databases do not share model bindings.
+[database.mjs](../../apps/api/src/shared/database/connection.mjs) creates a dedicated Mongoose connection. [createModels](../../apps/api/src/shared/database/models/index.mjs) registers models on that connection and exposes them as `deps.models`. Models are not registered on the global default connection, so tests and separate databases do not share model bindings.
 
-Authentication, sessions, workspaces, branches and mail use Mongoose model operations. Read queries use `lean()` to retain plain-object service results and the existing DTO boundary. HTTP routes retain Zod input validation; Mongoose adds document and update validation. The shared [schema helper](../../src/backend/models/schema.mjs) rejects unknown fields and enables validators for `updateOne`, `updateMany` and `findOneAndUpdate`. Update validators cover modified supported paths, not a full-document revalidation; service rules remain necessary, including for `$inc` operations.
+Authentication, sessions, workspaces, branches and mail use Mongoose model operations. Read queries use `lean()` to retain plain-object service results and the existing DTO boundary. HTTP routes retain Zod input validation; Mongoose adds document and update validation. The shared [schema helper](../../apps/api/src/shared/database/models/schema.mjs) rejects unknown fields and enables validators for `updateOne`, `updateMany` and `findOneAndUpdate`. Update validators cover modified supported paths, not a full-document revalidation; service rules remain necessary, including for `$inc` operations.
 
 The underlying MongoDB client remains available for explicit transactions; every transactional model operation receives the session. The native database handle is limited to health commands and test-fixture inspection, not a parallel application persistence path. Password hashing, token hashing, encryption, branch normalization and application timestamps remain in their current services. No persistence hooks silently replace those rules.
 

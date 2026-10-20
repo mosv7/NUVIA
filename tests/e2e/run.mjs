@@ -6,9 +6,9 @@ import { mkdtemp, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { loadConfig } from '../../src/backend/config.mjs';
-import { connectDatabase, ensureSchema } from '../../src/backend/database.mjs';
-import { createApp } from '../../src/backend/app.mjs';
+import { loadConfig } from '../../apps/api/src/config/env.mjs';
+import { connectDatabase, ensureSchema } from '../../apps/api/src/shared/database/connection.mjs';
+import { createApp } from '../../apps/api/src/app.mjs';
 import { runAccountScenario } from './accounts.spec.mjs';
 let replica, connection, apiServer, frontend, browser;
 const mailDirectory = await mkdtemp(join(tmpdir(), 'nuvia-browser-mail-'));
@@ -37,8 +37,8 @@ try {
     apiServer.once('error', reject);
   });
   frontend = await createServer({
-    root: resolve('src/frontend'),
-    configFile: resolve('src/frontend/vite.config.js'),
+    root: resolve('apps/web'),
+    configFile: resolve('apps/web/vite.config.js'),
     configLoader: 'runner',
     server: {
       host: '127.0.0.1',

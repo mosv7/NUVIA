@@ -32,7 +32,7 @@ Owners create an account and business workspace, then review customer feedback o
 
 ## Runtime ownership
 
-Runtime CSS remains canonical (mapping model B). `src/frontend/src/styles/app.css` defines `--primary`, `--dark`, `--muted`, `--border`, and `--error`, mirrored above. Authentication, verification and loading states consume those variables. Font files are bundled by `main.jsx`. Existing styles own the layout/type scales; no duplicate theme adapter or new color palette is introduced. `setup.css` and `site-chrome.css` retain onboarding geometry and shared branding.
+Runtime CSS remains canonical (mapping model B). `apps/web/src/styles/app.css` defines `--primary`, `--dark`, `--muted`, `--border`, and `--error`, mirrored above. Authentication, verification and loading states consume those variables. Font files are bundled by `main.jsx`. Existing styles own the layout/type scales; no duplicate theme adapter or new color palette is introduced. `setup.css` and `site-chrome.css` retain onboarding geometry and shared branding.
 
 Existing headers use 76px desktop / 72px mobile geometry and responsive product navigation. The mobile breakpoint for account/business chrome is 850px. Preserve stacked narrow layouts, natural vertical scrolling and 16px mobile input text; never clip forms to force viewport fit. Verification uses the same action color, border, typography and 8px field radius as sibling account controls.
 

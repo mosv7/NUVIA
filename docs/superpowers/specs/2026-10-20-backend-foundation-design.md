@@ -19,7 +19,7 @@ The user selected Node.js for the application backend, MongoDB for storage, and 
 
 ## Architecture and tradeoff
 
-Use one Express 5 application with focused modules for configuration, database access, authentication, mail, and workspaces. Use native JavaScript ES modules (`.mjs`) under `src/backend/`, the official MongoDB Node driver, and the existing root npm lockfile. This avoids adding a second package manager or a backend transpilation step to the JavaScript prototype. Backend behavior tests live under `tests/backend/` and use Node's test runner.
+Use one Express 5 application with focused modules for configuration, database access, authentication, mail, and workspaces. Use native JavaScript ES modules (`.mjs`) under `apps/api/src/`, the official MongoDB Node driver, and the existing root npm lockfile. This avoids adding a second package manager or a backend transpilation step to the JavaScript prototype. Backend behavior tests live under `apps/api/tests/` and use Node's test runner.
 
 An external identity provider would reduce password-management work but introduces an unselected account/provider dependency. A heavier application framework adds conventions and tooling before the project needs them. Express plus MongoDB fits the requested first slice and keeps the later Python AI boundary independent.
 

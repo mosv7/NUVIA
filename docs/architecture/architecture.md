@@ -1,93 +1,49 @@
-# Architecture
+# Current architecture
 
-Status: historical platform architecture proposal. The delivered account/business-setup slice uses Node.js/Express and MongoDB; see [decision 0002](../decisions/0002-node-mongodb-foundation.md) and [actual backend](../development/backend.md). Python/FastAPI remains the future AI-service boundary. PostgreSQL, pgvector, Redis and the analysis components below are unimplemented proposals.
+NUVIA is a JavaScript/Python monorepo. Node owns the public product API and MongoDB persistence. React uses that API on one browser origin. FastAPI is currently a separate **health-only scaffold**, not an analysis backend.
 
-## Design approach
+## Application boundaries
 
-Start with a modular backend and separately runnable AI workers. Keep tenant authorization, questionnaire collection, analytics, and reporting behind one API rather than splitting them into independently deployed microservices. Slow inference runs asynchronously so customer submissions do not depend on model availability.
+| Owner                      | Path                       | Implemented responsibility                                                                                                         |
+| -------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Web                        | `apps/web`                 | React/Vite, hash routing, auth/setup UI, connected empty workspaces and explicit design previews                                   |
+| API                        | `apps/api`                 | Express, protected sessions/CSRF, account recovery, owner-scoped workspace/branch persistence, Mongoose models and mail processing |
+| AI scaffold                | `apps/ai-service`          | FastAPI liveness with `analysis_available: false`; no inference, RAG or product integration                                        |
+| Public contracts           | `packages/shared-types`    | Shared API prefix/locales and public DTO declarations; no database models or secrets                                               |
+| Development infrastructure | `infra` and `compose.yaml` | Optional local replica set, same-origin nginx routing, API/mail/web images and optional AI scaffold                                |
 
-Proposed baseline: React with TypeScript for the dashboard, FastAPI for the API, Python/PyTorch and Hugging Face tooling for AI, PostgreSQL with pgvector for structured and vector data, Redis-backed workers for job delivery, and object storage for exports and model artifacts. Select exact versions and providers during implementation and record them in dependency lockfiles and decision records.
+JavaScript/JSX and `.mjs` remain in use. The source layout is ready for deliberate feature growth; there is no TypeScript, Redux, React Router or production deployment migration in this change.
 
-## Component flow
+## Web ownership
 
-```mermaid
-flowchart LR
-    Customer[Customer] --> Form[Public questionnaire]
-    Team[Business team] --> UI[Bilingual dashboard]
-    Form --> API[Platform API]
-    UI --> API
-    API --> DB[(PostgreSQL and pgvector)]
-    API --> Outbox[Transactional outbox dispatcher]
-    Outbox --> Queue[(Job queue)]
-    Queue --> Worker[AI and export workers]
-    Worker --> DB
-    Worker --> Store[(Object storage)]
-    Worker --> LLM[Configured LLM provider]
-    Worker --> Models[Versioned NLP models]
-```
+`src/app/App.jsx` chooses preview mode and composes providers. `app/router` owns route names/access decisions and route orchestration; `features/auth/AuthPage.jsx` owns account-screen markup. `app/providers` owns resolved account/workspace state and product shell state. Feature folders own their screen behavior, API clients and local drafts. `components/ui` and `components/layout` own shared controls, shell geometry and common CSS; `hooks`/`lib` own reusable behavior, transport, assets, localization and formatting.
 
-The outbox is stored in PostgreSQL. Redis is a delivery mechanism, not the authoritative source of job state.
+Account product routes use saved identity/workspace data. `/preview/` is the only owner of synthetic metrics, sample feedback and canned assistant replies. Existing imported design variants are reference/preview code, not implemented product APIs. The shared scale hook preserves the reviewed desktop/mobile geometry.
 
-## Responsibilities and interfaces
+## API ownership
 
-| Component | Responsibility | Dependencies |
-| --- | --- | --- |
-| Dashboard | Forms, score views, filters, reports, localization, RTL | Authenticated API |
-| Public collection UI | Render published questionnaire and submit answers | Public token endpoints |
-| Identity/tenant module | Resolve identity, membership, and role | Identity provider, database |
-| Questionnaire module | Drafts, immutable revisions, public tokens | Database |
-| Collection module | Validate and persist submissions; enqueue analysis | Database transaction and outbox |
-| Analytics module | Read versioned aggregates with sample counts | Database |
-| AI worker | Preprocess, classify, extract aspects, cluster, aggregate | Database, model registry |
-| Report worker | Build evidence snapshot, call LLM, validate report | Analytics, LLM, database |
-| Export worker | Create filtered redacted artifacts | Database, private object storage |
-| Dispatcher | Deliver pending outbox messages with retry | Database, queue |
+`src/config` resolves the repository root and private configuration independently of package working directory. `modules/auth`, `modules/workspaces` and `modules/mail` implement existing business behavior. `middleware` contains request security, limits and safe errors. `integrations/mail` owns delivery adapters; `integrations/ai-service` is a documented future boundary. `shared/database` owns connection-scoped Mongoose models and explicit transaction handling.
 
-Contracts are described in [API contracts](api-contracts.md), persistence in [Database](database.md), and scientific processing in [AI pipeline](ai-pipeline.md).
+The `users`, `dashboard` and `ai` module boundary documents are extension guidance, not working CRUD/analytics endpoints. The current User model stays internal to `shared/database/models`; authentication remains responsible for account creation/recovery.
 
-## End-to-end processing
+## Connected request flow
 
-1. An owner publishes an immutable questionnaire revision and receives an opaque public link.
-2. The API resolves that token to a workspace and revision. It never accepts a client-selected workspace for public submissions.
-3. It validates answers and commits the submission, job record, and outbox event in one transaction.
-4. A dispatcher sends the job ID to the queue. Duplicate delivery is expected.
-5. A worker reloads tenant-scoped inputs, claims the job, runs the versioned pipeline, and writes outputs idempotently.
-6. Aggregate jobs rebuild a scoped snapshot. Readers continue to see the last complete snapshot during processing.
-7. Report generation uses that immutable snapshot and redacted evidence. Validation must pass before publication.
-8. The dashboard polls job status and shows pending, failed, stale, insufficient-data, and completed states explicitly.
+1. Browser requests `/api/v1/auth/session` through Vite or nginx on the same origin.
+2. Node resolves a protected cookie session and returns safe user/workspace DTOs plus CSRF context.
+3. Mutations require matching Origin/CSRF and strict Zod validation.
+4. Services use `deps.models`, owner predicates and explicit sessions for transactional changes.
+5. Mail intent is encrypted in the outbox; a separate worker dispatches local development mail or configured SMTP.
+6. The web resumes saved setup and renders honest empty/unavailable states.
 
-## Tenant and security boundaries
+No browser-to-MongoDB or browser-to-AI path exists. Future inference should cross a documented authenticated Node-to-FastAPI contract, with owner-scoped inputs and versioned/evidence-backed outputs.
 
-- Authenticated endpoints resolve membership for the workspace in the URL; IDs alone do not authorize access.
-- Every tenant-owned relational record carries a workspace ID. Composite foreign keys prevent cross-tenant references.
-- Apply PostgreSQL row-level security as defense in depth. Use transaction-local tenant context with pooled connections and a runtime role that cannot bypass RLS.
-- Workers derive tenant identity from stored jobs, validate it again, and limit vector retrieval and exports to that workspace.
-- Public tokens expose only published questionnaire content. Apply rate limits and body-size limits to submission endpoints.
-- Keep provider secrets server-side. Use TLS, private object storage, short-lived download links, and redacted structured logs.
-- Treat customer feedback as untrusted data, including instructions embedded in text. LLMs have no unrestricted tools or access to credentials.
+## Runtime and operational boundaries
 
-## Failure handling
+- JavaScript packages use pinned pnpm workspaces and each app declares its own dependencies. The root owns shared tooling and cross-app browser tests.
+- Python dependencies/lockfile are owned by `apps/ai-service`; Python is optional for existing web/API work.
+- Root `.env`, `.local/config`, `.local/mail` and test binaries remain root-relative. Production reads process environment only.
+- `pnpm dev` starts and stops its own API/mail/web process group. It does not start MongoDB, switch URIs or kill occupied unrelated ports.
+- Optional compose uses a separate development MongoDB volume, localhost-bound HTTP web origin and internal database network. It is not production/CD and does not import Atlas data.
+- Existing UUID/ObjectId formats, Mongoose index definitions, DTOs, hashing/encryption and transaction invariants are preserved.
 
-| Failure | Expected behavior |
-| --- | --- |
-| Queue unavailable | Persisted outbox event remains pending; collection succeeds after database commit |
-| Duplicate message or worker restart | Existing job/output keys prevent duplicate analysis; expired leases permit recovery |
-| Model or LLM transient error | Bounded exponential backoff, at most three attempts, then visible failure |
-| Invalid model output | Record validation failure; preserve raw feedback and do not publish partial results |
-| Partial aggregation | Keep last complete snapshot and mark freshness |
-| Database unavailable | Return a retryable error; never acknowledge an uncommitted submission |
-| Deleted evidence | Mark dependent reports/snapshots stale; deny removed excerpts until regenerated |
-
-## Deployment and observability
-
-Use separate development, staging, and production configuration, databases, storage, and credentials. Production runs API, dispatcher, and workers as separate processes. A dedicated inference worker pool can be introduced when measured GPU or CPU contention requires it.
-
-Log request ID, job ID, workspace ID, stage, duration, and model version without raw customer text. Measure queue age, inference latency, retry/failure rate, dataset coverage, and LLM cost. API liveness must not invoke external models; readiness checks verify required infrastructure.
-
-Maintain database backups and test restoration. Releases pin model, prompt, embedding, and scoring versions. Roll back application code and model routing independently; preserve historical provenance.
-
-## Tradeoffs and future changes
-
-A shared relational/vector database reduces operational overhead but requires careful tenant filters and measured vector-index behavior. Separate vector storage or model serving is a later option driven by observed capacity, not an initial requirement. Redis loss must be recoverable from persistent job and outbox state.
-
-Before implementation, confirm hosting region, identity provider, LLM data policy, retention, and hardware budget. Record approved deviations under `docs/decisions/`.
+See [public API](../api/README.md), [models](mongodb-models.md), [developer workflow](../development/monorepo.md), [module boundaries](../development/module-boundaries.md) and [validation evidence](../development/backend-validation.md). Earlier proposals are explicitly [archived](../archive/README.md).

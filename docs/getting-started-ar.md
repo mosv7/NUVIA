@@ -1,37 +1,36 @@
 # تشغيل NUVIA
 
-الباك يستخدم Node.js وMongoDB. خدمة الذكاء الاصطناعي Python/FastAPI ستكون مرحلة لاحقة.
+المشروع متقسم إلى `apps/web` للـReact، و`apps/api` للـNode/Express/Mongoose، و`apps/ai-service` كهيكل FastAPI أساسي لفحص التشغيل فقط. تحليل الـAI لسه مش منفذ. كود JavaScript الحالي محفوظ؛ TypeScript خطوة منفصلة.
 
-## التشغيل على اللابتوب
+## أول تشغيل
 
-أول مرة من فولدر المشروع:
+استخدم Node.js >=22.13 وpnpm 11.25.0. لو pnpm مش موجود، ثبّته بـ`npm install --global pnpm@11.25.0`، ثم من جذر المشروع:
 
-```cmd
-npm ci
-npm run setup:local
-npm run db:check
+```sh
+pnpm install --frozen-lockfile
+pnpm setup:local
 ```
 
-احتفظ ببيانات Atlas في `.local/config/atlas-credentials.env` أو `.env` فقط؛ الملفات دي مستبعدة من Git. ملف `.env.example` يوضح أسماء الإعدادات بدون أسرار.
+ضيف اتصال MongoDB في `.env` مع الحفاظ على مفتاح البريد المتولد. استخدم Atlas أو MongoDB محلية شغالة كـreplica set؛ النسخة standalone مش كفاية للمعاملات. ما ترفعش بيانات الاتصال أو الرسائل على Git.
 
-افتح ثلاثة تيرمنال وشغّل أمرًا في كل واحد:
-
-```cmd
-npm run dev:backend
+```sh
+pnpm db:check
+pnpm db:setup
+pnpm dev
 ```
 
-```cmd
-npm run mail:work
-```
+الأمر الأخير بيشغّل الفرونت والـAPI وعامل البريد مع بعض. Ctrl+C بيوقف المجموعة اللي شغّلها. مش بيشغّل MongoDB ولا بيغيّر الداتابيز تلقائيًا. `START-LAPTOP.cmd` بيشغّل نفس المجموعة على Windows بعد الإعداد.
 
-```cmd
-npm run dev
-```
+افتح `http://127.0.0.1:5173/#/signup`. بعد التسجيل افتح رسالة التأكيد المناسبة في `.local/mail/` واتبع الرابط الموجود في `text`، ثم سجّل الدخول واحفظ النشاط والفرع. جرّب Refresh والخروج والدخول للتأكد من استمرار البيانات. رسائل التطوير محلية، مش بتوصل Gmail؛ الإرسال الحقيقي يحتاج SMTP.
 
-افتح `http://127.0.0.1:5173/#/signup`. بعد التسجيل افتح أحدث رسالة تأكيد داخل `.local/mail/` محليًا واتبع الرابط في `text`، ثم سجّل الدخول واحفظ بيانات النشاط والفرع. الرسائل محلية أثناء التطوير؛ إرسال بريد حقيقي يحتاج إعداد SMTP.
+شاشة Overview وFeedback الفاضية متوقعة؛ الاستبيانات واستقبال الردود والتحليل لسه مش منفذين. المعاينات ببيانات تجريبية موجودة في `/preview/`، وممكن تشغيلها بدون باك بـ`pnpm dev:web`.
 
-`START-LAPTOP.cmd` يشغّل الفرونت، والباك وعامل البريد يحتاجان التيرمنالين الآخرين.
+للتشغيل المنفصل استخدم `pnpm dev:web` و`pnpm dev:api` و`pnpm mail:work`، كل أمر في تيرمنال لوحده. ما تشغّلش الأوامر المنفصلة مع `pnpm dev` على نفس البورتات.
 
-للمعاينة التجريبية بدون باك: `http://127.0.0.1:5173/preview/#/dashboard`. بيانات العرض والمساعد التجريبي منفصلان عن حسابك الحقيقي.
+## اختياري للمطورين
 
-تفاصيل الإعداد والأوامر في [دليل الباك](development/backend.md)، والقدرات الحالية وحدودها وخطوات التجربة في [README](../README.md). تم دمج أساس الباك وإصلاحات الشاشات في `main`؛ اسحب آخر تحديث قبل التشغيل.
+- FastAPI: استخدم Python >=3.11 وuv، ثم `uv sync --project apps/ai-service --locked` و`pnpm dev:ai`. الموجود فحص liveness فقط على بورت 8000، مش تحليل.
+- Docker: بعد تشغيل Docker وتجهيز مفتاح البريد، `docker compose up --build -d` بيشغّل بيئة محلية منفصلة بداتابيز خاصة بها. الحسابات الموجودة في Atlas أو الداتابيز المحلية الأخرى مش بتتنقل تلقائيًا. التفاصيل في [دليل البنية المحلية](../infra/README.md).
+- الاختبارات: `pnpm test` و`pnpm test:e2e:accounts`، وفحوصات الكود `pnpm lint` و`pnpm format:check` و`pnpm build`.
+
+راجع [README](../README.md)، و[دليل التطوير](development/monorepo.md)، و[عقود الـAPI](api/README.md)، و[الموديلز](architecture/mongodb-models.md). الفيتشر ليست الشاملة في [خريطة المشروع](product/feature-list.md).
