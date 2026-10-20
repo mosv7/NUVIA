@@ -6,7 +6,7 @@ import App from '../../src/frontend/src/App.jsx';
 import * as auth from '../../src/frontend/src/services/auth.js';
 
 function openRoute(route) {
-  history.replaceState(null, '', '/#/' + route);
+  history.replaceState(null, '', '/preview/#/' + route);
   render(<App />);
 }
 
@@ -114,7 +114,7 @@ it('ignores a pending login response after navigating to signup, including its b
   fireEvent.click(screen.getByRole('button', { name: 'Log in', exact: true }));
   await waitFor(() => expect(finishLogin).toBeTypeOf('function'));
   await act(async () => {
-    history.replaceState(null, '', '/#/signup');
+    history.replaceState(null, '', '/preview/#/signup');
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   });
   expect(screen.getByRole('button', { name: 'Create account', exact: true })).toBeEnabled();

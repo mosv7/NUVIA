@@ -89,7 +89,7 @@ Answers cite authorized evidence and state when coverage is inadequate. Conversa
 | Q&A | Retrieval relevance, grounded answer correctness, abstention quality, isolation/injection tests |
 | System | Throughput, stage latency, queue delay, memory, cost per 1,000 responses |
 
-Initial acceptance targets are in [Requirements](requirements.md). Publish dataset provenance/licenses, split method, annotation agreement, exact model versions, evaluation scripts, hardware, and failures alongside results.
+Initial acceptance targets are in [Requirements](../product/requirements.md). Publish dataset provenance/licenses, split method, annotation agreement, exact model versions, evaluation scripts, hardware, and failures alongside results.
 
 ## Reproducibility and operations
 

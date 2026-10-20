@@ -7,7 +7,7 @@ import { overviewBranches, overviewPreset } from './overview-report.js';
 import './overview-controls.css';
 
 export function OverviewBranchSelect() {
-  const { tr, dashboard } = useProductView();
+  const { tr, dashboard, workspace, preview } = useProductView();
   return (
     <ChoiceMenu
       overlay
@@ -16,7 +16,12 @@ export function OverviewBranchSelect() {
       label={tr('Branch')}
       options={[
         { value: 'all', label: tr('All 3 branches'), description: tr('All branches') },
-        ...overviewBranches.map((branch) => ({ value: branch, label: tr(branch) })),
+        ...(preview
+          ? overviewBranches.map((branch) => ({ value: branch, label: tr(branch) }))
+          : (workspace?.branches || []).map((branch) => ({
+              value: branch.id,
+              label: branch.name,
+            }))),
       ]}
     />
   );

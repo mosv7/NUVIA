@@ -1,6 +1,6 @@
 # Database design
 
-Status: logical design, not a migration or deployed schema. PostgreSQL with pgvector is a proposed baseline. Redis only transports jobs; object storage holds private artifacts.
+Status: historical PostgreSQL logical design. The user selected MongoDB, and the account/business-setup implementation now has versioned MongoDB indexes and transaction invariants documented in [Backend development](../development/backend.md). The SQL/pgvector/queue/object-storage model below describes future platform proposals, not deployed storage.
 
 ## Identity and tenancy
 

@@ -1,6 +1,6 @@
 # Frontend development and review
 
-The frontend is a React/JSX + Vite prototype. It supports English and Arabic/RTL and bundles its fonts and original design assets locally. It does not require an API or environment variables to run.
+The frontend uses React/JSX + Vite, supports English and Arabic/RTL, and bundles its fonts/assets locally. Account and business-onboarding routes now require the [Node/MongoDB backend](backend.md). The legacy prototype flows described below remain available under `/preview/#/<route>` without an API; sample analytics and assistant replies are preview-only. Real product routes require verified accounts and show saved workspace data plus empty/unavailable states.
 
 ## Routes
 
@@ -87,7 +87,7 @@ The desktop landing caps typography and hero scaling on wide screens and reduces
 
 ## UI review screenshots
 
-English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. Run `npx playwright install chromium` once, then `npm run screenshots` to regenerate the entire set, with one image per documented screen/state. See [the screenshot file map](ui/frontend/README.md). They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
+English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. Run `npx playwright install chromium` once, then `npm run screenshots` to regenerate the entire set, with one image per documented screen/state. See [the screenshot file map](../ui/frontend/README.md). They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
 
 ## Mobile refinements
 

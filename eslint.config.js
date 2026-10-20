@@ -5,6 +5,15 @@ const react = require('eslint-plugin-react');
 
 module.exports = [
   { ignores: ['**/dist/**', '**/node_modules/**', '**/previews/**'] },
+  { files: ['tests/e2e/**/*.mjs'], languageOptions: { globals: globals.browser } },
+  {
+    files: ['src/backend/**/*.mjs', 'tests/backend/**/*.mjs', 'tests/e2e/**/*.mjs'],
+    languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: globals.node },
+    rules: {
+      ...js.configs.recommended.rules,
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
   {
     files: ['src/frontend/src/**/*.{js,jsx}', 'tests/frontend/**/*.{js,jsx}'],
     languageOptions: {

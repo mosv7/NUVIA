@@ -5,7 +5,14 @@ import FeedbackShell from '../product/FeedbackShell.jsx';
 import Assistant from '../product/Assistant.jsx';
 import '../product/assistant.css';
 import { FeedbackList, FeedbackDetail } from '../product/FeedbackScreens.jsx';
-export default function FeedbacksPage({ page, language, setLanguage }) {
+export default function FeedbacksPage({
+  page,
+  language,
+  setLanguage,
+  workspace,
+  onLogout,
+  preview = false,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const fit = () =>
@@ -33,12 +40,15 @@ export default function FeedbacksPage({ page, language, setLanguage }) {
   }, []);
   return (
     <ProductProvider
+      workspace={workspace}
+      onLogout={onLogout}
+      preview={preview}
       language={language}
       setLanguage={setLanguage}
       menuOpen={menuOpen}
       onNavigate={() => setMenuOpen(false)}
     >
-      <div className="product-page" data-menu-open={menuOpen}>
+      <div className="product-page" data-menu-open={menuOpen} data-account-backed={!preview}>
         <button
           className="product-mobile-toggle"
           aria-label={language === 'ar' ? 'قائمة التنقل' : 'Navigation menu'}
@@ -55,13 +65,13 @@ export default function FeedbacksPage({ page, language, setLanguage }) {
           />
         )}
         <FeedbackShell title={page === 'feedback-details' ? 'Feedback details' : 'Feedbacks'}>
-          {page === 'feedback-details' ? (
+          {preview && page === 'feedback-details' ? (
             <FeedbackDetail key={location.hash} />
           ) : (
-            <FeedbackList key={page} empty={page === 'feedbacks-empty'} />
+            <FeedbackList key={page} empty={!preview || page === 'feedbacks-empty'} />
           )}
         </FeedbackShell>
-        <Assistant />
+        {preview && <Assistant />}
       </div>
     </ProductProvider>
   );

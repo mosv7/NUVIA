@@ -372,51 +372,53 @@ export default function OverviewDesign({ empty = false }) {
             </p>
           </button>
         </div>
-        <div className="f26" data-node-id="127:316" data-name="Plan usage">
-          <div className="f27" data-node-id="127:317" data-name="Plan">
+        {ui.preview && (
+          <div className="f26" data-node-id="127:316" data-name="Plan usage">
+            <div className="f27" data-node-id="127:317" data-name="Plan">
+              <p
+                className="f28"
+                data-node-id="127:318"
+                style={{
+                  fontVariationSettings: '"opsz" 14',
+                }}
+              >
+                {tr('Growth plan')}
+              </p>
+              <p
+                className="f29"
+                data-node-id="127:319"
+                style={{
+                  fontVariationSettings: '"opsz" 14',
+                }}
+              >
+                {tr('Active')}
+              </p>
+            </div>
             <p
-              className="f28"
-              data-node-id="127:318"
+              className="f30"
+              data-node-id="127:320"
               style={{
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Growth plan')}
+              {tr('1,248 / 5,000 responses')}
             </p>
-            <p
-              className="f29"
-              data-node-id="127:319"
+            <div className="f31" data-node-id="127:321" data-name="Usage track">
+              <div className="f32" data-node-id="127:322" data-name="Usage progress" />
+            </div>
+            <button
+              className="f33"
+              data-node-id="127:323"
               style={{
                 fontVariationSettings: '"opsz" 14',
               }}
+              type="button"
+              onClick={() => ui.action('Manage subscription →')}
             >
-              {tr('Active')}
-            </p>
+              {<DashboardArrowText text={tr('Manage subscription →')} />}
+            </button>
           </div>
-          <p
-            className="f30"
-            data-node-id="127:320"
-            style={{
-              fontVariationSettings: '"opsz" 14',
-            }}
-          >
-            {tr('1,248 / 5,000 responses')}
-          </p>
-          <div className="f31" data-node-id="127:321" data-name="Usage track">
-            <div className="f32" data-node-id="127:322" data-name="Usage progress" />
-          </div>
-          <button
-            className="f33"
-            data-node-id="127:323"
-            style={{
-              fontVariationSettings: '"opsz" 14',
-            }}
-            type="button"
-            onClick={() => ui.action('Manage subscription →')}
-          >
-            {<DashboardArrowText text={tr('Manage subscription →')} />}
-          </button>
-        </div>
+        )}
         <button
           className="f34"
           data-node-id="127:324"

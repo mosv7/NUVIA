@@ -75,7 +75,7 @@ function Filter({ name, label, options, value, onChange, disabled, calendar }) {
   );
 }
 function NoResponses({ empty, onClear }) {
-  const { tr } = useProductView();
+  const { tr, preview, action, language } = useProductView();
   const [shared, setShared] = useState(false);
   const share = async () => {
     try {
@@ -106,13 +106,22 @@ function NoResponses({ empty, onClear }) {
       </p>
       {empty ? (
         <div className="feedback-empty-actions">
-          <button className="feedback-btn feedback-primary" onClick={share}>
+          <button
+            className="feedback-btn feedback-primary"
+            onClick={preview ? share : () => action('Surveys')}
+          >
             <Icon name="send" folder="feedbacks-empty" />
             {tr(shared === 'copied' ? 'Link copied' : 'Share a survey')}
           </button>
-          <button className="feedback-btn" onClick={() => onClear()}>
-            {tr('View sample responses')}
-          </button>
+          {preview ? (
+            <button className="feedback-btn" onClick={() => onClear()}>
+              {tr('View sample responses')}
+            </button>
+          ) : (
+            <a className="feedback-btn" href="/preview/#/feedbacks">
+              {tr('View sample responses')}
+            </a>
+          )}
         </div>
       ) : (
         <button className="feedback-btn feedback-primary" onClick={onClear}>
@@ -122,9 +131,13 @@ function NoResponses({ empty, onClear }) {
       )}
       {empty ? (
         <small aria-live="polite">
-          {shared
-            ? 'nuvia.link/bloom-feedback'
-            : tr('Already shared? New responses appear automatically.')}
+          {!preview
+            ? language === 'ar'
+              ? 'مشاركة الاستبيانات غير متاحة بعد.'
+              : 'Survey sharing is not available yet.'
+            : shared
+              ? 'nuvia.link/bloom-feedback'
+              : tr('Already shared? New responses appear automatically.')}
         </small>
       ) : (
         <small>{tr('Your responses are still here. Only the view has changed.')}</small>

@@ -48,7 +48,7 @@ for (const [file, route, title] of [
   ['landing.html', 'landing', 'NUVIA — Landing'],
   ['business.html', 'business-information', 'NUVIA — Business'],
 ]) {
-  const content = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>${css}</style></head><body><div id="root"></div><script>window.NUVIA_ASSETS=${JSON.stringify(assetMap)};if(!location.hash)location.hash="/${route}";</script><script type="module">${js}</script></body></html>`;
+  const content = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>${css}</style></head><body><div id="root"></div><script>window.NUVIA_PREVIEW=true;window.NUVIA_ASSETS=${JSON.stringify(assetMap)};if(!location.hash)location.hash="/${route}";</script><script type="module">${js}</script></body></html>`;
   fs.writeFileSync(path.join(output, file), content);
   console.log(`Created previews/${file}`);
 }

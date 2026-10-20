@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import arabic from './ar.json';
 import { arabicUiNumbers } from './number-format.js';
+import { useAuth } from '../auth/AuthProvider.jsx';
 const englishCopy = {
   Feedbacks: 'Feedback',
   'All feedbacks': 'All feedback',
@@ -17,7 +18,11 @@ export function ProductProvider({
   onNavigate,
   menuOpen,
   dashboard,
+  workspace,
+  onLogout,
+  preview = false,
 }) {
+  const identity = useAuth()?.user;
   const [query, setQuery] = useState('');
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 850);
   useEffect(() => {
@@ -26,9 +31,38 @@ export function ProductProvider({
     return () => removeEventListener('resize', resize);
   }, []);
   const formatNumber = (value) => (language === 'ar' ? arabicUiNumbers(value) : String(value));
-  const tr = (text) =>
-    language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
+  const tr = (text) => {
+    if (!preview) {
+      if (text === 'Welcome back, Sara. Here’s what your customers are telling you.')
+        return language === 'ar'
+          ? `مرحبًا ${identity?.name || ''}. من هنا تتابع آراء عملائك.`
+          : `Welcome back, ${identity?.name || ''}. Track your customer feedback here.`;
+      const selectedBranch = workspace?.branches?.find((branch) => branch.id === text);
+      if (selectedBranch) return selectedBranch.name;
+      const actual = {
+        'Bloom & Co.': workspace?.businessName || '',
+        'Cafe &workspace': workspace?.industry || '',
+        B: Array.from(workspace?.businessName || '')[0] || '',
+        'Sara Ahmed': identity?.name || '',
+        12: '0',
+        'All 3 branches': language === 'ar' ? 'كل الفروع' : 'All branches',
+      };
+      if (Object.hasOwn(actual, text)) return actual[text];
+    }
+    return language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
+  };
+  const [notice, setNotice] = useState('');
   const action = (label) => {
+    if (!preview && !['Overview', 'Feedbacks', 'Feedbacks 12', 'All feedbacks'].includes(label)) {
+      if (label === 'B Bloom & Co. Cafe &workspace' || label === 'Settings') {
+        location.hash = '/business-information';
+        return;
+      }
+      setNotice(
+        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
+      );
+      return;
+    }
     if (label === 'NUVIA Assistant') {
       window.dispatchEvent(new Event('nuvia:ask'));
       return;
@@ -96,6 +130,8 @@ export function ProductProvider({
     <ProductContext.Provider
       value={{
         dashboard,
+        workspace,
+        preview,
         activeDestination: location.hash.startsWith('#/feedback') ? 'Feedbacks' : 'Overview',
         language,
         setLanguage,
@@ -121,6 +157,31 @@ export function ProductProvider({
       }}
     >
       {children}
+      {!preview && (
+        <div className="workspace-account-actions">
+          <button
+            onClick={() =>
+              onLogout?.().catch(() =>
+                setNotice(
+                  language === 'ar'
+                    ? 'تعذر تسجيل الخروج من الخادم. حاول مرة أخرى.'
+                    : 'Could not log out from the server. Please try again.',
+                ),
+              )
+            }
+          >
+            {language === 'ar' ? 'تسجيل الخروج' : 'Log out'}
+          </button>
+        </div>
+      )}
+      {notice && (
+        <div className="workspace-action-notice" role="status">
+          {notice}
+          <button onClick={() => setNotice('')} aria-label={language === 'ar' ? 'إغلاق' : 'Close'}>
+            ×
+          </button>
+        </div>
+      )}
     </ProductContext.Provider>
   );
 }

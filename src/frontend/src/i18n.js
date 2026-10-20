@@ -1,4 +1,10 @@
 export const en = {
+  requestFailed: 'Could not complete the request. Check your connection and try again.',
+  retry: 'Try again',
+  resetAccepted: 'Request received. If your account is eligible, you will receive a reset email.',
+  invalidToken: 'This link is invalid or expired. Request a new link.',
+  rateLimited: 'Too many attempts. Please wait before trying again.',
+  googleUnavailable: 'Google sign-in is not available yet. Use your email.',
   back: 'Back to website',
   welcome: 'Welcome back',
   loginIntro: 'Log in to see what your customers are telling you.',
@@ -77,6 +83,12 @@ export const en = {
 };
 export const ar = {
   ...en,
+  requestFailed: 'تعذر إكمال الطلب. تحقق من الاتصال وحاول مرة أخرى.',
+  retry: 'حاول مرة أخرى',
+  resetAccepted: 'تم استلام الطلب. ستصلك رسالة إعادة التعيين إذا كان الحساب متاحًا.',
+  invalidToken: 'الرابط غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.',
+  rateLimited: 'محاولات كثيرة. انتظر قليلًا قبل المحاولة مجددًا.',
+  googleUnavailable: 'تسجيل الدخول باستخدام Google غير متاح بعد. استخدم بريدك الإلكتروني.',
   back: 'العودة إلى الموقع',
   welcome: 'مرحبًا بعودتك',
   loginIntro: 'سجّل الدخول لتعرف ما يقوله عملاؤك.',

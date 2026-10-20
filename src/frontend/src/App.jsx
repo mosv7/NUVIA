@@ -3,12 +3,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Field from './components/Field.jsx';
 import LanguageIcon from './components/LanguageIcon.jsx';
 import { en, ar } from './i18n.js';
-import { submitDemo } from './services/auth.js';
+import { submitDemo, authApi } from './services/auth.js';
+import { AuthProvider, useAuth } from './auth/AuthProvider.jsx';
+import { routePolicy, afterLogin } from './auth/route-policy.js';
+import VerificationPage from './auth/VerificationPage.jsx';
 import LandingPage from './pages/LandingPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import FeedbacksPage from './pages/FeedbacksPage.jsx';
 import { asset as resolveAsset } from './assets.js';
-import BusinessOnboarding from './pages/BusinessOnboarding.jsx';
+import BusinessOnboarding, { ConnectedBusinessOnboarding } from './pages/BusinessOnboarding.jsx';
 const routes = [
   'landing',
   'dashboard',
@@ -20,6 +23,7 @@ const routes = [
   'signup',
   'forgot',
   'reset',
+  'verify-email',
   'business-information',
   'business-error',
   'business-setup',
@@ -29,7 +33,12 @@ const currentRoute = () => {
   const value = location.hash.slice(2).split('?')[0];
   return routes.includes(value) ? value : 'landing';
 };
-export default function App() {
+function AppContent() {
+  const auth = useAuth(),
+    preview = auth.preview,
+    cancel = auth.cancel;
+  const submission = useRef(null),
+    resetToken = useRef(null);
   const requestGeneration = useRef(0);
   const [business, setBusiness] = useState({
     businessName: '',
@@ -56,6 +65,9 @@ export default function App() {
     isForgot = page === 'forgot';
   useEffect(() => {
     const listener = () => {
+      if (currentRoute() !== 'reset') resetToken.current = null;
+      submission.current?.abort();
+      cancel();
       requestGeneration.current += 1;
       setBusy(false);
       setPage(currentRoute());
@@ -66,14 +78,29 @@ export default function App() {
     addEventListener('hashchange', listener);
     return () => {
       removeEventListener('hashchange', listener);
+      submission.current?.abort();
       requestGeneration.current += 1;
     };
-  }, []);
+  }, [cancel]);
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     localStorage.setItem('nuvia-language', language);
   }, [language]);
+  const resetParam = new URLSearchParams(location.hash.split('?')[1]).get('token');
+  useEffect(() => {
+    if (page !== 'reset' || preview) return;
+    const token = resetParam;
+    if (token) {
+      resetToken.current = token;
+      history.replaceState(null, '', `${location.pathname}#/reset`);
+    }
+  }, [page, preview, resetParam]);
+  const policy = routePolicy({ route: page, preview, user: auth.user, workspace: auth.workspace });
+  const redirect = policy.redirect;
+  useEffect(() => {
+    if (auth.status === 'ready' && redirect) location.hash = '/' + redirect;
+  }, [auth.status, redirect]);
   const change = (e) => {
     const { name, value, type, checked } = e.target;
     setValues((v) => ({ ...v, [name]: type === 'checkbox' ? checked : value }));
@@ -116,11 +143,62 @@ export default function App() {
     const isCurrentRequest = () =>
       generation === requestGeneration.current && currentRoute() === page;
     setBusy(true);
+    submission.current?.abort();
+    const controller = new AbortController();
+    submission.current = controller;
     try {
+      if (!preview) {
+        if (isSignup) {
+          await authApi.register(
+            {
+              name: values.name,
+              email: values.email,
+              password: values.password,
+              terms: values.terms,
+              locale: language,
+            },
+            controller.signal,
+          );
+          if (isCurrentRequest()) location.hash = '/verify-email';
+        } else if (isLogin) {
+          const session = await auth.login(
+            { email: values.email, password: values.password, remember: values.remember },
+            controller.signal,
+          );
+          if (isCurrentRequest() && session) location.hash = '/' + afterLogin(session.workspace);
+        } else if (isForgot) {
+          await authApi.forgot(values.email, controller.signal);
+          if (isCurrentRequest()) setNotice('resetAccepted');
+        } else {
+          await authApi.reset(
+            { token: resetToken.current, password: values.password },
+            controller.signal,
+          );
+          if (isCurrentRequest()) await auth.refresh();
+          if (isCurrentRequest()) {
+            resetToken.current = null;
+            location.hash = '/login';
+          }
+        }
+        if (isCurrentRequest()) setValues((v) => ({ ...v, password: '', confirm: '' }));
+        return;
+      }
       const result = await submitDemo(page, values);
       if (!isCurrentRequest()) return;
       if (result.field) setErrors({ [result.field]: result.error });
       else setNotice(result.error || result.message);
+    } catch (error) {
+      if (!isCurrentRequest() || error.name === 'AbortError') return;
+      if (error.code === 'EMAIL_USED') setErrors({ email: 'emailUsed' });
+      else if (error.code === 'EMAIL_VERIFICATION_REQUIRED') location.hash = '/verify-email';
+      else
+        setNotice(
+          {
+            INVALID_CREDENTIALS: 'loginFailed',
+            INVALID_TOKEN: 'invalidToken',
+            RATE_LIMITED: 'rateLimited',
+          }[error.code] || 'requestFailed',
+        );
     } finally {
       if (isCurrentRequest()) setBusy(false);
     }
@@ -147,6 +225,35 @@ export default function App() {
         ? '159-1831'
         : 'login';
   const asset = (name, extension = 'svg') => resolveAsset(`${assetPrefix}-${name}.${extension}`);
+  if (!preview && !policy.allow) {
+    return (
+      <main className="session-state" aria-live="polite">
+        <h1>{t.loading}</h1>
+        {auth.status === 'error' && (
+          <>
+            <p>{t.requestFailed}</p>
+            <button className="primary" onClick={() => auth.refresh().catch(() => {})}>
+              {t.retry}
+            </button>
+          </>
+        )}
+      </main>
+    );
+  }
+  if (page === 'verify-email') return <VerificationPage language={language} preview={preview} />;
+  if (
+    page === 'reset' &&
+    !preview &&
+    !resetToken.current &&
+    !new URLSearchParams(location.hash.split('?')[1]).get('token')
+  )
+    return (
+      <main className="session-state">
+        <h1>{t.resetTitle}</h1>
+        <p role="alert">{t.invalidToken}</p>
+        <a href="#/forgot">{t.send}</a>
+      </main>
+    );
   if (['feedbacks', 'feedbacks-empty', 'feedback-details'].includes(page))
     return (
       <FeedbacksPage
@@ -154,6 +261,9 @@ export default function App() {
         page={page}
         language={language}
         setLanguage={setLanguage}
+        workspace={auth.workspace}
+        onLogout={auth.logout}
+        preview={preview}
       />
     );
   if (page === 'dashboard' || page === 'dashboard-empty')
@@ -161,18 +271,28 @@ export default function App() {
       <DashboardPage
         language={language}
         setLanguage={setLanguage}
-        empty={page === 'dashboard-empty'}
+        empty={!preview || page === 'dashboard-empty'}
+        workspace={auth.workspace}
+        onLogout={auth.logout}
+        preview={preview}
       />
     );
   if (page === 'landing') return <LandingPage language={language} setLanguage={setLanguage} />;
   if (['business-information', 'business-error', 'business-setup', 'get-started'].includes(page))
-    return (
+    return preview ? (
       <BusinessOnboarding
         page={page}
         language={language}
         setLanguage={setLanguage}
         values={business}
         setValues={setBusiness}
+      />
+    ) : (
+      <ConnectedBusinessOnboarding
+        key={auth.user.id}
+        page={page}
+        language={language}
+        setLanguage={setLanguage}
       />
     );
   return (
@@ -206,7 +326,13 @@ export default function App() {
           </div>
           {(isLogin || isSignup) && (
             <>
-              <button type="button" className="google" onClick={() => setNotice('googleDemo')}>
+              <button
+                type="button"
+                className="google"
+                disabled={!preview}
+                title={!preview ? t.googleUnavailable : undefined}
+                onClick={() => setNotice('googleDemo')}
+              >
                 <img src={asset('imgGoogleLogo')} alt="" />
                 {isSignup ? t.googleSignup : t.google}
               </button>
@@ -310,7 +436,7 @@ export default function App() {
               </a>
             )}
           </p>
-          {isSignup && (
+          {isSignup && preview && (
             <p className="setup-preview-link">
               <a href="#/business-information">
                 {language === 'ar' ? 'معاينة إعداد النشاط' : 'Preview business setup'}
@@ -378,5 +504,16 @@ export default function App() {
         </div>
       </aside>
     </main>
+  );
+}
+export default function App() {
+  const preview =
+    location.pathname.startsWith('/preview/') ||
+    (location.protocol === 'file:' && window.NUVIA_PREVIEW === true);
+  return (
+    <AuthProvider preview={preview}>
+      {preview && <aside className="preview-notice">Design preview · معاينة التصميم</aside>}
+      <AppContent />
+    </AuthProvider>
   );
 }

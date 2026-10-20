@@ -7,22 +7,36 @@ import '../product/assistant.css';
 import '../product/product.css';
 
 import { OverviewDateDialog } from '../product/OverviewControls.jsx';
-import { defaultOverviewFilters, getOverviewReport } from '../product/overview-report.js';
+import {
+  defaultOverviewFilters,
+  getOverviewReport,
+  overviewPreset,
+} from '../product/overview-report.js';
 import arabic from '../product/ar.json';
-export default function DashboardPage({ language, setLanguage, empty = false }) {
+export default function DashboardPage({
+  language,
+  setLanguage,
+  empty = false,
+  workspace,
+  onLogout,
+  preview = false,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [filters, setFilters] = useState(() => ({ ...defaultOverviewFilters }));
+  const [initialFilters] = useState(() =>
+    preview ? { ...defaultOverviewFilters } : { branch: 'all', ...overviewPreset('30') },
+  );
+  const [filters, setFilters] = useState(() => ({ ...initialFilters }));
   const [dateOpen, setDateOpen] = useState(false);
   const filtered =
     filters.branch !== 'all' ||
-    filters.start !== defaultOverviewFilters.start ||
-    filters.end !== defaultOverviewFilters.end;
+    filters.start !== initialFilters.start ||
+    filters.end !== initialFilters.end;
   const dashboard = {
     isFiltered: filtered,
-    reset: () => setFilters({ ...defaultOverviewFilters }),
+    reset: () => setFilters({ ...initialFilters }),
     filters,
     setFilters,
-    report: getOverviewReport(filters),
+    report: preview ? getOverviewReport(filters) : null,
     openDate: () => setDateOpen(true),
   };
   const tr = (text) => (language === 'ar' ? (arabic[text] ?? text) : text);
@@ -48,13 +62,16 @@ export default function DashboardPage({ language, setLanguage, empty = false }) 
   }, []);
   return (
     <ProductProvider
+      workspace={workspace}
+      onLogout={onLogout}
+      preview={preview}
       dashboard={dashboard}
       language={language}
       setLanguage={setLanguage}
       menuOpen={menuOpen}
       onNavigate={() => setMenuOpen(false)}
     >
-      <div className="product-page" data-menu-open={menuOpen}>
+      <div className="product-page" data-menu-open={menuOpen} data-account-backed={!preview}>
         <button
           className="product-mobile-toggle"
           aria-label={language === 'ar' ? 'قائمة التنقل' : 'Navigation menu'}
@@ -71,7 +88,7 @@ export default function DashboardPage({ language, setLanguage, empty = false }) 
           />
         )}
         <OverviewDesign empty={empty} />
-        <Assistant />
+        {preview && <Assistant />}
         <OverviewDateDialog
           open={dateOpen}
           onClose={() => setDateOpen(false)}
