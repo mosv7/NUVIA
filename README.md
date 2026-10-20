@@ -167,6 +167,7 @@ The source proposal and feature-list PDFs remain local. Never commit credentials
 
 ## Documentation
 
+- [Full product feature map (Arabic)](docs/product/feature-list.md): the complete 51-feature scope, original priorities, current status and delivery dependencies.
 - [Documentation index](docs/README.md) and [Arabic getting-started guide](docs/getting-started-ar.md).
 - [Implemented backend setup and API contract](docs/development/backend.md).
 - [Node.js/MongoDB architecture decision](docs/decisions/0002-node-mongodb-foundation.md).
