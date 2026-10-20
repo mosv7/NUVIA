@@ -25,29 +25,29 @@ Use the language selector in the footer or dashboard header to change language. 
 
 ## Source map
 
-- `src/frontend/src/App.jsx`: route and language state, authentication forms.
-- `src/frontend/src/pages/`: landing and onboarding steps.
-- `src/frontend/src/components/`: shared fields, onboarding card, illustrative dashboard preview.
-- `src/frontend/src/styles/`: landing, authentication, onboarding, and dashboard-preview styles.
-- `src/frontend/src/services/auth.js`: isolated demonstration adapter, to be replaced after identity contracts are agreed.
-- `src/frontend/public/assets/`: original images and SVGs, organized by screen; see its asset README.
-- `tests/frontend/`: critical flow, validation, RTL, and keyboard tests.
+- `apps/web/src/app/router/AppRouter.jsx`: route and language state, authentication forms.
+- `apps/web/src/pages/`: landing and onboarding steps.
+- `apps/web/src/components/`: shared fields, onboarding card, illustrative dashboard preview.
+- `apps/web/src/styles/`: landing, authentication, onboarding, and dashboard-preview styles.
+- `apps/web/src/features/auth/api.js`: isolated demonstration adapter, to be replaced after identity contracts are agreed.
+- `apps/web/public/assets/`: original images and SVGs, organized by screen; see its asset README.
+- `apps/web/tests/`: critical flow, validation, RTL, and keyboard tests.
 
 ## Run and preview
 
-Run commands from the repository root. Use Node.js 22.12 or later and npm 10 or later.
+Run commands from the repository root. Use Node.js 22.13 or later and pnpm 11.25.0.
 
 ```sh
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-Open the Local URL printed in the terminal. Keep the terminal running. Opening `src/frontend/index.html` by double-click does not run the React development app.
+Open the Local URL printed in the terminal. Keep the terminal running. Opening `apps/web/index.html` by double-click does not run the React development app.
 
 For a phone on the same trusted Wi-Fi network:
 
 ```sh
-npm run dev:network
+pnpm dev:network
 ```
 
 Open the printed Network URL on the phone; localhost refers to the phone itself. Keep the computer awake and the dev server running. If the firewall blocks the connection, allow the Node process only on the intended private network. Do not disable the firewall or expose the development server as a public deployment.
@@ -55,17 +55,17 @@ Open the printed Network URL on the phone; localhost refers to the phone itself.
 For the production bundle and local HTTP preview:
 
 ```sh
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
-Vite writes the generated bundle to `src/frontend/dist/`. It is ignored by Git and is served over HTTP rather than opened as a file.
+Vite writes the generated bundle to `apps/web/dist/`. It is ignored by Git and is served over HTTP rather than opened as a file.
 
 For portable, double-clickable demos with fonts and assets embedded:
 
 ```sh
-npm run build
-npm run previews
+pnpm build
+pnpm previews
 ```
 
 Open `previews/landing.html` or `previews/business.html`. These are generated review artifacts, ignored by Git; regenerate after changing the source.
@@ -73,13 +73,13 @@ Open `previews/landing.html` or `previews/business.html`. These are generated re
 ## Checks and limitations
 
 ```sh
-npm run format:check
-npm run lint
-npm test
-npm run build
+pnpm format:check
+pnpm lint
+pnpm test:web
+pnpm build
 ```
 
-Use `npm run format` to format the code and `npm run test:watch` for test development. The GitHub workflow runs the same checks after a clean install.
+Use `pnpm format` to format the code and `ppnpm test:web:watch` for test development. The GitHub workflow runs the same checks after a clean install.
 
 Automated UI tests cover language/RTL persistence, invalid signup without password persistence, required business/branch inputs and step progression, and keyboard password visibility. Browser review additionally checks desktop/mobile layout, image loading, a visible shared logo, consistent persistent navbar height, and no page-level horizontal overflow. This is not a complete accessibility audit or backend/system acceptance.
 
@@ -87,7 +87,7 @@ The desktop landing caps typography and hero scaling on wide screens and reduces
 
 ## UI review screenshots
 
-English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. Run `npx playwright install chromium` once, then `npm run screenshots` to regenerate the entire set, with one image per documented screen/state. See [the screenshot file map](../ui/frontend/README.md). They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
+English and Arabic screenshots are committed under `docs/ui/frontend/` for reviewer comparison. Run `npx playwright install chromium` once, then `pnpm screenshots` to regenerate the entire set, with one image per documented screen/state. See [the screenshot file map](../ui/frontend/README.md). They contain only synthetic prototype content. No backend, authentication, or AI capability should be inferred from a screenshot.
 
 ## Mobile refinements
 
@@ -103,7 +103,7 @@ At widths up to 850 px, account and business screens keep a blue language contro
 
 ## Shared branding and responsive product screens
 
-The approved logo combines the original blue icon with the selected geometric NUVIA lettering and blue V. Transparent SVG variants for light and dark backgrounds live in `src/frontend/public/assets/brand/`. `src/frontend/src/styles/site-chrome.css` applies the same mark across headers and the landing footer. All top bars remain visible while scrolling and share a 76 px desktop height and 72 px height at widths up to 850 px. Dashboard zoom is compensated so wide screens keep the same physical header and logo size.
+The approved logo combines the original blue icon with the selected geometric NUVIA lettering and blue V. Transparent SVG variants for light and dark backgrounds live in `apps/web/public/assets/brand/`. `apps/web/src/styles/site-chrome.css` applies the same mark across headers and the landing footer. All top bars remain visible while scrolling and share a 76 px desktop height and 72 px height at widths up to 850 px. Dashboard zoom is compensated so wide screens keep the same physical header and logo size.
 
 Overview and feedback use synthetic sample data; no analytics backend or AI service is connected. Feedback rows become cards on widths up to 1100 px, mobile navigation uses a drawer, and short desktop viewports keep subscription/help links reachable by scrolling. Detailed charts and analysis tables may scroll inside their cards.
 

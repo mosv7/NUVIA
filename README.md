@@ -1,43 +1,69 @@
 # NUVIA
 
-Bilingual customer feedback analytics and business intelligence for Arabic and English.
+Bilingual customer-feedback intelligence for Arabic and English. The product goal is to collect survey responses, analyze sentiment/aspects and support evidence-backed business decisions.
 
-NUVIA is being built to collect customer feedback through surveys and turn it into sentiment, aspect scores, trends and recommendations. **The current implementation covers owner accounts and business/branch onboarding. Survey collection and AI analytics are not implemented yet.**
+## Current delivery
 
-## What works now
+- **Implemented:** verified owner registration/login/logout, password recovery, protected cookie sessions, persistent business/primary-branch onboarding, owner-scoped branch APIs, EN/AR and RTL screens, and connected empty Overview/Feedback states.
+- **Preview only:** sample metrics, response lists/details, assistant replies and sample exports under `/preview/`.
+- **Scaffold only:** a separate FastAPI service with a liveness endpoint that reports `analysis_available: false`.
+- **Not implemented:** survey publishing/response collection, NLP/AI analysis, RAG, live analytics/reports, team roles, Google OAuth and billing. Subscription features remain deferred in the [51-feature product map](docs/product/feature-list.md).
 
-| Area              | Current behavior                                                                                                                  |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Accounts          | Register an owner, verify email, log in/out, and recover/reset a password.                                                        |
-| Sessions          | Protected cookie sessions; verification is required for private product routes. Password reset revokes existing sessions.         |
-| Business setup    | Save business information and a primary branch in MongoDB; resume saved setup after refresh or signing back in.                   |
-| Branch APIs       | Owner-scoped create, rename, archive and primary-branch operations. Full branch-management UI is not part of this delivery.       |
-| Workspace screens | Show the saved user/business identity and reviewed empty Overview/Feedback states.                                                |
-| Design previews   | Explicit `/preview/` routes show sample dashboard, feedback, response details and assistant content separately from account data. |
-| Languages         | English and Arabic/RTL, with desktop and mobile layouts.                                                                          |
+The JavaScript applications use React/Vite and Node.js/Express/Mongoose. JavaScript/JSX and `.mjs` are intentionally retained; this restructuring does not migrate the applications to TypeScript.
 
-The application API uses **Node.js + Express + MongoDB**. The frontend uses **React + Vite**. **Python/FastAPI** is the selected stack for the future AI service; that service is not implemented.
+## Repository structure
 
-## Run the current app
+```text
+apps/
+  web/                       React/Vite application and its tests
+    src/
+      app/                   Router, providers and state ownership
+      features/              auth, workspaces, dashboard, feedback, landing,
+                             surveys, users and ai-analysis
+      components/ui/         Shared controls
+      components/layout/     Shared workspace shell and layout CSS
+      hooks/                 Shared responsive behavior
+      lib/                   HTTP client, assets, i18n and formatting
+      styles/                Global styles and tokens
+  api/                       Express application, operational scripts and tests
+    src/
+      config/                Root-relative private configuration
+      modules/               auth, workspaces, mail and future module boundaries
+      middleware/            Security, limits and safe HTTP errors
+      integrations/          Mail transport and future AI-service boundary
+      shared/database/       Mongoose connection and seven executable models
+  ai-service/                FastAPI health-only scaffold, Python tests and uv.lock
+packages/shared-types/       Public DTO declarations and shared API constants
+infra/docker/                Development images and replica-set initialization
+infra/nginx/                 Same-origin web/API routing for compose
+scripts/                     Cross-platform development orchestration
+tests/e2e/                   Cross-application browser account lifecycle
+docs/architecture/           Current system/storage ownership and decisions
+docs/api/                    Implemented public API contracts
+docs/development/            Development, validation and extension guides
+docs/product/                Requirements and full feature map
+docs/ui/                     Approved screen galleries and screenshots
+docs/archive/                Clearly marked earlier proposals
+.github/workflows/           Workspace, Python scaffold and container checks
+compose.yaml                 Optional local container stack
+pnpm-workspace.yaml          JavaScript workspace membership
+pnpm-lock.yaml               Shared reproducible JavaScript dependency graph
+```
 
-### 1. Install dependencies
+Each application owns its dependencies and unit/integration tests. Root tooling owns cross-app checks and browser tests. `@nuvia/shared-types` exports public constants and `.d.ts` declarations for editor/JSDoc use; Mongoose models and private server data never enter the browser package. Read the [architecture](docs/architecture/architecture.md) and [developer guide](docs/development/monorepo.md) before adding a module.
 
-Use Node.js **22.12 or later** and npm **10 or later**. Run all commands from the repository root:
+## Quick start: connected web and API
+
+Prerequisites: Node.js >=22.13 and **pnpm 11.25.0**. If pnpm is missing, install it with `npm install --global pnpm@11.25.0`. Python and Docker are optional for this flow.
 
 ```sh
 git clone https://github.com/mosv7/NUVIA.git
 cd NUVIA
-npm ci
-npm run setup:local
+pnpm install --frozen-lockfile
+pnpm setup:local
 ```
 
-For an existing clean checkout, switch to `main` and pull the latest changes before installing. `setup:local` creates a private `.env` with a generated mail-encryption key, and preserves an existing `.env`.
-
-### 2. Configure MongoDB
-
-Use an Atlas cluster, or an existing local MongoDB **replica set**. Transactions are required; a standalone MongoDB instance is insufficient. You do not need to install MongoDB on your computer when using Atlas.
-
-Add your private connection URI to the generated `.env`, preserving the generated `MAIL_ENCRYPTION_KEY`:
+`setup:local` creates the root `.env` with a generated mail-encryption key and preserves an existing file. Add a private `MONGODB_URI` there, preserving that key. Use Atlas, or a local MongoDB **replica set**; a standalone instance cannot run the transactions. Atlas needs a database user and network access for your current public IP, but does not require MongoDB installed on your computer.
 
 ```dotenv
 MONGODB_URI=mongodb+srv://YOUR_DB_USER:YOUR_URL_ENCODED_PASSWORD@YOUR_CLUSTER_HOST/
@@ -46,135 +72,90 @@ APP_ORIGIN=http://127.0.0.1:5173
 MAIL_MODE=file
 ```
 
-Replace the placeholders with your own database connection values. For Atlas, configure a database user with access to this database and allow the machine's current public IP in the project's network access list. The backend does not change Atlas access rules.
-
-Private Atlas settings may alternatively live in `.local/config/atlas-credentials.env`. Process environment takes precedence over local files, and `.env` overrides that credentials file. Production reads process environment only. Credentials and generated private files are not included in the repository; each teammate must configure their own environment. See [.env.example](.env.example) for supported settings.
-
-Check the connection, then prepare indexes:
+Replace the URI placeholders. Never commit credentials. Private Atlas settings may also live in `.local/config/atlas-credentials.env`; root `.env` overrides them and process environment overrides both. Production reads process environment only. Package-local commands use the same repository-root configuration; they do not create a second `.env` or mailbox inside `apps/api`.
 
 ```sh
-npm run db:check
-npm run db:setup
+pnpm db:check
+pnpm db:setup
+pnpm dev
 ```
 
-`db:check` authenticates and pings without writing data. `db:setup` creates the required indexes/schema metadata and also runs automatically at API startup. If the check fails, fix credentials, network access or connectivity before testing the connected account flow.
+`db:check` authenticates and pings without writes. `db:setup` creates declared indexes/schema metadata without dropping existing indexes; API startup also performs setup. `pnpm dev` starts API, mail worker and web together, checks default ports first, and stops its own process group on Ctrl+C or a service failure. It does not change the database URI or stop unrelated processes.
 
-### 3. Start the three processes
-
-Keep these running in **three separate terminals**, all from the repository root:
-
-Terminal 1 — API on `127.0.0.1:3001`:
+Open [the app](http://127.0.0.1:5173/). API traffic is proxied to port 3001. Use `127.0.0.1`, not `localhost`, unless `APP_ORIGIN` is updated to match. The frontend/API/mail commands remain available separately:
 
 ```sh
-npm run dev:backend
+pnpm dev:web
+pnpm dev:api
+pnpm mail:work
 ```
 
-Terminal 2 — verification/reset mail worker:
+Run those in separate terminals if you choose that mode. Windows users can double-click `START-LAPTOP.cmd` to start the connected development group after configuration. `pnpm dev:network` exposes only the frontend for LAN previews; connected LAN access also requires correct backend host/origin/mail-link settings.
+
+## Try what is implemented
+
+1. Open [Create account](http://127.0.0.1:5173/#/signup) and register. No shared/default account is shipped.
+2. Keep the mail worker running. With `MAIL_MODE=file`, open the newest corresponding JSON message in the root `.local/mail/` and follow the complete URL in its `text` field on the same computer.
+3. After verification, log in, save business information and configure the primary branch.
+4. Enter Overview, refresh or sign out/in, and check that saved setup persists.
+5. Open Feedback: six disabled filters, a zero-response state, illustration and getting-started steps are expected. Export/open-response controls are disabled; sharing reports that surveys are unavailable. Sample responses explicitly open `/preview/`.
+6. For recovery, use [Forgot password](http://127.0.0.1:5173/#/forgot) and follow the reset link in its corresponding local message. Reset links expire, are single-use and revoke existing sessions when consumed.
+
+Local mailbox files are **not Gmail delivery**. Real email requires SMTP provider configuration and acceptance testing. Messages contain private verification/reset URLs; do not share them. Data belongs to the selected database; accounts do not automatically transfer between local MongoDB, compose and Atlas.
+
+## Review UI without the backend
+
+Run `pnpm dev:web`, then open [Landing](http://127.0.0.1:5173/preview/#/landing), [Overview](http://127.0.0.1:5173/preview/#/dashboard), [empty Overview](http://127.0.0.1:5173/preview/#/dashboard-empty), [Feedback](http://127.0.0.1:5173/preview/#/feedbacks), [empty Feedback](http://127.0.0.1:5173/preview/#/feedbacks-empty) or [response details](http://127.0.0.1:5173/preview/#/feedback-details).
+
+Previews use illustrative data and do not create a real session or demonstrate completed AI services. `pnpm build` builds `apps/web/dist`; `pnpm preview` serves it locally without starting backend services. `pnpm previews` creates standalone review HTML in the root ignored `previews/` after building. See the [reviewed gallery](docs/ui/frontend/README.md).
+
+## Optional Python scaffold
+
+Use Python >=3.11 and uv 0.12.15:
 
 ```sh
-npm run mail:work
+uv sync --project apps/ai-service --locked
+pnpm dev:ai
 ```
 
-Terminal 3 — frontend on `127.0.0.1:5173`:
+Only [AI service liveness](http://127.0.0.1:8000/api/v1/health/live) exists. The response explicitly says analysis is unavailable. No model weights, inference endpoint, database writer or Node-to-AI integration is included. This service is independent of web/API installation; details are in [its README](apps/ai-service/README.md).
+
+## Optional local containers
+
+Docker Desktop/the Docker daemon must be running. Run `pnpm setup:local` first to create the private mail key, then:
 
 ```sh
-npm run dev
+docker compose up --build -d
 ```
 
-Open [the app](http://127.0.0.1:5173/). Use this exact origin; switching to `localhost` requires matching `APP_ORIGIN` configuration. Vite proxies `/api` to the backend. On Windows, `START-LAPTOP.cmd` starts the frontend only; the API and mail worker still need their own terminals.
+Open `http://127.0.0.1:5173/`. This builds the web/API, starts a **separate local MongoDB replica set** and mail worker, and routes API calls through nginx on the same browser origin. MongoDB is internal to the compose network; the root `.env` Atlas URI is not used by this stack. Messages appear in `.local/mail/`; database data persists in the `mongo-data` volume.
 
-### 4. Try the implemented flow
+Add the health-only AI service with `docker compose --profile ai up --build -d`. Stop services with `docker compose --profile ai down`; do not add `--volumes` unless you intend to delete the compose database. This is a loopback-bound HTTP development setup, not a production deployment or CD pipeline. It does not copy credentials into images. See [infrastructure details](infra/README.md).
 
-1. Open [Create account](http://127.0.0.1:5173/#/signup) and register with your chosen name, email and password. No shared/default login account is provided.
-2. With `MAIL_MODE=file`, open the newest verification JSON in `.local/mail/`. Copy the complete URL from its `text` field into a browser on the same computer while the app is running.
-3. After verification, log in with that email and password.
-4. Save your business name/type and configure the primary branch, then enter Overview.
-5. Refresh, or log out and back in, to check that saved setup persists.
-6. Open Feedback. The current account view has six disabled filters, a zero-response state, an illustration and getting-started steps. There are no collected responses yet. Export/open-response controls are disabled; sharing reports that surveys are unavailable.
-7. To test password recovery, log out, open [Forgot password](http://127.0.0.1:5173/#/forgot), request a reset and follow the reset URL in the newest corresponding local message. Reset links expire and are single-use.
-
-An empty Overview or Feedback screen is expected at this stage. There is no implemented path for collecting real customer responses yet. Saved data belongs to the configured database; accounts created in a local database do not automatically exist in Atlas or on another teammate's machine.
-
-### Email delivery during development
-
-`MAIL_MODE=file` is a **private local mailbox**, not delivery to Gmail or another inbox. Keep `npm run mail:work` running and open the appropriate message in `.local/mail/` locally. Verification/reset URLs are private and should not be shared.
-
-Real email requires `MAIL_MODE=smtp` and the provider settings documented in [the backend guide](docs/development/backend.md). Real provider delivery has not been verified. Production refuses file-mail mode.
-
-### Review the UI without a backend
-
-Run `npm ci` and `npm run dev`, then open:
-
-- [Landing](http://127.0.0.1:5173/preview/#/landing)
-- [Sample Overview](http://127.0.0.1:5173/preview/#/dashboard)
-- [Empty Overview](http://127.0.0.1:5173/preview/#/dashboard-empty)
-- [Sample Feedback](http://127.0.0.1:5173/preview/#/feedbacks)
-- [Empty Feedback](http://127.0.0.1:5173/preview/#/feedbacks-empty)
-- [Sample response details](http://127.0.0.1:5173/preview/#/feedback-details)
-
-Preview records, metrics, assistant replies and sharing links are illustrative. Previews do not create a real session or demonstrate completed AI/feedback services. The account empty Feedback layout reuses the reviewed preview layout, with saved identity and availability-aware actions.
-
-For a phone, `npm run dev:network` exposes the frontend on the local network for preview review. Connected account testing over LAN also requires matching backend host, browser origin and mail-link configuration; the default setup above is for the same computer.
-
-## Current limits and next work
-
-Not implemented: survey creation/publishing, public link/QR response collection, feedback ingestion, sentiment/aspect analysis, the FastAPI AI service, live analytics/reports, real assistant answers, team roles, Google OAuth or subscription billing. Visible navigation and sample screens do not establish those capabilities.
-
-Atlas authenticated pings have succeeded, but this machine also encountered intermittent TLS failures. The latest manual review session used a persistent local development replica set. Automated account-flow tests use isolated local replica sets; they do not establish full Atlas or SMTP acceptance. Local executables, data and runtime processes are not distributed through Git.
-
-The current rate limiter is per-process. Multiple backend replicas require a shared limiter before scaling. The development commands are not a production deployment configuration; production requires the HTTPS, cookie, mail and proxy settings in the backend guide.
-
-## Checks and evidence
+## Validation and CI
 
 ```sh
-npm run format:check
-npm run lint
-npm test
-npm run build
-npm run test:backend:unit
-npm run test:backend
-npm run test:e2e:accounts
+pnpm format:check
+pnpm lint
+pnpm test                 # Web and API package suites
+pnpm build
+pnpm test:backend:unit
+pnpm test:e2e:accounts
+pnpm test:ai              # Optional Python/uv environment required
 ```
 
-The latest feature validation recorded **17 backend tests** and **26 frontend tests**, plus a browser account lifecycle covering verification, failed-save recovery, persistent setup, logout/login, password reset, empty Feedback, mobile overlap/overflow and EN/AR checks. Integration/browser tests use synthetic identities and isolated local databases, not your configured application database.
+The existing suite covers account security, owner isolation, persisted setup, failure recovery, Mongoose/legacy-data compatibility and EN/AR/mobile behavior. Package-local tests are under `apps/web/tests` and `apps/api/tests`; cross-app browser evidence is generated in root `test-results/accounts/`. Tests use synthetic identities and isolated replica sets, not configured application/customer databases.
 
-Integration tests may download MongoDB on the first run. An existing `.local/tools/mongod.exe` is reused when present; it is not committed. Browser tests use installed Edge on supported Windows paths, `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, or Playwright's Chromium. If neither browser is available, run `npx playwright install chromium`.
+API integration/browser tests can download MongoDB on first run; Windows reuses an existing ignored `.local/tools/mongod.exe`. Browser tests use Edge, `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, or installed Playwright Chromium (`pnpm exec playwright install chromium`). Dependencies are pinned by `pnpm-lock.yaml` and the Python `uv.lock`; do not create application npm lockfiles.
 
-GitHub Actions runs frontend and backend/account checks. The [validation record](docs/development/backend-validation.md) contains the initial delivery evidence and limitations; the counts above include the later configuration and empty-state regressions.
-
-`npm run build` creates the frontend bundle; `npm run preview` serves that bundle locally. These commands do not start the API or mail worker. `npm run previews` creates standalone HTML review files after a build.
-
-## Repository layout
-
-```text
-src/frontend/         React app, Vite configuration and public assets
-src/backend/          Express API, authentication, mail and workspace services
-tests/frontend/       Frontend behavior and regression tests
-tests/backend/        MongoDB integration and unit tests
-tests/e2e/            Browser account/onboarding lifecycle
-.github/workflows/    Frontend and backend/account CI
-docs/product/         Product requirements
-docs/architecture/    Architecture, API, database and AI proposals
-docs/development/     Setup, workflow and validation evidence
-docs/decisions/       Technical decisions
-docs/references/      Ignored local source PDFs
-docs/superpowers/     Implementation specifications and plans
-docs/ui/              Screen galleries and synthetic screenshots
-.local/               Ignored credentials, mail, database files and local tools
-```
-
-The source proposal and feature-list PDFs remain local. Never commit credentials, private mail, customer responses or local databases. Frontend assets live under `src/frontend/public/assets/`.
+GitHub Actions checks web formatting/lint/tests/build, API/browser behavior, the Python health scaffold and the optional container stack. Branch protection/deployment rules are not configured by these files. See [validation evidence](docs/development/backend-validation.md) for measured results and limits. Local and CI success do not establish real SMTP, Atlas or production acceptance; Atlas connectivity has been intermittent on this machine.
 
 ## Documentation
 
-- [Full product feature map (Arabic)](docs/product/feature-list.md): the complete 51-feature scope, original priorities, current status and delivery dependencies.
-- [Documentation index](docs/README.md) and [Arabic getting-started guide](docs/getting-started-ar.md).
-- [Implemented backend setup and API contract](docs/development/backend.md).
-- [Node.js/MongoDB architecture decision](docs/decisions/0002-node-mongodb-foundation.md).
-- [Product requirements](docs/product/requirements.md), [architecture](docs/architecture/architecture.md), [proposed API](docs/architecture/api-contracts.md), [database](docs/architecture/database.md) and [future AI pipeline](docs/architecture/ai-pipeline.md). Proposal documents may describe later work; the implemented backend guide and status above define the current delivery.
-- [Frontend development](docs/development/frontend.md), [team workflow](docs/development/team-workflow.md) and [repository guidelines](AGENTS.md).
-- [Ordered screen galleries](docs/ui/frontend/README.md): mobile EN/AR and desktop EN/AR. Screenshots illustrate reviewed UI states; they do not prove backend availability.
+- [Documentation index](docs/README.md) and [Arabic getting started](docs/getting-started-ar.md).
+- [Architecture](docs/architecture/architecture.md), [current MongoDB models](docs/architecture/mongodb-models.md), [API](docs/api/README.md) and [backend operations](docs/development/backend.md).
+- [Developer guide](docs/development/monorepo.md), [workspace boundaries](docs/development/module-boundaries.md), [decisions](docs/decisions/) and [repository guidelines](AGENTS.md).
+- [Full 51-feature product map](docs/product/feature-list.md), [requirements](docs/product/requirements.md) and [future AI pipeline](docs/architecture/ai-pipeline.md). Feature scope is broader than current delivery.
+- [Earlier architecture/API/database proposals](docs/archive/README.md) remain historical, separate from implemented contracts.
 
-## Contribution and licensing
-
-Keep changes focused and document validation in pull requests. No open-source license has been selected; public repository visibility does not establish a license.
+No open-source license has been selected. Keep focused PRs, report actual validation and limitations, preserve private data, and use branch names without `codex/`.

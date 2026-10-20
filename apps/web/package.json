@@ -1,0 +1,33 @@
+{
+  "name": "@nuvia/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:network": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/dev-server.test.mjs && vitest run",
+    "test:watch": "vitest",
+    "previews": "node scripts/create-previews.mjs",
+    "screenshots": "pnpm run build --configLoader runner && node scripts/capture-screenshots.mjs"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "5.3.0",
+    "@fontsource/manrope": "5.3.0",
+    "@fontsource/noto-sans-arabic": "5.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "@nuvia/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.8",
+    "jsdom": "27.4.0",
+    "playwright": "1.62.1",
+    "vitest": "4.1.11",
+    "vite": "7.3.7"
+  }
+}

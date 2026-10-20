@@ -1,0 +1,9 @@
+packages:
+  - apps/web
+  - apps/api
+  - packages/*
+
+allowBuilds:
+  esbuild: true
+
+engineStrict: true

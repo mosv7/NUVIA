@@ -20,7 +20,7 @@ Keep requirements and technical contracts in `docs/`. Use GitHub issues for acti
 
 The existing `AGENTS.md` is preserved as requested. Its references to an empty workspace describe the initial state; current setup/status is documented in README and these files.
 
-Proposed code organization follows AGENTS: `src/frontend/`, `src/backend/`, `src/ai/`, `tests/`, and `assets/`. Document framework-driven deviations before introducing them.
+Proposed code organization follows AGENTS: `apps/web/`, `apps/api/src/`, `src/ai/`, `tests/`, and `assets/`. Document framework-driven deviations before introducing them.
 
 ## Delivery order
 

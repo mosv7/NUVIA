@@ -8,13 +8,12 @@ atlas-credentials.env
 test-results/
 playwright-report/
 docs/architecture/ai-pipeline.md
-docs/architecture/api-contracts.md
-docs/architecture/architecture.md
-docs/architecture/database.md
+docs/archive/
 docs/product/requirements.md
 docs/development/team-workflow.md
 node_modules/
 **/dist/
 **/previews/
 **/public/assets/
-package-lock.json
+pnpm-lock.yaml
+**/uv.lock

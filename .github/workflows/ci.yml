@@ -1,0 +1,87 @@
+name: Workspace checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm test:web
+      - run: pnpm build
+
+  accounts:
+    runs-on: ubuntu-22.04
+    env:
+      MONGOMS_DOWNLOAD_DIR: /tmp/nuvia-mongodb-binaries
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.MONGOMS_DOWNLOAD_DIR }}
+          key: mongo-7.0.24-${{ runner.os }}-${{ runner.arch }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:backend
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e:accounts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: account-browser-evidence
+          path: test-results/accounts/
+          if-no-files-found: ignore
+
+  ai-scaffold:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install uv==0.12.15
+      - run: uv sync --project apps/ai-service --locked
+      - run: uv run --directory apps/ai-service ruff check .
+      - run: uv run --directory apps/ai-service ruff format --check .
+      - run: uv run --directory apps/ai-service pytest
+
+  containers:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      MAIL_ENCRYPTION_KEY: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose --profile ai config --quiet
+      - run: docker compose --profile ai up --build -d
+      - name: Check same-origin API, web and scaffold health
+        run: |
+          curl --fail --retry 40 --retry-delay 2 --retry-all-errors http://127.0.0.1:5173/api/v1/health/ready
+          curl --fail http://127.0.0.1:5173/
+          curl --fail --retry 20 --retry-delay 2 --retry-all-errors http://127.0.0.1:8000/api/v1/health/live
+      - run: docker compose --profile ai logs --no-color --tail 100 api mongo-init mail ai
+        if: failure()
+      - run: docker compose --profile ai down --volumes
+        if: always()

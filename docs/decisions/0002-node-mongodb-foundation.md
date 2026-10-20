@@ -1,10 +1,12 @@
 # Node.js and MongoDB account foundation
 
+The direct-driver application persistence choice below is superseded by [0003: Mongoose models](0003-mongoose-models.md). The application stack and service boundaries remain unchanged.
+
 Status: selected by the project owner on 2026-10-20; implemented for account/business setup.
 
 - Node.js/Express owns the application API; the official MongoDB driver and MongoDB own persistence.
 - Python/FastAPI remains the future AI-service boundary. The browser calls Node, not MongoDB or AI directly.
-- Use native `.mjs` modules under `src/backend/`, root npm dependencies and the existing JSX frontend; no TypeScript migration.
+- Use native `.mjs` modules under `apps/api/src/`, root npm dependencies and the existing JSX frontend; no TypeScript migration.
 - Same-origin cookie sessions plus CSRF protection replace the earlier proposed bearer-token/identity-provider contract for this slice.
 - Deliver verified owner accounts and one owned workspace per account. Future team roles follow Owner/Manager/Viewer from the Features List, not the older analyst proposal. Team permissions are not delivered here.
 - Account-backed product routes show saved identity/workspace/branches and explicit empty/unavailable states. Synthetic records, subscriptions and assistant replies belong to `/preview/`.

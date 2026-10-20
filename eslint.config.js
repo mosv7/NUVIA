@@ -4,10 +4,15 @@ const reactHooks = require('eslint-plugin-react-hooks');
 const react = require('eslint-plugin-react');
 
 module.exports = [
-  { ignores: ['**/dist/**', '**/node_modules/**', '**/previews/**'] },
+  { ignores: ['**/dist/**', '**/node_modules/**', '**/previews/**', '**/*.d.ts'] },
   { files: ['tests/e2e/**/*.mjs'], languageOptions: { globals: globals.browser } },
   {
-    files: ['src/backend/**/*.mjs', 'tests/backend/**/*.mjs', 'tests/e2e/**/*.mjs'],
+    files: [
+      'apps/api/**/*.mjs',
+      'apps/web/tests/**/*.mjs',
+      'scripts/**/*.mjs',
+      'tests/e2e/**/*.mjs',
+    ],
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: globals.node },
     rules: {
       ...js.configs.recommended.rules,
@@ -15,7 +20,7 @@ module.exports = [
     },
   },
   {
-    files: ['src/frontend/src/**/*.{js,jsx}', 'tests/frontend/**/*.{js,jsx}'],
+    files: ['apps/web/src/**/*.{js,jsx}', 'apps/web/tests/**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -31,5 +36,10 @@ module.exports = [
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
+  },
+  {
+    files: ['packages/shared-types/src/**/*.js'],
+    languageOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+    rules: js.configs.recommended.rules,
   },
 ];

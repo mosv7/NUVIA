@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Use `src/backend/` for `.mjs` modules and `tests/backend/` for backend behavior tests; preserve frontend JavaScript/JSX and current npm lockfile.
+- Use `apps/api/src/` for `.mjs` modules and `apps/api/tests/` for backend behavior tests; preserve frontend JavaScript/JSX and current npm lockfile.
 - Use Node.js 22.12 or later, matching the frontend prerequisite; verify the installed runtime with the actual chosen dependency versions.
 - Store UUID string IDs and UTC dates. Passwords accept 8-128 characters with at least one ASCII letter and one digit, matching the current UI baseline.
 - Use Node crypto scrypt with a random 16-byte salt, N=32768, r=8, p=1, a 64-byte derived key, and a sufficient bounded memory allowance.
@@ -33,20 +33,20 @@
 
 ## File Structure and Interfaces
 
-| Files                                                                                                                   | Responsibility                                                                                           |
-| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `src/backend/config.mjs`, `database.mjs`, `app.mjs`, `server.mjs`                                                       | Validated environment, MongoDB lifecycle, dependency-injected HTTP app, process startup/shutdown         |
-| `src/backend/http/errors.mjs`, `security.mjs`, `validation.mjs`, `rate-limits.mjs`                                      | Safe errors/request IDs, same-origin protection/security headers, strict schemas, bounded request limits |
-| `src/backend/auth/passwords.mjs`, `sessions.mjs`, `service.mjs`, `routes.mjs`                                           | Password hashing, anonymous/authenticated sessions, account/token lifecycle and HTTP boundary            |
-| `src/backend/mail/crypto.mjs`, `outbox.mjs`, `adapters.mjs`, `worker.mjs`                                               | Encrypted transactional mail intent, delivery adapters, retry leases and dispatch                        |
-| `src/backend/workspaces/service.mjs`, `routes.mjs`                                                                      | Owner-scoped business setup and branch invariants                                                        |
-| `src/backend/scripts/setup-local.mjs`, `check-db.mjs`, `setup-db.mjs`                                                   | Generate private development settings, safe ping, repeatable indexes/schema version                      |
-| `tests/backend/helpers/{database,http,mail}.mjs`, `tests/backend/run.mjs`                                               | Isolated replica set, browser-like test client, synthetic mail, test orchestration                       |
-| `tests/backend/{config,passwords,sessions,auth,mail,workspaces}.test.mjs`                                               | Unit tests and real MongoDB/API integration tests                                                        |
-| `src/frontend/src/services/{api,auth,workspace}.js`, `auth/{AuthProvider,VerificationPage}.jsx`, `auth/route-policy.js` | API boundary, session state, verification UX and route decisions                                         |
-| Existing `App.jsx`, onboarding pages, copy dictionaries and product shell                                               | Connect current UI; preserve layout; guard account-backed routes and separate design previews            |
-| `tests/frontend/{api,auth-connected,onboarding-connected,route-policy}.test.jsx`                                        | Transport errors, auth/RTL flows, persisted onboarding and stale-response regressions                    |
-| `tests/e2e/accounts.spec.mjs`, `playwright.config.mjs`                                                                  | Real browser account-to-persisted-workspace flow against an isolated database                            |
+| Files                                                                                                               | Responsibility                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/config/env.mjs`, `database.mjs`, `app.mjs`, `server.mjs`                                              | Validated environment, MongoDB lifecycle, dependency-injected HTTP app, process startup/shutdown         |
+| `apps/api/src/middleware/errors.mjs`, `security.mjs`, `validation.mjs`, `rate-limits.mjs`                           | Safe errors/request IDs, same-origin protection/security headers, strict schemas, bounded request limits |
+| `apps/api/src/modules/auth/passwords.mjs`, `sessions.mjs`, `service.mjs`, `routes.mjs`                              | Password hashing, anonymous/authenticated sessions, account/token lifecycle and HTTP boundary            |
+| `apps/api/src/modules/mail/crypto.mjs`, `outbox.mjs`, `adapters.mjs`, `worker.mjs`                                  | Encrypted transactional mail intent, delivery adapters, retry leases and dispatch                        |
+| `apps/api/src/modules/workspaces/service.mjs`, `routes.mjs`                                                         | Owner-scoped business setup and branch invariants                                                        |
+| `apps/api/scripts/setup-local.mjs`, `check-db.mjs`, `setup-db.mjs`                                                  | Generate private development settings, safe ping, repeatable indexes/schema version                      |
+| `apps/api/tests/helpers/{database,http,mail}.mjs`, `apps/api/tests/run.mjs`                                         | Isolated replica set, browser-like test client, synthetic mail, test orchestration                       |
+| `apps/api/tests/{config,passwords,sessions,auth,mail,workspaces}.test.mjs`                                          | Unit tests and real MongoDB/API integration tests                                                        |
+| `apps/web/src/services/{api,auth,workspace}.js`, `auth/{AuthProvider,VerificationPage}.jsx`, `auth/route-policy.js` | API boundary, session state, verification UX and route decisions                                         |
+| Existing `App.jsx`, onboarding pages, copy dictionaries and product shell                                           | Connect current UI; preserve layout; guard account-backed routes and separate design previews            |
+| `apps/web/tests/{api,auth-connected,onboarding-connected,route-policy}.test.jsx`                                    | Transport errors, auth/RTL flows, persisted onboarding and stale-response regressions                    |
+| `tests/e2e/accounts.spec.mjs`, `playwright.config.mjs`                                                              | Real browser account-to-persisted-workspace flow against an isolated database                            |
 
 Shared DTOs: `UserView={id,name,email,locale,emailVerified}`, `WorkspaceView={id,businessName,industry,locale,reportingTimezone,branchType,primaryBranchId,onboardingStep,branches}`, `BranchView={id,name,archivedAt,isPrimary}`, `SessionView={user:null|UserView,workspace:null|WorkspaceView,csrfToken}`. `onboardingStep` is `information`, `branches` or `complete`. Errors use `{error:{code,message,details},request_id}`. Dates crossing HTTP are UTC ISO strings; MongoDB dates remain Date values.
 
@@ -54,19 +54,19 @@ All service functions receive a dependency object `{db,client,config,now}`. `now
 
 ## Task 1: Runnable API, safe configuration and replica-set tests
 
-**Files:** Create core/backend script/helper files above and `tests/backend/config.test.mjs`; modify `package.json`, `package-lock.json`, `eslint.config.js`, `.gitignore`; create `.env.example`.
+**Files:** Create core/backend script/helper files above and `apps/api/tests/config.test.mjs`; modify `package.json`, `package-lock.json`, `eslint.config.js`, `.gitignore`; create `.env.example`.
 
 **Interfaces:** `loadConfig(env=process.env,{rootDir}) -> Config`; `connectDatabase(config) -> Promise<{client,db,close}>`; `ensureSchema(db) -> Promise<void>`; `createApp(dependencies) -> Express`; `createTestDatabase() -> Promise<{client,db,config,cleanup}>`. Config uses lower-camel-case fields mapped from the spec environment variables.
 
 - [ ] Write failing configuration/health tests: environment overrides local files; production never reads Atlas files; invalid URI/origin/key/DNS/TLS settings fail without revealing values; liveness 200, readiness 200 with MongoDB and 503 on a failed ping; shutdown closes storage/listener. Test DB helper refuses any supplied database name outside `nuvia_test_<uuid>` and refuses the development DB even with that prefix.
-- [ ] Run `node --test tests/backend/config.test.mjs`; confirm expected missing-module failure before implementation.
+- [ ] Run `node --test apps/api/tests/config.test.mjs`; confirm expected missing-module failure before implementation.
 - [ ] Add compatible dependencies with npm and commit the lockfile; use `mongodb-memory-server-core` to start a one-member replica set with `wiredTiger` only in the test launcher. Default tests use local temporary storage; allow an explicit replica-set `MONGODB_TEST_URI` only with a fresh generated test DB. Never read Atlas development credentials in tests. Implement strict config, startup/shutdown, safe error envelopes, request IDs, 32 KiB JSON limit, explicit trusted-proxy settings and readiness.
 - [ ] Implement `ensureSchema` with a `schema_versions` record and idempotent version-1 indexes from the spec; reject incompatible version/data instead of dropping indexes/collections. `setup-local` writes missing private values with exclusive file creation, generates a 32-byte mail key and defaults to file mail; never overwrite user settings. Add `.local/` to ignore rules. Add scripts `dev:backend`, `start:backend`, `db:check`, `db:setup`, `setup:local`, `test:backend` and `test:backend:unit`. Extend ESLint to backend/test `.mjs` with Node globals.
 - [ ] Run `npm run test:backend -- --test-name-pattern='configuration|health|database safety|schema'` and `npm run lint`; expect passing matching tests and no lint errors. Stage only this task's files, run `git diff --cached --check`, commit `Add Node API and isolated MongoDB test foundation`.
 
 ## Task 2: Passwords, sessions and CSRF boundary
 
-**Files:** Create auth password/session modules and HTTP security/validation/rate-limit modules; create `tests/backend/passwords.test.mjs`, `sessions.test.mjs`; extend app and helpers.
+**Files:** Create auth password/session modules and HTTP security/validation/rate-limit modules; create `apps/api/tests/passwords.test.mjs`, `sessions.test.mjs`; extend app and helpers.
 
 **Interfaces:** `hashPassword(password) -> Promise<string>`; `verifyPassword(password,encodedHash) -> Promise<boolean>`; `bootstrapSession(req,res,deps) -> Promise<SessionView>`; `requireUser(req,deps) -> Promise<UserView>`; `requireVerifiedUser(req,deps) -> Promise<UserView>`; `requireCsrf(req,deps) -> Promise<void>`; `createSession(res,{userId,remember},deps) -> Promise<{csrfToken}>`; `revokeSession(req,res,deps) -> Promise<void>`. Middleware stores only resolved safe session metadata on the request.
 
@@ -78,7 +78,7 @@ All service functions receive a dependency object `{db,client,config,now}`. `now
 
 ## Task 3: Registration, verified login and logout APIs
 
-**Files:** Create `auth/service.mjs`, `auth/routes.mjs`, mail crypto/outbox modules and `tests/backend/auth.test.mjs`, `mail.test.mjs`; extend app/schema/helper.
+**Files:** Create `auth/service.mjs`, `auth/routes.mjs`, mail crypto/outbox modules and `apps/api/tests/auth.test.mjs`, `mail.test.mjs`; extend app/schema/helper.
 
 **Interfaces:** `registerOwner(input,deps) -> Promise<UserView>`; `loginOwner(input,req,res,deps) -> Promise<SessionView>`; `getSessionView(req,res,deps) -> Promise<SessionView>`; `enqueueAuthMail({userId,kind,token,expiresAt},deps,mongoSession) -> Promise<void>`; `encryptPayload(value,key) -> {ciphertext,nonce,tag}`; `decryptPayload(payload,key) -> object`. Login input is `{email,password,remember}`; registration is `{name,email,password,terms,locale}`. Later Task 4 implements verification consumption; these tests seed verified state directly where login needs it.
 
@@ -102,7 +102,7 @@ All service functions receive a dependency object `{db,client,config,now}`. `now
 
 ## Task 5: Persistent owner workspace and branch APIs
 
-**Files:** Create workspace service/routes and `tests/backend/workspaces.test.mjs`; extend schema/app/auth DTO mapping.
+**Files:** Create workspace service/routes and `apps/api/tests/workspaces.test.mjs`; extend schema/app/auth DTO mapping.
 
 **Interfaces:** `getWorkspace(userId,deps) -> Promise<WorkspaceView>`; `saveWorkspace(userId,{businessName,industry,locale,reportingTimezone},deps) -> Promise<WorkspaceView>`; `completeSetup(userId,{branchType,branchName},deps) -> Promise<WorkspaceView>`; `listBranches(userId,workspaceId,{includeArchived},deps) -> Promise<BranchView[]>`; `createBranch(userId,workspaceId,{name},deps) -> Promise<BranchView>`; `updateBranch(userId,workspaceId,branchId,{name?,archived?,isPrimary?},deps) -> Promise<BranchView>`. Only verified users can call these functions through routes.
 
@@ -119,7 +119,7 @@ All service functions receive a dependency object `{db,client,config,now}`. `now
 **Interfaces:** `apiRequest(path,{method='GET',body,signal}={}) -> Promise<JSON|undefined>` rejects with `{code,status,details}`; `authApi={session,register,verify,resend,login,logout,forgot,reset}`; `workspaceApi={get,save,completeSetup}` map exactly to backend catalog/DTOs; `AuthProvider` exposes `{status,user,workspace,refresh,login,logout,saveWorkspace,completeSetup}`. `routePolicy({route,preview,user,workspace}) -> {allow,redirect}` is pure. Token URLs are `#/verify-email?token=...` and `#/reset?token=...`; remove consumed tokens from history without triggering duplicate submissions.
 
 - [ ] Write failing Vitest tests using mocked HTTP boundaries: registration leads to verification status; verify/resend and invalid/expired reset recover; wrong login remains on form; verified login resumes incomplete setup or empty Overview; reload restores business; failed save retains non-secret fields and blocks progress. Assert EN/AR status labels, RTL, keyboard use, no password/session token in localStorage, correct API cookie/CSRF behavior and loading/retry states.
-- [ ] Run `npm test -- tests/frontend/auth-connected.test.jsx tests/frontend/onboarding-connected.test.jsx tests/frontend/api.test.jsx tests/frontend/route-policy.test.jsx`; expect assertions failing against existing demo adapters.
+- [ ] Run `npm test -- apps/web/tests/auth-connected.test.jsx apps/web/tests/onboarding-connected.test.jsx apps/web/tests/api.test.jsx apps/web/tests/route-policy.test.jsx`; expect assertions failing against existing demo adapters.
 - [ ] Implement API bootstrap single-flight, relative same-origin URLs, credentials inclusion, CSRF header and AbortSignal support. Restrict automatic retry to safe bootstrap, never replay mutations blindly. Implement AuthProvider with generation-based invalidation on logout/route/unmount, authenticated bootstrap before protected rendering, and no authenticated cache persisting across users. Add tests where delayed bootstrap/save/login resolves after logout, route change or another login; none may restore stale identity/advance setup.
 - [ ] Wire current forms and remove connected-flow demo notices; retain current layouts and local field validation with authoritative API errors. Pass disabled/busy props to existing buttons; clear passwords on successful auth/reset/navigation. Add verification status/resend view using existing auth styling. Disable Google sign-in with bilingual availability text. Configure Vite `/api` proxy to the explicit local backend port. Wire persisted onboarding and final Get Started navigation; show no success until storage confirms.
 - [ ] Run frontend tests, lint and build; expect passing connected tests plus updated previous stale-login/keyboard/RTL regressions. Stage exact files, check staged whitespace, commit `Connect account and onboarding screens to the Node API`.

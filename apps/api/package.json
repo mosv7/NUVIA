@@ -1,0 +1,29 @@
+{
+  "name": "@nuvia/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.mjs",
+    "start": "node src/server.mjs",
+    "setup:local": "node scripts/setup-local.mjs",
+    "mail:work": "node scripts/mail-worker.mjs",
+    "db:check": "node scripts/check-db.mjs",
+    "db:setup": "node scripts/setup-db.mjs",
+    "test": "node tests/run.mjs",
+    "test:unit": "node --test tests/config.test.mjs tests/passwords.test.mjs tests/workspace-paths.test.mjs"
+  },
+  "dependencies": {
+    "cookie-parser": "1.4.7",
+    "express": "5.3.0",
+    "helmet": "8.3.0",
+    "mongoose": "9.11.2",
+    "nodemailer": "10.1.7",
+    "zod": "4.6.7",
+    "@nuvia/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "supertest": "7.3.1",
+    "mongodb-memory-server-core": "11.3.0"
+  }
+}

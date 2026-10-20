@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { deliverPendingMail } from '../../src/backend/mail/worker.mjs';
+import { deliverPendingMail } from '../../apps/api/src/modules/mail/worker.mjs';
 async function waitFor(callback, ms = 10000) {
   const deadline = Date.now() + ms;
   while (Date.now() < deadline) {

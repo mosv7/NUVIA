@@ -4,13 +4,13 @@ Status: implementation choice for this pull request; backend and AI choices rema
 
 ## Context
 
-The supplied frontend is an existing React and Vite prototype with approved Arabic/English landing, authentication, and business-onboarding layouts. The repository contains planning documents but no application code. The team workflow proposes `src/frontend/`, shared `tests/`, and `assets/`.
+The supplied frontend is an existing React and Vite prototype with approved Arabic/English landing, authentication, and business-onboarding layouts. The repository contains planning documents but no application code. The team workflow proposes `apps/web/`, shared `tests/`, and `assets/`.
 
 ## Decision
 
 - Keep the supplied JavaScript/JSX implementation for this import. React/TypeScript in the architecture is a proposed baseline; a TypeScript migration is separate work and is not implied by importing this prototype.
-- Place the app at `src/frontend/` with dependencies and commands in the repository-root npm manifest and lockfile. This keeps one clean install without requiring workspace symlinks on Windows. Framework entry points and configuration live in the app directory, and React modules remain under its framework-standard `src/` directory. Tests live in the repository's `tests/frontend/`.
-- Keep screen assets in `src/frontend/public/assets/`, Vite's public asset directory. This framework-driven deviation from a root `assets/` directory preserves the existing asset paths and descriptive Figma filenames.
+- Place the app at `apps/web/` with dependencies and commands in the repository-root npm manifest and lockfile. This keeps one clean install without requiring workspace symlinks on Windows. Framework entry points and configuration live in the app directory, and React modules remain under its framework-standard `src/` directory. Tests live in the repository's `apps/web/tests/`.
+- Keep screen assets in `apps/web/public/assets/`, Vite's public asset directory. This framework-driven deviation from a root `assets/` directory preserves the existing asset paths and descriptive Figma filenames.
 - Configure ESLint, Prettier, Vitest, and a frontend CI workflow with the first application code. Keep generated bundles, standalone previews, dependencies, and private configuration out of Git.
 - Preserve the existing planning documents and `AGENTS.md`. Update README with runnable commands and the actual delivered scope.
 

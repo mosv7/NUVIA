@@ -16,9 +16,9 @@ Each gallery follows the same flow: landing, account screens, business setup, ov
 From the repository root:
 
 ```sh
-npm ci
+pnpm install --frozen-lockfile
 npx playwright install chromium
-npm run screenshots
+pnpm screenshots
 ```
 
 The command builds and serves the production frontend bundle on local port 5191, waits for bundled fonts, images, and dashboard sizing, and captures every route in both languages. It validates the compact phone sign-in link, visible approved logos and persistent account/setup headers, exact blue SVG language icon, bottom help placement, absence of horizontal overflow, and consistent navbar height. It also fails if an existing PNG was not refreshed, so older aliases cannot silently remain stale. It does not alter application code or the separate color preview.
