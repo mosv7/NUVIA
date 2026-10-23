@@ -25,3 +25,29 @@ HTMLDialogElement.prototype.show = function () {
 };
 Element.prototype.scrollIntoView = function () {};
 window.scrollTo = function () {};
+
+// jsdom has no media-query engine; animation tests use a stable browser contract.
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener() {},
+  removeListener() {},
+  addEventListener() {},
+  removeEventListener() {},
+  dispatchEvent() {
+    return true;
+  },
+});
+
+class VisibilityObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe(target) {
+    this.callback([{ target, isIntersecting: true }]);
+  }
+  unobserve() {}
+  disconnect() {}
+}
+globalThis.IntersectionObserver = VisibilityObserver;

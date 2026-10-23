@@ -221,7 +221,7 @@ export default function FeedbackDetailsDesign() {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Business & Teams')}
+              {tr('Business')}
             </p>
           </button>
           <div className="f21" data-node-id="266:14333" data-name="Divider" />
@@ -420,10 +420,11 @@ export default function FeedbackDetailsDesign() {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                aria-label={tr('Search your workspace')}
-                placeholder={tr('Search your workspace')}
-                value={ui.query}
-                onChange={(event) => ui.setQuery(event.target.value)}
+                data-workspace-search=""
+                aria-label={tr('Search across pages')}
+                placeholder={tr('Search across pages')}
+                value={ui.workspaceQuery}
+                onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />
               <p
                 className="f43"
@@ -439,7 +440,7 @@ export default function FeedbackDetailsDesign() {
               <div className="f33" data-node-id="267:14860" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon12} />
               </div>
-              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
               <div className="f45" data-node-id="267:14863" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon13} />
               </div>
@@ -591,7 +592,11 @@ export default function FeedbackDetailsDesign() {
                     {tr('Original Feedback')}
                   </p>
                   <div className="f71" data-node-id="267:14901" data-name="Language">
-                    <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
+                    <LanguageMenu
+                      iconOnly={ui.isMobile}
+                      value={ui.language}
+                      onChange={ui.setLanguage}
+                    />
                   </div>
                 </div>
                 <div className="f72" data-node-id="267:14903" data-name="Customer words">

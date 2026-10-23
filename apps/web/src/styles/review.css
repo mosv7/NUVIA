@@ -1,0 +1,1337 @@
+/* Shared language typography and responsive layout for the review build. */
+:root {
+  --ui-font: 'DM Sans', sans-serif;
+  --control-height: 40px;
+  --control-radius: 10px;
+}
+html[lang='ar'] {
+  --ui-font: 'Noto Sans Arabic', sans-serif;
+}
+html #root *,
+body > .choice-popup,
+body > .choice-popup * {
+  font-family: var(--ui-font) !important;
+}
+html[lang='ar']
+  #root
+  :is(p, h1, h2, h3, h4, button, a, label, span, small, strong, input, select, textarea) {
+  letter-spacing: 0 !important;
+}
+#root :is(button, input, select, textarea) {
+  font-size: inherit;
+}
+#root .product-page .product-view.ds-overview {
+  width: 100%;
+  max-width: 100%;
+  zoom: 1;
+}
+#root .product-page .product-workspace {
+  position: relative;
+  inset: auto;
+  margin-inline-start: 232px;
+  width: calc(100% - 232px);
+  max-width: calc(100% - 232px);
+  height: auto;
+  min-width: 0;
+  min-height: 100dvh;
+}
+#root .product-page .product-navigation {
+  height: 100dvh;
+}
+#root .product-workspace > main,
+#root .product-workspace > section,
+#root .figma-preview {
+  min-width: 0;
+  max-width: 100%;
+}
+#root .analytics-preview [data-name='Page content'] {
+  container-type: inline-size;
+}
+#root .analytics-preview [data-name='Key metric'] {
+  height: auto;
+  align-self: stretch;
+  min-width: 0;
+  overflow: visible;
+  gap: 10px;
+}
+#root .analytics-preview [data-name='Metric heading'] {
+  overflow: visible;
+  min-height: 36px;
+  gap: 8px;
+  align-items: flex-start;
+}
+#root .analytics-preview [data-name='Key metric'] p {
+  white-space: normal;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  flex-shrink: 1;
+}
+#root .analytics-preview [data-name='Metric heading'] > p {
+  flex: 1;
+  line-height: 1.5;
+}
+#root .analytics-preview [data-name='Key metric'] > .an21 {
+  font-size: clamp(23px, 2.4vw, 28px);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+#root .analytics-preview [data-name='Key metric'] > .an22 {
+  line-height: 1.65;
+}
+#root .analytics-preview [data-name='Series marker'] {
+  flex-shrink: 0;
+}
+#root .analytics-tabs {
+  flex-wrap: wrap;
+  overflow: visible;
+  column-gap: 24px;
+  row-gap: 0;
+}
+#root .analytics-tabs a {
+  white-space: normal;
+  max-width: 100%;
+  line-height: 1.5;
+}
+#root .analytics-tabs a:hover {
+  color: #1e68ef !important;
+}
+#root .analytics-filters .analytics-reset:disabled {
+  color: #1e68ef;
+  opacity: 1;
+}
+#root .analytics-filters .analytics-select,
+#root .analytics-filters .analytics-date-button {
+  height: var(--control-height);
+  min-height: var(--control-height);
+  border-radius: var(--control-radius);
+  font-size: 12px;
+}
+#root .analytics-filters .choice-menu .choice-trigger {
+  height: 38px !important;
+}
+#root .analytics-filters .choice-trigger > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#root .analytics-comparison-scope {
+  display: grid;
+  grid-template-columns: auto minmax(140px, 1fr) minmax(140px, 0.9fr) minmax(140px, 0.9fr);
+  gap: 24px;
+  align-items: start;
+  background: #f5f8fd;
+}
+#root .analytics-comparison-scope > div {
+  min-width: 0;
+  gap: 6px;
+}
+#root .analytics-comparison-scope :is(small, span) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+#root .comparison-dimension-select {
+  background: white;
+  border: 1px solid #dfe7f2;
+  border-radius: 10px;
+  min-height: 40px;
+  padding-inline: 14px;
+  display: flex;
+  align-items: center;
+}
+#root .comparison-dimension-select .choice-trigger {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 38px;
+  font-size: 12px;
+}
+#root .comparison-dimension-select .choice-trigger:after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-inline-end: 1.5px solid #64738a;
+  border-bottom: 1.5px solid #64738a;
+  transform: rotate(45deg);
+}
+#root .comparison-branch-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#root .comparison-branch-chips button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  background: #eaf2ff;
+  color: #1e68ef;
+  border-radius: 5px;
+  font-size: 11px;
+  padding: 4px 8px;
+  min-height: 26px;
+  opacity: 1;
+}
+#root .comparison-branch-chips button:hover:not(:disabled) {
+  background: #dae8ff;
+}
+#root .comparison-branch-chips .comparison-restore {
+  background: white;
+  border: 1px solid #dfe7f2;
+}
+#root
+  .analytics-preview
+  :is(
+    [data-name='Heading'],
+    [data-name='Heading copy'],
+    [data-name='Difference'],
+    [data-name='Analysis footer'],
+    [data-name='Comparison guidance'],
+    [data-name='Result availability']
+  ) {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow: visible;
+}
+#root
+  .analytics-preview
+  :is(
+    [data-name='Heading'],
+    [data-name='Heading copy'],
+    [data-name='Difference'],
+    [data-name='Analysis footer'],
+    [data-name='Comparison guidance'],
+    [data-name='Result availability']
+  )
+  p {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#root .analytics-preview [data-name='Branch comparison'] {
+  height: auto;
+}
+#root .analytics-preview [data-name='Branch metric'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  width: 100%;
+  gap: 10px;
+}
+#root .analytics-preview [data-name='Branch sentiment track'] {
+  width: 100%;
+  min-width: 0;
+}
+#root .analytics-preview [data-name='Branch sentiment track'] > [data-name='Positive share'] {
+  max-width: 100%;
+  width: var(--branch-share);
+}
+#root .analytics-preview [data-name='Branch']:nth-child(1) {
+  --branch-share: 81.9%;
+}
+#root .analytics-preview [data-name='Branch']:nth-child(2) {
+  --branch-share: 77.9%;
+}
+#root .analytics-preview [data-name='Branch']:nth-child(3) {
+  --branch-share: 65%;
+}
+#root .analytics-preview [data-name='Branch heading'] {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#root
+  .analytics-preview
+  :is(
+    [data-name='Aspect result'],
+    [data-name='Topic cluster'],
+    [data-name='Emerging theme'],
+    [data-name='Related response']
+  ) {
+  transition:
+    background-color 0.16s,
+    border-color 0.16s;
+  min-width: 0;
+}
+#root
+  .analytics-preview
+  :is(
+    [data-name='Aspect result'],
+    [data-name='Topic cluster'],
+    [data-name='Emerging theme'],
+    [data-name='Related response']
+  ):hover {
+  border-color: #9dbdf8;
+  background: #f5f8ff;
+}
+#root
+  .analytics-preview
+  :is(
+    [data-name='Aspect result'],
+    [data-name='Topic cluster'],
+    [data-name='Emerging theme'],
+    [data-name='Related response']
+  )[aria-pressed='true'] {
+  background: #eaf2ff;
+  border-color: #1e68ef;
+}
+#root :is(button, a):focus-visible {
+  outline: 2px solid #1e68ef;
+  outline-offset: 3px;
+}
+#root
+  .product-view
+  :is(
+    .feedback-btn,
+    .survey-primary,
+    .survey-secondary,
+    .analytics-date-button,
+    [data-name='Action']
+  ):is(button, a) {
+  min-height: var(--control-height);
+  border-radius: var(--control-radius);
+  line-height: 1.5;
+}
+#root
+  .product-view
+  :is(
+    .feedback-btn,
+    .survey-primary,
+    .survey-secondary,
+    [data-name='Page introduction'] [data-name='Action']
+  ) {
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+#root .product-view :is(.feedback-heading, .feedback-table-toolbar, .feedback-pagination) {
+  gap: 14px;
+  flex-wrap: wrap;
+}
+#root .product-view :is(.feedback-filter-grid, .survey-grid) {
+  min-width: 0;
+  max-width: 100%;
+}
+#root .product-view :is(.feedback-detail-grid, .survey-page-content, .survey-editor, .survey-card) {
+  min-width: 0;
+  max-width: 100%;
+}
+#root .figma-preview [data-name='Page introduction'] {
+  gap: 16px;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+#root .figma-preview [data-name='Introduction'] {
+  flex: 1 1 280px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+#root .figma-preview [data-name='Introduction'] p {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#root .analytics-preview [data-name='Sample data context'] {
+  height: auto;
+  flex-wrap: wrap;
+  min-width: 0;
+  overflow: visible;
+}
+#root .analytics-preview [data-name='Sample data context'] > p {
+  flex: 1 1 200px;
+  white-space: normal;
+  line-height: 1.65;
+  min-width: 0;
+}
+.responsive-chart {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  direction: ltr;
+  position: relative;
+}
+.responsive-chart-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+#root .responsive-chart-canvas > [data-name] {
+  width: var(--chart-width) !important;
+  min-width: var(--chart-width) !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+#root .analytics-preview [data-name='Trend evidence table'] {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+#root .analytics-preview :is([data-name='Table header'], [data-name='Weekly result']) {
+  display: grid;
+  grid-template-columns: minmax(90px, 1.6fr) repeat(3, minmax(0, 1fr));
+  width: 100%;
+  gap: 8px;
+  height: auto;
+  overflow: visible;
+}
+#root .analytics-preview :is([data-name='Table header'], [data-name='Weekly result']) > p {
+  position: static;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1200px) {
+  #root .analytics-comparison-scope {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #root
+    .analytics-preview
+    :is(
+      [data-name='Sentiment metrics'],
+      [data-name='Aspect metrics'],
+      [data-name='Topic metrics'],
+      [data-name='Historical metrics']
+    ) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #root .analytics-preview [data-name='Dimension metrics'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 850px) {
+  #root .product-page .product-workspace {
+    width: 100%;
+    max-width: 100%;
+    margin-inline-start: 0;
+  }
+  #root .product-page .product-navigation {
+    height: 100dvh;
+  }
+  #root .product-workspace [data-name='Overview content'] {
+    padding-inline: 20px;
+  }
+  #root .analytics-preview [data-name='Dimension metrics'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #root .analytics-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  #root
+    .analytics-filters
+    :is(.analytics-select, .analytics-date-button, .analytics-survey-select) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  #root .analytics-filters .analytics-date-button {
+    grid-column: 1/-1;
+  }
+  #root .analytics-filters .analytics-reset {
+    justify-self: start;
+  }
+  #root .analytics-tabs {
+    column-gap: 18px;
+  }
+}
+@media (max-width: 600px) {
+  #root .analytics-preview [data-name='Page content'],
+  #root .figma-preview > [data-name='Page content'] {
+    padding: 20px 16px;
+    gap: 18px;
+  }
+  #root .analytics-comparison-scope {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 16px;
+  }
+  #root .analytics-preview [data-name='Dimension metrics'] {
+    grid-template-columns: 1fr;
+  }
+  #root .analytics-preview [data-name='Branch metric'] {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  #root .analytics-preview [data-name='Branch metric'] > p:last-child {
+    grid-column: 1/-1;
+  }
+  #root .analytics-preview [data-name='Chart legend'] {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #root .analytics-preview [data-name='Trend controls'] {
+    flex-wrap: wrap;
+    gap: 12px;
+    height: auto;
+  }
+  #root .analytics-preview [data-name='Key metric'] {
+    padding: 14px;
+  }
+  #root .analytics-preview [data-name='Key metric'] > .an21 {
+    font-size: 24px;
+  }
+  #root .analytics-preview [data-name='Metric heading'] {
+    min-height: 36px;
+  }
+  #root .feedback-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #root .feedback-table-scroll {
+    overflow: visible;
+  }
+  #root .feedback-table {
+    display: block;
+    min-width: 0;
+    width: 100%;
+    table-layout: auto;
+  }
+  #root .feedback-table colgroup,
+  #root .feedback-table thead {
+    display: none;
+  }
+  #root .feedback-table tbody {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+  }
+  #root .feedback-table tbody tr {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    padding: 14px;
+    border: 1px solid #dfe7f2;
+    border-radius: 12px;
+    width: 100%;
+    min-width: 0;
+  }
+  #root .feedback-table tbody td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    padding: 6px 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  #root .feedback-table tbody td:first-child {
+    grid-column: 1;
+    grid-row: 1/8;
+  }
+  #root .feedback-table tbody td:not(:first-child) {
+    grid-column: 2;
+  }
+  #root .feedback-preview {
+    white-space: normal;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    max-width: 100%;
+  }
+  #root .feedback-table tbody td[data-label]:before {
+    content: attr(data-label);
+    display: block;
+    color: #64738a;
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+  #root .survey-table-wrap {
+    overflow: visible;
+  }
+  #root .survey-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+  #root .survey-table :is(th, td) {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  #root .product-workspace [data-name='Overview content'] {
+    padding-inline: 16px;
+  }
+}
+@media (max-width: 360px) {
+  #root
+    .analytics-preview
+    :is(
+      [data-name='Sentiment metrics'],
+      [data-name='Aspect metrics'],
+      [data-name='Topic metrics'],
+      [data-name='Historical metrics']
+    ),
+  #root .analytics-summary-metrics {
+    grid-template-columns: 1fr;
+  }
+  #root .analytics-filters,
+  #root .feedback-filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#root .ds-overview [data-name='Overview content'] {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: auto;
+  padding: 28px;
+  overflow: visible;
+}
+#root .ds-overview [data-name='Overview content'] > div {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 24px;
+}
+#root .ds-overview [data-name='Overview content'] > div > div {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+#root .ds-overview [data-node-id='127:360'] {
+  order: 0;
+  display: flex;
+  flex-direction: column;
+}
+#root .ds-overview [data-node-id='127:428'] {
+  order: 1;
+}
+#root .ds-overview [data-node-id='127:506'] {
+  order: 2;
+}
+#root .ds-overview [data-node-id='127:718'] {
+  order: 3;
+}
+#root .ds-overview [data-node-id='127:645'] {
+  order: 4;
+}
+#root .ds-overview [data-node-id='127:586'] {
+  order: 5;
+}
+#root .ds-overview [data-name='Key metrics'] {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+}
+#root .ds-overview .product-card {
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+#root .ds-overview [data-name='Feedback metric'] {
+  height: auto;
+  min-width: 0;
+  overflow: visible;
+}
+#root .ds-overview [data-name='Feedback metric'] p {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+#root .figma-preview [data-name]:not(.responsive-chart *) {
+  min-width: 0;
+  max-width: 100%;
+}
+#root .figma-preview p:not(.responsive-chart *) {
+  flex-shrink: 1;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+#root .figma-preview [data-name='Topic cluster'],
+#root .figma-preview [data-name='Emerging theme'] {
+  height: auto;
+  text-align: start;
+}
+#root .analytics-preview [data-name='Comparison columns'],
+#root .analytics-preview [data-name='Aspect result'] {
+  display: grid;
+  grid-template-columns: minmax(90px, 1.4fr) minmax(50px, 0.6fr) minmax(50px, 0.6fr) minmax(
+      70px,
+      1fr
+    );
+  gap: 10px;
+  width: 100%;
+  overflow: visible;
+  height: auto;
+}
+#root .analytics-preview [data-name='Comparison columns'] > p,
+#root .analytics-preview [data-name='Aspect result'] > p {
+  width: auto;
+  white-space: normal;
+  min-width: 0;
+}
+#root .analytics-preview [data-name='Sentiment share'] {
+  width: 100%;
+  max-width: 100%;
+}
+#root .analytics-preview [data-name='Sentiment share'] > img {
+  max-width: 100%;
+  object-fit: contain;
+}
+#root .survey-row-actions {
+  min-width: 0;
+}
+#root .survey-page-content :is(button, input, select, textarea) {
+  font-family: var(--ui-font) !important;
+}
+#root .survey-share-card > label,
+#root .survey-share-layout .survey-share-card,
+#root .survey-qr-title {
+  text-align: start;
+}
+@media (max-width: 1200px) {
+  #root .ds-overview [data-name='Key metrics'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1100px) {
+  #root .ds-overview [data-name='Overview content'] > div {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  #root .ds-overview [data-name='Overview content'] {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  #root .ds-overview [data-name='Overview content'] > div {
+    gap: 16px;
+  }
+  #root .analytics-preview [data-name='Comparison columns'] {
+    display: none;
+  }
+  #root .analytics-preview [data-name='Aspect result'] {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 14px;
+  }
+  #root .analytics-preview [data-name='Aspect result'] > [data-name='Sentiment share'] {
+    grid-column: 1/-1;
+  }
+  #root .ds-overview [data-name='Comparison table'] {
+    min-width: 0;
+    width: 100%;
+  }
+  #root .ds-overview [data-name='Comparison table'] > div {
+    min-width: 0;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+    height: auto;
+  }
+  #root .ds-overview [data-name='Weekly trend chart'] {
+    max-width: 100%;
+  }
+  #root .survey-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  #root .survey-table thead {
+    display: none;
+  }
+  #root .survey-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+  #root .survey-table tr {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #dfe7f2;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  #root .survey-table td {
+    width: 100%;
+    padding: 4px;
+    border: 0;
+    white-space: normal;
+  }
+}
+
+/* Comparison refinement: keep context fields aligned and prose full-width. */
+#root .analytics-comparison-scope {
+  grid-template-columns: minmax(115px, 0.65fr) minmax(230px, 1.3fr) minmax(165px, 1fr) minmax(
+      165px,
+      1fr
+    );
+  gap: 18px;
+  align-items: start;
+}
+#root .analytics-comparison-scope > div {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+#root .analytics-comparison-scope > div > small:first-child {
+  min-height: 16px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+#root .comparison-values-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#root .comparison-selection-count {
+  white-space: nowrap !important;
+  color: #64738a;
+  font-size: 10px;
+}
+#root .comparison-branch-chips {
+  min-height: 40px;
+  align-items: center;
+  gap: 6px;
+}
+#root .comparison-branch-chips button {
+  min-height: 26px;
+  white-space: nowrap;
+  gap: 8px;
+  line-height: 1.5;
+}
+#root .analytics-preview [data-name='Dimension comparison and differences'] {
+  align-items: start;
+  grid-template-columns: minmax(0, 1.65fr) minmax(290px, 1fr);
+  gap: 20px;
+}
+#root .analytics-preview [data-name='Dimension comparison and differences'] > div {
+  height: auto;
+  align-self: start;
+  overflow: visible;
+}
+#root .analytics-preview [data-name='Aspect scores by dimension'] {
+  gap: 16px;
+  padding: 22px;
+}
+#root .analytics-preview [data-name='Notable differences'] {
+  gap: 18px;
+  padding: 22px;
+}
+#root .analytics-preview [data-name='Notable differences'] [data-name='Difference'] {
+  width: 100%;
+  min-width: 0;
+  align-items: stretch;
+  gap: 6px;
+}
+#root .analytics-preview [data-name='Notable differences'] [data-name='Difference'] > p {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1.65;
+  flex-shrink: 1;
+}
+#root .analytics-preview [data-name='Notable differences'] .an316 {
+  font-size: 14px;
+  font-weight: 600;
+}
+#root .analytics-preview [data-name='Notable differences'] .an317 {
+  font-size: 12px;
+}
+#root .analytics-preview [data-name='Aspect scores by dimension'] > .an22 {
+  width: 100%;
+  white-space: normal;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 0;
+}
+@media (max-width: 1250px) {
+  #root .analytics-comparison-scope {
+    grid-template-columns: minmax(130px, 0.65fr) minmax(230px, 1.35fr);
+  }
+  #root .analytics-preview [data-name='Dimension comparison and differences'] {
+    grid-template-columns: minmax(0, 1.5fr) minmax(250px, 1fr);
+  }
+}
+@media (max-width: 1100px) {
+  #root .analytics-preview [data-name='Dimension comparison and differences'] {
+    grid-template-columns: 1fr;
+  }
+  #root .analytics-preview [data-name='Notable differences'] {
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  #root .analytics-comparison-scope {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  #root .comparison-branch-chips {
+    min-height: 0;
+  }
+  #root .analytics-preview [data-name='Aspect scores by dimension'],
+  #root .analytics-preview [data-name='Notable differences'] {
+    padding: 16px;
+  }
+}
+
+/* A single control treatment across overview, analytics, feedback and reports. */
+.control-icon {
+  display: inline-block !important;
+  position: static !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  flex: 0 0 16px !important;
+  color: #1e68ef;
+  background-color: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  vertical-align: middle;
+}
+#root
+  .product-view
+  :is(
+    .ui-export,
+    .feedback-export,
+    .analytics-date-button,
+    .overview-date-trigger,
+    [data-name='Workspace date filter'],
+    [data-name='Dashboard filter'],
+    .overview-filter-branch,
+    .preview-filter
+  ) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f2;
+  border-radius: 10px;
+  background: #fff;
+  color: #10213d;
+  font: 500 12px/1.5 var(--ui-font);
+  position: relative;
+  box-shadow: none;
+  white-space: nowrap;
+}
+#root
+  .product-view
+  :is(
+    .ui-export,
+    .feedback-export,
+    .analytics-date-button,
+    .overview-date-trigger,
+    [data-name='Workspace date filter'],
+    [data-name='Dashboard filter'],
+    .overview-filter-branch,
+    .preview-filter
+  )
+  > p {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.5;
+}
+#root
+  .product-view
+  :is(
+    .ui-export,
+    .feedback-export,
+    .analytics-date-button,
+    .overview-date-trigger,
+    [data-name='Workspace date filter'],
+    [data-name='Dashboard filter'],
+    .overview-filter-branch,
+    .preview-filter
+  ):hover:not(:disabled) {
+  background: #f5f8ff;
+  border-color: #b3cdfb;
+}
+#root .product-view :is(.ui-export, .feedback-export):disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+#root .ui-export > div:has(> .control-icon),
+#root [data-name='Workspace date filter'] > div:has(> .control-icon),
+#root [data-name='Dashboard filter'] > div:has(> .control-icon) {
+  position: static;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+}
+#root .ui-export > div > div:has(> .control-icon) {
+  position: static;
+  inset: auto;
+  width: 16px;
+  height: 16px;
+}
+#root .analytics-filters .analytics-select[data-control='branch'] {
+  padding: 0 14px;
+  width: 170px;
+  min-height: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+#root .choice-branch-menu:not(.choice-menu-overlay) {
+  min-width: 0;
+  width: 100%;
+}
+#root .choice-branch-menu:not(.choice-menu-overlay) .choice-trigger {
+  justify-content: space-between !important;
+  gap: 8px;
+  min-height: 38px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  font: 500 12px/1.5 var(--ui-font) !important;
+}
+#root .choice-branch-menu .choice-trigger > span:not(.control-icon) {
+  flex: 1;
+  min-width: 0;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#root .choice-branch-menu .choice-trigger:after {
+  display: none !important;
+}
+#root .control-chevron {
+  display: block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-inline-end: 1.5px solid #64738a;
+  border-bottom: 1.5px solid #64738a;
+  transform: rotate(45deg);
+  margin-inline-start: 4px;
+}
+#root .feedback-filter:has(.choice-branch-menu) .feedback-select-wrap > .feedback-icon:last-child {
+  display: none;
+}
+#root .feedback-filter:has(.choice-branch-menu) .feedback-select-wrap {
+  padding: 0 14px;
+  border: 1px solid #dfe7f2;
+  border-radius: 10px;
+  height: 40px;
+  background: white;
+}
+#root .date-filter .feedback-select-wrap > .control-icon {
+  position: absolute !important;
+  inset-inline-start: 14px;
+  z-index: 1;
+  pointer-events: none;
+}
+#root .date-filter .choice-trigger {
+  padding-inline-start: 38px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  min-height: 40px !important;
+}
+#root .preview-filter .choice-trigger {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+.preview-modal .control-icon,
+.overview-date-dialog .control-icon {
+  color: #1e68ef;
+}
+
+/* Keep the selected Speed background around the full, padded row. */
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Comparison columns'],
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Aspect result'] {
+  grid-template-columns: minmax(80px, 0.8fr) minmax(120px, 1.4fr) minmax(42px, 0.45fr) minmax(
+      120px,
+      1.3fr
+    );
+  gap: 12px;
+  align-items: center;
+  box-sizing: border-box;
+  padding-inline: 12px;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Aspect result'] {
+  padding-block: 12px;
+  min-height: 62px;
+  height: auto;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  [data-name='Aspect result'][aria-pressed='true'] {
+  background: #eaf2ff;
+  border-color: transparent;
+  box-shadow: none;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  [data-name='Aspect result']
+  > p:first-child {
+  width: 100%;
+  line-height: 1.6;
+  white-space: normal;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Score plot'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Score track'] {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Score plot'] > p {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Sentiment distribution'] {
+  width: 100%;
+  min-width: 0;
+  gap: 6px;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Sentiment shares'] {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Sentiment distribution'] > p {
+  width: 100%;
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: normal;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] [data-name='Score axis'] {
+  padding-inline: calc(12px + 19%) calc(12px + 40%);
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  #root .analytics-preview[data-analytics-kind='aspects'] [data-name='Aspect result'] {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 12px;
+  }
+  #root .analytics-preview[data-analytics-kind='aspects'] [data-name='Score plot'] {
+    grid-column: 1/-1;
+    grid-row: 2;
+  }
+  #root .analytics-preview[data-analytics-kind='aspects'] [data-name='Aspect result'] > p.an122 {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: end;
+  }
+  #root .analytics-preview[data-analytics-kind='aspects'] [data-name='Sentiment distribution'] {
+    grid-column: 1/-1;
+  }
+  #root .analytics-preview[data-analytics-kind='aspects'] [data-name='Score axis'] {
+    display: none;
+  }
+  #root .analytics-filters .analytics-select[data-control='branch'] {
+    width: 100%;
+  }
+}
+
+body > .overview-date-dialog,
+body > .overview-date-dialog *,
+body > .choice-popup,
+body > .choice-popup * {
+  font-family: var(--ui-font) !important;
+}
+body > .overview-date-dialog button {
+  min-height: 40px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+/* Reserve real inner space around the selected row rather than behind its text. */
+#root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result'] {
+  padding: 14px 16px !important;
+  min-height: 72px;
+  align-items: center !important;
+  isolation: isolate;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result']
+  > [data-name='Sentiment distribution'] {
+  align-self: center;
+  justify-content: center;
+  height: auto;
+  min-height: 34px;
+  gap: 7px;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result']
+  > [data-name='Sentiment distribution']
+  > p {
+  margin: 0;
+  line-height: 1.5;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][aria-pressed='true'] {
+  background-color: #eaf2ff;
+  border-radius: 10px;
+  outline: 0;
+}
+/* Preserve the original compact rows; selected paint does not affect layout. */
+@media (min-width: 701px) {
+  #root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result'] {
+    padding: 0 !important;
+    min-height: 46px;
+    height: 46px;
+    gap: 12px;
+    overflow: visible;
+    position: relative;
+    isolation: isolate;
+  }
+  #root .analytics-preview[data-analytics-kind='aspects'] [data-name='Comparison columns'] {
+    padding-inline: 0;
+  }
+  #root
+    .analytics-preview[data-analytics-kind='aspects']
+    button[data-name='Aspect result'][aria-pressed='true'] {
+    background: transparent;
+    border-radius: 8px;
+  }
+  #root
+    .analytics-preview[data-analytics-kind='aspects']
+    button[data-name='Aspect result'][aria-pressed='true']:before {
+    content: '';
+    position: absolute;
+    inset: -3px -8px;
+    border-radius: 8px;
+    background: #eaf2ff;
+    z-index: -1;
+    pointer-events: none;
+  }
+  #root
+    .analytics-preview[data-analytics-kind='aspects']
+    button[data-name='Aspect result']
+    > [data-name='Sentiment distribution'] {
+    min-height: 0;
+    height: auto;
+    gap: 5px;
+  }
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][aria-pressed='true'] {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: #eaf2ff !important;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][aria-pressed='true']:before {
+  border-radius: 16px !important;
+}
+/* Speed has no row tint in either selected or hover state. */
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][data-node-id='369:7212'],
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][data-node-id='369:7212']:hover {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][data-node-id='369:7212']::before,
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][data-node-id='369:7212']::after {
+  content: none !important;
+  display: none !important;
+}
+/* Aspect rows keep a border-free hover and selected treatment. */
+#root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result'],
+#root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result']:hover,
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][aria-pressed='true'] {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+/* The Speed hover uses only the shared soft fill, without a frame. */
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][data-node-id='369:7212']:hover {
+  background: #f5f8ff !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* The Feedback branch filter has one border on its outer control only. */
+#root .feedback-filter:has(.choice-branch-menu) .feedback-select-wrap .choice-trigger {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  width: 100% !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+}
+
+/* Search fields keep their quiet resting border during mouse and keyboard focus. */
+#root
+  :is(
+    input[type='search'],
+    input[class*='search' i],
+    input[placeholder*='search' i],
+    input[placeholder*='بحث'],
+    [data-name='Search'] input,
+    [data-name='Survey search'] input
+  ):is(:focus, :focus-visible) {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  border-color: #dfe7f2 !important;
+}
+#root
+  :is(
+    [data-name='Search'],
+    [data-name='Survey search'],
+    .feedback-search,
+    .workspace-search
+  ):focus-within {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  border-color: #dfe7f2 !important;
+}
+/* Approved Analytics resting and hover treatment. */
+#root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result'],
+#root
+  .analytics-preview[data-analytics-kind='aspects']
+  button[data-name='Aspect result'][aria-pressed='true'] {
+  background: #fff !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result']:hover {
+  background: #eaf2ff !important;
+}
+#root .analytics-preview[data-analytics-kind='aspects'] button[data-name='Aspect result']::before {
+  display: none !important;
+}

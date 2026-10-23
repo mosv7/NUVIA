@@ -1,3 +1,4 @@
+import ControlIcon from '../../../../components/ui/ControlIcon.jsx';
 import { LanguageMenu } from '../../../../components/ui/ChoiceMenu.jsx';
 import React from 'react';
 import { asset } from '../../../../lib/assets.js';
@@ -236,7 +237,7 @@ export default function SurveysDesign() {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Business & Teams')}
+              {tr('Business')}
             </p>
           </button>
           <div className="f23" data-node-id="258:1374" data-name="Divider" />
@@ -411,11 +412,13 @@ export default function SurveysDesign() {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                aria-label={tr('Search your workspace')}
-                placeholder={tr('Search your workspace')}
-                value={ui.query}
-                onChange={(event) => ui.setQuery(event.target.value)}
+                data-workspace-search=""
+                aria-label={tr('Search across pages')}
+                placeholder={tr('Search across pages')}
+                value={ui.workspaceQuery}
+                onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />
+
               <p
                 className="f46"
                 data-node-id="258:1831"
@@ -430,7 +433,7 @@ export default function SurveysDesign() {
               <div className="f35" data-node-id="258:1833" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon3} />
               </div>
-              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="258:1836" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon4} />
               </div>
@@ -507,14 +510,14 @@ export default function SurveysDesign() {
             </div>
             <div className="f51" data-node-id="258:1858" data-name="Page actions">
               <button
-                className="f63"
+                className="f63 ui-control ui-export"
                 data-node-id="258:1859"
                 data-name="Action"
                 type="button"
                 onClick={() => ui.action('Export')}
               >
                 <div className="f35" data-node-id="258:1860" data-name="download">
-                  <img alt="" className="f5" src={imgDownload} />
+                  <ControlIcon name="export" />
                 </div>
                 <p
                   className="f64"
@@ -862,6 +865,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select all')}
                 onClick={() => ui.toggleCheck('258:1932', false)}
               />
+
               <p
                 className="f88"
                 data-node-id="258:1933"
@@ -938,6 +942,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select survey')}
                 onClick={() => ui.toggleCheck('258:1940', false)}
               />
+
               <div className="f95" data-node-id="258:1941" data-name="Survey information">
                 <div className="f96" data-node-id="258:1942" data-name="Survey symbol">
                   <div className="f17" data-node-id="258:1943" data-name="Icon">
@@ -1055,6 +1060,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select survey')}
                 onClick={() => ui.toggleCheck('258:1964', false)}
               />
+
               <div className="f95" data-node-id="258:1965" data-name="Survey information">
                 <div className="f96" data-node-id="258:1966" data-name="Survey symbol">
                   <div className="f17" data-node-id="258:1967" data-name="Icon">
@@ -1172,6 +1178,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select survey')}
                 onClick={() => ui.toggleCheck('258:1988', false)}
               />
+
               <div className="f95" data-node-id="258:1989" data-name="Survey information">
                 <div className="f96" data-node-id="258:1990" data-name="Survey symbol">
                   <div className="f17" data-node-id="258:1991" data-name="Icon">
@@ -1283,6 +1290,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select survey')}
                 onClick={() => ui.toggleCheck('258:2008', false)}
               />
+
               <div className="f95" data-node-id="258:2009" data-name="Survey information">
                 <div className="f96" data-node-id="258:2010" data-name="Survey symbol">
                   <div className="f17" data-node-id="258:2011" data-name="Icon">
@@ -1394,6 +1402,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select survey')}
                 onClick={() => ui.toggleCheck('258:2028', false)}
               />
+
               <div className="f95" data-node-id="258:2029" data-name="Survey information">
                 <div className="f96" data-node-id="258:2030" data-name="Survey symbol">
                   <div className="f17" data-node-id="258:2031" data-name="Icon">
@@ -1511,6 +1520,7 @@ export default function SurveysDesign() {
                 aria-label={tr('Select survey')}
                 onClick={() => ui.toggleCheck('258:2052', false)}
               />
+
               <div className="f95" data-node-id="258:2053" data-name="Survey information">
                 <div className="f96" data-node-id="258:2054" data-name="Survey symbol">
                   <div className="f17" data-node-id="258:2055" data-name="Icon">

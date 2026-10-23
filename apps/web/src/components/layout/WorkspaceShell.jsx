@@ -1,39 +1,10 @@
+import { ArrowText as DashboardArrowText } from '../ui/UiArrow.jsx';
 import { LanguageMenu } from '../ui/ChoiceMenu.jsx';
 import React from 'react';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import './workspace-shell.css';
 import './workspace.css';
-function DashboardArrowText({ text }) {
-  return (
-    <span className="dashboard-arrow-label">
-      {text.split(/([→←↑↓↗↖])/).map((part, index) => {
-        const rotations = { '→': 0, '←': 180, '↑': -90, '↓': 90, '↗': -45, '↖': -135 };
-        if (!(part in rotations)) return part;
-        return (
-          <svg
-            key={index}
-            className="dashboard-link-arrow"
-            aria-hidden="true"
-            width="12"
-            height="12"
-            viewBox="0 0 16 16"
-            fill="none"
-            style={{ transform: 'rotate(' + rotations[part] + 'deg)' }}
-          >
-            <path
-              d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
-              stroke="currentColor"
-              strokeWidth="2.1"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        );
-      })}
-    </span>
-  );
-}
 
 const imgLogo = asset('dashboard/overview/logo.svg');
 const imgChevronsUpDown = asset('dashboard/overview/chevrons-up-down.svg');
@@ -444,10 +415,13 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                aria-label={tr('Search your workspace')}
-                placeholder={tr('Search your workspace')}
-                value={ui.query}
-                onChange={(event) => ui.setQuery(event.target.value)}
+                data-workspace-search={ui.preview ? '' : undefined}
+                aria-label={tr(ui.preview ? 'Search across pages' : 'Search your workspace')}
+                placeholder={tr(ui.preview ? 'Search across pages' : 'Search your workspace')}
+                value={ui.preview ? ui.workspaceQuery : ui.query}
+                onChange={(event) =>
+                  (ui.preview ? ui.setWorkspaceQuery : ui.setQuery)(event.target.value)
+                }
               />
               <p
                 className="f46"
@@ -463,7 +437,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
               <div className="f35" data-node-id="127:341" data-name="globe">
                 <img alt="" className="f5" src={imgGlobe} />
               </div>
-              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="127:344" data-name="chevron-down">
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>

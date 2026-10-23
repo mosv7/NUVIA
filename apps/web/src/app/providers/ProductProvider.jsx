@@ -1,3 +1,6 @@
+import GlobalSearch from '../../components/layout/GlobalSearch.jsx';
+import HeaderMenus from '../../components/layout/HeaderMenus.jsx';
+import { routeForAction } from '../../components/layout/navigation.js';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import arabic from '../../lib/i18n/product-ar.json';
 import { arabicUiNumbers } from '../../lib/number-format.js';
@@ -18,12 +21,17 @@ export function ProductProvider({
   onNavigate,
   menuOpen,
   dashboard,
+  analytics,
   workspace,
   onLogout,
   preview = false,
 }) {
   const identity = useAuth()?.user;
   const [query, setQuery] = useState('');
+  const [workspaceQuery, setWorkspaceQuery] = useState('');
+  const [topbarMenu, setTopbarMenu] = useState(null);
+  const openTopbar = (kind, anchor) =>
+    setTopbarMenu((old) => (old?.kind === kind ? null : { kind, anchor }));
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 850);
   useEffect(() => {
     const resize = () => setIsMobile(window.innerWidth <= 850);
@@ -52,6 +60,19 @@ export function ProductProvider({
     return language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
   };
   const [notice, setNotice] = useState('');
+  const navigateLabel = (label) => {
+    const route = routeForAction(label, tr);
+    if (!route) return false;
+    if (!preview && !['#/dashboard', '#/feedbacks'].includes(route)) {
+      setNotice(
+        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
+      );
+      return true;
+    }
+    onNavigate?.();
+    location.hash = route.slice(1);
+    return true;
+  };
   const action = (label) => {
     if (!preview && !['Overview', 'Feedbacks', 'Feedbacks 12', 'All feedbacks'].includes(label)) {
       if (label === 'B Bloom & Co. Cafe &workspace' || label === 'Settings') {
@@ -63,6 +84,7 @@ export function ProductProvider({
       );
       return;
     }
+    if (preview && navigateLabel(label)) return;
     if (label === 'NUVIA Assistant') {
       window.dispatchEvent(new Event('nuvia:ask'));
       return;
@@ -130,9 +152,26 @@ export function ProductProvider({
     <ProductContext.Provider
       value={{
         dashboard,
+        analytics,
+        workspaceQuery,
+        setWorkspaceQuery,
+        topbarMenu,
+        setTopbarMenu,
+        openTopbar,
+        navigateLabel,
         workspace,
         preview,
-        activeDestination: location.hash.startsWith('#/feedback') ? 'Feedbacks' : 'Overview',
+        activeDestination: location.hash.startsWith('#/analytics-')
+          ? 'Analytics'
+          : location.hash.startsWith('#/report')
+            ? 'Reports'
+            : location.hash.startsWith('#/survey-')
+              ? 'Surveys'
+              : location.hash.startsWith('#/nuvia-assistant')
+                ? 'NUVIA Assistant'
+                : location.hash.startsWith('#/feedback')
+                  ? 'Feedbacks'
+                  : 'Overview',
         language,
         setLanguage,
         tr,
@@ -157,6 +196,12 @@ export function ProductProvider({
       }}
     >
       {children}
+      {preview && (
+        <>
+          <GlobalSearch />
+          <HeaderMenus />
+        </>
+      )}
       {!preview && (
         <div className="workspace-account-actions">
           <button

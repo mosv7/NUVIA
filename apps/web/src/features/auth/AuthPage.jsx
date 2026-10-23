@@ -163,13 +163,6 @@ export default function AuthPage({
               </a>
             )}
           </p>
-          {isSignup && preview && (
-            <p className="setup-preview-link">
-              <a href="#/business-information">
-                {language === 'ar' ? 'معاينة إعداد النشاط' : 'Preview business setup'}
-              </a>
-            </p>
-          )}
         </div>
         <footer>
           <span>© 2026 NUVIA</span>

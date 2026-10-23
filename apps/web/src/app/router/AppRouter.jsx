@@ -1,3 +1,6 @@
+import SurveyPage from '../../features/surveys/preview/SurveyPage.jsx';
+import AnalyticsPage from '../../features/analytics/preview/AnalyticsPage.jsx';
+import ExtraPreviewPage from '../../features/reports/preview/ExtraPreviewPage.jsx';
 import { currentRoute } from './routes.js';
 import AuthPage from '../../features/auth/AuthPage.jsx';
 import React, { useEffect, useRef, useState } from 'react';
@@ -219,6 +222,68 @@ export default function AppRouter() {
           </>
         )}
       </main>
+    );
+  }
+  const designOnly =
+    page.startsWith('survey-') ||
+    page.startsWith('analytics-') ||
+    [
+      'reports',
+      'report-details',
+      'nuvia-assistant',
+      'feedbacks-loading',
+      'feedbacks-no-results',
+    ].includes(page);
+  if (designOnly) {
+    if (!preview)
+      return (
+        <main className="session-state">
+          <h1>
+            {language === 'ar' ? 'الميزة غير متاحة بعد' : 'This feature is not available yet.'}
+          </h1>
+          <p>
+            {language === 'ar'
+              ? 'يمكنك مراجعة التصميم ببيانات تجريبية.'
+              : 'Review the design with sample data.'}
+          </p>
+          <a href={'/preview/#/' + page}>
+            {language === 'ar' ? 'فتح معاينة التصميم' : 'Open design preview'}
+          </a>
+          <a href="#/dashboard">
+            {language === 'ar' ? 'رجوع إلى النظرة العامة' : 'Back to Overview'}
+          </a>
+        </main>
+      );
+    if (page.startsWith('survey-'))
+      return (
+        <SurveyPage key={location.hash} page={page} language={language} setLanguage={setLanguage} />
+      );
+    if (page.startsWith('analytics-'))
+      return (
+        <AnalyticsPage
+          key={location.hash}
+          page={page}
+          language={language}
+          setLanguage={setLanguage}
+        />
+      );
+    if (['reports', 'report-details', 'nuvia-assistant'].includes(page))
+      return (
+        <ExtraPreviewPage
+          key={location.hash}
+          page={page}
+          language={language}
+          setLanguage={setLanguage}
+        />
+      );
+    return (
+      <FeedbacksPage
+        key={location.hash}
+        page={page}
+        language={language}
+        setLanguage={setLanguage}
+        preview
+      />
     );
   }
   if (page === 'verify-email') return <VerificationPage language={language} preview={preview} />;

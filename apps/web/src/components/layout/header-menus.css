@@ -1,0 +1,260 @@
+.workspace-popover {
+  position: fixed;
+  z-index: 10000;
+  max-height: calc(100dvh - 30px);
+  overflow: auto;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #dfe7f2;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px #10213d22;
+  color: #10213d;
+  font:
+    13px/1.5 'DM Sans',
+    'Noto Sans Arabic',
+    sans-serif;
+}
+.workspace-popover header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+  border-bottom: 1px solid #edf1f7;
+}
+.workspace-popover header > button {
+  margin-inline-start: auto;
+  background: none;
+  border: 0;
+  font-size: 24px;
+  color: #64738a;
+  cursor: pointer;
+}
+.workspace-popover small {
+  display: block;
+  color: #64738a;
+  font-size: 11px;
+  font-weight: 400;
+}
+.workspace-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  text-align: start;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.workspace-menu-item:hover {
+  background: #f5f8fd;
+}
+.workspace-current {
+  margin-inline-start: auto;
+  color: #1e68ef;
+}
+.workspace-language {
+  justify-content: space-between;
+  cursor: default;
+}
+.workspace-avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 10px;
+  background: #eaf2ff;
+  color: #1e68ef;
+  font-weight: 600;
+}
+.workspace-notification-empty {
+  padding: 28px 20px;
+  text-align: center;
+}
+.workspace-notification-empty img {
+  width: 28px;
+  height: 28px;
+}
+.workspace-notification-empty h3 {
+  font-size: 16px;
+  margin: 14px 0 8px;
+}
+.workspace-notification-empty p {
+  margin: 0;
+  color: #64738a;
+}
+.workspace-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #10213d55;
+  z-index: 10001;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.workspace-profile-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  padding: 28px;
+  width: min(380px, 100%);
+  background: white;
+  border: 1px solid #dfe7f2;
+  border-radius: 16px;
+  font:
+    14px/1.5 'DM Sans',
+    'Noto Sans Arabic',
+    sans-serif;
+  color: #10213d;
+}
+.workspace-profile-dialog h2,
+.workspace-profile-dialog p {
+  margin: 0;
+}
+.workspace-profile-dialog small {
+  color: #64738a;
+}
+.workspace-profile-dialog button {
+  padding: 10px 20px;
+  background: #1e68ef;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.product-topbar [data-name='Notifications'],
+.product-topbar [data-name='Profile'],
+.product-navigation [data-name='Business switcher'] {
+  cursor: pointer;
+}
+.workspace-popover button:focus-visible {
+  outline: 2px solid #1e68ef;
+  outline-offset: 2px;
+}
+
+.workspace-menu-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 8px;
+  background: #f3f7ff;
+  color: #1e68ef;
+}
+.workspace-menu-icon img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+.workspace-popover header {
+  margin: 0 0 4px;
+  border-radius: 10px 10px 0 0;
+  background: #fbfcff;
+  padding: 16px 14px;
+}
+.workspace-menu-item {
+  padding: 10px 12px;
+  min-height: 52px;
+  font-weight: 500;
+  gap: 12px;
+}
+.workspace-menu-item:hover {
+  background: #f3f7ff;
+}
+.workspace-signout {
+  border-top: 1px solid #edf1f7;
+  border-radius: 0 0 8px 8px;
+  margin-top: 4px;
+}
+.workspace-signout .workspace-menu-icon {
+  background: #f5f7fa;
+  color: #64738a;
+}
+
+.workspace-popover header {
+  gap: 10px;
+  padding: 12px;
+}
+.workspace-popover header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.workspace-popover header strong {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.workspace-popover header small {
+  margin: 0;
+  line-height: 1.4;
+}
+.workspace-account-avatar {
+  overflow: hidden;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+}
+.workspace-account-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.workspace-popover .workspace-menu-icon,
+.workspace-popover .workspace-signout .workspace-menu-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border-radius: 0;
+  background: transparent;
+  color: #64738a;
+}
+.workspace-menu-asset {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+}
+.workspace-popover .workspace-menu-item:hover .workspace-menu-icon {
+  color: #1e68ef;
+}
+
+.workspace-popover > header {
+  justify-content: flex-start !important;
+  gap: 10px;
+}
+.workspace-popover > header > div {
+  flex: 0 1 auto;
+  text-align: start;
+  margin: 0;
+}
+.workspace-security-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+.workspace-profile-dialog .workspace-security-actions button {
+  border: 1px solid #dfe7f2;
+  background: #fff;
+  color: #10213d;
+}
+.workspace-profile-dialog .workspace-security-actions button:hover {
+  background: #f5f8fd;
+}

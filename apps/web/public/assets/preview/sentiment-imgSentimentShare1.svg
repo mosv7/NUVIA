@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="49.0055" height="40.0684" viewBox="0 0 49.0055 40.0684" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Sentiment share">
+<path d="M0 28.1485C11.4419 14.3176 26.9687 4.46404 44.355 0L49.0055 18.1125C35.4442 21.5945 23.3333 29.2803 14.4086 40.0684L0 28.1485Z" fill="#A9C0E5"/>
+<mask id="stroke0_0_14" fill="white">
+<path d="M0 28.1485C11.4419 14.3176 26.9687 4.46404 44.355 0L49.0055 18.1125C35.4442 21.5945 23.3333 29.2803 14.4086 40.0684L0 28.1485Z"/>
+</mask>
+<path d="M-5.53969e-07 28.1485C11.4419 14.3176 26.9687 4.46404 44.355 -6.70835e-08L49.0055 18.1125C35.4442 21.5945 23.3333 29.2803 14.4086 40.0684L-5.53969e-07 28.1485Z" stroke-width="4" stroke="white" mask="url(#stroke0_0_14)"/>
+</g>
+</svg>

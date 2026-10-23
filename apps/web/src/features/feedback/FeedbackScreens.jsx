@@ -48,7 +48,6 @@ const emptyFilters = {
   language: 'all',
   aspect: 'all',
   branch: 'all',
-  segment: 'all',
 };
 function Filter({ name, label, options, value, onChange, disabled, calendar }) {
   const { tr } = useProductView();
@@ -152,7 +151,19 @@ export function FeedbackList({ empty = false }) {
     [selected, setSelected] = useState(() => new Set(empty ? [] : [1248])),
     [descending, setDescending] = useState(true),
     [page, setPage] = useState(0);
-  const data = useMemo(() => (empty ? [] : feedbackRows), [empty]);
+  const scope = new URLSearchParams(location.hash.split('?')[1]);
+  const survey = scope.get('survey'),
+    aspect = scope.get('aspect');
+  const data = useMemo(
+    () =>
+      empty
+        ? []
+        : feedbackRows.filter(
+            (row) =>
+              (!survey || row.survey === survey) && (!aspect || row.aspects.includes(aspect)),
+          ),
+    [empty, survey, aspect],
+  );
   const filtered = useMemo(
     () =>
       data
@@ -167,7 +178,6 @@ export function FeedbackList({ empty = false }) {
             (filters.language === 'all' || row.language === filters.language) &&
             (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
             (filters.branch === 'all' || row.branch === filters.branch) &&
-            (filters.segment === 'all' || row.segment === filters.segment) &&
             (filters.date !== '1' || row.date === '2026-10-16')
           );
         })
@@ -205,7 +215,6 @@ export function FeedbackList({ empty = false }) {
     language: 'Language',
     aspect: 'Aspect',
     branch: 'Branch',
-    segment: 'Segment',
   };
   const applied = Object.entries(filters)
     .filter(([key, value]) => value !== emptyFilters[key])
@@ -336,19 +345,6 @@ export function FeedbackList({ empty = false }) {
               ['Cairo', 'Cairo'],
               ['El Zamalek', 'El Zamalek'],
               ['Alex', 'Alex'],
-            ]}
-          />
-          <Filter
-            name="segment"
-            label="Segment"
-            value={filters.segment}
-            onChange={update}
-            disabled={empty}
-            options={[
-              ['all', 'All segments'],
-              ['Morning visitors', 'Morning visitors'],
-              ['Returning customers', 'Returning customers'],
-              ['New customers', 'New customers'],
             ]}
           />
         </div>

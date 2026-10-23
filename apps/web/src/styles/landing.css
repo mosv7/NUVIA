@@ -1261,3 +1261,25 @@
     min-width: 80px;
   }
 }
+
+/* Compact feature cards after removing the Learn more action. */
+.landing .feature-card {
+  min-height: 0;
+  padding: 24px;
+}
+.landing .feature-card h3 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.landing .feature-card > p {
+  margin-bottom: 0;
+}
+@media (min-width: 701px) {
+  .landing .feature-card {
+    padding: calc(24 * var(--landing-unit, 1px));
+  }
+  .landing .feature-card h3 {
+    margin-top: calc(16 * var(--landing-unit, 1px));
+    margin-bottom: calc(8 * var(--landing-unit, 1px));
+  }
+}

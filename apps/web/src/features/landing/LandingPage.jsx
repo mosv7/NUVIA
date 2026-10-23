@@ -1,15 +1,23 @@
+import IntelligenceMotion from '../../components/ui/IntelligenceMotion.jsx';
 import { LanguageMenu } from '../../components/ui/ChoiceMenu.jsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { landingCopy } from './copy.js';
 import { en, ar } from '../../lib/i18n/auth-copy.js';
 import { asset } from '../../lib/assets.js';
 import Field from '../../components/ui/Field.jsx';
-import DashboardPreviewEn from './components/DashboardPreviewEn.jsx';
-import DashboardPreviewAr from './components/DashboardPreviewAr.jsx';
 import '../../styles/landing.css';
 import '../../styles/dashboard.css';
 export default function LandingPage({ language, setLanguage }) {
-  const c = landingCopy[language],
+  const variant = 'decisions';
+  const c =
+      variant === 'decisions' && language === 'en'
+        ? {
+            ...landingCopy.en,
+            heroStart: 'Your customers are telling you ',
+            heroAccent: 'what to do next.',
+            heroEnd: '',
+          }
+        : landingCopy[language],
     t = language === 'ar' ? ar : en,
     prefix = language === 'ar' ? 'land-ar' : 'land-en',
     icon = (name) => asset(`${prefix}-${name}.svg`);
@@ -50,6 +58,26 @@ export default function LandingPage({ language, setLanguage }) {
     observer.observe(previewRef.current);
     return () => observer.disconnect();
   }, [language]);
+  useEffect(() => {
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    if (media.matches || matchMedia('(pointer: coarse)').matches) return;
+    const nodes = pageRef.current.querySelectorAll('.primary');
+    const listeners = [];
+    nodes.forEach((node) => {
+      const move = (e) => {
+        const r = node.getBoundingClientRect();
+        node.style.translate = `${(e.clientX - r.left - r.width / 2) * 0.045}px ${(e.clientY - r.top - r.height / 2) * 0.08}px`;
+      };
+      const reset = () => (node.style.translate = '0 0');
+      node.addEventListener('pointermove', move);
+      node.addEventListener('pointerleave', reset);
+      listeners.push(() => {
+        node.removeEventListener('pointermove', move);
+        node.removeEventListener('pointerleave', reset);
+      });
+    });
+    return () => listeners.forEach((fn) => fn());
+  }, []);
   const scroll = (id) =>
     document.getElementById(id)?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
@@ -83,8 +111,12 @@ export default function LandingPage({ language, setLanguage }) {
       <strong>NUVIA</strong>
     </div>
   );
+
   return (
-    <div className="landing" ref={pageRef}>
+    <div
+      className={`landing motion-preview motion-production motion-variant-${variant}`}
+      ref={pageRef}
+    >
       <div className="landing-top">
         <header className="landing-nav">
           {brand()}
@@ -109,14 +141,14 @@ export default function LandingPage({ language, setLanguage }) {
               {c.heroEnd}
             </h1>
             <p className="hero-description">{c.heroBody}</p>
-            <button className="primary hero-explore" onClick={() => scroll('platform')}>
-              {c.explore}
-              <img src={icon('imgIcon11')} alt="" />
-            </button>
           </div>
-          <div className="hero-dashboard" ref={previewRef} role="img" aria-label={c.previewLabel}>
-            {language === 'ar' ? <DashboardPreviewAr /> : <DashboardPreviewEn />}
+          <div className="hero-dashboard" ref={previewRef} role="group" aria-label={c.previewLabel}>
+            <IntelligenceMotion language={language} variant={variant} />
           </div>
+          <button className="primary hero-explore" onClick={() => scroll('platform')}>
+            {c.explore}
+            <img src={icon('imgIcon11')} alt="" />
+          </button>
         </section>
       </div>
       <section id="platform" className="landing-features landing-wrap">
@@ -126,17 +158,13 @@ export default function LandingPage({ language, setLanguage }) {
           <p>{c.featuresBody}</p>
         </div>
         <div className="feature-grid">
-          {c.features.map(([title, body, img], i) => (
+          {c.features.map(([title, body, img]) => (
             <article className="feature-card reveal" key={title}>
               <span className="feature-icon">
                 <img src={icon(img)} alt="" />
               </span>
               <h3>{title}</h3>
               <p>{body}</p>
-              <button onClick={() => setSelected(i)}>
-                {c.learn}
-                <img src={icon('imgIcon2')} alt="" />
-              </button>
             </article>
           ))}
         </div>
@@ -216,6 +244,7 @@ export default function LandingPage({ language, setLanguage }) {
               onChange={change}
               error={errors.name}
             />
+
             <Field
               name="email"
               label={c.email}
@@ -225,6 +254,7 @@ export default function LandingPage({ language, setLanguage }) {
               onChange={change}
               error={errors.email}
             />
+
             <Field
               name="company"
               label={c.company}
@@ -233,6 +263,7 @@ export default function LandingPage({ language, setLanguage }) {
               onChange={change}
               error={errors.company}
             />
+
             <button type="submit" className="primary" disabled={busy}>
               {busy ? t.loading : c.book}
             </button>

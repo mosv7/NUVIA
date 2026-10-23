@@ -232,7 +232,7 @@ export default function SurveysEmptyDesign() {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Business & Teams')}
+              {tr('Business')}
             </p>
           </button>
           <div className="f23" data-node-id="266:13342" data-name="Divider" />
@@ -407,10 +407,11 @@ export default function SurveysEmptyDesign() {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                aria-label={tr('Search your workspace')}
-                placeholder={tr('Search your workspace')}
-                value={ui.query}
-                onChange={(event) => ui.setQuery(event.target.value)}
+                data-workspace-search=""
+                aria-label={tr('Search across pages')}
+                placeholder={tr('Search across pages')}
+                value={ui.workspaceQuery}
+                onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />
               <p
                 className="f46"
@@ -426,7 +427,7 @@ export default function SurveysEmptyDesign() {
               <div className="f35" data-node-id="266:13382" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon3} />
               </div>
-              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="266:13385" data-name="Icon">
                 <img alt="" className="f5" src={imgIcon4} />
               </div>
