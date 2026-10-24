@@ -83,8 +83,16 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect((await screen.findAllByText('Saved Cafe', { exact: true }))[0]).toBeVisible();
   expect(screen.queryByText('Bloom & Co.', { exact: true })).not.toBeInTheDocument();
   expect(screen.queryByText('12', { exact: true })).not.toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: 'Open Ask NUVIA' })).not.toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Log out' })).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Log out', exact: true })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Open Ask NUVIA' })).toBeVisible();
+  expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
+  expect(screen.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+  expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
+  const logout = vi.spyOn(authApi, 'logout').mockResolvedValue(undefined);
+  fireEvent.click(screen.getByRole('button', { name: 'Sign out', exact: true }));
+  expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();
+  expect(logout).toHaveBeenCalledTimes(1);
 });
 it('consumes a verification link opened while the verification page is already mounted', async () => {
   const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ status: 'verified' });
@@ -166,4 +174,36 @@ it('shows an expired verification state only for an invalid token response', asy
   vi.spyOn(authApi, 'verify').mockRejectedValue({ code: 'INVALID_TOKEN' });
   open('verify-email?token=' + 'a'.repeat(64));
   expect(await screen.findByRole('heading', { name: 'This link has expired' })).toBeVisible();
+});
+
+it('opens the connected assistant workspace without sample conversations or metrics', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue({
+    user: { id: 'a', name: 'Saved Owner', email: 'owner@example.test', emailVerified: true },
+    workspace: {
+      id: 'w',
+      businessName: 'Saved Cafe',
+      industry: 'Restaurant',
+      primaryBranchId: 'b',
+      onboardingStep: 'complete',
+      branches: [{ id: 'b', name: 'Saved Branch' }],
+    },
+  });
+  open('dashboard');
+  fireEvent.click(await screen.findByRole('button', { name: 'Open Ask NUVIA' }));
+  expect(await screen.findByText('AI Assistant', { exact: true })).toBeVisible();
+  expect(
+    screen.getByText(
+      'AI Assistant is not available yet. Your conversations will appear here when the service is available.',
+    ),
+  ).toBeVisible();
+  expect(screen.getByText('0 reviews')).toBeVisible();
+  expect(screen.getByText('Saved Branch', { exact: true })).toBeVisible();
+  expect(screen.queryByText('1,250 reviews')).not.toBeInTheDocument();
+  expect(screen.queryByText('Sample feedback scope')).not.toBeInTheDocument();
+  expect(screen.getByText('Sara Ahmed · Just now')).not.toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'View profile', exact: true }));
+  expect(screen.getByRole('dialog', { name: 'Profile' })).toBeVisible();
+  expect(screen.getByText('owner@example.test')).toBeVisible();
+  expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
 });
