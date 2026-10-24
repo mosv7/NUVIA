@@ -18,7 +18,7 @@ The delivery preserves the monorepo's connected authentication provider, access 
 - Web ESLint completed with zero errors and zero warnings.
 - Connected authentication/workspace and preview tests passed locally.
 - 672 viewport-bound checks covered 42 screens/states, both languages and eight widths.
-- 168 fresh screenshots cover desktop and phone in English and Arabic. Tablet layouts were checked during the responsive audit; tablet images are excluded.
+- 176 fresh screenshots cover desktop and phone in English and Arabic. Tablet layouts were checked during the responsive audit; tablet images are excluded.
 - Date selection, sort direction, branch selection/Done and contextual return controls were checked in the preview.
 
 ## Limits
@@ -26,3 +26,13 @@ The delivery preserves the monorepo's connected authentication provider, access 
 These are browser-emulated viewport checks, not physical iPad/Safari acceptance. Database, mail delivery and real backend integration must be tested with the project's private environment after integration. Generated preview reports and survey actions do not establish implemented backend services.
 
 The Segment filter is restored with a regression assertion for all six disabled connected-account filters. The account browser lifecycle and all CI jobs passed after the correction.
+
+## Connected verification design restoration
+
+The connected email verification route now uses the approved original presentation, including pending, expired and verified states. Verification token consumption, real resend requests and the explicit preview boundary are retained. Signup carries its submitted email into verification in memory without persisting credentials. Successful verification continues to login, not an unauthenticated business setup.
+
+The signup, login, recovery and business setup presentation was compared with the original frontend. Ten account/setup routes were checked in English and Arabic at 390, 820 and 1440 pixels: 60 additional viewport-bound checks.
+
+Account language controls now use one shared 16px blue globe in login, signup, recovery and verification screens, including the story caption. Updated captures include these controls in both interface languages.
+
+Account headers use an icon-only back control opposite the NUVIA logo, mirrored in Arabic, without changing authentication behavior. The browser tab is titled NUVIA and uses the square brand icon for readability at favicon size.
