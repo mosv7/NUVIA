@@ -145,3 +145,25 @@ it.each([
   expect(verify).not.toHaveBeenCalled();
   expect(authApi.session).not.toHaveBeenCalled();
 });
+
+it.each(['NETWORK_ERROR', 'CSRF_REJECTED', 'SERVICE_UNAVAILABLE'])(
+  'does not call a verification link expired when the request fails with %s',
+  async (code) => {
+    const verify = vi.spyOn(authApi, 'verify').mockRejectedValue({ code });
+    open('verify-email?token=' + 'a'.repeat(64));
+    expect(
+      await screen.findByText(
+        'Could not complete email verification. Check your connection and reopen the latest verification link.',
+      ),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('heading', { name: 'This link has expired' }),
+    ).not.toBeInTheDocument();
+    expect(verify).toHaveBeenCalledTimes(1);
+  },
+);
+it('shows an expired verification state only for an invalid token response', async () => {
+  vi.spyOn(authApi, 'verify').mockRejectedValue({ code: 'INVALID_TOKEN' });
+  open('verify-email?token=' + 'a'.repeat(64));
+  expect(await screen.findByRole('heading', { name: 'This link has expired' })).toBeVisible();
+});
