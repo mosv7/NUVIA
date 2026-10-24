@@ -1,51 +1,32 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import WorkspaceScopeControls from '../../dashboard/WorkspaceScopeControls.jsx';
 import { overviewDateLabel } from '../../dashboard/OverviewControls.jsx';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { PreviewArrow, GenerateDialog } from './PreviewControls.jsx';
 import './figma-preview.css';
 const imgPlus = asset('preview/assistantDesign-imgPlus.svg');
-const imgStore = asset('preview/assistantDesign-imgStore.svg');
-const imgCalendarDays = asset('preview/assistantDesign-imgCalendarDays.svg');
+
 const imgSparkles = asset('preview/assistantDesign-imgSparkles.svg');
 const imgMessageCircle = asset('preview/assistantDesign-imgMessageCircle.svg');
-const imgArrowUpRight = asset('preview/assistantDesign-imgArrowUpRight.svg');
+
 const imgSparkles1 = asset('preview/assistantDesign-imgSparkles1.svg');
 const imgLoadingDot = asset('preview/assistantDesign-imgLoadingDot.svg');
 const imgLoadingDot1 = asset('preview/assistantDesign-imgLoadingDot1.svg');
-const imgArrowUp = asset('preview/assistantDesign-imgArrowUp.svg');
+
 const imgCheckCheck = asset('preview/assistantDesign-imgCheckCheck.svg');
 const imgScanText = asset('preview/assistantDesign-imgScanText.svg');
 export default function AssistantScreen() {
   const { tr, language, dashboard } = useProductView();
   const [generate, setGenerate] = useState(false);
-  const [reportFilters, ,] = useState({});
-  const ref = useRef(null);
+  const [scopeInConversation, setScopeInConversation] = useState(() => window.innerWidth <= 600);
   useEffect(() => {
-    if (!ref.current) return;
-    const cards = [...ref.current.querySelectorAll('[data-report-card]')];
-    let count = 0;
-    cards.forEach((card, index) => {
-      card.hidden =
-        (reportFilters.language === 'Arabic'
-          ? index !== 3
-          : reportFilters.language === 'English'
-            ? index === 3
-            : false) ||
-        (reportFilters.date === 'august'
-          ? index !== 3
-          : reportFilters.date === 'september'
-            ? index === 3
-            : false);
-      if (!card.hidden) count++;
-    });
-    const counter = ref.current.querySelector('[data-node-id="299:901"]');
-    if (counter) counter.textContent = tr(count + ' reports');
-    const rows = ref.current.querySelector('[data-name="Report library"]');
-    if (rows)
-      rows.style.flexDirection = reportFilters.sort === 'oldest' ? 'column-reverse' : 'column';
-  }, [reportFilters, tr]);
+    const resize = () => setScopeInConversation(window.innerWidth <= 600);
+    addEventListener('resize', resize);
+    return () => removeEventListener('resize', resize);
+  }, []);
+
   const [question, setQuestion] = useState(''),
     [lastQuestion, setLastQuestion] = useState('What are the most common complaints?'),
     [reply, setReply] = useState(''),
@@ -59,10 +40,32 @@ export default function AssistantScreen() {
       'This preview uses sample feedback only. One Cairo customer mentions a 25-minute wait while praising the coffee and welcoming team. Review the original response for context.',
     );
   };
+  const scopeToolbar = (
+    <div className="pv1" data-node-id="301:1462" data-name="Conversation controls">
+      <div className="pv9" data-node-id="301:1463" data-name="Data scope">
+        <span className="assistant-scope-buttons">
+          <WorkspaceScopeControls />
+        </span>
+        <div className="pv10" data-node-id="301:1472" data-name="Status">
+          <p
+            className="pv11"
+            data-node-id="301:1473"
+            style={{ fontVariationSettings: '"opsz" 14' }}
+          >
+            {tr('1,250 reviews')}
+          </p>
+        </div>
+      </div>
+      <div className="pv10" data-node-id="301:1474" data-name="Status">
+        <p className="pv11" data-node-id="301:1475" style={{ fontVariationSettings: '"opsz" 14' }}>
+          {tr('English answers')}
+        </p>
+      </div>
+    </div>
+  );
   return (
     <div
       className="figma-preview assistant-preview"
-      ref={ref}
       onClick={(e) => {
         const item = e.target.closest('[data-name="Suggested question"],[data-name="Action"]');
         if (!item) return;
@@ -78,8 +81,9 @@ export default function AssistantScreen() {
       <div className="pv0" data-node-id="301:1453" data-name="Page content">
         <div className="pv1" data-node-id="301:1454" data-name="Page introduction">
           <div className="pv2" data-node-id="301:1455" data-name="Introduction">
-            <p className="pv3" data-node-id="301:1456">
-              {tr('AI Assistant')}
+            <p className="pv3" data-node-id="301:1456" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('AI Assistant')}</span>
             </p>
             <p
               className="pv4"
@@ -104,31 +108,10 @@ export default function AssistantScreen() {
             </p>
           </button>
         </div>
-        <div className="pv1" data-node-id="301:1462" data-name="Conversation controls">
-          <div className="pv9" data-node-id="301:1463" data-name="Data scope">
-            <WorkspaceScopeControls />
-            <div className="pv10" data-node-id="301:1472" data-name="Status">
-              <p
-                className="pv11"
-                data-node-id="301:1473"
-                style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {tr('1,250 reviews')}
-              </p>
-            </div>
-          </div>
-          <div className="pv10" data-node-id="301:1474" data-name="Status">
-            <p
-              className="pv11"
-              data-node-id="301:1475"
-              style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {tr('English answers')}
-            </p>
-          </div>
-        </div>
+        {!scopeInConversation && scopeToolbar}
         <div className="pv12" data-node-id="301:1476" data-name="Assistant workspace">
           <div className="pv13" data-node-id="301:1477" data-name="Conversation">
+            {scopeInConversation && scopeToolbar}
             <div className="pv14" data-node-id="301:1478" data-name="Assistant introduction">
               <div className="pv15" data-node-id="301:1479" data-name="Assistant avatar">
                 <div className="pv16" data-node-id="301:1480" data-name="sparkles">
@@ -324,7 +307,6 @@ export default function AssistantScreen() {
                     if (e.key === 'Enter') ask(question);
                   }}
                 />
-
                 <button type="button" className="pv44" data-node-id="301:1530" data-name="Action">
                   <div className="pv6" data-node-id="301:1531" data-name="arrow-up">
                     <PreviewArrow direction="up" />

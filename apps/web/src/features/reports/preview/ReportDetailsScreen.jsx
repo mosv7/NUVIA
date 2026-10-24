@@ -1,20 +1,20 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import reportArabic from '../../../lib/i18n/product-ar.json';
 import { arabicUiNumbers } from '../../../lib/number-format.js';
 import { ReportNavigation } from './ReportChrome.jsx';
-
+import '../../../components/ui/ControlIcon.jsx';
 import { getReportDetails } from './report-details-data.js';
 import { getReport } from './report-library.js';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { PreviewArrow, GenerateDialog, downloadReport } from './PreviewControls.jsx';
 import './figma-preview.css';
-const imgArrowLeft = asset('preview/reportDetails-imgArrowLeft.svg');
-const imgDownload = asset('preview/reportDetails-imgDownload.svg');
+
 const imgSparkles = asset('preview/reportDetails-imgSparkles.svg');
 const imgInfo = asset('preview/reportDetails-imgInfo.svg');
 const imgQuote = asset('preview/reportDetails-imgQuote.svg');
-const imgArrowUpRight = asset('preview/reportDetails-imgArrowUpRight.svg');
+
 function ReportContent({ id }) {
   const ui = useProductView();
   const language = getReport(id).language === 'Arabic' ? 'ar' : ui.language;
@@ -29,39 +29,13 @@ function ReportContent({ id }) {
         : formatNumber(details.nodes[nodeId][language]);
   const [generate, setGenerate] = useState(false);
   const [evidence, setEvidence] = useState(null);
-  const [reportFilters, ,] = useState({});
-  const ref = useRef(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    const cards = [...ref.current.querySelectorAll('[data-report-card]')];
-    let count = 0;
-    cards.forEach((card, index) => {
-      card.hidden =
-        (reportFilters.language === 'Arabic'
-          ? index !== 3
-          : reportFilters.language === 'English'
-            ? index === 3
-            : false) ||
-        (reportFilters.date === 'august'
-          ? index !== 3
-          : reportFilters.date === 'september'
-            ? index === 3
-            : false);
-      if (!card.hidden) count++;
-    });
-    const counter = ref.current.querySelector('[data-node-id="299:901"]');
-    if (counter) counter.textContent = tr(count + ' reports');
-    const rows = ref.current.querySelector('[data-name="Report library"]');
-    if (rows)
-      rows.style.flexDirection = reportFilters.sort === 'oldest' ? 'column-reverse' : 'column';
-  }, [reportFilters, tr]);
+
   const reportTitle = getReport(id).title;
   return (
     <div
       className="figma-preview report-details"
       dir={language === 'ar' ? 'rtl' : 'ltr'}
       lang={language}
-      ref={ref}
       onClick={(e) => {
         const item = e.target.closest(
           '[data-name="Action"],[data-name="Back to reports"], [data-name="Evidence link"]',
@@ -116,8 +90,9 @@ function ReportContent({ id }) {
               </p>
             </div>
           </div>
-          <p className="pv100" data-node-id="300:1150">
-            {tr(reportTitle)}
+          <p className="pv100" data-node-id="300:1150" data-workspace-heading="true">
+            <HeadingBack fallback="/reports" />
+            <span>{tr(reportTitle)}</span>
           </p>
           <p
             className="pv101"
@@ -579,7 +554,6 @@ function ReportContent({ id }) {
                     maxWidth: '100%',
                   }}
                 />
-
                 <p
                   className="pv36"
                   data-node-id="300:1246"
@@ -605,7 +579,6 @@ function ReportContent({ id }) {
                     maxWidth: '100%',
                   }}
                 />
-
                 <p
                   className="pv36"
                   data-node-id="300:1250"

@@ -44,16 +44,48 @@ const options = {
     ['oldest', 'Oldest first'],
   ],
 };
-export function PreviewFilter({ kind, onChange }) {
-  const { tr } = useProductView();
+export function PreviewFilter({ kind, onChange, currentValue }) {
+  const { tr, isMobile } = useProductView();
   const [value, setValue] = useState(options[kind][0][0]);
   const icons = {
     date: 'reports-imgCalendarDays.svg',
     language: 'reports-imgLanguages.svg',
     sort: 'reports-imgArrowDownWideNarrow.svg',
   };
+  if (kind === 'sort' && isMobile) {
+    const oldest = (currentValue ?? value) === 'oldest';
+    const next = oldest ? 'newest' : 'oldest';
+    const change = () => {
+      setValue(next);
+      onChange?.(next);
+    };
+    return (
+      <button
+        type="button"
+        className="preview-filter report-sort-toggle"
+        data-filter-kind="sort"
+        aria-label={tr(oldest ? 'Oldest first' : 'Newest first')}
+        title={tr(oldest ? 'Oldest first' : 'Newest first')}
+        aria-pressed={oldest}
+        onClick={change}
+      >
+        <img
+          className="preview-filter-icon"
+          src={asset('preview/reports-imgArrowDownWideNarrow.svg')}
+          alt=""
+          style={{ transform: oldest ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
+      </button>
+    );
+  }
   return (
-    <span className="preview-filter" data-filter-kind={kind}>
+    <span
+      className="preview-filter"
+      data-filter-kind={kind}
+      title={tr(
+        options[kind].find(([key]) => key === (currentValue ?? value))?.[1] || options[kind][0][1],
+      )}
+    >
       {kind === 'date' ? (
         <ControlIcon name="date" />
       ) : (
@@ -63,13 +95,15 @@ export function PreviewFilter({ kind, onChange }) {
             src={asset('preview/' + icons[kind])}
             alt=""
             style={
-              kind === 'sort' && value === 'oldest' ? { transform: 'rotate(180deg)' } : undefined
+              kind === 'sort' && (currentValue ?? value) === 'oldest'
+                ? { transform: 'rotate(180deg)' }
+                : undefined
             }
           />
         )
       )}
       <ChoiceMenu
-        value={value}
+        value={currentValue ?? value}
         onChange={(v) => {
           setValue(v);
           onChange?.(v);
@@ -84,7 +118,13 @@ export function PreviewFilter({ kind, onChange }) {
           }[kind],
         )}
         icon={false}
-        options={options[kind].map(([value, label]) => ({ value, label: tr(label) }))}
+        compact={isMobile}
+        density="compact"
+        options={options[kind].map(([value, label]) => ({
+          value,
+          label: tr(label),
+          shortLabel: tr(label.replace(/^(Date|Language): /, '')),
+        }))}
       />
     </span>
   );

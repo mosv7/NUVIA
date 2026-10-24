@@ -1,3 +1,5 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
+import { useRouteState } from '../../../components/layout/navigation.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import React, { useState, useRef, useEffect } from 'react';
 import { asset } from '../../../lib/assets.js';
@@ -6,18 +8,16 @@ import { PreviewFilter, GenerateDialog, downloadReport } from './PreviewControls
 import './figma-preview.css';
 const imgSparkles = asset('preview/reports-imgSparkles.svg');
 const imgSparkles1 = asset('preview/reports-imgSparkles1.svg');
-const imgCalendarDays = asset('preview/reports-imgCalendarDays.svg');
-const imgLanguages = asset('preview/reports-imgLanguages.svg');
-const imgArrowDownWideNarrow = asset('preview/reports-imgArrowDownWideNarrow.svg');
+
 const imgFileChartColumn = asset('preview/reports-imgFileChartColumn.svg');
-const imgDownload = asset('preview/reports-imgDownload.svg');
+
 const imgFileDown = asset('preview/reports-imgFileDown.svg');
 export default function ReportsScreen() {
   const { tr, language } = useProductView();
   const [generate, setGenerate] = useState(
     () => new URLSearchParams(location.hash.split('?')[1]).get('generate') === '1',
   );
-  const [reportFilters, setReportFilters] = useState({});
+  const [reportFilters, setReportFilters] = useRouteState('report-filters', {});
   const ref = useRef(null);
   useEffect(() => {
     if (!ref.current) return;
@@ -47,7 +47,7 @@ export default function ReportsScreen() {
   }, [reportFilters, tr]);
   return (
     <div
-      className="figma-preview"
+      className="figma-preview reports-library"
       ref={ref}
       onClick={(e) => {
         const item = e.target.closest(
@@ -81,8 +81,9 @@ export default function ReportsScreen() {
       <div className="pv0" data-node-id="299:867" data-name="Page content">
         <div className="pv1" data-node-id="299:868" data-name="Page introduction">
           <div className="pv2" data-node-id="299:869" data-name="Introduction">
-            <p className="pv3" data-node-id="299:870">
-              {tr('AI Reports')}
+            <p className="pv3" data-node-id="299:870" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('AI Reports')}</span>
             </p>
             <p
               className="pv4"
@@ -169,17 +170,22 @@ export default function ReportsScreen() {
           </div>
         </div>
         <div className="pv1" data-node-id="299:891" data-name="Report filters">
-          <div className="pv74" data-node-id="299:892" data-name="Filter controls">
+          <div
+            className="pv74"
+            id="report-filter-options"
+            data-node-id="299:892"
+            data-name="Filter controls"
+          >
             <PreviewFilter
               kind="date"
+              currentValue={reportFilters.date}
               onChange={(value) => setReportFilters((old) => ({ ...old, date: value }))}
             />
-
             <PreviewFilter
               kind="language"
+              currentValue={reportFilters.language}
               onChange={(value) => setReportFilters((old) => ({ ...old, language: value }))}
             />
-
             <p
               className="pv39"
               data-node-id="299:901"
@@ -190,6 +196,7 @@ export default function ReportsScreen() {
           </div>
           <PreviewFilter
             kind="sort"
+            currentValue={reportFilters.sort}
             onChange={(value) => setReportFilters((old) => ({ ...old, sort: value }))}
           />
         </div>
