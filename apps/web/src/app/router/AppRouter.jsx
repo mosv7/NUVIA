@@ -1,3 +1,4 @@
+import { installRouteHistory } from '../../components/layout/navigation.js';
 import SurveyPage from '../../features/surveys/preview/SurveyPage.jsx';
 import AnalyticsPage from '../../features/analytics/preview/AnalyticsPage.jsx';
 import ExtraPreviewPage from '../../features/reports/preview/ExtraPreviewPage.jsx';
@@ -18,6 +19,7 @@ import BusinessOnboarding, {
   ConnectedBusinessOnboarding,
 } from '../../features/workspaces/BusinessOnboarding.jsx';
 export default function AppRouter() {
+  useEffect(() => installRouteHistory(), []);
   const auth = useAuth(),
     preview = auth.preview,
     cancel = auth.cancel;
