@@ -1,0 +1,69 @@
+{
+  "routes": [
+    "analytics-sentiment",
+    "analytics-aspects",
+    "analytics-topics",
+    "analytics-trends",
+    "analytics-comparison",
+    "nuvia-assistant",
+    "reports",
+    "report-details",
+    "report-details?id=cairo",
+    "report-details?id=service",
+    "report-details?id=august",
+    "feedbacks-loading",
+    "feedbacks-no-results",
+    "survey-all",
+    "survey-empty",
+    "survey-live",
+    "survey-drafts",
+    "survey-paused",
+    "survey-closed",
+    "survey-create",
+    "survey-questions",
+    "survey-choices",
+    "survey-edit",
+    "survey-share",
+    "survey-ai",
+    "survey-ai-review",
+    "survey-results",
+    "landing",
+    "dashboard",
+    "dashboard-empty",
+    "feedbacks",
+    "feedbacks-empty",
+    "feedback-details?id=1248",
+    "login",
+    "signup",
+    "forgot",
+    "reset",
+    "verify-email",
+    "business-information",
+    "business-error",
+    "business-setup",
+    "get-started"
+  ],
+  "views": [
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "tablet-portrait",
+      "width": 820,
+      "height": 1180
+    },
+    {
+      "name": "tablet-landscape",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 960
+    }
+  ],
+  "languages": ["en", "ar"]
+}
