@@ -32,7 +32,9 @@ it('real signup creates an account and moves to verification while clearing cred
   });
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.click(screen.getByRole('button', { name: 'Create account', exact: true }));
-  expect(await screen.findByRole('heading', { name: 'Verify your email' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: 'Check your inbox' })).toBeVisible();
+  expect(screen.getByText('owner@example.test', { exact: true })).toBeVisible();
+  expect(document.querySelector('.email-verification')).toBeInTheDocument();
   expect(register).toHaveBeenCalledWith(
     expect.objectContaining({ email: 'owner@example.test', locale: 'en' }),
     expect.any(AbortSignal),
@@ -101,7 +103,10 @@ it('preview verification never bootstraps sessions or sends real verification re
   history.replaceState(null, '', '/preview/#/verify-email');
   render(<App />);
   await act(async () => {});
-  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'owner@example.test' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Change', exact: true }));
+  fireEvent.change(screen.getByLabelText('Email address'), {
+    target: { value: 'owner@example.test' },
+  });
   fireEvent.click(screen.getByRole('button', { name: 'Resend verification link' }));
   await act(async () => {});
   await act(async () => {
@@ -110,5 +115,33 @@ it('preview verification never bootstraps sessions or sends real verification re
   });
   expect(verify).not.toHaveBeenCalled();
   expect(resend).not.toHaveBeenCalled();
+  expect(authApi.session).not.toHaveBeenCalled();
+});
+
+it('the approved verification screen resends to the edited email using the real API', async () => {
+  const resend = vi.spyOn(authApi, 'resend').mockResolvedValue({ status: 'accepted' });
+  open('verify-email');
+  fireEvent.click(await screen.findByRole('button', { name: 'Change', exact: true }));
+  fireEvent.change(screen.getByLabelText('Email address'), {
+    target: { value: 'resend@example.test' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Save email', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'Resend verification link', exact: true }));
+  await waitFor(() => expect(resend).toHaveBeenCalledWith('resend@example.test'));
+  expect(
+    await screen.findByText(
+      'Request received. Check your email if your account needs verification.',
+    ),
+  ).toBeVisible();
+});
+it.each([
+  ['verify-email-expired', 'This link has expired'],
+  ['verify-email-verified', 'Email verified'],
+])('shows the original %s design only in explicit preview mode', async (route, title) => {
+  const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({});
+  history.replaceState(null, '', '/preview/#/' + route);
+  render(<App />);
+  expect(await screen.findByRole('heading', { name: title, exact: true })).toBeVisible();
+  expect(verify).not.toHaveBeenCalled();
   expect(authApi.session).not.toHaveBeenCalled();
 });
