@@ -43,9 +43,21 @@ function MenuIcon({ name }) {
   );
 }
 export default function HeaderMenus() {
-  const { tr, language, setLanguage, isMobile, topbarMenu, setTopbarMenu } = useProductView(),
+  const {
+      tr,
+      language,
+      setLanguage,
+      isMobile,
+      topbarMenu,
+      setTopbarMenu,
+      preview,
+      logout,
+      identity,
+      workspace,
+    } = useProductView(),
     ref = useRef(null),
     [profile, setProfile] = useState(false),
+    [signingOut, setSigningOut] = useState(false),
     [position, setPosition] = useState({});
   const close = useCallback(() => setTopbarMenu(null), [setTopbarMenu]);
   useEffect(() => {
@@ -170,7 +182,17 @@ export default function HeaderMenus() {
               )}
               <button
                 className="workspace-menu-item workspace-signout"
-                onClick={() => navigate('login')}
+                disabled={signingOut}
+                onClick={async () => {
+                  if (preview) {
+                    navigate('login');
+                    return;
+                  }
+                  setSigningOut(true);
+                  const succeeded = await logout();
+                  setSigningOut(false);
+                  if (succeeded) close();
+                }}
               >
                 <MenuIcon name="signout" />
                 {tr('Sign out')}
@@ -223,8 +245,14 @@ export default function HeaderMenus() {
             </span>
             <h2>{tr(profile === 'security' ? 'Account & security' : 'Sara Ahmed')}</h2>
             {profile === 'security' && <strong>{tr('Sara Ahmed')}</strong>}
-            <p>{tr('Workspace owner')} · Bloom &amp; Co.</p>
-            <small>{tr('Sample workspace profile')}</small>
+            <p>
+              {tr('Workspace owner')} · {preview ? 'Bloom & Co.' : workspace?.businessName}
+            </p>
+            {preview ? (
+              <small>{tr('Sample workspace profile')}</small>
+            ) : (
+              <small>{identity?.email}</small>
+            )}
             {profile === 'security' && (
               <div className="workspace-security-actions">
                 <button onClick={() => setProfile(true)}>{tr('View profile')}</button>
