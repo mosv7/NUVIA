@@ -81,7 +81,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "7ca9a5c7055111733eef26c12ac46c87b0733d794f4fcfeae72e0265b4f57b5d"
+    "sha256": "adc5a5e5d53c489ef4978eb253242ae97f31aa6740a852d1095a885c0cc6f80d"
   },
   {
     "file": "screens/desktop/ar/business-information.jpg",
@@ -95,7 +95,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a7a2e1940a025756e84d4683277a8498517977489687e4fb9ad15e149af7e8b4"
+    "sha256": "f740b02472fb5d377ed33a4f49aa3865bfde1b27a0a4dfdfdd386eff0294041d"
   },
   {
     "file": "screens/desktop/ar/business-setup.jpg",
@@ -109,7 +109,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "fcb4bcf96a32a4484bc8194f69235080e9196138d9ea92884baabdc65e236ffd"
+    "sha256": "9ec8425348f7f485bb7eb16f1a227861a8e1cb4e37a4af17e7b7fe5b26cc32e9"
   },
   {
     "file": "screens/desktop/ar/dashboard-empty.jpg",
@@ -221,7 +221,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "6845f9849fbfccdfeb358de2d50eabcd127c9f34501a2693c8d8d32b6e1ff4c4"
+    "sha256": "a093a3c605cb49892cfa99f5c45d95bfe614ff73f698ddffa2fbcb75791342d2"
   },
   {
     "file": "screens/desktop/ar/get-started.jpg",
@@ -235,7 +235,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "ec212c8221619ffa574bd1092c88169d5ff3cf3ac6520e2120955b789a866450"
+    "sha256": "bd2947eafcc6a5e0ecab68d24718c2f953a7b6adadc2494765f7071ffc88f8a5"
   },
   {
     "file": "screens/desktop/ar/landing.jpg",
@@ -263,7 +263,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "494f9841878fa04e25d310ee069ddef5704c94c1c61fe13edb2d6a9c1e092934"
+    "sha256": "041247d0a96899eda6259ed81be26a4019ff43cacc9bdbe6a21a2f8c9bcd8ee9"
   },
   {
     "file": "screens/desktop/ar/nuvia-assistant.jpg",
@@ -361,7 +361,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "4a6c9de07ad96461437b3e4f23964db08976e90ac15df265857f8d93f2a5d360"
+    "sha256": "6e0a0f3f2053c1effd8c06d65d76aa8bceebc806628069b66d35e58e925fa2d4"
   },
   {
     "file": "screens/desktop/ar/signup.jpg",
@@ -375,7 +375,7 @@
       "width": 1440,
       "height": 1008
     },
-    "sha256": "85e1b6a056138afdfab9dddb786d843f71137dc1750f7b84db6a6a4c02f2aefc"
+    "sha256": "9f71aea322db4c6091858161fbac65de177e94aaa1c18b30c5e75471b8ab254d"
   },
   {
     "file": "screens/desktop/ar/survey-ai-review.jpg",
@@ -574,6 +574,34 @@
     "sha256": "3d00b013393ee95eab4a146a8836c9bb1dfb64f02cf3c48ceb4630c3eb5c94f7"
   },
   {
+    "file": "screens/desktop/ar/verify-email-expired.jpg",
+    "route": "#/verify-email-expired",
+    "language": "ar",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "dc7f0e399799e9e5570d3cc70062a8b16e5e357d6a9cb7dcbe5de3b1ea474970"
+  },
+  {
+    "file": "screens/desktop/ar/verify-email-verified.jpg",
+    "route": "#/verify-email-verified",
+    "language": "ar",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "d353d2bd263437af64f51c5057f7c6d73fae2653e3c58ab2e092545902cc25d5"
+  },
+  {
     "file": "screens/desktop/ar/verify-email.jpg",
     "route": "#/verify-email",
     "language": "ar",
@@ -585,7 +613,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0e3007cb3b77677d2ce4f318992485d3d1813c34e498d2f9f271863e0f2d7c42"
+    "sha256": "3a41042f82133b1f1c2bd323104483bc63c58ec8090d8a87e5efa6071da3f602"
   },
   {
     "file": "screens/desktop/en/analytics-aspects.png",
@@ -669,7 +697,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "07f041ea4865f39af30bb8f2016d2019cc3b4d8af7b5b0acfed5052629a66dc7"
+    "sha256": "07dab30d62c37b06a257a0726e9c5427957059921f07c4893bfb46715273d441"
   },
   {
     "file": "screens/desktop/en/business-information.png",
@@ -683,7 +711,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "3890312d74253585eb7c8bf0dda25fba8886f3a6d6622b441755fd7549db7324"
+    "sha256": "da4bc8d92adcbe171299528fcdb1edae70dae66b3d6f8aa470de8ae6a35547e6"
   },
   {
     "file": "screens/desktop/en/business-setup.png",
@@ -697,7 +725,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "274d400c978696da399501fb3adb4a26adae81a95a7750aa1b5912239379d24c"
+    "sha256": "d158c20eb5f7262100fe97a438e76b40078c25a48d0a1445483555b03f17f4c4"
   },
   {
     "file": "screens/desktop/en/dashboard-empty.png",
@@ -809,7 +837,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "e809aeeb5d3db76a88742eee3d65b8b497a87034e927aaa63036fd948d26d1cb"
+    "sha256": "709bf56e3da1ace1d194053d8b2782a3d63fbbc51981548c9e6ce891a8e73ffa"
   },
   {
     "file": "screens/desktop/en/get-started.png",
@@ -823,7 +851,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "c56021f0796b7441c79c6c3057af4255c4de9398503ad1ea6bac2382bfc1791e"
+    "sha256": "93ead90e3e0265fea675b79673fe233bbfabc5371b2986017a40a76f5121b672"
   },
   {
     "file": "screens/desktop/en/landing.png",
@@ -851,7 +879,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0a39c4eac52bfbb66d84c45eb59e9691dab92b13216e9d8f741d889472250cdf"
+    "sha256": "514bdcf2902cee92c00007124d700536e2b6ec852395036e55bfc56acc37b691"
   },
   {
     "file": "screens/desktop/en/nuvia-assistant.png",
@@ -949,7 +977,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0313f3574650443a5e4729b23c82f7ea5543209c95683eb0289447a68d59f1fb"
+    "sha256": "cfdb682366402f5b2d601231639fd7c77865fd6cd6a6d1bf0f9276e76c05df86"
   },
   {
     "file": "screens/desktop/en/signup.png",
@@ -963,7 +991,7 @@
       "width": 1440,
       "height": 1008
     },
-    "sha256": "0dbdaebb14e8ce8f453a181471b287305961e0281024c402ef0ff6d4dac49ec4"
+    "sha256": "3697288c0567c61352c322e0dcf33d93c48d7acb3e502a0c25c8a062d321c6ac"
   },
   {
     "file": "screens/desktop/en/survey-ai-review.png",
@@ -1162,6 +1190,34 @@
     "sha256": "810d28ab274999f4c5c25f1080df616aa5630ce963a14a9af0868af9495c1d30"
   },
   {
+    "file": "screens/desktop/en/verify-email-expired.jpg",
+    "route": "#/verify-email-expired",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "b35c09d7e3def80e1ea0510b7fbf19379a9ac047282d4bc894451a68b0918842"
+  },
+  {
+    "file": "screens/desktop/en/verify-email-verified.jpg",
+    "route": "#/verify-email-verified",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "98fc6bcc0302f6bc9a746d163ec7407f53c4cfed817fdef324ac065ebcd68583"
+  },
+  {
     "file": "screens/desktop/en/verify-email.png",
     "route": "#/verify-email",
     "language": "en",
@@ -1173,7 +1229,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "878d8fac5d5368cb5e691fe5e3f563f1cc7510ed1c235a6839b3c7bde3740ff4"
+    "sha256": "d5eca24a30a874f341809841745b24799250d224ae8a0a25576cd67aa3685502"
   },
   {
     "file": "screens/mobile/ar/analytics-aspects.jpg",
@@ -1257,7 +1313,7 @@
       "width": 390,
       "height": 1307
     },
-    "sha256": "f26e106d44b9002c879a538fbae09e5ea64e99c369a94d1f65e4d92175dc94a9"
+    "sha256": "80c7fd8d2eeac259c0236a8afa9a8657d22c648009009dc720d138433582ff55"
   },
   {
     "file": "screens/mobile/ar/business-information.jpg",
@@ -1271,7 +1327,7 @@
       "width": 390,
       "height": 1260
     },
-    "sha256": "0fcdaadaea79d31025a663e6417ff6f0dee305a89ed73f498336618f02f1f878"
+    "sha256": "c980e5cb2c8d45aeaa0aabf6e4ffcd41a5ca4c0f48462784f7100dcc24526ea4"
   },
   {
     "file": "screens/mobile/ar/business-setup.jpg",
@@ -1285,7 +1341,7 @@
       "width": 390,
       "height": 1364
     },
-    "sha256": "9a5db6fa0c046cc169cc09fd24636db413ce9bc316f611df15f6e121a0f6391e"
+    "sha256": "018e02206f466994dd9b9ba7039e033cf8cf5e2288b9cdf527707e4d7a684551"
   },
   {
     "file": "screens/mobile/ar/dashboard-empty.jpg",
@@ -1397,7 +1453,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "a65ad3598cbf7e1d07d25eca3fb6d52746815526444d3b983331f46b2f4c497b"
+    "sha256": "4216e376d6dd74b9b043c128da5b88c0db9cf5e76237831207b542bfb2424486"
   },
   {
     "file": "screens/mobile/ar/get-started.jpg",
@@ -1411,7 +1467,7 @@
       "width": 390,
       "height": 1434
     },
-    "sha256": "390d4e3f8cf9887a4d5ee7a7a876aa90171cebae16b2d721ea9bfd9f7be17397"
+    "sha256": "948feb1aafd33805713bae8c7e3e3aafcd05bd34bbf61f064d7fa62dd4bee743"
   },
   {
     "file": "screens/mobile/ar/landing.jpg",
@@ -1439,7 +1495,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "9fa20597b38b653fdf8d203c0712c4cb7fd03842fd8a9ecee3f794e5efc94c3b"
+    "sha256": "75af25d4cec9b72ddc618e16c363fc028300ce239d750f8c6f4df2b666d63ded"
   },
   {
     "file": "screens/mobile/ar/nuvia-assistant.jpg",
@@ -1537,7 +1593,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "5110a54a036062666154ee42fb7c8fb1cf948b80cc2079b2cfc095e56c6910f6"
+    "sha256": "ba56d8a7a13cd112d13403757167acbcb869448a650a769852831b039600701f"
   },
   {
     "file": "screens/mobile/ar/signup.jpg",
@@ -1551,7 +1607,7 @@
       "width": 390,
       "height": 845
     },
-    "sha256": "32dd2efa0d2798f2c6cb4f1d188279463937a238b9b739d4472c0e015efa0c05"
+    "sha256": "c6f61776fe7ae4354aa226a8ecc5f387b0742fd2c1a24f891fe0a7e64060484c"
   },
   {
     "file": "screens/mobile/ar/survey-ai-review.jpg",
@@ -1750,6 +1806,34 @@
     "sha256": "a35082317c2989f9eef969d4f52897cdc495c499756db50b5d1084a9e742ff1f"
   },
   {
+    "file": "screens/mobile/ar/verify-email-expired.jpg",
+    "route": "#/verify-email-expired",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "bae1cbdb78414dd1d41a8a132e6ad821d3d4afa020d9c0dea745d3722341e5c7"
+  },
+  {
+    "file": "screens/mobile/ar/verify-email-verified.jpg",
+    "route": "#/verify-email-verified",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "5969eb4cae3783d1494f2a786bf8da1fd9f23c6b4299aa58ef04b5bd1bf25365"
+  },
+  {
     "file": "screens/mobile/ar/verify-email.jpg",
     "route": "#/verify-email",
     "language": "ar",
@@ -1761,7 +1845,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "15a403821cafb3b32a07fed450f9ee2c4d141cbb79bff6d9ade5a57892782a51"
+    "sha256": "52cb85eef970cbcc005fcb8e2165eaa92f1cd15975d7c6f1d23ee2f917a0aa0e"
   },
   {
     "file": "screens/mobile/en/analytics-aspects.jpg",
@@ -1845,7 +1929,7 @@
       "width": 390,
       "height": 1282
     },
-    "sha256": "1d8d4b42b33695e3a24778535881c2e2bfb04a173557e2e1b2ef76a1a9dad0dd"
+    "sha256": "8bb63f96d6db63f9988cfc79a4ba4de0f4bb8da9b82f4eb7e72de6a0615a3ee2"
   },
   {
     "file": "screens/mobile/en/business-information.jpg",
@@ -1859,7 +1943,7 @@
       "width": 390,
       "height": 1228
     },
-    "sha256": "17f1bde51897401a7cda051840f6dc68a36f7366d594d32964e5e3e058f67432"
+    "sha256": "325151f7685171d5805be74a0413e4d29842b2b8e371a716e735b8076c038951"
   },
   {
     "file": "screens/mobile/en/business-setup.jpg",
@@ -1873,7 +1957,7 @@
       "width": 390,
       "height": 1362
     },
-    "sha256": "3177e1a413709c5febf906d73610d03545c1f4cb64eabc339e1fb06d2eb730ba"
+    "sha256": "575f11bf26652d6e80d4f1101eb7f4151a4ae35afd6a84105628748b04af8cf5"
   },
   {
     "file": "screens/mobile/en/dashboard-empty.jpg",
@@ -1985,7 +2069,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "d7acfc7c4bcb0df1be9f0319511f21e25d850db16f2078417600a8afb46a983a"
+    "sha256": "c8acefa94569817c0f457c5e64ad90009e3c289f6b1ef8b8d9013ae07a5ba6e1"
   },
   {
     "file": "screens/mobile/en/get-started.jpg",
@@ -1999,7 +2083,7 @@
       "width": 390,
       "height": 1433
     },
-    "sha256": "cb21384466566a66a9943feb25599cf81efcc86f26210f00f8d2674271fa2aaf"
+    "sha256": "87f6bb646075cf4b5a215aa1e84ed95397f55b51c67214dba4a73f0505ede76c"
   },
   {
     "file": "screens/mobile/en/landing.jpg",
@@ -2027,7 +2111,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "dfc9c917771def0b2de7a5b4ecdb9d6b017437105f4ee72d126a1c84f1f4e4e4"
+    "sha256": "3adeb351a2858802d653ddd9e293c3809f89d4c9ef5e2f3fb80b65e4c49d3c01"
   },
   {
     "file": "screens/mobile/en/nuvia-assistant.jpg",
@@ -2125,7 +2209,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "1094f6a92c1a1c8c84c04e7b67ef2c3d361541f0f0a127d223f0806e0a1705ec"
+    "sha256": "1fa2e288cc7a10404a8073a7c25b30ea19863dd23fe6b815121ed8de0a0d5f2e"
   },
   {
     "file": "screens/mobile/en/signup.jpg",
@@ -2139,7 +2223,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "cfe74d2036d36e47c6c3cd2abdbc063582be4f3a60a06a5ee800991df710cb74"
+    "sha256": "3a83857896e562efa87f583923ed1b5725d4be518403e3b3e447c31b0cbcf315"
   },
   {
     "file": "screens/mobile/en/survey-ai-review.jpg",
@@ -2338,6 +2422,34 @@
     "sha256": "5bcee3ed2e970243478e0253633efb0c5118c731f6346784f0477fd7371b22c9"
   },
   {
+    "file": "screens/mobile/en/verify-email-expired.jpg",
+    "route": "#/verify-email-expired",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "a2f961139542ff55a1162b50410ef8a68b5ffe721b3e1662ed94fb98d9666ebb"
+  },
+  {
+    "file": "screens/mobile/en/verify-email-verified.jpg",
+    "route": "#/verify-email-verified",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "89376ab485a8635b919bb68bb822ebfc8a8bf46a24be4538e055d0a63f88002a"
+  },
+  {
     "file": "screens/mobile/en/verify-email.jpg",
     "route": "#/verify-email",
     "language": "en",
@@ -2349,6 +2461,6 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "7d93b00c87090bf0f56b5587782a9a33ac30f89f2d33070bf75da88668c939ae"
+    "sha256": "2484a8819a20f2a9caf452d7b8b5282a753dee8caa5aa30c95ec4d9470fa3813"
   }
 ]

@@ -18,7 +18,7 @@ The delivery preserves the monorepo's connected authentication provider, access 
 - Web ESLint completed with zero errors and zero warnings.
 - Connected authentication/workspace and preview tests passed locally.
 - 672 viewport-bound checks covered 42 screens/states, both languages and eight widths.
-- 168 fresh screenshots cover desktop and phone in English and Arabic. Tablet layouts were checked during the responsive audit; tablet images are excluded.
+- 176 fresh screenshots cover desktop and phone in English and Arabic. Tablet layouts were checked during the responsive audit; tablet images are excluded.
 - Date selection, sort direction, branch selection/Done and contextual return controls were checked in the preview.
 
 ## Limits
@@ -26,3 +26,25 @@ The delivery preserves the monorepo's connected authentication provider, access 
 These are browser-emulated viewport checks, not physical iPad/Safari acceptance. Database, mail delivery and real backend integration must be tested with the project's private environment after integration. Generated preview reports and survey actions do not establish implemented backend services.
 
 The Segment filter is restored with a regression assertion for all six disabled connected-account filters. The account browser lifecycle and all CI jobs passed after the correction.
+
+## Connected verification design restoration
+
+The connected email verification route now uses the approved original presentation, including pending, expired and verified states. Verification token consumption, real resend requests and the explicit preview boundary are retained. Signup carries its submitted email into verification in memory without persisting credentials. Successful verification continues to login, not an unauthenticated business setup.
+
+The signup, login, recovery and business setup presentation was compared with the original frontend. Ten account/setup routes were checked in English and Arabic at 390, 820 and 1440 pixels: 60 additional viewport-bound checks.
+
+Account language controls now use one shared 16px blue globe in login, signup, recovery and verification screens, including the story caption. Updated captures include these controls in both interface languages.
+
+Account headers use an icon-only back control opposite the NUVIA logo, mirrored in Arabic, without changing authentication behavior. The browser tab is titled NUVIA and uses the square brand icon for readability at favicon size.
+
+## Source reconciliation and connected workspace review
+
+The original Frontend folder remains the visual reference. The final review visited all 44 gallery routes in English and Arabic at widths 390, 820 and 1440 (264 viewport-bound checks). Report details retained one contextual back arrow, and Overview retained none. These checks do not prove that every overlap or physical device is covered.
+
+Business onboarding now shows the shared blue globe at desktop and narrow sizes. Its text inputs use the rounded wrapper focus ring without a second rectangular outline.
+
+Connected Overview and Feedbacks retain the floating assistant: clicking it opens the reviewed panel above the current page without changing the route. The sidebar opens the complete assistant workspace. The complete connected assistant workspace uses saved business/branch labels, zero responses and an explicit unavailable-service state. At the user’s request the floating panel preserves the original illustrative cards and local sample replies, with its existing illustrative-content footer. It does not call an AI backend. Account menus retain View profile and Account & security with saved identity, and Sign out calls the real logout endpoint. The separate bottom logout button is removed.
+
+The unreferenced legacy assistant module, launcher export and nine old style rules were removed. Its separate stylesheet was removed after the import audit confirmed it had no remaining consumer. All 117 remaining source modules/styles are reachable from the web entry point.
+
+Validation: 42 web tests passed; lint and production build passed. API, database, mail and shared-contract sources remain unchanged. Analytics/report generation and survey publishing are still unimplemented backend services; their design routes remain explicit previews.

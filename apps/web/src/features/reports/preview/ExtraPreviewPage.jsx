@@ -1,3 +1,4 @@
+import { overviewPreset } from '../../dashboard/overview-report.js';
 import { getReport } from './report-library.js';
 import Assistant from '../../ai-analysis/preview/Assistant.jsx';
 import '../../ai-analysis/preview/assistant.css';
@@ -10,9 +11,20 @@ import FeedbackShell from '../../../components/layout/WorkspaceShell.jsx';
 import AssistantScreen from './AssistantScreen.jsx';
 import ReportsScreen from './ReportsScreen.jsx';
 import ReportDetailsScreen from './ReportDetailsScreen.jsx';
-export default function ExtraPreviewPage({ page, language, setLanguage }) {
+export default function ExtraPreviewPage({
+  page,
+  language,
+  setLanguage,
+  preview = true,
+  workspace,
+  onLogout,
+}) {
   useWorkspaceScale();
-  const [filters, setFilters] = useState({ branch: 'all', start: '2026-09-01', end: '2026-09-30' });
+  const [filters, setFilters] = useState(() =>
+    preview
+      ? { branch: 'all', start: '2026-09-01', end: '2026-09-30' }
+      : { branch: 'all', ...overviewPreset('30') },
+  );
   const [dateOpen, setDateOpen] = useState(false);
   const dashboard = { filters, setFilters, openDate: () => setDateOpen(true) };
   const tr = (text) => (language === 'ar' ? (arabic[text] ?? text) : text);
@@ -23,7 +35,9 @@ export default function ExtraPreviewPage({ page, language, setLanguage }) {
   }, [page]);
   return (
     <ProductProvider
-      preview={true}
+      preview={preview}
+      workspace={workspace}
+      onLogout={onLogout}
       dashboard={dashboard}
       language={language}
       setLanguage={setLanguage}

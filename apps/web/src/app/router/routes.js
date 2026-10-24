@@ -35,6 +35,8 @@ export const routes = [
   'forgot',
   'reset',
   'verify-email',
+  'verify-email-expired',
+  'verify-email-verified',
   'business-information',
   'business-error',
   'business-setup',

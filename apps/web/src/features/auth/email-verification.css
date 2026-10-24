@@ -1,0 +1,359 @@
+.email-verification.auth-layout {
+  height: 100dvh;
+  min-height: 0;
+  padding: 16px 24px 22px;
+  gap: 24px;
+  max-width: 1600px;
+  margin: auto;
+  grid-template-columns: minmax(0, 720fr) minmax(0, 648fr);
+}
+.email-verification .auth-panel {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 32px;
+  gap: 12px;
+  justify-content: space-between;
+}
+.email-verification .auth-panel > header {
+  position: relative;
+  flex-shrink: 0;
+}
+.email-verification .auth-panel > footer {
+  flex-shrink: 0;
+  margin: 0;
+  min-height: 36px;
+  padding: 0;
+}
+.email-verification .verify-space {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+.email-verification .verify-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  width: 432px;
+  max-width: 100%;
+  transform-origin: center;
+}
+.email-verification .step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #64738a;
+  margin-bottom: 20px;
+}
+.email-verification .step span {
+  width: 22px;
+  height: 3px;
+  background: #1e68ef;
+  border-radius: 3px;
+}
+.email-verification .step span:last-of-type {
+  background: #dfe7f2;
+}
+.email-verification .mail-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  color: #1e68ef;
+  background: #eaf2ff;
+  border: 1px solid #d6e5ff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px #1e68ef0a;
+  margin-bottom: 22px;
+}
+.email-verification .intro {
+  margin-bottom: 24px;
+}
+.email-verification h1 {
+  font-size: 36px;
+}
+.email-verification .intro p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.email-verification .email-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f7faff;
+  border: 1px solid #dfe7f2;
+  border-radius: 12px;
+  margin: 24px 0;
+}
+.email-verification .email-box > svg {
+  width: 20px;
+  height: 20px;
+  color: #64738a;
+  flex-shrink: 0;
+}
+.email-verification .email-box > div {
+  flex: 1;
+  min-width: 0;
+}
+.email-verification .email-box small {
+  display: block;
+  font-size: 11px;
+  color: #64738a;
+  margin-bottom: 4px;
+}
+.email-verification .email-box strong {
+  font-size: 14px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.email-verification .email-box button {
+  font-size: 12px;
+  color: #1e68ef;
+  padding: 4px;
+}
+.email-verification .edit-form {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.email-verification .edit-form input {
+  min-width: 0;
+  flex: 1;
+  height: 44px;
+  border: 1px solid #dfe7f2;
+  border-radius: 8px;
+  padding: 10px;
+}
+.email-verification .edit-form button {
+  font-size: 12px;
+  color: #1e68ef;
+}
+.email-verification .primary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.email-verification .primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.email-verification .inbox-help {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #64738a;
+  margin-top: 22px;
+}
+.email-verification .inbox-help strong {
+  color: #10213d;
+  font-weight: 500;
+}
+.email-verification .cross-link {
+  margin-top: 26px;
+}
+.email-verification .cross-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.email-verification .auth-arrow {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.email-verification:dir(rtl) .auth-arrow {
+  transform: scaleX(-1);
+}
+.email-verification .security-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #93a2b7;
+  font-size: 11px;
+  margin-top: 20px;
+}
+.email-verification .verification-demo {
+  font-size: 10px;
+  color: #93a2b7;
+  line-height: 1.6;
+  margin-top: 13px;
+}
+.email-verification .notice {
+  margin-top: 16px;
+}
+.email-verification .story {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+}
+.email-verification .story-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center;
+  width: calc(100% - 64px);
+}
+.email-verification .brand-icon {
+  width: 14px;
+  height: 14px;
+}
+.email-verification .story-main-title {
+  background: none;
+  color: #071b3a;
+}
+.email-verification .story-inner .illustration {
+  height: 430px;
+  min-height: 430px;
+  flex-shrink: 0;
+}
+.email-verification .story-inner .art {
+  height: 430px;
+  object-fit: contain;
+}
+.email-verification .story-inner .comment-card {
+  top: 28px;
+}
+.email-verification .story-inner .insight-card {
+  top: 310px;
+}
+.email-verification .brand {
+  display: flex !important;
+}
+@media (max-width: 850px) {
+  .email-verification.auth-layout {
+    grid-template-columns: 1fr;
+    padding: 8px 20px 18px;
+  }
+  .email-verification .auth-panel {
+    padding: 0;
+    gap: 8px;
+  }
+  .email-verification .story {
+    display: none;
+  }
+  .email-verification .auth-panel > header {
+    height: 64px;
+    min-height: 64px;
+    max-height: 64px;
+  }
+  .email-verification .brand strong::after {
+    width: 140px;
+    height: 39px;
+  }
+  .email-verification .back {
+    font-size: 12px;
+    justify-content: flex-start;
+  }
+  .email-verification .auth-panel > footer {
+    flex-wrap: wrap;
+    font-size: 10px;
+    gap: 4px;
+  }
+  .email-verification .auth-panel > footer > div {
+    gap: 12px;
+  }
+  .email-verification h1 {
+    font-size: 30px;
+  }
+  .email-verification .intro p {
+    font-size: 14px;
+  }
+  .email-verification .email-box {
+    margin: 20px 0;
+  }
+  .email-verification .cross-link {
+    margin-top: 20px;
+  }
+}
+
+.email-verification .intro h1.expired-title {
+  color: #dc2626;
+  font-size: 32px;
+}
+.email-verification .mail-icon.success-icon {
+  background: #edf8f2;
+  color: #218269;
+  border-color: #cce9db;
+}
+@media (max-width: 850px) {
+  .email-verification .intro h1.expired-title {
+    font-size: 28px;
+  }
+}
+
+/* Narrow screens keep readable type and scroll naturally instead of scaling the form. */
+@media (max-width: 850px) {
+  .email-verification.auth-layout {
+    height: auto;
+    min-height: 100dvh;
+  }
+  .email-verification .verify-space {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 24px;
+  }
+  .email-verification .verify-content {
+    position: static;
+    transform: none !important;
+  }
+}
+
+/* Account headers keep the approved arrow-only/brand order on every viewport. */
+#root .auth-layout .auth-panel > header,
+#root .auth-layout:has(.auth-content.signup) .auth-panel > header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+}
+#root .auth-layout .auth-panel > header > .back,
+#root .auth-layout:has(.auth-content.signup) .auth-panel > header > .back {
+  order: -1 !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 0 0 40px;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 0 !important;
+}
+#root .auth-layout .auth-panel > header > .back :is(img, svg) {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+#root .auth-layout .auth-panel > header > .brand,
+#root .auth-layout:has(.auth-content.signup) .auth-panel > header > .brand {
+  display: flex !important;
+  order: 0 !important;
+  margin-inline-start: auto;
+}
+#root .auth-layout .back-text {
+  display: none;
+}
+[dir='rtl'] .auth-layout .auth-panel > header > .back svg {
+  transform: rotate(180deg);
+}
+
+/* The rounded field wrapper owns the visible keyboard focus ring. */
+#root :is(.auth-layout, .business-onboarding) .input-wrap input:focus-visible {
+  outline: none;
+}

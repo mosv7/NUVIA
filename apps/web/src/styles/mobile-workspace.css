@@ -3148,3 +3148,15 @@
     white-space: nowrap;
   }
 }
+
+/* Nested text controls share their rounded container focus ring. */
+#root .input-wrap input:focus-visible,
+#root .assistant-preview .preview-question:focus-visible,
+#root .assistant-compose textarea:focus-visible {
+  outline: none;
+}
+#root .assistant-preview [data-name='Question input']:focus-within,
+#root .assistant-compose:focus-within {
+  border-color: #1e68ef;
+  box-shadow: 0 0 0 3px #1e68ef1f;
+}

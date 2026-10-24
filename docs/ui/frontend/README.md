@@ -5,7 +5,7 @@
 | Desktop - 1440 x 960 | [English](desktop-en.md) | [Arabic](desktop-ar.md) |
 | Phone - 390 x 844    | [English](mobile-en.md)  | [Arabic](mobile-ar.md)  |
 
-168 full-page screenshots: 42 screens/states for each device and interface language. Images are stored once under `screens/{device}/{language}/`. The manifest records routes, viewport sizes, actual image dimensions and SHA-256 values. Report content retains its supplied report language, which may differ from the interface language.
+176 full-page screenshots: 44 screens/states for each device and interface language. Images are stored once under `screens/{device}/{language}/`. The manifest records routes, viewport sizes, actual image dimensions and SHA-256 values. Report content retains its supplied report language, which may differ from the interface language.
 
 ## Validation
 

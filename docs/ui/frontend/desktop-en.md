@@ -166,6 +166,14 @@ Viewport: 1440 x 960. Full-page screenshots.
 
 ![Survey Share](screens/desktop/en/survey-share.png)
 
+## Verify Email Expired
+
+![Verify Email Expired](screens/desktop/en/verify-email-expired.jpg)
+
+## Verify Email Verified
+
+![Verify Email Verified](screens/desktop/en/verify-email-verified.jpg)
+
 ## Verify Email
 
 ![Verify Email](screens/desktop/en/verify-email.png)

@@ -43,11 +43,73 @@ function MenuIcon({ name }) {
   );
 }
 export default function HeaderMenus() {
-  const { tr, language, setLanguage, isMobile, topbarMenu, setTopbarMenu } = useProductView(),
+  const {
+      tr,
+      language,
+      setLanguage,
+      isMobile,
+      topbarMenu,
+      setTopbarMenu,
+      preview,
+      logout,
+      identity,
+      workspace,
+      action,
+    } = useProductView(),
     ref = useRef(null),
+    profileDialog = useRef(null),
+    profileTrigger = useRef(null),
     [profile, setProfile] = useState(false),
+    [signingOut, setSigningOut] = useState(false),
     [position, setPosition] = useState({});
   const close = useCallback(() => setTopbarMenu(null), [setTopbarMenu]);
+  const profileOpen = Boolean(profile);
+  useEffect(() => {
+    if (!profileOpen) return;
+    const dialog = profileDialog.current;
+    const backdrop = dialog.parentElement;
+    const background = Array.from(document.body.children)
+      .filter((element) => element !== backdrop)
+      .map((element) => [element, element.getAttribute('inert')]);
+    background.forEach(([element]) => element.setAttribute('inert', ''));
+    const buttons = () => Array.from(dialog.querySelectorAll('button:not(:disabled)'));
+    const containFocus = (event) => {
+      if (!dialog.contains(event.target)) buttons()[0]?.focus();
+    };
+    const key = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setProfile(false);
+      } else if (event.key === 'Tab') {
+        const controls = buttons();
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener('focusin', containFocus);
+    dialog.addEventListener('keydown', key);
+    return () => {
+      document.removeEventListener('focusin', containFocus);
+      dialog.removeEventListener('keydown', key);
+      background.forEach(([element, inert]) => {
+        if (inert === null) element.removeAttribute('inert');
+        else element.setAttribute('inert', inert);
+      });
+      if (profileTrigger.current?.isConnected) profileTrigger.current.focus();
+    };
+  }, [profileOpen]);
+  const openProfile = (kind) => {
+    profileTrigger.current = topbarMenu.anchor;
+    close();
+    setProfile(kind);
+  };
   useEffect(() => {
     if (!topbarMenu) return;
     const place = () => {
@@ -129,23 +191,11 @@ export default function HeaderMenus() {
                   <small>{tr('Workspace owner')}</small>
                 </div>
               </header>
-              <button
-                className="workspace-menu-item"
-                onClick={() => {
-                  close();
-                  setProfile(true);
-                }}
-              >
+              <button className="workspace-menu-item" onClick={() => openProfile(true)}>
                 <MenuIcon name="profile" />
                 {tr('View profile')}
               </button>
-              <button
-                className="workspace-menu-item"
-                onClick={() => {
-                  close();
-                  setProfile('security');
-                }}
-              >
+              <button className="workspace-menu-item" onClick={() => openProfile('security')}>
                 <MenuIcon name="settings" />
                 {tr('Account & security')}
               </button>
@@ -170,7 +220,17 @@ export default function HeaderMenus() {
               )}
               <button
                 className="workspace-menu-item workspace-signout"
-                onClick={() => navigate('login')}
+                disabled={signingOut}
+                onClick={async () => {
+                  if (preview) {
+                    navigate('login');
+                    return;
+                  }
+                  setSigningOut(true);
+                  const succeeded = await logout();
+                  setSigningOut(false);
+                  if (succeeded) close();
+                }}
               >
                 <MenuIcon name="signout" />
                 {tr('Sign out')}
@@ -182,9 +242,12 @@ export default function HeaderMenus() {
                 <strong>{tr('Your businesses')}</strong>
               </header>
               <button className="workspace-menu-item" onClick={close}>
-                <span className="workspace-avatar">B</span>
+                <span className="workspace-avatar">
+                  {preview ? 'B' : Array.from(workspace?.businessName || '')[0]}
+                </span>
                 <span>
-                  Bloom &amp; Co.<small>{tr('Current business')}</small>
+                  {preview ? 'Bloom & Co.' : workspace?.businessName}
+                  <small>{tr('Current business')}</small>
                 </span>
                 <span className="workspace-current">✓</span>
               </button>
@@ -197,7 +260,13 @@ export default function HeaderMenus() {
               </button>
               <button
                 className="workspace-menu-item"
-                onClick={() => navigate('business-information')}
+                onClick={() => {
+                  if (preview) navigate('business-information');
+                  else {
+                    close();
+                    action('Add business');
+                  }
+                }}
               >
                 <MenuIcon name="plus" />
                 {tr('Add business')}
@@ -209,22 +278,26 @@ export default function HeaderMenus() {
       {profile && (
         <div className="workspace-modal-backdrop" onClick={() => setProfile(false)}>
           <section
+            ref={profileDialog}
             className="workspace-profile-dialog"
             role="dialog"
             aria-modal="true"
             aria-label={tr(profile === 'security' ? 'Account & security' : 'Profile')}
             onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') setProfile(false);
-            }}
           >
             <span className="workspace-avatar workspace-account-avatar">
               <img src={asset('dashboard/overview/account-avatar.svg')} alt="" />
             </span>
             <h2>{tr(profile === 'security' ? 'Account & security' : 'Sara Ahmed')}</h2>
             {profile === 'security' && <strong>{tr('Sara Ahmed')}</strong>}
-            <p>{tr('Workspace owner')} · Bloom &amp; Co.</p>
-            <small>{tr('Sample workspace profile')}</small>
+            <p>
+              {tr('Workspace owner')} · {preview ? 'Bloom & Co.' : workspace?.businessName}
+            </p>
+            {preview ? (
+              <small>{tr('Sample workspace profile')}</small>
+            ) : (
+              <small>{identity?.email}</small>
+            )}
             {profile === 'security' && (
               <div className="workspace-security-actions">
                 <button onClick={() => setProfile(true)}>{tr('View profile')}</button>

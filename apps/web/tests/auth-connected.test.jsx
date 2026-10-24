@@ -32,7 +32,9 @@ it('real signup creates an account and moves to verification while clearing cred
   });
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.click(screen.getByRole('button', { name: 'Create account', exact: true }));
-  expect(await screen.findByRole('heading', { name: 'Verify your email' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: 'Check your inbox' })).toBeVisible();
+  expect(screen.getByText('owner@example.test', { exact: true })).toBeVisible();
+  expect(document.querySelector('.email-verification')).toBeInTheDocument();
   expect(register).toHaveBeenCalledWith(
     expect.objectContaining({ email: 'owner@example.test', locale: 'en' }),
     expect.any(AbortSignal),
@@ -81,8 +83,25 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect((await screen.findAllByText('Saved Cafe', { exact: true }))[0]).toBeVisible();
   expect(screen.queryByText('Bloom & Co.', { exact: true })).not.toBeInTheDocument();
   expect(screen.queryByText('12', { exact: true })).not.toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: 'Open Ask NUVIA' })).not.toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Log out' })).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Log out', exact: true })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Open Ask NUVIA' }));
+  expect(screen.getByRole('dialog', { name: 'Ask NUVIA' })).toBeVisible();
+  expect(screen.getByText('Cairo’s wait times need a closer look')).toBeVisible();
+  expect(screen.getByText('Data and replies in this preview are illustrative.')).toBeVisible();
+  expect(location.hash).toBe('#/dashboard');
+  fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
+  expect(screen.getByText('Cairo’s wait times need a closer look')).not.toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Notifications', exact: true }));
+  expect(
+    screen.getByText('No notifications yet. Updates about your workspace will appear here.'),
+  ).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
+  expect(screen.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+  expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
+  const logout = vi.spyOn(authApi, 'logout').mockResolvedValue(undefined);
+  fireEvent.click(screen.getByRole('button', { name: 'Sign out', exact: true }));
+  expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();
+  expect(logout).toHaveBeenCalledTimes(1);
 });
 it('consumes a verification link opened while the verification page is already mounted', async () => {
   const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ status: 'verified' });
@@ -101,7 +120,10 @@ it('preview verification never bootstraps sessions or sends real verification re
   history.replaceState(null, '', '/preview/#/verify-email');
   render(<App />);
   await act(async () => {});
-  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'owner@example.test' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Change', exact: true }));
+  fireEvent.change(screen.getByLabelText('Email address'), {
+    target: { value: 'owner@example.test' },
+  });
   fireEvent.click(screen.getByRole('button', { name: 'Resend verification link' }));
   await act(async () => {});
   await act(async () => {
@@ -111,4 +133,86 @@ it('preview verification never bootstraps sessions or sends real verification re
   expect(verify).not.toHaveBeenCalled();
   expect(resend).not.toHaveBeenCalled();
   expect(authApi.session).not.toHaveBeenCalled();
+});
+
+it('the approved verification screen resends to the edited email using the real API', async () => {
+  const resend = vi.spyOn(authApi, 'resend').mockResolvedValue({ status: 'accepted' });
+  open('verify-email');
+  fireEvent.click(await screen.findByRole('button', { name: 'Change', exact: true }));
+  fireEvent.change(screen.getByLabelText('Email address'), {
+    target: { value: 'resend@example.test' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Save email', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'Resend verification link', exact: true }));
+  await waitFor(() => expect(resend).toHaveBeenCalledWith('resend@example.test'));
+  expect(
+    await screen.findByText(
+      'Request received. Check your email if your account needs verification.',
+    ),
+  ).toBeVisible();
+});
+it.each([
+  ['verify-email-expired', 'This link has expired'],
+  ['verify-email-verified', 'Email verified'],
+])('shows the original %s design only in explicit preview mode', async (route, title) => {
+  const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({});
+  history.replaceState(null, '', '/preview/#/' + route);
+  render(<App />);
+  expect(await screen.findByRole('heading', { name: title, exact: true })).toBeVisible();
+  expect(verify).not.toHaveBeenCalled();
+  expect(authApi.session).not.toHaveBeenCalled();
+});
+
+it.each(['NETWORK_ERROR', 'CSRF_REJECTED', 'SERVICE_UNAVAILABLE'])(
+  'does not call a verification link expired when the request fails with %s',
+  async (code) => {
+    const verify = vi.spyOn(authApi, 'verify').mockRejectedValue({ code });
+    open('verify-email?token=' + 'a'.repeat(64));
+    expect(
+      await screen.findByText(
+        'Could not complete email verification. Check your connection and reopen the latest verification link.',
+      ),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('heading', { name: 'This link has expired' }),
+    ).not.toBeInTheDocument();
+    expect(verify).toHaveBeenCalledTimes(1);
+  },
+);
+it('shows an expired verification state only for an invalid token response', async () => {
+  vi.spyOn(authApi, 'verify').mockRejectedValue({ code: 'INVALID_TOKEN' });
+  open('verify-email?token=' + 'a'.repeat(64));
+  expect(await screen.findByRole('heading', { name: 'This link has expired' })).toBeVisible();
+});
+
+it('opens the connected assistant workspace without sample conversations or metrics', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue({
+    user: { id: 'a', name: 'Saved Owner', email: 'owner@example.test', emailVerified: true },
+    workspace: {
+      id: 'w',
+      businessName: 'Saved Cafe',
+      industry: 'Restaurant',
+      primaryBranchId: 'b',
+      onboardingStep: 'complete',
+      branches: [{ id: 'b', name: 'Saved Branch' }],
+    },
+  });
+  open('dashboard');
+  fireEvent.click(await screen.findByRole('button', { name: 'NUVIA Assistant', exact: true }));
+  expect(await screen.findByText('AI Assistant', { exact: true })).toBeVisible();
+  expect(
+    screen.getByText(
+      'AI Assistant is not available yet. Your conversations will appear here when the service is available.',
+    ),
+  ).toBeVisible();
+  expect(screen.getByText('0 reviews')).toBeVisible();
+  expect(screen.getByText('Saved Branch', { exact: true })).toBeVisible();
+  expect(screen.queryByText('1,250 reviews')).not.toBeInTheDocument();
+  expect(screen.queryByText('Sample feedback scope')).not.toBeInTheDocument();
+  expect(screen.getByText('Sara Ahmed · Just now')).not.toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'View profile', exact: true }));
+  expect(screen.getByRole('dialog', { name: 'Profile' })).toBeVisible();
+  expect(screen.getByText('owner@example.test')).toBeVisible();
+  expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
 });

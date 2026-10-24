@@ -26,6 +26,7 @@ export default function AppRouter() {
   const submission = useRef(null),
     resetToken = useRef(null);
   const requestGeneration = useRef(0);
+  const [verificationEmail, setVerificationEmail] = useState('');
   const [business, setBusiness] = useState({
     businessName: '',
     industry: '',
@@ -145,7 +146,10 @@ export default function AppRouter() {
             },
             controller.signal,
           );
-          if (isCurrentRequest()) location.hash = '/verify-email';
+          if (isCurrentRequest()) {
+            setVerificationEmail(values.email);
+            location.hash = '/verify-email';
+          }
         } else if (isLogin) {
           const session = await auth.login(
             { email: values.email, password: values.password, remember: values.remember },
@@ -176,8 +180,10 @@ export default function AppRouter() {
     } catch (error) {
       if (!isCurrentRequest() || error.name === 'AbortError') return;
       if (error.code === 'EMAIL_USED') setErrors({ email: 'emailUsed' });
-      else if (error.code === 'EMAIL_VERIFICATION_REQUIRED') location.hash = '/verify-email';
-      else
+      else if (error.code === 'EMAIL_VERIFICATION_REQUIRED') {
+        setVerificationEmail(values.email);
+        location.hash = '/verify-email';
+      } else
         setNotice(
           {
             INVALID_CREDENTIALS: 'loginFailed',
@@ -229,13 +235,7 @@ export default function AppRouter() {
   const designOnly =
     page.startsWith('survey-') ||
     page.startsWith('analytics-') ||
-    [
-      'reports',
-      'report-details',
-      'nuvia-assistant',
-      'feedbacks-loading',
-      'feedbacks-no-results',
-    ].includes(page);
+    ['reports', 'report-details', 'feedbacks-loading', 'feedbacks-no-results'].includes(page);
   if (designOnly) {
     if (!preview)
       return (
@@ -288,7 +288,23 @@ export default function AppRouter() {
       />
     );
   }
-  if (page === 'verify-email') return <VerificationPage language={language} preview={preview} />;
+  if (page === 'verify-email' || (preview && page.startsWith('verify-email-')))
+    return (
+      <VerificationPage
+        key={page}
+        language={language}
+        setLanguage={setLanguage}
+        initialEmail={verificationEmail}
+        previewStatus={
+          page.endsWith('-expired')
+            ? 'invalid'
+            : page.endsWith('-verified')
+              ? 'verified'
+              : 'pending'
+        }
+        preview={preview}
+      />
+    );
   if (
     page === 'reset' &&
     !preview &&
@@ -312,6 +328,17 @@ export default function AppRouter() {
         workspace={auth.workspace}
         onLogout={auth.logout}
         preview={preview}
+      />
+    );
+  if (page === 'nuvia-assistant')
+    return (
+      <ExtraPreviewPage
+        page={page}
+        language={language}
+        setLanguage={setLanguage}
+        preview={preview}
+        workspace={auth.workspace}
+        onLogout={auth.logout}
       />
     );
   if (page === 'dashboard' || page === 'dashboard-empty')

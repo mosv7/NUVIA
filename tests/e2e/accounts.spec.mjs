@@ -53,7 +53,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByLabel('Confirm password').fill('Synthetic123');
     await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create account', exact: true }).click();
-    await page.getByRole('heading', { name: 'Verify your email' }).waitFor();
+    await page.getByRole('heading', { name: 'Check your inbox' }).waitFor();
     await page.goto(await mailLink('verify-email'));
     await page.getByText('Email verified. You can log in now.').waitFor();
     await page.screenshot({ path: join(output, 'verification-en-desktop.png'), fullPage: true });
@@ -102,15 +102,45 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     assert.equal(await page.locator('.feedback-table tbody tr').count(), 0);
     for (const width of [1440, 393]) {
       await page.setViewportSize({ width, height: width === 393 ? 800 : 900 });
-      const logout = await page.locator('.workspace-account-actions').boundingBox();
-      const empty = await page.locator('.feedback-empty').boundingBox();
-      assert.ok(logout.y >= empty.y + empty.height, 'Logout must not cover the empty state');
+      assert.equal(await page.locator('.workspace-account-actions').count(), 0);
+      await page.getByRole('button', { name: 'Profile', exact: true }).click();
+      const logout = await page
+        .getByRole('button', { name: 'Sign out', exact: true })
+        .boundingBox();
+      assert.ok(logout, 'Account menu must expose sign out');
+      assert.ok(
+        logout.x >= 0 && logout.x + logout.width <= width,
+        'Sign out must fit the viewport',
+      );
+      assert.ok(
+        logout.y >= 0 && logout.y + logout.height <= (width === 393 ? 800 : 900),
+        'Sign out must remain reachable',
+      );
+      await page.getByRole('button', { name: 'View profile', exact: true }).click();
+      const done = page.getByRole('button', { name: 'Done', exact: true });
+      await done.focus();
+      for (const key of ['Tab', 'Shift+Tab']) {
+        await page.keyboard.press(key);
+        assert.ok(await done.evaluate((element) => element === document.activeElement));
+      }
+      await page.keyboard.press('Escape');
+      assert.ok(
+        await page
+          .getByRole('button', { name: 'Profile', exact: true })
+          .evaluate((element) => element === document.activeElement),
+        'Closing the profile must return focus to the account trigger',
+      );
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     }
+    await page.getByRole('button', { name: 'Open Ask NUVIA' }).click();
+    await page.getByRole('link', { name: 'View supporting feedback' }).click();
+    await waitFor(() => page.url() === `${origin}/preview/#/feedbacks`);
+    await page.getByText('Design preview · معاينة التصميم').waitFor();
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/dashboard`);
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
-    await page.getByRole('button', { name: 'Log out', exact: true }).click();
+    await page.getByRole('button', { name: 'Profile', exact: true }).click();
+    await page.getByRole('button', { name: 'Sign out', exact: true }).click();
     await page.getByRole('heading', { name: 'Welcome back' }).waitFor();
     await login('Synthetic123');
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
