@@ -110,7 +110,8 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/dashboard`);
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
-    await page.getByRole('button', { name: 'Log out', exact: true }).click();
+    await page.getByRole('button', { name: 'Profile', exact: true }).click();
+    await page.getByRole('button', { name: 'Sign out', exact: true }).click();
     await page.getByRole('heading', { name: 'Welcome back' }).waitFor();
     await login('Synthetic123');
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
