@@ -1,6 +1,43 @@
 export const feedbackRows = [
   {
+    id: 1032,
+    survey: 'Customer experience survey',
+    text: 'The coffee was good. We waited 25 minutes for our order. I’d visit again if service is quicker.',
+    sentiment: 'Mixed',
+    date: '2026-10-07',
+    time: '—',
+    language: 'English',
+    branch: 'Cairo',
+    aspects: ['Coffee', 'Service', 'Wait time'],
+    segment: 'Not specified',
+  },
+  {
+    id: 1027,
+    survey: 'Customer experience survey',
+    text: 'The team remembered my order and made me feel welcome.',
+    sentiment: 'Positive',
+    date: '2026-10-07',
+    time: '—',
+    language: 'English',
+    branch: 'El Zamalek',
+    aspects: ['Service'],
+    segment: 'Not specified',
+  },
+  {
+    id: 1019,
+    survey: 'Customer experience survey',
+    text: 'The combo cost more than the price on the menu.',
+    sentiment: 'Negative',
+    date: '2026-10-06',
+    time: '—',
+    language: 'English',
+    branch: 'Alex',
+    aspects: ['Value'],
+    segment: 'Not specified',
+  },
+  {
     id: 1248,
+    survey: 'Coffee & service check-in',
     text: 'The flat white was lovely and the team was welcoming, but I waited nearly 25 minutes for my order. The café felt calm and comfortable, so I stayed to work for a while. I’d happily come back if the service was a little quicker during the morning rush.',
     preview: 'The flat white was lovely and the team was welcoming, but…',
     sentiment: 'Mixed',
@@ -13,6 +50,7 @@ export const feedbackRows = [
   },
   {
     id: 1247,
+    survey: 'Summer customer pulse',
     text: 'Best croissant in the neighborhood. I’ll definitely be back!',
     sentiment: 'Positive',
     date: '2026-10-16',
@@ -24,6 +62,7 @@ export const feedbackRows = [
   },
   {
     id: 1246,
+    survey: 'Coffee & service check-in',
     text: 'انتظرت كثيرًا وكان الطلب باردًا عند وصوله.',
     sentiment: 'Negative',
     date: '2026-10-15',
@@ -35,6 +74,7 @@ export const feedbackRows = [
   },
   {
     id: 1245,
+    survey: 'Summer customer pulse',
     text: 'Stopped by for a takeaway coffee on my way to work.',
     sentiment: 'Neutral',
     date: '2026-10-15',
@@ -46,6 +86,7 @@ export const feedbackRows = [
   },
   {
     id: 1244,
+    survey: 'Summer customer pulse',
     text: 'مكان هادئ والقهوة ممتازة، شكرًا للفريق اللطيف.',
     sentiment: 'Positive',
     date: '2026-10-14',
@@ -57,6 +98,7 @@ export const feedbackRows = [
   },
   {
     id: 1243,
+    survey: 'Coffee & service check-in',
     text: 'The music was too loud to work and the Wi-Fi kept dropping.',
     sentiment: 'Negative',
     date: '2026-10-14',
@@ -68,6 +110,7 @@ export const feedbackRows = [
   },
   {
     id: 1242,
+    survey: 'Quick satisfaction check',
     text: 'Great breakfast and friendly staff. A few more vegan options…',
     sentiment: 'Mixed',
     date: '2026-10-13',
@@ -79,6 +122,7 @@ export const feedbackRows = [
   },
   {
     id: 1241,
+    survey: 'Quick satisfaction check',
     text: 'Friendly baristas and a perfect cappuccino, as always.',
     sentiment: 'Positive',
     date: '2026-10-13',

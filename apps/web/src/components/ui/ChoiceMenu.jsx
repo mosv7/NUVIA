@@ -1,3 +1,5 @@
+import LanguageIcon from './LanguageIcon.jsx';
+import ControlIcon from './ControlIcon.jsx';
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './choice-menu.css';
@@ -28,6 +30,13 @@ export default function ChoiceMenu({
   label,
   compact = false,
   overlay = false,
+  disabled = false,
+  icon = true,
+  appearance,
+  control,
+  density = 'normal',
+  placement = 'auto',
+  iconOnly = false,
 }) {
   const [open, setOpen] = useState(false),
     [position, setPosition] = useState({}),
@@ -49,17 +58,26 @@ export default function ChoiceMenu({
     return () => parent.removeEventListener('click', activate);
   }, [overlay]);
   useEffect(() => {
-    if (!open) return;
+    if (!open || disabled) return;
     const place = () => {
       const box = (overlay ? ref.current.parentElement : ref.current).getBoundingClientRect(),
-        width = Math.min(252, innerWidth - 24),
-        height = options.length * 52 + 52;
+        width = Math.min(Math.max(density === 'compact' ? 208 : 252, box.width), innerWidth - 24),
+        below = innerHeight - box.bottom - 20,
+        above = box.top - 20,
+        up =
+          placement !== 'bottom' &&
+          below <
+            Math.min(
+              options.length * (density === 'compact' ? 36 : 52) +
+                (density === 'compact' ? 40 : 52),
+              320,
+            ) &&
+          above > below;
       setPosition({
         width,
-        left: Math.max(12, Math.min(box.right - width, innerWidth - width - 12)),
-        ...(box.bottom + height > innerHeight && box.top > height
-          ? { bottom: innerHeight - box.top + 8 }
-          : { top: box.bottom + 8 }),
+        left: Math.max(12, Math.min(box.left, innerWidth - width - 12)),
+        maxHeight: Math.max(80, up ? above : below),
+        ...(up ? { bottom: innerHeight - box.top + 8 } : { top: box.bottom + 8 }),
       });
     };
     place();
@@ -67,6 +85,9 @@ export default function ChoiceMenu({
       if (!ref.current?.contains(e.target) && !popup.current?.contains(e.target)) setOpen(false);
     };
     const key = (e) => {
+      if (e.key === 'Tab') {
+        setOpen(false);
+      }
       if (e.key === 'Escape') {
         setOpen(false);
         button.current?.focus();
@@ -82,7 +103,7 @@ export default function ChoiceMenu({
       removeEventListener('resize', place);
       removeEventListener('scroll', place, true);
     };
-  }, [open, overlay, options.length]);
+  }, [open, overlay, options.length, disabled, density, placement]);
   const move = (e, index) => {
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
     e.preventDefault();
@@ -97,11 +118,20 @@ export default function ChoiceMenu({
     items[next].focus();
   };
   return (
-    <span className={'choice-menu' + (overlay ? ' choice-menu-overlay' : '')} ref={ref}>
+    <span
+      className={
+        'choice-menu' +
+        (overlay ? ' choice-menu-overlay' : '') +
+        (appearance === 'filter' ? ' choice-menu-filter' : '') +
+        (control === 'branch' ? ' choice-branch-menu' : '')
+      }
+      ref={ref}
+    >
       <button
         type="button"
         ref={button}
-        className="choice-trigger"
+        className={'choice-trigger' + (iconOnly ? ' choice-trigger-icon-only' : '')}
+        disabled={disabled}
         aria-label={label}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -121,12 +151,23 @@ export default function ChoiceMenu({
           }
         }}
       >
-        <span>{compact ? selected.code || selected.label : selected.label}</span>
+        {control === 'branch' && !overlay && <ControlIcon name="branch" />}
+        {selected.icon && (
+          <span className="choice-selected-icon" aria-hidden="true">
+            {selected.icon}
+          </span>
+        )}
+        <span hidden={iconOnly}>
+          {compact ? selected.shortLabel || selected.code || selected.label : selected.label}
+        </span>
+        {iconOnly && <LanguageIcon />}
+        {control === 'branch' && !overlay && <i className="control-chevron" aria-hidden="true" />}
       </button>
       {open &&
+        !disabled &&
         createPortal(
           <div
-            className="choice-popup"
+            className={'choice-popup' + (density === 'compact' ? ' choice-popup-compact' : '')}
             ref={popup}
             style={position}
             dir={document.documentElement.dir || 'ltr'}
@@ -148,9 +189,17 @@ export default function ChoiceMenu({
                     else button.current?.blur();
                   }}
                 >
-                  <span className="choice-option-code">{option.code || <BranchIcon />}</span>
+                  {(option.code || option.icon || icon) && (
+                    <span className="choice-option-code">
+                      {option.code || option.icon || <BranchIcon />}
+                    </span>
+                  )}
                   <span className="choice-option-copy">
-                    <span lang={option.value === 'ar' ? 'ar' : 'en'}>{option.label}</span>
+                    <span
+                      lang={option.value === 'ar' ? 'ar' : option.value === 'en' ? 'en' : undefined}
+                    >
+                      {option.label}
+                    </span>
                     {option.description && <small>{option.description}</small>}
                   </span>
                   {option.value === value && (
@@ -180,16 +229,32 @@ export default function ChoiceMenu({
     </span>
   );
 }
-export function LanguageMenu({ value, onChange }) {
+export function LanguageMenu({ value, onChange, iconOnly = false }) {
   return (
     <ChoiceMenu
       value={value}
       onChange={onChange}
       compact
+      iconOnly={iconOnly}
       label="Language / اللغة"
       options={[
         { value: 'en', label: 'English', code: 'EN' },
         { value: 'ar', label: 'العربية', code: 'AR' },
+      ]}
+    />
+  );
+}
+
+export function BranchMenu({ tr = (text) => text, ...props }) {
+  return (
+    <ChoiceMenu
+      {...props}
+      control="branch"
+      label={tr('Branch')}
+      icon
+      options={[
+        { value: 'all', label: tr('All branches') },
+        ...['Cairo', 'El Zamalek', 'Alex'].map((value) => ({ value, label: tr(value) })),
       ]}
     />
   );

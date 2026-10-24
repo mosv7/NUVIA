@@ -10,6 +10,8 @@ import '@fontsource/dm-sans/400.css';
 import '@fontsource/dm-sans/500.css';
 import '@fontsource/dm-sans/700.css';
 import '@fontsource/noto-sans-arabic/400.css';
+import '@fontsource/noto-sans-arabic/500.css';
+import '@fontsource/noto-sans-arabic/600.css';
 import '@fontsource/noto-sans-arabic/700.css';
 import App from './app/App.jsx';
 import './styles/app.css';
@@ -19,3 +21,9 @@ createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>,
 );
+
+import './styles/review.css';
+
+import './styles/mobile-workspace.css';
+
+import './styles/tablet-workspace.css';

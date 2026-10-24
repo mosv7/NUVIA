@@ -1,34 +1,26 @@
-# Responsive and Arabic UI review
+# Frontend review notes
 
-## Current product refresh
+The delivery preserves the monorepo's connected authentication provider, access policy, HTTP client, workspace ownership and honest empty account states. Illustrative analytics, reports, assistant replies and survey data remain behind the explicit preview boundary.
 
-- Added Overview, feedback list, empty collection and response details to the routed prototype.
-- Applied the approved geometric logo with the original icon, blue V and a dark-background variant.
-- Persistent headers share 76 px desktop and 72 px mobile heights; wide-screen dashboard scaling is compensated.
-- Improved tablet action wrapping, phone evidence links, feedback cards up to 1100 px and short-screen sidebar reachability.
-- Regenerated all 55 browser screenshots across 13 routes, English/Arabic and desktop/phone. Every checksum and PNG dimension matches the capture manifest.
-- Format, lint, eight flow tests and production build pass. Sample data remains local; no backend or AI integration is claimed.
+## Changes and review
 
-The sections below record the earlier nine-route review; the current matrix supersedes its scope and screenshot counts.
-
-## Corrections
-
-- The shared `.back` display rule exposed the mobile-only back arrow on desktop business screens. That extra flex item pushed the logo into the middle of the header. The scoped default rule now hides the arrow on desktop while preserving the mobile override. Logo alignment is checked against the actual header padding in English and Arabic.
-- Password-recovery links use the appropriate return-arrow direction in Arabic.
-- The Arabic password hint explicitly describes the existing Latin-letter validation requirement.
-- Corrected the Arabic spelling of “آراءهم” in the onboarding guide.
-- Arabic onboarding labels and progress markers explicitly use Arabic numerals, independently of the browser's default numbering system.
+- Compact mobile controls, consistent contextual back controls and retained source-page filters.
+- Branch multi-selection applies on Done and combines with survey search in English and Arabic.
+- Responsive feedback cards at intermediate widths retain every field without forcing a wide table.
+- Survey AI cards, headings, sharing controls and action rows adapt to the available workspace width.
+- Report branch context stacks when the desktop sidebar leaves insufficient space.
+- Assistant scope controls sit at the start of the conversation frame on phones; small metadata keeps its muted background.
+- Unreachable duplicate source modules were removed after checking the bundle import graph; unused asset bindings and copied report-filter effects were removed.
 
 ## Verification
 
-- Reviewed all nine delivered routes at widths 320, 360, 393, 430, 700, 850, 851, 1024 and 1440, in both languages: 162 route/width/language combinations. No horizontal overflow, clipped audited headings/labels/buttons, broken images or out-of-bounds text inputs were found. Small radio controls were excluded from the text-input width check.
-- Verified business header alignment across all four business routes at widths 393, 851, 1024 and 1440 in both languages: 32 combinations.
-- Login and signup fit at 360 × 800, 393 × 800 and 1440 × 800 in both languages. Natural scrolling remains available for short windows, validation messages, keyboard display and larger text.
-- Eight flow tests pass, including stale login-response isolation, Arabic return direction and Arabic onboarding numerals.
-- Regenerated all 39 screenshots. `capture-manifest.json` records each image's real route, language, viewport, dimensions and checksum. Every checksum and PNG dimension was checked; no exact duplicate PNGs were found. Existing `active-*` files remain intentional viewport details of the full landing page.
+- Web build completed; Vite retains a large-chunk advisory.
+- Web ESLint completed with zero errors and zero warnings.
+- Connected authentication/workspace and preview tests passed locally.
+- 672 viewport-bound checks covered 42 screens/states, both languages and eight widths.
+- 42 fresh English desktop screenshots are published. Phone, Arabic and tablet images are excluded at the user's request.
+- Date selection, sort direction, branch selection/Done and contextual return controls were checked in the preview.
 
-## Design comparison and scope
+## Limits
 
-The Figma `final ui` page was inspected, including the business-information, login, signup and English mobile-landing frames. The desktop business logo now occupies the reference header edge. Existing user-approved changes to mobile headers, language/help placement, compact typography, button sizing and card motion were retained.
-
-There is no supplied Arabic mobile design. Arabic phone layouts were reviewed as RTL adaptations of the existing screens, rather than claimed as pixel-identical to a nonexistent Arabic phone frame. This review covers the implemented landing, account and onboarding screens; the additional dashboard/survey designs in Figma are outside the current app routes. Actual iPhone Safari keyboard/bounce behavior still needs device confirmation.
+These are browser-emulated viewport checks, not physical iPad/Safari acceptance. Database, mail delivery and real backend integration must be tested with the project's private environment after integration. Generated preview reports and survey actions do not establish implemented backend services.

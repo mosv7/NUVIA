@@ -141,3 +141,42 @@
 .choice-option[aria-selected='true'] .choice-branch-icon {
   color: #1e68ef;
 }
+
+.choice-menu-filter {
+  flex: 1;
+  min-width: 0;
+}
+.choice-popup [role='listbox'] {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.choice-popup {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cad8ed transparent;
+}
+.choice-trigger:disabled {
+  cursor: default;
+}
+
+.choice-popup.choice-popup-compact {
+  padding: 4px;
+  border-radius: 10px;
+}
+.choice-popup-compact .choice-popup-title {
+  padding: 6px 8px;
+  font-size: 10px;
+  margin-bottom: 3px;
+}
+.choice-popup.choice-popup-compact .choice-option {
+  min-height: 34px;
+  padding: 6px 9px;
+  font-size: 12px;
+  gap: 8px;
+  border-radius: 6px;
+}
+.choice-popup-compact .choice-check {
+  width: 14px;
+  height: 14px;
+}

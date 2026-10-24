@@ -5,9 +5,16 @@ export default function App() {
   const preview =
     location.pathname.startsWith('/preview/') ||
     (location.protocol === 'file:' && window.NUVIA_PREVIEW === true);
+  const galleryCapture =
+    preview && new URLSearchParams(location.search).get('capture') === 'gallery';
   return (
     <AuthProvider preview={preview}>
-      {preview && <aside className="preview-notice">Design preview · معاينة التصميم</aside>}
+      {preview && !galleryCapture && (
+        <aside className="preview-notice">Design preview · معاينة التصميم</aside>
+      )}
+      {galleryCapture && (
+        <style>{`.product-page { position: relative; } #root .product-page > .nuvia-launcher { position: absolute !important; bottom: 20px !important; right: 20px !important; left: auto !important; } #root .product-page[dir="rtl"] > .nuvia-launcher { right: auto !important; left: 20px !important; }`}</style>
+      )}
       <AppRouter />
     </AuthProvider>
   );

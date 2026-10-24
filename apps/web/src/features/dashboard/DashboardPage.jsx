@@ -1,3 +1,4 @@
+import { useRouteState } from '../../components/layout/navigation.js';
 import { useWorkspaceScale } from '../../hooks/useWorkspaceScale.js';
 import React, { useEffect, useState } from 'react';
 import { asset } from '../../lib/assets.js';
@@ -22,7 +23,7 @@ export default function DashboardPage({
   const [initialFilters] = useState(() =>
     preview ? { ...defaultOverviewFilters } : { branch: 'all', ...overviewPreset('30') },
   );
-  const [filters, setFilters] = useState(() => ({ ...initialFilters }));
+  const [filters, setFilters] = useRouteState('overview-filters', () => ({ ...initialFilters }));
   const [dateOpen, setDateOpen] = useState(false);
   const filtered =
     filters.branch !== 'all' ||

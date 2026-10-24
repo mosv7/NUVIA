@@ -1,4 +1,9 @@
+import HeadingBack from '../../components/layout/HeadingBack.jsx';
+import { useRouteState } from '../../components/layout/navigation.js';
+import UiArrow from '../../components/ui/UiArrow.jsx';
+import ChoiceMenu, { BranchMenu } from '../../components/ui/ChoiceMenu.jsx';
 import React, { useEffect, useMemo, useState } from 'react';
+import ControlIcon from '../../components/ui/ControlIcon.jsx';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { feedbackRows, firstAnalysis } from './feedback-data.js';
@@ -11,25 +16,10 @@ function Icon({ name, folder = 'feedbacks', className = '' }) {
   return <img className={'feedback-icon ' + className} src={image(name, folder)} alt="" />;
 }
 function Arrow({ direction = 'forward' }) {
-  return (
-    <svg
-      className={'feedback-arrow ' + direction}
-      width="12"
-      height="12"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
-        stroke="currentColor"
-        strokeWidth="2.1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  const { language } = useProductView();
+  return <UiArrow className="feedback-arrow" direction={direction} rtl={language === 'ar'} />;
 }
+
 function Badge({ value }) {
   const { tr } = useProductView();
   return (
@@ -53,27 +43,35 @@ const emptyFilters = {
 function Filter({ name, label, options, value, onChange, disabled, calendar }) {
   const { tr } = useProductView();
   return (
-    <label className={'feedback-filter ' + (calendar ? 'date-filter' : '')}>
+    <div className={'feedback-filter ' + (calendar ? 'date-filter' : '')}>
       <span>{tr(label)}</span>
       <span className="feedback-select-wrap">
-        {calendar && <Icon name="calendarDays" />}
-        <select
-          aria-label={tr(label)}
-          value={value}
-          onChange={(e) => onChange(name, e.target.value)}
-          disabled={disabled}
-        >
-          {options.map(([v, label]) => (
-            <option key={v} value={v}>
-              {tr(label)}
-            </option>
-          ))}
-        </select>
+        {calendar && <ControlIcon name="date" />}
+        {name === 'branch' ? (
+          <BranchMenu
+            tr={tr}
+            appearance="filter"
+            value={value}
+            onChange={(value) => onChange(name, value)}
+            disabled={disabled}
+          />
+        ) : (
+          <ChoiceMenu
+            appearance="filter"
+            icon={false}
+            label={tr(label)}
+            value={value}
+            onChange={(value) => onChange(name, value)}
+            disabled={disabled}
+            options={options.map(([value, label]) => ({ value, label: tr(label) }))}
+          />
+        )}
         <Icon name="chevronDown" />
       </span>
-    </label>
+    </div>
   );
 }
+
 function NoResponses({ empty, onClear }) {
   const { tr, preview, action, language } = useProductView();
   const [shared, setShared] = useState(false);
@@ -145,14 +143,31 @@ function NoResponses({ empty, onClear }) {
     </div>
   );
 }
-export function FeedbackList({ empty = false }) {
+export function FeedbackList({ empty = false, loading = false, noResults = false }) {
   const ui = useProductView(),
     { tr, language } = ui;
-  const [filters, setFilters] = useState(emptyFilters),
-    [selected, setSelected] = useState(() => new Set(empty ? [] : [1248])),
-    [descending, setDescending] = useState(true),
-    [page, setPage] = useState(0);
-  const data = useMemo(() => (empty ? [] : feedbackRows), [empty]);
+  const [filters, setFilters] = useRouteState('feedback-filters', () =>
+      noResults
+        ? { ...emptyFilters, sentiment: 'Negative', language: 'Arabic', branch: 'Cairo' }
+        : emptyFilters,
+    ),
+    [selected, setSelected] = useState(() => new Set(empty || loading || noResults ? [] : [1248])),
+    [descending, setDescending] = useRouteState('feedback-order', true),
+    [page, setPage] = useState(0),
+    [filtersOpen, setFiltersOpen] = useState(false);
+  const survey = new URLSearchParams(location.hash.split('?')[1]).get('survey');
+  const aspectScope = new URLSearchParams(location.hash.split('?')[1]).get('aspect');
+  const data = useMemo(
+    () =>
+      empty || loading
+        ? []
+        : feedbackRows.filter(
+            (row) =>
+              (!survey || row.survey === survey) &&
+              (!aspectScope || row.aspects.includes(aspectScope)),
+          ),
+    [empty, loading, survey, aspectScope],
+  );
   const filtered = useMemo(
     () =>
       data
@@ -167,12 +182,12 @@ export function FeedbackList({ empty = false }) {
             (filters.language === 'all' || row.language === filters.language) &&
             (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
             (filters.branch === 'all' || row.branch === filters.branch) &&
-            (filters.segment === 'all' || row.segment === filters.segment) &&
+            ((filters.segment ?? 'all') === 'all' || row.segment === filters.segment) &&
             (filters.date !== '1' || row.date === '2026-10-16')
           );
         })
         .sort((a, b) => (descending ? b.id - a.id : a.id - b.id)),
-    [data, ui.query, filters, descending, tr],
+    [ui.query, filters, descending, data, tr],
   );
   const pageSize = 8,
     visible = filtered.slice(page * pageSize, (page + 1) * pageSize),
@@ -251,42 +266,59 @@ export function FeedbackList({ empty = false }) {
     <section className="feedback-screen" aria-labelledby="feedback-title">
       <div className="feedback-heading">
         <div>
-          <h1 id="feedback-title">{tr('Feedbacks')}</h1>
-          <p>{tr('Listen to your customers. Understand every experience.')}</p>
+          <h1 id="feedback-title" className="workspace-heading">
+            <HeadingBack />
+            <span>{tr('Feedbacks')}</span>
+          </h1>
+          <p>
+            {survey
+              ? tr(survey)
+              : aspectScope
+                ? tr(aspectScope)
+                : tr('Listen to your customers. Understand every experience.')}
+          </p>
         </div>
         <button
-          className="feedback-btn feedback-export"
-          disabled={!filtered.length}
+          className="feedback-btn feedback-export ui-control ui-export"
+          disabled={loading || !filtered.length}
           onClick={exportRows}
         >
-          <Icon name="download" />
+          <ControlIcon name="export" />
           {tr('Export')}
         </button>
       </div>
-      <section className="feedback-filters" aria-label={tr('Filters')}>
+      <section className="feedback-filters" data-open={filtersOpen} aria-label={tr('Filters')}>
         <div className="feedback-filter-heading">
-          <strong>
+          <button
+            type="button"
+            className="feedback-filter-toggle"
+            aria-expanded={ui.isMobile ? filtersOpen : true}
+            disabled={!ui.isMobile}
+            aria-controls="feedback-filter-options"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+          >
             <Icon name="slidersHorizontal" />
             {tr('Filters')}
             {applied.length > 0 && (
               <span className="feedback-active-count">{activeFilterLabel}</span>
             )}
-          </strong>
+            <i className="filter-menu-chevron feedback-filter-chevron" aria-hidden="true" />
+          </button>
           <button
             className={'feedback-text-btn' + (applied.length ? ' feedback-clear-active' : '')}
             onClick={reset}
-            disabled={empty}
+            disabled={empty || loading}
           >
             {tr('Clear Filters')}
           </button>
         </div>
-        <div className="feedback-filter-grid">
+        <div className="feedback-filter-grid" id="feedback-filter-options">
           <Filter
             name="date"
             label="Date range"
             value={filters.date}
             onChange={update}
-            disabled={empty}
+            disabled={empty || loading}
             calendar
             options={[
               ['30', 'Last 30 days'],
@@ -299,7 +331,7 @@ export function FeedbackList({ empty = false }) {
             label="Sentiment"
             value={filters.sentiment}
             onChange={update}
-            disabled={empty}
+            disabled={empty || loading}
             options={[['all', 'All sentiments'], ...Object.keys(tones).map((v) => [v, v])]}
           />
           <Filter
@@ -307,7 +339,7 @@ export function FeedbackList({ empty = false }) {
             label="Language"
             value={filters.language}
             onChange={update}
-            disabled={empty}
+            disabled={empty || loading}
             options={[
               ['all', 'All languages'],
               ['English', 'English'],
@@ -319,7 +351,7 @@ export function FeedbackList({ empty = false }) {
             label="Aspect"
             value={filters.aspect}
             onChange={update}
-            disabled={empty}
+            disabled={empty || loading}
             options={[
               ['all', 'All aspects'],
               ...[...new Set(feedbackRows.flatMap((r) => r.aspects))].map((v) => [v, v]),
@@ -330,7 +362,7 @@ export function FeedbackList({ empty = false }) {
             label="Branch"
             value={filters.branch}
             onChange={update}
-            disabled={empty}
+            disabled={empty || loading}
             options={[
               ['all', 'All branches'],
               ['Cairo', 'Cairo'],
@@ -341,9 +373,9 @@ export function FeedbackList({ empty = false }) {
           <Filter
             name="segment"
             label="Segment"
-            value={filters.segment}
+            value={filters.segment ?? 'all'}
             onChange={update}
-            disabled={empty}
+            disabled={empty || loading}
             options={[
               ['all', 'All segments'],
               ['Morning visitors', 'Morning visitors'],
@@ -373,10 +405,12 @@ export function FeedbackList({ empty = false }) {
           ))}
         </div>
       )}
-      <section className="feedback-table-card" aria-label={tr('Feedbacks')}>
+      <section className="feedback-table-card" aria-label={tr('Feedbacks')} aria-busy={loading}>
         <div className="feedback-table-toolbar">
           <div className="feedback-result-count">
-            <strong>{responseCount(filtered.length, language)}</strong>
+            <strong role={loading ? 'status' : undefined}>
+              {loading ? tr('Loading responses…') : responseCount(filtered.length, language)}
+            </strong>
             {visibleSelected.length > 0 && (
               <span>
                 {number(visibleSelected.length)} {tr('selected')}
@@ -387,7 +421,7 @@ export function FeedbackList({ empty = false }) {
             <button
               className="feedback-sort feedback-text-btn"
               onClick={() => setDescending((v) => !v)}
-              disabled={empty}
+              disabled={empty || loading}
             >
               {tr(descending ? 'Newest first' : 'Oldest first')}
             </button>
@@ -437,7 +471,11 @@ export function FeedbackList({ empty = false }) {
                 <th>{tr('Feedback preview')}</th>
                 <th>{tr('Sentiment')}</th>
                 <th>
-                  <button className="feedback-date-sort" onClick={() => setDescending((v) => !v)}>
+                  <button
+                    className="feedback-date-sort"
+                    disabled={loading}
+                    onClick={() => setDescending((v) => !v)}
+                  >
                     {tr('Date')}
                     <Icon name="arrowDown" className={descending ? '' : 'flipped'} />
                   </button>
@@ -448,6 +486,17 @@ export function FeedbackList({ empty = false }) {
               </tr>
             </thead>
             <tbody>
+              {loading &&
+                Array.from({ length: 8 }, (_, index) => (
+                  <tr className="feedback-skeleton-row" key={index} aria-hidden="true">
+                    {Array.from({ length: 7 }, (_, column) => (
+                      <td key={column}>
+                        <span className={'feedback-skeleton column-' + column} />
+                        {column === 1 && <span className="feedback-skeleton secondary" />}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
               {visible.map((row) => (
                 <tr key={row.id} className={selected.has(row.id) ? 'selected' : ''}>
                   <td>
@@ -472,10 +521,10 @@ export function FeedbackList({ empty = false }) {
                       {tr('Customer experience survey')}
                     </small>
                   </td>
-                  <td>
+                  <td data-label={tr('Sentiment')}>
                     <Badge value={row.sentiment} />
                   </td>
-                  <td>
+                  <td data-label={tr('Date')}>
                     <p>{date(row.date)}</p>
                     <small>
                       {language === 'ar'
@@ -483,8 +532,8 @@ export function FeedbackList({ empty = false }) {
                         : row.time}
                     </small>
                   </td>
-                  <td>{tr(row.language)}</td>
-                  <td className="feedback-aspects">
+                  <td data-label={tr('Language')}>{tr(row.language)}</td>
+                  <td data-label={tr('Related aspect')} className="feedback-aspects">
                     {row.aspects
                       .slice(0, 2)
                       .map(tr)
@@ -505,17 +554,19 @@ export function FeedbackList({ empty = false }) {
             </tbody>
           </table>
         </div>
-        {!filtered.length && <NoResponses empty={empty} onClear={reset} />}
+        {!loading && !filtered.length && <NoResponses empty={empty} onClear={reset} />}
         <div className="feedback-pagination">
           <span>
-            {filtered.length
-              ? `${tr('Showing')} ${number(page * pageSize + 1)}–${number(Math.min((page + 1) * pageSize, filtered.length))} ${tr('of')} ${responseCount(filtered.length, language)}`
-              : tr('Showing 0 responses')}
+            {loading
+              ? tr('Loading responses…')
+              : filtered.length
+                ? `${tr('Showing')} ${number(page * pageSize + 1)}–${number(Math.min((page + 1) * pageSize, filtered.length))} ${tr('of')} ${responseCount(filtered.length, language)}`
+                : tr('Showing 0 responses')}
           </span>
           <div>
             <button
               className="feedback-btn"
-              disabled={page === 0}
+              disabled={loading || page === 0}
               onClick={() => setPage((v) => v - 1)}
             >
               {tr('Previous')}
@@ -527,7 +578,7 @@ export function FeedbackList({ empty = false }) {
             )}
             <button
               className="feedback-btn"
-              disabled={(page + 1) * pageSize >= filtered.length}
+              disabled={loading || (page + 1) * pageSize >= filtered.length}
               onClick={() => setPage((v) => v + 1)}
             >
               {tr('Next')}
@@ -568,7 +619,10 @@ export function FeedbackDetail() {
   if (!row)
     return (
       <section className="feedback-screen">
-        <h1>{tr('Response not found')}</h1>
+        <h1 className="workspace-heading">
+          <HeadingBack fallback="/feedbacks" />
+          <span>{tr('Response not found')}</span>
+        </h1>
         <a href="#/feedbacks">{tr('All feedbacks')}</a>
       </section>
     );
@@ -586,8 +640,11 @@ export function FeedbackDetail() {
       </a>
       <div className="feedback-heading">
         <div>
-          <h1>
-            {tr('Feedback')} <bdi dir="ltr">#{row.id}</bdi>
+          <h1 className="workspace-heading">
+            <HeadingBack fallback="/feedbacks" />
+            <span>
+              {tr('Feedback')} <bdi dir="ltr">#{row.id}</bdi>
+            </span>
           </h1>
           <p>{tr('A closer look at one customer’s experience with Bloom & Co.')}</p>
         </div>
@@ -672,12 +729,16 @@ export function FeedbackDetail() {
                     <tbody>
                       {analysis.map((a) => (
                         <tr key={a.aspect}>
-                          <td>{tr(a.aspect)}</td>
-                          <td>“{a.quote}”</td>
-                          <td>
+                          <td data-label={tr('Detected aspect')}>{tr(a.aspect)}</td>
+                          <td data-label={tr('Feedback evidence')}>“{a.quote}”</td>
+                          <td data-label={tr('Polarity')}>
                             <Badge value={a.sentiment} />
                           </td>
-                          <td className={'score-' + a.sentiment.toLowerCase()} dir="ltr">
+                          <td
+                            data-label={tr('Score')}
+                            className={'score-' + a.sentiment.toLowerCase()}
+                            dir="ltr"
+                          >
                             <bdi dir="ltr">{formatNumber(a.score)}</bdi>
                           </td>
                         </tr>

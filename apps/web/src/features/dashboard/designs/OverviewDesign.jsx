@@ -1,3 +1,4 @@
+import { ArrowText as DashboardArrowText } from '../../../components/ui/UiArrow.jsx';
 import OverviewEmpty from '../OverviewEmpty.jsx';
 import { ScopeMetric, ScopeTrend, ScopeSentiment, OverviewScopeStatus } from '../OverviewScope.jsx';
 import '../overview-scope.css';
@@ -13,37 +14,6 @@ import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import '../../../components/layout/workspace-shell.css';
 import { OverviewBranchSelect, overviewDateLabel } from '../OverviewControls.jsx';
-
-function DashboardArrowText({ text }) {
-  return (
-    <span className="dashboard-arrow-label">
-      {text.split(/([→←↑↓↗↖])/).map((part, index) => {
-        const rotations = { '→': 0, '←': 180, '↑': -90, '↓': 90, '↗': -45, '↖': -135 };
-        if (!(part in rotations)) return part;
-        return (
-          <svg
-            key={index}
-            className="dashboard-link-arrow"
-            aria-hidden="true"
-            width="12"
-            height="12"
-            viewBox="0 0 16 16"
-            fill="none"
-            style={{ transform: 'rotate(' + rotations[part] + 'deg)' }}
-          >
-            <path
-              d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
-              stroke="currentColor"
-              strokeWidth="2.1"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        );
-      })}
-    </span>
-  );
-}
 
 const imgLogo = asset('dashboard/overview/logo.svg');
 const imgChevronsUpDown = asset('dashboard/overview/chevrons-up-down.svg');
@@ -481,10 +451,13 @@ export default function OverviewDesign({ empty = false }) {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                aria-label={tr('Search your workspace')}
-                placeholder={tr('Search your workspace')}
-                value={ui.query}
-                onChange={(event) => ui.setQuery(event.target.value)}
+                data-workspace-search={ui.preview ? '' : undefined}
+                aria-label={tr('Search across pages')}
+                placeholder={tr('Search across pages')}
+                value={ui.preview ? ui.workspaceQuery : ui.query}
+                onChange={(event) =>
+                  (ui.preview ? ui.setWorkspaceQuery : ui.setQuery)(event.target.value)
+                }
               />
               <p
                 className="f46"
@@ -500,21 +473,33 @@ export default function OverviewDesign({ empty = false }) {
               <div className="f35" data-node-id="127:341" data-name="globe">
                 <img alt="" className="f5" src={imgGlobe} />
               </div>
-              <LanguageMenu value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="127:344" data-name="chevron-down">
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>
             </div>
-            <div className="f49" data-node-id="127:346" data-name="Notifications">
+            <button
+              type="button"
+              aria-label={tr('Notifications')}
+              aria-haspopup="dialog"
+              aria-expanded={ui.topbarMenu?.kind === 'notifications'}
+              onClick={(e) => ui.openTopbar('notifications', e.currentTarget)}
+              className="f49"
+              data-node-id="127:346"
+              data-name="Notifications"
+            >
               <img alt="" className="f5" src={imgNotifications} />
-            </div>
+            </button>
             <div className="f50" data-node-id="127:350" data-name="Divider" />
             <button
               className="f51"
               data-node-id="127:351"
               data-name="Profile"
               type="button"
-              onClick={() => ui.action('SA Sara Ahmed Workspace owner')}
+              aria-label={tr('Profile')}
+              aria-haspopup="dialog"
+              aria-expanded={ui.topbarMenu?.kind === 'profile'}
+              onClick={(e) => ui.openTopbar('profile', e.currentTarget)}
             >
               <div className="f52" data-node-id="127:352" data-name="Avatar">
                 <img
