@@ -12,7 +12,7 @@ function AssistantIcon() {
   );
 }
 export default function Assistant() {
-  const { language, tr } = useProductView(),
+  const { language, tr, preview } = useProductView(),
     ar = language === 'ar',
     dialog = useRef(null),
     trigger = useRef(null),
@@ -54,6 +54,19 @@ export default function Assistant() {
   }, [messages]);
   const ask = (text) => {
     if (!text.trim()) return;
+    if (!preview) {
+      setMessages((old) => [
+        ...old,
+        { role: 'user', text: text.trim() },
+        {
+          role: 'assistant',
+          topic: 'other',
+          text: ar ? 'المساعد الذكي غير متاح بعد.' : 'AI Assistant is not available yet.',
+        },
+      ]);
+      setDraft('');
+      return;
+    }
     const topic = /price|pricing|combo|سعر|أسعار|تسعير/i.test(text)
       ? 'pricing'
       : /staff|service|team|فريق|موظف|خدمة/i.test(text)
@@ -147,44 +160,57 @@ export default function Assistant() {
             </button>
           </header>
           <div className="assistant-messages" aria-live="polite">
-            <div className="assistant-summary">
-              <span className="assistant-summary-label">
-                {ar ? 'ملخص آراء العملاء' : 'CUSTOMER FEEDBACK SUMMARY'}
-              </span>
-              <h3>
-                {ar
-                  ? 'أوقات الانتظار في القاهرة تحتاج إلى مراجعة'
-                  : 'Cairo’s wait times need a closer look'}
-              </h3>
-              <p>
-                {ar
-                  ? 'تشير 104 مراجعات إلى تأخير، ضعف الشهر السابق. راجع تغطية فريق العمل في ساعات الذروة.'
-                  : '104 reviews mention delays, twice the previous month. Review peak-hour staffing as a next step.'}
-              </p>
-              <blockquote>
-                <p dir="auto">
+            {preview ? (
+              <div className="assistant-summary">
+                <span className="assistant-summary-label">
+                  {ar ? 'ملخص آراء العملاء' : 'CUSTOMER FEEDBACK SUMMARY'}
+                </span>
+                <h3>
                   {ar
-                    ? 'القهوة ممتازة لكن انتظرنا الطلب ٢٥ دقيقة.'
-                    : '“The coffee is good, but we waited 25 minutes for the order.”'}
+                    ? 'أوقات الانتظار في القاهرة تحتاج إلى مراجعة'
+                    : 'Cairo’s wait times need a closer look'}
+                </h3>
+                <p>
+                  {ar
+                    ? 'تشير 104 مراجعات إلى تأخير، ضعف الشهر السابق. راجع تغطية فريق العمل في ساعات الذروة.'
+                    : '104 reviews mention delays, twice the previous month. Review peak-hour staffing as a next step.'}
                 </p>
-                <cite>
-                  {ar ? 'مراجعة Google · القاهرة · 18 سبتمبر' : 'Google review · Cairo · Sep 18'}
-                </cite>
-              </blockquote>
-              <a href="#/feedbacks" onClick={() => setOpen(false)}>
-                {ar ? 'عرض الآراء الداعمة' : 'View supporting feedback'}{' '}
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-
+                <blockquote>
+                  <p dir="auto">
+                    {ar
+                      ? 'القهوة ممتازة لكن انتظرنا الطلب ٢٥ دقيقة.'
+                      : '“The coffee is good, but we waited 25 minutes for the order.”'}
+                  </p>
+                  <cite>
+                    {ar ? 'مراجعة Google · القاهرة · 18 سبتمبر' : 'Google review · Cairo · Sep 18'}
+                  </cite>
+                </blockquote>
+                <a href="#/feedbacks" onClick={() => setOpen(false)}>
+                  {ar ? 'عرض الآراء الداعمة' : 'View supporting feedback'}{' '}
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path
+                      d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </a>
+              </div>
+            ) : (
+              <div className="assistant-summary">
+                <span className="assistant-summary-label">
+                  {ar ? 'مساعد NUVIA' : 'NUVIA ASSISTANT'}
+                </span>
+                <h3>{ar ? 'كيف يمكننا مساعدتك؟' : 'How can we help?'}</h3>
+                <p>
+                  {ar
+                    ? 'المساعد الذكي غير متاح بعد. ستظهر محادثاتك هنا عند إتاحة الخدمة.'
+                    : 'AI Assistant is not available yet. Your conversations will appear here when the service is available.'}
+                </p>
+              </div>
+            )}
             {messages.map((m, i) => (
               <div key={i} className={'assistant-message ' + m.role}>
                 <small>
@@ -228,9 +254,13 @@ export default function Assistant() {
               </button>
             </label>
             <small>
-              {ar
-                ? 'البيانات والإجابات في هذه المعاينة تجريبية.'
-                : 'Data and replies in this preview are illustrative.'}
+              {preview
+                ? ar
+                  ? 'البيانات والإجابات في هذه المعاينة تجريبية.'
+                  : 'Data and replies in this preview are illustrative.'
+                : ar
+                  ? 'المساعد الذكي غير متاح بعد.'
+                  : 'AI Assistant is not available yet.'}
             </small>
           </form>
         </div>
