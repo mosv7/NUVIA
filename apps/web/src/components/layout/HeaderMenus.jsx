@@ -54,6 +54,7 @@ export default function HeaderMenus() {
       logout,
       identity,
       workspace,
+      action,
     } = useProductView(),
     ref = useRef(null),
     [profile, setProfile] = useState(false),
@@ -204,9 +205,12 @@ export default function HeaderMenus() {
                 <strong>{tr('Your businesses')}</strong>
               </header>
               <button className="workspace-menu-item" onClick={close}>
-                <span className="workspace-avatar">B</span>
+                <span className="workspace-avatar">
+                  {preview ? 'B' : Array.from(workspace?.businessName || '')[0]}
+                </span>
                 <span>
-                  Bloom &amp; Co.<small>{tr('Current business')}</small>
+                  {preview ? 'Bloom & Co.' : workspace?.businessName}
+                  <small>{tr('Current business')}</small>
                 </span>
                 <span className="workspace-current">✓</span>
               </button>
@@ -219,7 +223,13 @@ export default function HeaderMenus() {
               </button>
               <button
                 className="workspace-menu-item"
-                onClick={() => navigate('business-information')}
+                onClick={() => {
+                  if (preview) navigate('business-information');
+                  else {
+                    close();
+                    action('Add business');
+                  }
+                }}
               >
                 <MenuIcon name="plus" />
                 {tr('Add business')}
