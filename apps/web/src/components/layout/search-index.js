@@ -29,6 +29,8 @@ export function buildSearchIndex(language = 'en', storage) {
     ['Create Survey', 'survey-create', 'templates questions'],
     ['NUVIA AI Survey Generator', 'survey-ai', 'business type survey language question count'],
     ['NUVIA Assistant', 'nuvia-assistant', 'ask feedback answers verify'],
+    ['Action board', 'action-board', 'recommendations tasks actions status'],
+    ['Supporting Evidence', 'evidence', 'feedback evidence recommendations'],
   ];
   const entries = pages.map(([title, path, keywords]) => ({
     id: path,

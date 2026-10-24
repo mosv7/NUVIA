@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { buildSearchIndex, searchIndex } from './search-index.js';
@@ -14,11 +14,14 @@ export default function GlobalSearch() {
     () => searchIndex(buildSearchIndex(language, localStorage), workspaceQuery),
     [workspaceQuery, language],
   );
-  const choose = (result) => {
-    setOpen(false);
-    setWorkspaceQuery('');
-    location.hash = result.path.slice(1);
-  };
+  const choose = useCallback(
+    (result) => {
+      setOpen(false);
+      setWorkspaceQuery('');
+      location.hash = result.path.slice(1);
+    },
+    [setWorkspaceQuery],
+  );
   useEffect(() => {
     setOpen(!!workspaceQuery.trim());
     setActive(0);
@@ -90,7 +93,7 @@ export default function GlobalSearch() {
       removeEventListener('resize', place);
       removeEventListener('scroll', place, true);
     };
-  }, [open, workspaceQuery, active, language, results]);
+  }, [open, workspaceQuery, active, language, results, choose]);
   return open && workspaceQuery.trim()
     ? createPortal(
         <section

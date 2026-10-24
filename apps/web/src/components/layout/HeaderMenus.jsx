@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import ChoiceMenu from '../ui/ChoiceMenu.jsx';
+import LanguageIcon from '../ui/LanguageIcon.jsx';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
@@ -41,11 +43,11 @@ function MenuIcon({ name }) {
   );
 }
 export default function HeaderMenus() {
-  const { tr, language, topbarMenu, setTopbarMenu } = useProductView(),
+  const { tr, language, setLanguage, isMobile, topbarMenu, setTopbarMenu } = useProductView(),
     ref = useRef(null),
     [profile, setProfile] = useState(false),
     [position, setPosition] = useState({});
-  const close = () => setTopbarMenu(null);
+  const close = useCallback(() => setTopbarMenu(null), [setTopbarMenu]);
   useEffect(() => {
     if (!topbarMenu) return;
     const place = () => {
@@ -80,7 +82,7 @@ export default function HeaderMenus() {
       document.removeEventListener('keydown', key);
       removeEventListener('resize', close);
     };
-  }, [topbarMenu]);
+  }, [topbarMenu, close]);
   const navigate = (path) => {
     close();
     location.hash = '/' + path;
@@ -147,6 +149,25 @@ export default function HeaderMenus() {
                 <MenuIcon name="settings" />
                 {tr('Account & security')}
               </button>
+              {isMobile && (
+                <div className="workspace-menu-item workspace-mobile-language">
+                  <span>{language === 'ar' ? 'اللغة' : 'Language'}</span>
+                  <div className="workspace-language-choice">
+                    <LanguageIcon />
+                    <ChoiceMenu
+                      value={language}
+                      onChange={setLanguage}
+                      compact
+                      density="compact"
+                      label={language === 'ar' ? 'اختيار اللغة' : 'Choose language'}
+                      options={[
+                        { value: 'en', label: 'English', code: 'EN', description: 'English' },
+                        { value: 'ar', label: 'العربية', code: 'AR', description: 'العربية' },
+                      ]}
+                    />
+                  </div>
+                </div>
+              )}
               <button
                 className="workspace-menu-item workspace-signout"
                 onClick={() => navigate('login')}

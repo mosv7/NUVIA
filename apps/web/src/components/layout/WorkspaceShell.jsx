@@ -1,10 +1,40 @@
-import { ArrowText as DashboardArrowText } from '../ui/UiArrow.jsx';
+import NavigationIcon from './NavigationIcon.jsx';
 import { LanguageMenu } from '../ui/ChoiceMenu.jsx';
 import React from 'react';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import './workspace-shell.css';
 import './workspace.css';
+function DashboardArrowText({ text }) {
+  return (
+    <span className="dashboard-arrow-label">
+      {text.split(/([→←↑↓↗↖])/).map((part, index) => {
+        const rotations = { '→': 0, '←': 180, '↑': -90, '↓': 90, '↗': -45, '↖': -135 };
+        if (!(part in rotations)) return part;
+        return (
+          <svg
+            key={index}
+            className="dashboard-link-arrow"
+            aria-hidden="true"
+            width="12"
+            height="12"
+            viewBox="0 0 16 16"
+            fill="none"
+            style={{ transform: 'rotate(' + rotations[part] + 'deg)' }}
+          >
+            <path
+              d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
+              stroke="currentColor"
+              strokeWidth="2.1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        );
+      })}
+    </span>
+  );
+}
 
 const imgLogo = asset('dashboard/overview/logo.svg');
 const imgChevronsUpDown = asset('dashboard/overview/chevrons-up-down.svg');
@@ -51,7 +81,10 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
           data-node-id="127:265"
           data-name="Business switcher"
           type="button"
-          onClick={() => ui.action('B Bloom & Co. Cafe &workspace')}
+          aria-label={tr('Business switcher')}
+          aria-haspopup="dialog"
+          aria-expanded={ui.topbarMenu?.kind === 'business'}
+          onClick={(e) => ui.openTopbar('business', e.currentTarget)}
         >
           <div className="f8" data-node-id="127:266" data-name="Business avatar">
             <p className="f9" data-node-id="127:267">
@@ -101,15 +134,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             onClick={() => ui.action('Overview')}
           >
             <div className="f17" data-node-id="127:276" data-name="layout-dashboard">
-              <img
-                alt=""
-                className="f5"
-                src={
-                  ui.activeDestination === 'Feedbacks'
-                    ? asset('dashboard/overview/layout-dashboard-inactive.svg')
-                    : imgLayoutDashboard
-                }
-              />
+              <NavigationIcon src={imgLayoutDashboard} destination="Overview" />
             </div>
             <p
               className={ui.activeDestination === 'Overview' ? 'f18' : 'f20'}
@@ -130,15 +155,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             onClick={() => ui.action('Feedbacks 12')}
           >
             <div className="f17" data-node-id="127:280" data-name="message-square">
-              <img
-                alt=""
-                className="f5"
-                src={
-                  ui.activeDestination === 'Feedbacks'
-                    ? asset('dashboard/overview/message-square-active.svg')
-                    : imgMessageSquare
-                }
-              />
+              <NavigationIcon src={imgMessageSquare} destination="Feedbacks" />
             </div>
             <p
               className={ui.activeDestination === 'Feedbacks' ? 'f18' : 'f20'}
@@ -162,7 +179,8 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             </div>
           </button>
           <button
-            className="f19"
+            className={ui.activeDestination === 'Analytics' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'Analytics' ? 'page' : undefined}
             data-node-id="127:285"
             data-name="Navigation item"
             type="button"
@@ -174,7 +192,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
               data-name="chart-no-axes-combined"
               dir="ltr"
             >
-              <img alt="" className="f5" src={imgChartNoAxesCombined} />
+              <NavigationIcon src={imgChartNoAxesCombined} destination="Analytics" />
             </div>
             <p
               className="f20"
@@ -187,14 +205,15 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             </p>
           </button>
           <button
-            className="f19"
+            className={ui.activeDestination === 'Reports' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'Reports' ? 'page' : undefined}
             data-node-id="127:289"
             data-name="Navigation item"
             type="button"
             onClick={() => ui.action('Reports')}
           >
             <div className="f17" data-node-id="127:290" data-name="file-chart-column" dir="ltr">
-              <img alt="" className="f5" src={imgFileChartColumn} />
+              <NavigationIcon src={imgFileChartColumn} destination="Reports" />
             </div>
             <p
               className="f20"
@@ -207,17 +226,18 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             </p>
           </button>
           <button
-            className="f19"
+            className={ui.activeDestination === 'Surveys' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'Surveys' ? 'page' : undefined}
             data-node-id="127:293"
             data-name="Navigation item"
             type="button"
             onClick={() => ui.action('Surveys')}
           >
             <div className="f17" data-node-id="127:294" data-name="clipboard-list">
-              <img alt="" className="f5" src={imgClipboardList} />
+              <NavigationIcon src={imgClipboardList} destination="Surveys" />
             </div>
             <p
-              className="f20"
+              className={ui.activeDestination === 'Surveys' ? 'f18' : 'f20'}
               data-node-id="127:296"
               style={{
                 fontVariationSettings: '"opsz" 14',
@@ -234,7 +254,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             onClick={() => ui.action('Segments')}
           >
             <div className="f17" data-node-id="127:298" data-name="users">
-              <img alt="" className="f5" src={imgUsers} />
+              <NavigationIcon src={imgUsers} destination="Business" />
             </div>
             <p
               className="f20"
@@ -243,19 +263,20 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Business & Teams')}
+              {tr('Business')}
             </p>
           </button>
           <div className="f23" data-node-id="127:301" data-name="Divider" />
           <button
-            className="f19"
+            className={ui.activeDestination === 'NUVIA Assistant' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'NUVIA Assistant' ? 'page' : undefined}
             data-node-id="127:302"
             data-name="Navigation item"
             type="button"
             onClick={() => ui.action('NUVIA Assistant')}
           >
             <div className="f17" data-node-id="127:303" data-name="sparkles">
-              <img alt="" className="f5" src={imgSparkles} />
+              <NavigationIcon src={imgSparkles} destination="NUVIA Assistant" />
             </div>
             <p
               className="f20"
@@ -278,7 +299,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             onClick={() => ui.action('Subscription')}
           >
             <div className="f17" data-node-id="127:309" data-name="credit-card">
-              <img alt="" className="f5" src={imgCreditCard} />
+              <NavigationIcon src={imgCreditCard} destination="Subscription" />
             </div>
             <p
               className="f20"
@@ -298,7 +319,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             onClick={() => ui.action('Settings')}
           >
             <div className="f17" data-node-id="127:313" data-name="settings">
-              <img alt="" className="f5" src={imgSettings} />
+              <NavigationIcon src={imgSettings} destination="Settings" />
             </div>
             <p
               className="f20"
@@ -416,8 +437,8 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
                   fontVariationSettings: '"opsz" 14',
                 }}
                 data-workspace-search={ui.preview ? '' : undefined}
-                aria-label={tr(ui.preview ? 'Search across pages' : 'Search your workspace')}
-                placeholder={tr(ui.preview ? 'Search across pages' : 'Search your workspace')}
+                aria-label={tr('Search across pages')}
+                placeholder={tr('Search across pages')}
                 value={ui.preview ? ui.workspaceQuery : ui.query}
                 onChange={(event) =>
                   (ui.preview ? ui.setWorkspaceQuery : ui.setQuery)(event.target.value)
@@ -442,16 +463,28 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>
             </div>
-            <div className="f49" data-node-id="127:346" data-name="Notifications">
+            <button
+              type="button"
+              aria-label={tr('Notifications')}
+              aria-haspopup="dialog"
+              aria-expanded={ui.topbarMenu?.kind === 'notifications'}
+              onClick={(e) => ui.openTopbar('notifications', e.currentTarget)}
+              className="f49"
+              data-node-id="127:346"
+              data-name="Notifications"
+            >
               <img alt="" className="f5" src={imgNotifications} />
-            </div>
+            </button>
             <div className="f50" data-node-id="127:350" data-name="Divider" />
             <button
               className="f51"
               data-node-id="127:351"
               data-name="Profile"
               type="button"
-              onClick={() => ui.action('SA Sara Ahmed Workspace owner')}
+              aria-label={tr('Profile')}
+              aria-haspopup="dialog"
+              aria-expanded={ui.topbarMenu?.kind === 'profile'}
+              onClick={(e) => ui.openTopbar('profile', e.currentTarget)}
             >
               <div className="f52" data-node-id="127:352" data-name="Avatar">
                 <img
