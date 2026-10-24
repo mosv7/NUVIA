@@ -18,7 +18,7 @@ const imgLoadingDot1 = asset('preview/assistantDesign-imgLoadingDot1.svg');
 const imgCheckCheck = asset('preview/assistantDesign-imgCheckCheck.svg');
 const imgScanText = asset('preview/assistantDesign-imgScanText.svg');
 export default function AssistantScreen() {
-  const { tr, language, dashboard } = useProductView();
+  const { tr, language, dashboard, preview, workspace, action } = useProductView();
   const [generate, setGenerate] = useState(false);
   const [scopeInConversation, setScopeInConversation] = useState(() => window.innerWidth <= 600);
   useEffect(() => {
@@ -30,9 +30,13 @@ export default function AssistantScreen() {
   const [question, setQuestion] = useState(''),
     [lastQuestion, setLastQuestion] = useState('What are the most common complaints?'),
     [reply, setReply] = useState(''),
-    [fresh, setFresh] = useState(false);
+    [fresh, setFresh] = useState(!preview);
   const ask = (q) => {
     if (!q.trim()) return;
+    if (!preview) {
+      action('Ask NUVIA');
+      return;
+    }
     setFresh(false);
     setLastQuestion(q);
     setQuestion('');
@@ -52,7 +56,7 @@ export default function AssistantScreen() {
             data-node-id="301:1473"
             style={{ fontVariationSettings: '"opsz" 14' }}
           >
-            {tr('1,250 reviews')}
+            {preview ? tr('1,250 reviews') : language === 'ar' ? '٠ مراجعات' : '0 reviews'}
           </p>
         </div>
       </div>
@@ -131,9 +135,13 @@ export default function AssistantScreen() {
                   data-node-id="301:1484"
                   style={{ fontVariationSettings: '"opsz" 14' }}
                 >
-                  {tr(
-                    'Explore patterns across Bloom & Co., find opportunities to improve, or dig into a customer concern.',
-                  )}
+                  {preview
+                    ? tr(
+                        'Explore patterns across Bloom & Co., find opportunities to improve, or dig into a customer concern.',
+                      )
+                    : language === 'ar'
+                      ? 'المساعد الذكي غير متاح بعد. ستظهر محادثاتك هنا عند إتاحة الخدمة.'
+                      : 'AI Assistant is not available yet. Your conversations will appear here when the service is available.'}
                 </p>
               </div>
             </div>
@@ -216,7 +224,12 @@ export default function AssistantScreen() {
                   <div className="pv27" data-node-id="301:1509" data-name="Divider" />
                 </div>
               </div>
-              <div className="pv29" data-node-id="301:1510" data-name="User message" hidden={fresh}>
+              <div
+                className="pv29"
+                data-node-id="301:1510"
+                data-name="User message"
+                hidden={fresh || !preview}
+              >
                 <p
                   className="pv30"
                   data-node-id="301:1511"
@@ -232,7 +245,7 @@ export default function AssistantScreen() {
                 className="pv33"
                 data-node-id="301:1514"
                 data-name="Assistant pending message"
-                hidden={fresh}
+                hidden={fresh || !preview}
               >
                 <div className="pv34" data-node-id="301:1515" data-name="Assistant avatar">
                   <div className="pv6" data-node-id="301:1516" data-name="sparkles">
@@ -389,7 +402,10 @@ export default function AssistantScreen() {
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
                     {dashboard.filters.branch === 'all'
-                      ? ['Cairo', 'El Zamalek', 'Alex'].map(tr).join('، ')
+                      ? (preview
+                          ? ['Cairo', 'El Zamalek', 'Alex'].map(tr)
+                          : (workspace?.branches || []).map((branch) => branch.name)
+                        ).join('، ')
                       : tr(dashboard.filters.branch)}
                   </p>
                 </div>
@@ -406,7 +422,11 @@ export default function AssistantScreen() {
                     data-node-id="301:1551"
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
-                    {tr('Sample feedback scope')}
+                    {preview
+                      ? tr('Sample feedback scope')
+                      : language === 'ar'
+                        ? 'لا توجد ردود بعد'
+                        : 'No responses yet'}
                   </p>
                 </div>
               </div>
@@ -420,7 +440,11 @@ export default function AssistantScreen() {
                   data-node-id="301:1556"
                   style={{ fontVariationSettings: '"opsz" 14' }}
                 >
-                  {tr('Feedback ready for analysis')}
+                  {preview
+                    ? tr('Feedback ready for analysis')
+                    : language === 'ar'
+                      ? 'المساعد غير متاح بعد'
+                      : 'Assistant not available yet'}
                 </p>
               </div>
             </div>
@@ -457,7 +481,7 @@ export default function AssistantScreen() {
           </div>
         </div>
       </div>
-      {generate && <GenerateDialog onClose={() => setGenerate(false)} />}
+      {preview && generate && <GenerateDialog onClose={() => setGenerate(false)} />}
     </div>
   );
 }
