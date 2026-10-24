@@ -53,7 +53,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByLabel('Confirm password').fill('Synthetic123');
     await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create account', exact: true }).click();
-    await page.getByRole('heading', { name: 'Verify your email' }).waitFor();
+    await page.getByRole('heading', { name: 'Check your inbox' }).waitFor();
     await page.goto(await mailLink('verify-email'));
     await page.getByText('Email verified. You can log in now.').waitFor();
     await page.screenshot({ path: join(output, 'verification-en-desktop.png'), fullPage: true });
