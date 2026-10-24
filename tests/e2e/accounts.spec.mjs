@@ -102,9 +102,21 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     assert.equal(await page.locator('.feedback-table tbody tr').count(), 0);
     for (const width of [1440, 393]) {
       await page.setViewportSize({ width, height: width === 393 ? 800 : 900 });
-      const logout = await page.locator('.workspace-account-actions').boundingBox();
-      const empty = await page.locator('.feedback-empty').boundingBox();
-      assert.ok(logout.y >= empty.y + empty.height, 'Logout must not cover the empty state');
+      assert.equal(await page.locator('.workspace-account-actions').count(), 0);
+      await page.getByRole('button', { name: 'Profile', exact: true }).click();
+      const logout = await page
+        .getByRole('button', { name: 'Sign out', exact: true })
+        .boundingBox();
+      assert.ok(logout, 'Account menu must expose sign out');
+      assert.ok(
+        logout.x >= 0 && logout.x + logout.width <= width,
+        'Sign out must fit the viewport',
+      );
+      assert.ok(
+        logout.y >= 0 && logout.y + logout.height <= (width === 393 ? 800 : 900),
+        'Sign out must remain reachable',
+      );
+      await page.getByRole('button', { name: 'Profile', exact: true }).click();
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     }
     await page.setViewportSize({ width: 1440, height: 900 });
