@@ -38,6 +38,7 @@ const emptyFilters = {
   language: 'all',
   aspect: 'all',
   branch: 'all',
+  segment: 'all',
 };
 function Filter({ name, label, options, value, onChange, disabled, calendar }) {
   const { tr } = useProductView();
@@ -181,6 +182,7 @@ export function FeedbackList({ empty = false, loading = false, noResults = false
             (filters.language === 'all' || row.language === filters.language) &&
             (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
             (filters.branch === 'all' || row.branch === filters.branch) &&
+            ((filters.segment ?? 'all') === 'all' || row.segment === filters.segment) &&
             (filters.date !== '1' || row.date === '2026-10-16')
           );
         })
@@ -218,6 +220,7 @@ export function FeedbackList({ empty = false, loading = false, noResults = false
     language: 'Language',
     aspect: 'Aspect',
     branch: 'Branch',
+    segment: 'Segment',
   };
   const applied = Object.entries(filters)
     .filter(([key, value]) => value !== emptyFilters[key])
@@ -365,6 +368,19 @@ export function FeedbackList({ empty = false, loading = false, noResults = false
               ['Cairo', 'Cairo'],
               ['El Zamalek', 'El Zamalek'],
               ['Alex', 'Alex'],
+            ]}
+          />
+          <Filter
+            name="segment"
+            label="Segment"
+            value={filters.segment ?? 'all'}
+            onChange={update}
+            disabled={empty || loading}
+            options={[
+              ['all', 'All segments'],
+              ['Morning visitors', 'Morning visitors'],
+              ['Returning customers', 'Returning customers'],
+              ['New customers', 'New customers'],
             ]}
           />
         </div>
