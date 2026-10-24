@@ -32,7 +32,7 @@ export function ProductProvider({
   const [workspaceQuery, setWorkspaceQuery] = useState('');
   const [topbarMenu, setTopbarMenu] = useState(null);
   const openTopbar = (kind, anchor) => {
-    if (!preview && kind !== 'profile') {
+    if (!preview && !['profile', 'notifications', 'business'].includes(kind)) {
       setNotice(
         language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
       );
