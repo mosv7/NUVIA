@@ -235,13 +235,7 @@ export default function AppRouter() {
   const designOnly =
     page.startsWith('survey-') ||
     page.startsWith('analytics-') ||
-    [
-      'reports',
-      'report-details',
-      'nuvia-assistant',
-      'feedbacks-loading',
-      'feedbacks-no-results',
-    ].includes(page);
+    ['reports', 'report-details', 'feedbacks-loading', 'feedbacks-no-results'].includes(page);
   if (designOnly) {
     if (!preview)
       return (
@@ -334,6 +328,17 @@ export default function AppRouter() {
         workspace={auth.workspace}
         onLogout={auth.logout}
         preview={preview}
+      />
+    );
+  if (page === 'nuvia-assistant')
+    return (
+      <ExtraPreviewPage
+        page={page}
+        language={language}
+        setLanguage={setLanguage}
+        preview={preview}
+        workspace={auth.workspace}
+        onLogout={auth.logout}
       />
     );
   if (page === 'dashboard' || page === 'dashboard-empty')
