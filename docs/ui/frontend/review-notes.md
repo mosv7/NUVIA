@@ -36,3 +36,15 @@ The signup, login, recovery and business setup presentation was compared with th
 Account language controls now use one shared 16px blue globe in login, signup, recovery and verification screens, including the story caption. Updated captures include these controls in both interface languages.
 
 Account headers use an icon-only back control opposite the NUVIA logo, mirrored in Arabic, without changing authentication behavior. The browser tab is titled NUVIA and uses the square brand icon for readability at favicon size.
+
+## Source reconciliation and connected workspace review
+
+The original Frontend folder remains the visual reference. The final review visited all 44 gallery routes in English and Arabic at widths 390, 820 and 1440 (264 viewport-bound checks). Report details retained one contextual back arrow, and Overview retained none. These checks do not prove that every overlap or physical device is covered.
+
+Business onboarding now shows the shared blue globe at desktop and narrow sizes. Its text inputs use the rounded wrapper focus ring without a second rectangular outline.
+
+Connected Overview and Feedbacks retain the floating assistant: clicking it opens the reviewed panel above the current page without changing the route. The sidebar opens the complete assistant workspace. Connected assistant states use saved business/branch labels, zero responses, and explicit unavailable-service copy; they do not generate illustrative answers. Account menus retain View profile and Account & security with saved identity, and Sign out calls the real logout endpoint. The separate bottom logout button is removed.
+
+The unreferenced legacy assistant module, launcher export and nine old style rules were removed. Its separate stylesheet was removed after the import audit confirmed it had no remaining consumer. All 117 remaining source modules/styles are reachable from the web entry point.
+
+Validation: 42 web tests passed; lint and production build passed. API, database, mail and shared-contract sources remain unchanged. Analytics/report generation and survey publishing are still unimplemented backend services; their design routes remain explicit previews.
