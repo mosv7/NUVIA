@@ -103,7 +103,7 @@ export default function ChoiceMenu({
       removeEventListener('resize', place);
       removeEventListener('scroll', place, true);
     };
-  }, [open, overlay, options.length, disabled]);
+  }, [open, overlay, options.length, disabled, density, placement]);
   const move = (e, index) => {
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
     e.preventDefault();
@@ -152,7 +152,14 @@ export default function ChoiceMenu({
         }}
       >
         {control === 'branch' && !overlay && <ControlIcon name="branch" />}
-        <span hidden={iconOnly}>{compact ? selected.code || selected.label : selected.label}</span>
+        {selected.icon && (
+          <span className="choice-selected-icon" aria-hidden="true">
+            {selected.icon}
+          </span>
+        )}
+        <span hidden={iconOnly}>
+          {compact ? selected.shortLabel || selected.code || selected.label : selected.label}
+        </span>
         {iconOnly && <LanguageIcon />}
         {control === 'branch' && !overlay && <i className="control-chevron" aria-hidden="true" />}
       </button>
@@ -182,8 +189,10 @@ export default function ChoiceMenu({
                     else button.current?.blur();
                   }}
                 >
-                  {(option.code || icon) && (
-                    <span className="choice-option-code">{option.code || <BranchIcon />}</span>
+                  {(option.code || option.icon || icon) && (
+                    <span className="choice-option-code">
+                      {option.code || option.icon || <BranchIcon />}
+                    </span>
                   )}
                   <span className="choice-option-copy">
                     <span

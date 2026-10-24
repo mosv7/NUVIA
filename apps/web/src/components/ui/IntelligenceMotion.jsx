@@ -137,7 +137,6 @@ function Core({ compact = false }) {
             stroke="#92bfff"
             strokeWidth=".8"
           />
-
           <path
             d="m120 12-9 54L59 36l2 59-43-5 49 39-42 36 63-2-9 51 41-38 34 46-1-58 56 9-38-48 49-26-63-7 26-51-62 25Z"
             fill="none"
@@ -145,7 +144,6 @@ function Core({ compact = false }) {
             strokeWidth=".7"
             opacity=".75"
           />
-
           <path
             d="m59 36 61 140L183 41 67 129l142 44L111 66l43 156L61 95l159 4L88 163Z"
             fill="none"
@@ -161,21 +159,18 @@ function Core({ compact = false }) {
             stroke="url(#facet-stroke)"
             strokeWidth="2"
           />
-
           <path
             d="m120 70 35 21 13 36-23 35-38 10-29-27 1-41Z"
             fill="none"
             stroke="#8fd6ff"
             strokeWidth="1.2"
           />
-
           <path
             d="m120 87 24 15 8 25-15 23-26 7-20-18 1-28Z"
             fill="#abdfff"
             fillOpacity=".4"
             stroke="#d7f6ff"
           />
-
           <circle cx="120" cy="122" r="13" fill="#d6f7ff" />
           <circle cx="120" cy="122" r="6" fill="white" />
         </g>
@@ -237,7 +232,6 @@ function ReferenceScene({ language }) {
     'M0 6 12 10 22 8 35 15 46 12 57 19 70 16 81 23 94 20 107 28 118 25 132 32 145 29 160 37',
     'M0 21 12 18 22 23 35 20 46 17 57 22 70 19 81 24 94 20 107 18 118 22 132 19 145 23 160 21',
   ];
-
   const metricTone = (value, lowerIsBetter = false) =>
     value === 0 ? 'neutral' : (lowerIsBetter ? value < 0 : value > 0) ? 'positive' : 'negative';
   const graphTone = ['positive', 'positive', 'negative', 'neutral'][frame];
@@ -291,7 +285,6 @@ function ReferenceScene({ language }) {
       stars: 1,
     },
   ];
-
   const feedbackItems = Array.from(
     { length: 3 },
     (_, i) => feedbackSamples[(frame * 2 + i) % feedbackSamples.length],
@@ -438,14 +431,12 @@ function InsightCard({ c, action = false }) {
             d="M0 38 24 31 42 34 65 21 88 25 109 13 132 17 153 7 172 11 190 3v41H0Z"
             fill="url(#trend-wash)"
           />
-
           <path
             d="M0 38 24 31 42 34 65 21 88 25 109 13 132 17 153 7 172 11 190 3"
             fill="none"
             stroke="#1e68ef"
             strokeWidth="1.8"
           />
-
           <circle cx="190" cy="3" r="3" fill="#1e68ef" />
         </svg>
       )}
