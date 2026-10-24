@@ -11,7 +11,7 @@ function AssistantIcon() {
     />
   );
 }
-export default function Assistant() {
+export default function Assistant({ presentationOnly = false }) {
   const { language, tr, preview } = useProductView(),
     ar = language === 'ar',
     dialog = useRef(null),
@@ -20,6 +20,7 @@ export default function Assistant() {
   const [open, setOpen] = useState(false),
     [draft, setDraft] = useState(''),
     [messages, setMessages] = useState([]);
+  const displayPreview = preview || presentationOnly;
   const restoreFocus = useRef(true);
   useEffect(() => {
     if (!open) return;
@@ -54,7 +55,7 @@ export default function Assistant() {
   }, [messages]);
   const ask = (text) => {
     if (!text.trim()) return;
-    if (!preview) {
+    if (!displayPreview) {
       setMessages((old) => [
         ...old,
         { role: 'user', text: text.trim() },
@@ -160,7 +161,7 @@ export default function Assistant() {
             </button>
           </header>
           <div className="assistant-messages" aria-live="polite">
-            {preview ? (
+            {displayPreview ? (
               <div className="assistant-summary">
                 <span className="assistant-summary-label">
                   {ar ? 'ملخص آراء العملاء' : 'CUSTOMER FEEDBACK SUMMARY'}
@@ -254,7 +255,7 @@ export default function Assistant() {
               </button>
             </label>
             <small>
-              {preview
+              {displayPreview
                 ? ar
                   ? 'البيانات والإجابات في هذه المعاينة تجريبية.'
                   : 'Data and replies in this preview are illustrative.'
