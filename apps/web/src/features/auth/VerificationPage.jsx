@@ -1,9 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { authApi } from './api.js';
-export default function VerificationPage({ language, preview = false }) {
+import EmailVerificationView from './EmailVerificationView.jsx';
+export default function VerificationPage({
+  language,
+  setLanguage,
+  initialEmail = '',
+  preview = false,
+  previewStatus = 'pending',
+}) {
   const ar = language === 'ar';
-  const [email, setEmail] = useState(''),
-    [state, setState] = useState('pending');
+  const [email, setEmail] = useState(initialEmail),
+    [state, setState] = useState(preview ? previewStatus : 'pending');
   const started = useRef(null);
   const token = new URLSearchParams(location.hash.split('?')[1]).get('token');
   useEffect(() => {
@@ -17,18 +24,20 @@ export default function VerificationPage({ language, preview = false }) {
       .then(() => setState('verified'))
       .catch(() => setState('invalid'));
   }, [token, preview]);
-  async function resend(e) {
-    e.preventDefault();
+  async function resend() {
+    if (state === 'busy') return false;
     if (preview) {
       setState('preview');
-      return;
+      return false;
     }
     setState('busy');
     try {
       await authApi.resend(email);
       setState('sent');
+      return true;
     } catch {
       setState('error');
+      return false;
     }
   }
   const messages = ar
@@ -51,30 +60,15 @@ export default function VerificationPage({ language, preview = false }) {
         error: 'Could not complete the request. Please try again.',
       };
   return (
-    <main className="session-state">
-      <a href="#/landing" className="session-brand">
-        NUVIA
-      </a>
-      <h1>{ar ? 'تأكيد البريد الإلكتروني' : 'Verify your email'}</h1>
-      <p role="status">{messages[state]}</p>
-      {state !== 'verified' && (
-        <form onSubmit={resend}>
-          <label>
-            {ar ? 'البريد الإلكتروني' : 'Email'}
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
-          </label>
-          <button className="primary" disabled={state === 'busy'}>
-            {ar ? 'إعادة إرسال رابط التأكيد' : 'Resend verification link'}
-          </button>
-        </form>
-      )}
-      <a href="#/login">{ar ? 'العودة إلى تسجيل الدخول' : 'Back to log in'}</a>
-    </main>
+    <EmailVerificationView
+      language={language}
+      setLanguage={setLanguage}
+      email={email}
+      onEmailChange={setEmail}
+      status={state === 'verified' ? 'verified' : state === 'invalid' ? 'expired' : 'sent'}
+      busy={state === 'busy'}
+      message={messages[state]}
+      onResend={resend}
+    />
   );
 }

@@ -171,10 +171,6 @@ export default function AuthPage({
             <button onClick={() => setNotice('unavailable')}>{t.help}</button>
             <label className="language">
               <LanguageIcon />
-              <img
-                src={asset(isForgot || page === 'reset' ? 'imgLanguageIcon' : 'imgGlobe')}
-                alt=""
-              />
               <LanguageMenu value={language} onChange={setLanguage} />
             </label>
           </div>
@@ -210,16 +206,7 @@ export default function AuthPage({
         </div>
         <p className="caption">{isSignup ? t.signupCaption : t.caption}</p>
         <div className="capability">
-          <img
-            src={asset(
-              isForgot || page === 'reset'
-                ? 'imgLanguageIcon1'
-                : isSignup
-                  ? 'imgGlobe'
-                  : 'imgGlobe1',
-            )}
-            alt=""
-          />
+          <LanguageIcon />
           {t.languages}
         </div>
       </aside>
