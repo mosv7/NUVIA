@@ -143,3 +143,12 @@
   object-fit: contain;
   flex-shrink: 0;
 }
+
+/* A single shared blue language symbol across every account screen and viewport. */
+.auth-layout :is(.language, .capability) > .language-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: #1e68ef;
+}
