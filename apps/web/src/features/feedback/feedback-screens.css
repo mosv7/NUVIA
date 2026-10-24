@@ -1108,3 +1108,99 @@
   ) {
   color: #586a83;
 }
+
+/* All feedback filters use the shared styled popup instead of native selects. */
+.feedback-select-wrap > .choice-menu {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+.feedback-screen .feedback-select-wrap .choice-trigger {
+  justify-content: flex-start;
+  width: 100% !important;
+  min-height: 40px !important;
+  border: 1px solid #dfe7f2 !important;
+  border-radius: 8px;
+  background: #fff !important;
+  padding: 10px 30px 10px 12px !important;
+  font-size: 12px !important;
+  color: #10213d !important;
+  text-align: start;
+}
+.feedback-select-wrap .choice-trigger > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.feedback-screen .feedback-filter.date-filter .choice-trigger {
+  padding-inline-start: 33px !important;
+}
+[dir='rtl'] .feedback-screen .feedback-select-wrap .choice-trigger {
+  padding-inline: 12px 30px !important;
+  font-family: inherit !important;
+}
+[dir='rtl'] .feedback-screen .feedback-filter.date-filter .choice-trigger {
+  padding-inline-start: 33px !important;
+}
+.feedback-screen .feedback-select-wrap .choice-trigger:disabled {
+  opacity: 0.55 !important;
+  cursor: default;
+}
+
+.feedback-screen .feedback-select-wrap {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  height: 40px;
+}
+.feedback-screen .feedback-select-wrap > .feedback-icon {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  inset-inline-start: 12px;
+}
+.feedback-screen .feedback-select-wrap > .feedback-icon:last-child {
+  inset-inline-start: auto;
+  inset-inline-end: 12px;
+}
+
+.feedback-skeleton-row td {
+  height: 82px;
+}
+.feedback-skeleton {
+  display: block;
+  height: 12px;
+  width: 75%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #edf1f6 25%, #f8faff 50%, #edf1f6 75%);
+  background-size: 200% 100%;
+  animation: feedback-loading 1.5s ease-in-out infinite;
+}
+.feedback-skeleton.secondary {
+  height: 9px;
+  width: 58%;
+  margin-top: 12px;
+}
+.feedback-skeleton.column-0 {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+.feedback-skeleton.column-2 {
+  width: 70px;
+  height: 24px;
+  border-radius: 20px;
+}
+.feedback-skeleton.column-1 {
+  width: 90%;
+}
+@keyframes feedback-loading {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feedback-skeleton {
+    animation: none;
+  }
+}
