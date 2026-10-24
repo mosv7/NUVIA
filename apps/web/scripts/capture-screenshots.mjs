@@ -43,7 +43,7 @@ try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       for (const route of matrix.routes) {
-        await page.goto(base + '/preview/#/' + route, { waitUntil: 'networkidle' });
+        await page.goto(base + '/preview/?capture=gallery#/' + route, { waitUntil: 'networkidle' });
         await page.evaluate(async () => {
           await document.fonts.ready;
           await Promise.all([...document.images].map((image) => image.decode().catch(() => {})));

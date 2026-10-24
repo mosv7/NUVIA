@@ -45,25 +45,10 @@
   ],
   "views": [
     {
-      "name": "mobile",
-      "width": 390,
-      "height": 844
-    },
-    {
-      "name": "tablet-portrait",
-      "width": 820,
-      "height": 1180
-    },
-    {
-      "name": "tablet-landscape",
-      "width": 1024,
-      "height": 768
-    },
-    {
       "name": "desktop",
       "width": 1440,
       "height": 960
     }
   ],
-  "languages": ["en", "ar"]
+  "languages": ["en"]
 }
