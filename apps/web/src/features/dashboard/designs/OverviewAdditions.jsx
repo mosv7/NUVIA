@@ -1,8 +1,7 @@
 import { ArrowText as DashboardArrowText } from '../../../components/ui/UiArrow.jsx';
 import ScopedInsights from '../ScopedInsights.jsx';
-import React, { useState } from 'react';
+import React from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
-import OriginalAssistant from '../../ai-analysis/preview/OriginalAssistant.jsx';
 import './overview-additions.css';
 
 const imgAssistantIcon = '/assets/figma-overview/imgAssistantIcon.svg';
@@ -647,31 +646,6 @@ export function NewQuickActions() {
     </div>
   );
 }
-export function AssistantLauncher() {
-  const [open, setOpen] = useState(false);
-  return (
-    <>
-      <button
-        type="button"
-        className="old-assistant-launcher"
-        aria-label="Open NUVIA Assistant"
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        <img src="/assets/dashboard/overview/sparkles1.svg" alt="" />
-      </button>
-      {open && (
-        <div className="old-assistant-panel" role="dialog" aria-label="Ask NUVIA">
-          <button className="old-assistant-close" onClick={() => setOpen(false)}>
-            Close ×
-          </button>
-          <OriginalAssistant />
-        </div>
-      )}
-    </>
-  );
-}
-
 export function NewBranchAttention() {
   const ui = useProductView();
   return (
