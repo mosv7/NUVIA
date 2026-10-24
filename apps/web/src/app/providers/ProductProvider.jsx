@@ -1,5 +1,6 @@
 import GlobalSearch from '../../components/layout/GlobalSearch.jsx';
 import HeaderMenus from '../../components/layout/HeaderMenus.jsx';
+import ConnectedAssistantLauncher from '../../components/ui/ConnectedAssistantLauncher.jsx';
 import { useRouteState, routeForAction } from '../../components/layout/navigation.js';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import arabic from '../../lib/i18n/product-ar.json';
@@ -30,8 +31,15 @@ export function ProductProvider({
   const [query, setQuery] = useRouteState('feedback-query', '');
   const [workspaceQuery, setWorkspaceQuery] = useState('');
   const [topbarMenu, setTopbarMenu] = useState(null);
-  const openTopbar = (kind, anchor) =>
+  const openTopbar = (kind, anchor) => {
+    if (!preview && kind !== 'profile') {
+      setNotice(
+        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
+      );
+      return;
+    }
     setTopbarMenu((old) => (old?.kind === kind ? null : { kind, anchor }));
+  };
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 850);
   useEffect(() => {
     const resize = () => setIsMobile(window.innerWidth <= 850);
@@ -60,10 +68,23 @@ export function ProductProvider({
     return language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
   };
   const [notice, setNotice] = useState('');
+  const logout = async () => {
+    try {
+      await onLogout();
+      return true;
+    } catch {
+      setNotice(
+        language === 'ar'
+          ? 'تعذر تسجيل الخروج من الخادم. حاول مرة أخرى.'
+          : 'Could not log out from the server. Please try again.',
+      );
+      return false;
+    }
+  };
   const navigateLabel = (label) => {
     const route = routeForAction(label, tr);
     if (!route) return false;
-    if (!preview && !['#/dashboard', '#/feedbacks'].includes(route)) {
+    if (!preview && !['#/dashboard', '#/feedbacks', '#/nuvia-assistant'].includes(route)) {
       setNotice(
         language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
       );
@@ -74,7 +95,10 @@ export function ProductProvider({
     return true;
   };
   const action = (label) => {
-    if (!preview && !['Overview', 'Feedbacks', 'Feedbacks 12', 'All feedbacks'].includes(label)) {
+    if (
+      !preview &&
+      !['Overview', 'Feedbacks', 'Feedbacks 12', 'All feedbacks', 'NUVIA Assistant'].includes(label)
+    ) {
       if (label === 'B Bloom & Co. Cafe &workspace' || label === 'Settings') {
         location.hash = '/business-information';
         return;
@@ -86,6 +110,11 @@ export function ProductProvider({
     }
     if (preview && navigateLabel(label)) return;
     if (label === 'NUVIA Assistant') {
+      if (!preview) {
+        onNavigate?.();
+        location.hash = '/nuvia-assistant';
+        return;
+      }
       window.dispatchEvent(new Event('nuvia:ask'));
       return;
     }
@@ -161,6 +190,8 @@ export function ProductProvider({
         navigateLabel,
         workspace,
         preview,
+        logout,
+        identity,
         activeDestination: location.hash.startsWith('#/analytics-')
           ? 'Analytics'
           : location.hash.startsWith('#/report')
@@ -196,29 +227,9 @@ export function ProductProvider({
       }}
     >
       {children}
-      {preview && (
-        <>
-          <GlobalSearch />
-          <HeaderMenus />
-        </>
-      )}
-      {!preview && (
-        <div className="workspace-account-actions">
-          <button
-            onClick={() =>
-              onLogout?.().catch(() =>
-                setNotice(
-                  language === 'ar'
-                    ? 'تعذر تسجيل الخروج من الخادم. حاول مرة أخرى.'
-                    : 'Could not log out from the server. Please try again.',
-                ),
-              )
-            }
-          >
-            {language === 'ar' ? 'تسجيل الخروج' : 'Log out'}
-          </button>
-        </div>
-      )}
+      {preview && <GlobalSearch />}
+      <HeaderMenus />
+      {!preview && !location.hash.startsWith('#/nuvia-assistant') && <ConnectedAssistantLauncher />}
       {notice && (
         <div className="workspace-action-notice" role="status">
           {notice}
