@@ -1,0 +1,590 @@
+[
+  {
+    "file": "screens/desktop/en/analytics-sentiment.png",
+    "route": "#/analytics-sentiment",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1580
+    },
+    "sha256": "fab1a66497f0dc260697f5a753e6755c5e96423b1c94e13226aeb46f65db8ed6"
+  },
+  {
+    "file": "screens/desktop/en/analytics-aspects.png",
+    "route": "#/analytics-aspects",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1634
+    },
+    "sha256": "f973029f4a3ed81025c9ed5ca9600948660400ad0f497d6b8d69de3a0823b5f4"
+  },
+  {
+    "file": "screens/desktop/en/analytics-topics.png",
+    "route": "#/analytics-topics",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1649
+    },
+    "sha256": "0d3cf7b054022a11e75cb7cc2ef43aaf5d4eb2721e33762e314b0e80a424a30d"
+  },
+  {
+    "file": "screens/desktop/en/analytics-trends.png",
+    "route": "#/analytics-trends",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1680
+    },
+    "sha256": "495884d328e163f43d83b1817afe33bc49ef50d2f55749bf4e12426075723c98"
+  },
+  {
+    "file": "screens/desktop/en/analytics-comparison.png",
+    "route": "#/analytics-comparison",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1635
+    },
+    "sha256": "28f6e27bd234440af825d3a2e886eda0263ad693eef7bec5fe61822cb1ae22e5"
+  },
+  {
+    "file": "screens/desktop/en/nuvia-assistant.png",
+    "route": "#/nuvia-assistant",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "4f6e792e9c3191e9432383ff6fb56bd33282f475ff2a136a4254762b724712c7"
+  },
+  {
+    "file": "screens/desktop/en/reports.png",
+    "route": "#/reports",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1030
+    },
+    "sha256": "d8bc173fdf44b3cdf8eb59d6a5b27bb08e85a766e65e370c62c96304a3c6d758"
+  },
+  {
+    "file": "screens/desktop/en/report-details.png",
+    "route": "#/report-details",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 2306
+    },
+    "sha256": "fd18e4226857b1edb47267142c3ef98440a9291a897cf2884980a5a0c3099c63"
+  },
+  {
+    "file": "screens/desktop/en/report-details-cairo.png",
+    "route": "#/report-details?id=cairo",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 2256
+    },
+    "sha256": "71894fcae16a35c197d0d7277801ea6d2ab695e0afcbafd17396a186eb39a65a"
+  },
+  {
+    "file": "screens/desktop/en/report-details-service.png",
+    "route": "#/report-details?id=service",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 2280
+    },
+    "sha256": "74737d1b12d4894ab459f8c14b12a135d46008c14e664feafbfc30b33cdbbf6a"
+  },
+  {
+    "file": "screens/desktop/en/report-details-august.png",
+    "route": "#/report-details?id=august",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 2221
+    },
+    "sha256": "8308b04dbe6cba68e9d823b3ad41c014ffff21a8b6377d5fbac317e801d92c47"
+  },
+  {
+    "file": "screens/desktop/en/feedbacks-loading.png",
+    "route": "#/feedbacks-loading",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1148
+    },
+    "sha256": "e4291882f8b67ddb11fde7819c981578e2a951dc74a4859ca0d7a2190d7fa972"
+  },
+  {
+    "file": "screens/desktop/en/feedbacks-no-results.png",
+    "route": "#/feedbacks-no-results",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1148
+    },
+    "sha256": "5404984dfd30343123d140a8544022e7a2c16e9ab72caa25501a636101a54b49"
+  },
+  {
+    "file": "screens/desktop/en/survey-all.png",
+    "route": "#/survey-all",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1116
+    },
+    "sha256": "25ea95dd2b6de2eaac18b3765f588e184014941b90717fdd315b65e03fa617f7"
+  },
+  {
+    "file": "screens/desktop/en/survey-empty.png",
+    "route": "#/survey-empty",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "402e5cc2b36c92e7f4605a590faaaeae30864eafaca34d920cb1e7f78f1ca0c3"
+  },
+  {
+    "file": "screens/desktop/en/survey-live.png",
+    "route": "#/survey-live",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "0d7c1d1204cb542f788e4edea29d09464c9ceb80b8c34458f7bd84c44c0d8ac2"
+  },
+  {
+    "file": "screens/desktop/en/survey-drafts.png",
+    "route": "#/survey-drafts",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "a9f1c4810f1e137064a443c2012c3547dbf779dc28a58dfe659d90c49c5cb75c"
+  },
+  {
+    "file": "screens/desktop/en/survey-paused.png",
+    "route": "#/survey-paused",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "4dbe8f2bd223f1d34b7c70c6c1048907f487445d9d3d2ed4657eae82835a4a22"
+  },
+  {
+    "file": "screens/desktop/en/survey-closed.png",
+    "route": "#/survey-closed",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "6c01a8853d2376e6c697cc5e56dc337091a15f3246547f95b3fa6137a5c717a4"
+  },
+  {
+    "file": "screens/desktop/en/survey-create.png",
+    "route": "#/survey-create",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1157
+    },
+    "sha256": "0240dc236b4c307a4267e54831f36673b2340b55b08a6a483d6230a6f881b132"
+  },
+  {
+    "file": "screens/desktop/en/survey-questions.png",
+    "route": "#/survey-questions",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1196
+    },
+    "sha256": "a5484b1a898bddd4d262a6bc1c7dee7afe0685d6d6c6e0cc43619aff623bd946"
+  },
+  {
+    "file": "screens/desktop/en/survey-choices.png",
+    "route": "#/survey-choices",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1268
+    },
+    "sha256": "e4b4242d5e416b49e3f15a5cd39f1e1a73c98c278236acee2b4b8a78c79e70d8"
+  },
+  {
+    "file": "screens/desktop/en/survey-edit.png",
+    "route": "#/survey-edit",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1256
+    },
+    "sha256": "9694c2c38d2a3d451ed165f7e79a8ebf3c0c100f3d219a87294952298f1e2d3e"
+  },
+  {
+    "file": "screens/desktop/en/survey-share.png",
+    "route": "#/survey-share",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1198
+    },
+    "sha256": "810d28ab274999f4c5c25f1080df616aa5630ce963a14a9af0868af9495c1d30"
+  },
+  {
+    "file": "screens/desktop/en/survey-ai.png",
+    "route": "#/survey-ai",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "846fafe54f5c9a8461b91eca0c839ea36e99405a41edaf4f31b605ec0f942fd8"
+  },
+  {
+    "file": "screens/desktop/en/survey-ai-review.png",
+    "route": "#/survey-ai-review",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 962
+    },
+    "sha256": "e6761bab980ac232754ccb4b9f425b2db63506d44c21477f795c34a017b0b47a"
+  },
+  {
+    "file": "screens/desktop/en/survey-results.png",
+    "route": "#/survey-results",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "d55aebea2c0caaa80e6afd8e3526a023bf8f79bfcece2b11fda7216af0f9040a"
+  },
+  {
+    "file": "screens/desktop/en/landing.png",
+    "route": "#/landing",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 4155
+    },
+    "sha256": "8bf1e4843a7be4eb8616c62f9925fe2d83dc15d5f540854ffd9aec2479926dcc"
+  },
+  {
+    "file": "screens/desktop/en/dashboard.png",
+    "route": "#/dashboard",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1390
+    },
+    "sha256": "310fc76e9b861cab34707f38a3e16c9493907f53706a07c3c9988d9140c14557"
+  },
+  {
+    "file": "screens/desktop/en/dashboard-empty.png",
+    "route": "#/dashboard-empty",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "b6c258664c39132c86b3146aa2204049b4547e5373f063b60198544f3f5d8c8d"
+  },
+  {
+    "file": "screens/desktop/en/feedbacks.png",
+    "route": "#/feedbacks",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1148
+    },
+    "sha256": "e4291882f8b67ddb11fde7819c981578e2a951dc74a4859ca0d7a2190d7fa972"
+  },
+  {
+    "file": "screens/desktop/en/feedbacks-empty.png",
+    "route": "#/feedbacks-empty",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1120
+    },
+    "sha256": "1219cb6a8db886d9e98920f4760f6aa2dde1388223517d8b938649e9bef2b4b5"
+  },
+  {
+    "file": "screens/desktop/en/feedback-details-1248.png",
+    "route": "#/feedback-details?id=1248",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1061
+    },
+    "sha256": "7f9ea41a0d954a9ad750299c34ce51c34786719cc8e6f5ef77c304980e075e31"
+  },
+  {
+    "file": "screens/desktop/en/login.png",
+    "route": "#/login",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "0a39c4eac52bfbb66d84c45eb59e9691dab92b13216e9d8f741d889472250cdf"
+  },
+  {
+    "file": "screens/desktop/en/signup.png",
+    "route": "#/signup",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 1008
+    },
+    "sha256": "0dbdaebb14e8ce8f453a181471b287305961e0281024c402ef0ff6d4dac49ec4"
+  },
+  {
+    "file": "screens/desktop/en/forgot.png",
+    "route": "#/forgot",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "e809aeeb5d3db76a88742eee3d65b8b497a87034e927aaa63036fd948d26d1cb"
+  },
+  {
+    "file": "screens/desktop/en/reset.png",
+    "route": "#/reset",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "0313f3574650443a5e4729b23c82f7ea5543209c95683eb0289447a68d59f1fb"
+  },
+  {
+    "file": "screens/desktop/en/verify-email.png",
+    "route": "#/verify-email",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "878d8fac5d5368cb5e691fe5e3f563f1cc7510ed1c235a6839b3c7bde3740ff4"
+  },
+  {
+    "file": "screens/desktop/en/business-information.png",
+    "route": "#/business-information",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "3890312d74253585eb7c8bf0dda25fba8886f3a6d6622b441755fd7549db7324"
+  },
+  {
+    "file": "screens/desktop/en/business-error.png",
+    "route": "#/business-error",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "07f041ea4865f39af30bb8f2016d2019cc3b4d8af7b5b0acfed5052629a66dc7"
+  },
+  {
+    "file": "screens/desktop/en/business-setup.png",
+    "route": "#/business-setup",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "274d400c978696da399501fb3adb4a26adae81a95a7750aa1b5912239379d24c"
+  },
+  {
+    "file": "screens/desktop/en/get-started.png",
+    "route": "#/get-started",
+    "language": "en",
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "image": {
+      "width": 1440,
+      "height": 960
+    },
+    "sha256": "c56021f0796b7441c79c6c3057af4255c4de9398503ad1ea6bac2382bfc1791e"
+  }
+]
