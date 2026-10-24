@@ -186,7 +186,7 @@ export default function Assistant({ presentationOnly = false }) {
                     {ar ? 'مراجعة Google · القاهرة · 18 سبتمبر' : 'Google review · Cairo · Sep 18'}
                   </cite>
                 </blockquote>
-                <a href="#/feedbacks" onClick={() => setOpen(false)}>
+                <a href="/preview/#/feedbacks" onClick={() => setOpen(false)}>
                   {ar ? 'عرض الآراء الداعمة' : 'View supporting feedback'}{' '}
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path
@@ -220,7 +220,10 @@ export default function Assistant({ presentationOnly = false }) {
                 </small>
                 <p dir="auto">{m.text}</p>
                 {m.role === 'assistant' && m.topic !== 'other' && (
-                  <a href={'#/feedbacks?evidence=' + m.topic} onClick={() => setOpen(false)}>
+                  <a
+                    href={'/preview/#/feedbacks?evidence=' + m.topic}
+                    onClick={() => setOpen(false)}
+                  >
                     {ar ? 'راجع الأدلة المتاحة' : 'Review available evidence'} ↗
                   </a>
                 )}

@@ -57,10 +57,59 @@ export default function HeaderMenus() {
       action,
     } = useProductView(),
     ref = useRef(null),
+    profileDialog = useRef(null),
+    profileTrigger = useRef(null),
     [profile, setProfile] = useState(false),
     [signingOut, setSigningOut] = useState(false),
     [position, setPosition] = useState({});
   const close = useCallback(() => setTopbarMenu(null), [setTopbarMenu]);
+  const profileOpen = Boolean(profile);
+  useEffect(() => {
+    if (!profileOpen) return;
+    const dialog = profileDialog.current;
+    const backdrop = dialog.parentElement;
+    const background = Array.from(document.body.children)
+      .filter((element) => element !== backdrop)
+      .map((element) => [element, element.getAttribute('inert')]);
+    background.forEach(([element]) => element.setAttribute('inert', ''));
+    const buttons = () => Array.from(dialog.querySelectorAll('button:not(:disabled)'));
+    const containFocus = (event) => {
+      if (!dialog.contains(event.target)) buttons()[0]?.focus();
+    };
+    const key = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setProfile(false);
+      } else if (event.key === 'Tab') {
+        const controls = buttons();
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener('focusin', containFocus);
+    dialog.addEventListener('keydown', key);
+    return () => {
+      document.removeEventListener('focusin', containFocus);
+      dialog.removeEventListener('keydown', key);
+      background.forEach(([element, inert]) => {
+        if (inert === null) element.removeAttribute('inert');
+        else element.setAttribute('inert', inert);
+      });
+      if (profileTrigger.current?.isConnected) profileTrigger.current.focus();
+    };
+  }, [profileOpen]);
+  const openProfile = (kind) => {
+    profileTrigger.current = topbarMenu.anchor;
+    close();
+    setProfile(kind);
+  };
   useEffect(() => {
     if (!topbarMenu) return;
     const place = () => {
@@ -142,23 +191,11 @@ export default function HeaderMenus() {
                   <small>{tr('Workspace owner')}</small>
                 </div>
               </header>
-              <button
-                className="workspace-menu-item"
-                onClick={() => {
-                  close();
-                  setProfile(true);
-                }}
-              >
+              <button className="workspace-menu-item" onClick={() => openProfile(true)}>
                 <MenuIcon name="profile" />
                 {tr('View profile')}
               </button>
-              <button
-                className="workspace-menu-item"
-                onClick={() => {
-                  close();
-                  setProfile('security');
-                }}
-              >
+              <button className="workspace-menu-item" onClick={() => openProfile('security')}>
                 <MenuIcon name="settings" />
                 {tr('Account & security')}
               </button>
@@ -241,14 +278,12 @@ export default function HeaderMenus() {
       {profile && (
         <div className="workspace-modal-backdrop" onClick={() => setProfile(false)}>
           <section
+            ref={profileDialog}
             className="workspace-profile-dialog"
             role="dialog"
             aria-modal="true"
             aria-label={tr(profile === 'security' ? 'Account & security' : 'Profile')}
             onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') setProfile(false);
-            }}
           >
             <span className="workspace-avatar workspace-account-avatar">
               <img src={asset('dashboard/overview/account-avatar.svg')} alt="" />

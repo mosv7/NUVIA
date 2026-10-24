@@ -116,9 +116,26 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
         logout.y >= 0 && logout.y + logout.height <= (width === 393 ? 800 : 900),
         'Sign out must remain reachable',
       );
-      await page.getByRole('button', { name: 'Profile', exact: true }).click();
+      await page.getByRole('button', { name: 'View profile', exact: true }).click();
+      const done = page.getByRole('button', { name: 'Done', exact: true });
+      await done.focus();
+      for (const key of ['Tab', 'Shift+Tab']) {
+        await page.keyboard.press(key);
+        assert.ok(await done.evaluate((element) => element === document.activeElement));
+      }
+      await page.keyboard.press('Escape');
+      assert.ok(
+        await page
+          .getByRole('button', { name: 'Profile', exact: true })
+          .evaluate((element) => element === document.activeElement),
+        'Closing the profile must return focus to the account trigger',
+      );
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     }
+    await page.getByRole('button', { name: 'Open Ask NUVIA' }).click();
+    await page.getByRole('link', { name: 'View supporting feedback' }).click();
+    await waitFor(() => page.url() === `${origin}/preview/#/feedbacks`);
+    await page.getByText('Design preview · معاينة التصميم').waitFor();
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/dashboard`);
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
