@@ -84,7 +84,10 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect(screen.queryByText('Bloom & Co.', { exact: true })).not.toBeInTheDocument();
   expect(screen.queryByText('12', { exact: true })).not.toBeInTheDocument();
   expect(screen.queryByRole('button', { name: 'Log out', exact: true })).not.toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Open Ask NUVIA' })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Open Ask NUVIA' }));
+  expect(screen.getByRole('dialog', { name: 'Ask NUVIA' })).toBeVisible();
+  expect(location.hash).toBe('#/dashboard');
+  fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
   expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
   expect(screen.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
@@ -189,7 +192,7 @@ it('opens the connected assistant workspace without sample conversations or metr
     },
   });
   open('dashboard');
-  fireEvent.click(await screen.findByRole('button', { name: 'Open Ask NUVIA' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'NUVIA Assistant', exact: true }));
   expect(await screen.findByText('AI Assistant', { exact: true })).toBeVisible();
   expect(
     screen.getByText(
