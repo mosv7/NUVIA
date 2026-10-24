@@ -24,6 +24,8 @@ export default function WorkspaceScopeControls() {
       <button
         className="f64"
         data-name="Workspace date filter"
+        aria-label={tr('Choose date range') + ': ' + overviewDateLabel(dashboard.filters, language)}
+        title={overviewDateLabel(dashboard.filters, language)}
         type="button"
         onClick={dashboard.openDate}
       >
@@ -31,6 +33,7 @@ export default function WorkspaceScopeControls() {
           <ControlIcon name="date" />
         </div>
         <p className="f65">{overviewDateLabel(dashboard.filters, language)}</p>
+        <span className="workspace-date-short-label">{tr('Date')}</span>
       </button>
     </>
   );
