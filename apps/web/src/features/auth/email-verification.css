@@ -310,3 +310,45 @@
     transform: none !important;
   }
 }
+
+/* Account headers keep the approved arrow-only/brand order on every viewport. */
+#root .auth-layout .auth-panel > header,
+#root .auth-layout:has(.auth-content.signup) .auth-panel > header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+}
+#root .auth-layout .auth-panel > header > .back,
+#root .auth-layout:has(.auth-content.signup) .auth-panel > header > .back {
+  order: -1 !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 0 0 40px;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 0 !important;
+}
+#root .auth-layout .auth-panel > header > .back :is(img, svg) {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+#root .auth-layout .auth-panel > header > .brand,
+#root .auth-layout:has(.auth-content.signup) .auth-panel > header > .brand {
+  display: flex !important;
+  order: 0 !important;
+  margin-inline-start: auto;
+}
+#root .auth-layout .back-text {
+  display: none;
+}
+[dir='rtl'] .auth-layout .auth-panel > header > .back svg {
+  transform: rotate(180deg);
+}

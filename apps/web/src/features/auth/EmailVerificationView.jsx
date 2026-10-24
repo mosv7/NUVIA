@@ -184,7 +184,7 @@ export default function EmailVerificationView({
           <div className="brand">
             <strong>NUVIA</strong>
           </div>
-          <a className="back" href="#/landing">
+          <a className="back" href="#/landing" aria-label={t.back} title={t.back}>
             <Arrow />
             {t.back}
           </a>

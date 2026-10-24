@@ -35,6 +35,7 @@ export default function AuthPage({
           <button
             className="back"
             aria-label={t.back}
+            title={t.back}
             onClick={() => {
               location.hash = '/landing';
             }}
