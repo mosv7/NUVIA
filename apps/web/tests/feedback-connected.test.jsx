@@ -23,6 +23,8 @@ it.each(['feedbacks', 'feedbacks-empty', 'feedback-details'])(
       await screen.findByRole('heading', { name: 'Your first response starts here' }),
     ).toBeVisible();
     expect(screen.getByRole('region', { name: 'Filters' })).toBeVisible();
+    expect(document.querySelectorAll('.feedback-filter')).toHaveLength(6);
+    expect(screen.getByRole('button', { name: 'Segment', exact: true })).toBeDisabled();
     expect(screen.getByRole('table')).toBeVisible();
     expect(screen.getByText('0 responses', { exact: true })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Export', exact: true })).toBeDisabled();
