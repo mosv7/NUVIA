@@ -1,8 +1,0 @@
-{
-  "widths": [360, 600, 768, 820, 851, 1024, 1180, 1366],
-  "uiLanguages": ["en", "ar"],
-  "checks": 672,
-  "screens": 42,
-  "outOfViewportFindings": 0,
-  "scope": "Visible main content viewport bounds; not an exhaustive overlap or physical-device test."
-}
