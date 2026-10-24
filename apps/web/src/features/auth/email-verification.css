@@ -352,3 +352,8 @@
 [dir='rtl'] .auth-layout .auth-panel > header > .back svg {
   transform: rotate(180deg);
 }
+
+/* The rounded field wrapper owns the visible keyboard focus ring. */
+#root .auth-layout .input-wrap input:focus-visible {
+  outline: none;
+}
