@@ -18,9 +18,11 @@ The delivery preserves the monorepo's connected authentication provider, access 
 - Web ESLint completed with zero errors and zero warnings.
 - Connected authentication/workspace and preview tests passed locally.
 - 672 viewport-bound checks covered 42 screens/states, both languages and eight widths.
-- 42 fresh English desktop screenshots are published. Phone, Arabic and tablet images are excluded at the user's request.
+- 168 fresh screenshots cover desktop and phone in English and Arabic. Tablet layouts were checked during the responsive audit; tablet images are excluded.
 - Date selection, sort direction, branch selection/Done and contextual return controls were checked in the preview.
 
 ## Limits
 
 These are browser-emulated viewport checks, not physical iPad/Safari acceptance. Database, mail delivery and real backend integration must be tested with the project's private environment after integration. Generated preview reports and survey actions do not establish implemented backend services.
+
+The Segment filter is restored with a regression assertion for all six disabled connected-account filters. The account browser lifecycle and all CI jobs passed after the correction.
