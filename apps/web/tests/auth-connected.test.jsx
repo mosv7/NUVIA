@@ -86,9 +86,11 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect(screen.queryByRole('button', { name: 'Log out', exact: true })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Open Ask NUVIA' }));
   expect(screen.getByRole('dialog', { name: 'Ask NUVIA' })).toBeVisible();
+  expect(screen.getByText('Cairo’s wait times need a closer look')).toBeVisible();
+  expect(screen.getByText('Data and replies in this preview are illustrative.')).toBeVisible();
   expect(location.hash).toBe('#/dashboard');
   fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
-  expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
+  expect(screen.getByText('Cairo’s wait times need a closer look')).not.toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
   expect(screen.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
   expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
