@@ -91,6 +91,10 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect(location.hash).toBe('#/dashboard');
   fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
   expect(screen.getByText('Cairo’s wait times need a closer look')).not.toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Notifications', exact: true }));
+  expect(
+    screen.getByText('No notifications yet. Updates about your workspace will appear here.'),
+  ).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
   expect(screen.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
   expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
