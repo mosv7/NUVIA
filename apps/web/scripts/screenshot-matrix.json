@@ -48,7 +48,12 @@
       "name": "desktop",
       "width": 1440,
       "height": 960
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
     }
   ],
-  "languages": ["en"]
+  "languages": ["en", "ar"]
 }

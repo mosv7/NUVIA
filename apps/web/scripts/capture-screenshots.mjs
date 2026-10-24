@@ -56,6 +56,7 @@ try {
           fullPage: true,
           animations: 'disabled',
         });
+        await fs.rm(destination.replace(/\.png$/, '.jpg'), { force: true });
         assert.equal(errors.length, 0, `${route}: ${errors.join('; ')}`);
         assert.equal(
           await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
