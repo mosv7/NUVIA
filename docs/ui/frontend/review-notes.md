@@ -43,7 +43,7 @@ The original Frontend folder remains the visual reference. The final review visi
 
 Business onboarding now shows the shared blue globe at desktop and narrow sizes. Its text inputs use the rounded wrapper focus ring without a second rectangular outline.
 
-Connected Overview and Feedbacks retain the floating assistant: clicking it opens the reviewed panel above the current page without changing the route. The sidebar opens the complete assistant workspace. Connected assistant states use saved business/branch labels, zero responses, and explicit unavailable-service copy; they do not generate illustrative answers. Account menus retain View profile and Account & security with saved identity, and Sign out calls the real logout endpoint. The separate bottom logout button is removed.
+Connected Overview and Feedbacks retain the floating assistant: clicking it opens the reviewed panel above the current page without changing the route. The sidebar opens the complete assistant workspace. The complete connected assistant workspace uses saved business/branch labels, zero responses and an explicit unavailable-service state. At the user’s request the floating panel preserves the original illustrative cards and local sample replies, with its existing illustrative-content footer. It does not call an AI backend. Account menus retain View profile and Account & security with saved identity, and Sign out calls the real logout endpoint. The separate bottom logout button is removed.
 
 The unreferenced legacy assistant module, launcher export and nine old style rules were removed. Its separate stylesheet was removed after the import audit confirmed it had no remaining consumer. All 117 remaining source modules/styles are reachable from the web entry point.
 
