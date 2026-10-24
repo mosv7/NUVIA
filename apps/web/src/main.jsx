@@ -23,3 +23,7 @@ createRoot(document.getElementById('root')).render(
 );
 
 import './styles/review.css';
+
+import './styles/mobile-workspace.css';
+
+import './styles/tablet-workspace.css';
