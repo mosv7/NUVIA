@@ -1,13 +1,13 @@
 import GlobalSearch from '../../components/layout/GlobalSearch.jsx';
 import HeaderMenus from '../../components/layout/HeaderMenus.jsx';
-import { routeForAction } from '../../components/layout/navigation.js';
+import { useRouteState, routeForAction } from '../../components/layout/navigation.js';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import arabic from '../../lib/i18n/product-ar.json';
 import { arabicUiNumbers } from '../../lib/number-format.js';
 import { useAuth } from './AuthProvider.jsx';
 const englishCopy = {
-  Feedbacks: 'Feedback',
-  'All feedbacks': 'All feedback',
+  Feedbacks: 'Feedbacks',
+  'All feedbacks': 'All feedbacks',
   'Cafe &workspace': 'Café & workspace',
 };
 const ProductContext = createContext(null);
@@ -27,7 +27,7 @@ export function ProductProvider({
   preview = false,
 }) {
   const identity = useAuth()?.user;
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useRouteState('feedback-query', '');
   const [workspaceQuery, setWorkspaceQuery] = useState('');
   const [topbarMenu, setTopbarMenu] = useState(null);
   const openTopbar = (kind, anchor) =>
