@@ -141,11 +141,21 @@ export default function LandingPage({ language, setLanguage }) {
               {c.heroEnd}
             </h1>
             <p className="hero-description">{c.heroBody}</p>
+            <button
+              className="primary hero-explore hero-explore-desktop"
+              onClick={() => scroll('platform')}
+            >
+              {c.explore}
+              <img src={icon('imgIcon11')} alt="" />
+            </button>
           </div>
           <div className="hero-dashboard" ref={previewRef} role="group" aria-label={c.previewLabel}>
             <IntelligenceMotion language={language} variant={variant} />
           </div>
-          <button className="primary hero-explore" onClick={() => scroll('platform')}>
+          <button
+            className="primary hero-explore hero-explore-mobile"
+            onClick={() => scroll('platform')}
+          >
             {c.explore}
             <img src={icon('imgIcon11')} alt="" />
           </button>
