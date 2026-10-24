@@ -81,7 +81,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "7ca9a5c7055111733eef26c12ac46c87b0733d794f4fcfeae72e0265b4f57b5d"
+    "sha256": "adc5a5e5d53c489ef4978eb253242ae97f31aa6740a852d1095a885c0cc6f80d"
   },
   {
     "file": "screens/desktop/ar/business-information.jpg",
@@ -95,7 +95,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a7a2e1940a025756e84d4683277a8498517977489687e4fb9ad15e149af7e8b4"
+    "sha256": "f740b02472fb5d377ed33a4f49aa3865bfde1b27a0a4dfdfdd386eff0294041d"
   },
   {
     "file": "screens/desktop/ar/business-setup.jpg",
@@ -109,7 +109,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "fcb4bcf96a32a4484bc8194f69235080e9196138d9ea92884baabdc65e236ffd"
+    "sha256": "9ec8425348f7f485bb7eb16f1a227861a8e1cb4e37a4af17e7b7fe5b26cc32e9"
   },
   {
     "file": "screens/desktop/ar/dashboard-empty.jpg",
@@ -235,7 +235,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "ec212c8221619ffa574bd1092c88169d5ff3cf3ac6520e2120955b789a866450"
+    "sha256": "bd2947eafcc6a5e0ecab68d24718c2f953a7b6adadc2494765f7071ffc88f8a5"
   },
   {
     "file": "screens/desktop/ar/landing.jpg",
@@ -697,7 +697,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "07f041ea4865f39af30bb8f2016d2019cc3b4d8af7b5b0acfed5052629a66dc7"
+    "sha256": "07dab30d62c37b06a257a0726e9c5427957059921f07c4893bfb46715273d441"
   },
   {
     "file": "screens/desktop/en/business-information.png",
@@ -711,7 +711,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "3890312d74253585eb7c8bf0dda25fba8886f3a6d6622b441755fd7549db7324"
+    "sha256": "da4bc8d92adcbe171299528fcdb1edae70dae66b3d6f8aa470de8ae6a35547e6"
   },
   {
     "file": "screens/desktop/en/business-setup.png",
@@ -725,7 +725,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "274d400c978696da399501fb3adb4a26adae81a95a7750aa1b5912239379d24c"
+    "sha256": "d158c20eb5f7262100fe97a438e76b40078c25a48d0a1445483555b03f17f4c4"
   },
   {
     "file": "screens/desktop/en/dashboard-empty.png",
@@ -851,7 +851,7 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "c56021f0796b7441c79c6c3057af4255c4de9398503ad1ea6bac2382bfc1791e"
+    "sha256": "93ead90e3e0265fea675b79673fe233bbfabc5371b2986017a40a76f5121b672"
   },
   {
     "file": "screens/desktop/en/landing.png",
@@ -1313,7 +1313,7 @@
       "width": 390,
       "height": 1307
     },
-    "sha256": "f26e106d44b9002c879a538fbae09e5ea64e99c369a94d1f65e4d92175dc94a9"
+    "sha256": "80c7fd8d2eeac259c0236a8afa9a8657d22c648009009dc720d138433582ff55"
   },
   {
     "file": "screens/mobile/ar/business-information.jpg",
@@ -1327,7 +1327,7 @@
       "width": 390,
       "height": 1260
     },
-    "sha256": "0fcdaadaea79d31025a663e6417ff6f0dee305a89ed73f498336618f02f1f878"
+    "sha256": "c980e5cb2c8d45aeaa0aabf6e4ffcd41a5ca4c0f48462784f7100dcc24526ea4"
   },
   {
     "file": "screens/mobile/ar/business-setup.jpg",
@@ -1341,7 +1341,7 @@
       "width": 390,
       "height": 1364
     },
-    "sha256": "9a5db6fa0c046cc169cc09fd24636db413ce9bc316f611df15f6e121a0f6391e"
+    "sha256": "018e02206f466994dd9b9ba7039e033cf8cf5e2288b9cdf527707e4d7a684551"
   },
   {
     "file": "screens/mobile/ar/dashboard-empty.jpg",
@@ -1467,7 +1467,7 @@
       "width": 390,
       "height": 1434
     },
-    "sha256": "390d4e3f8cf9887a4d5ee7a7a876aa90171cebae16b2d721ea9bfd9f7be17397"
+    "sha256": "948feb1aafd33805713bae8c7e3e3aafcd05bd34bbf61f064d7fa62dd4bee743"
   },
   {
     "file": "screens/mobile/ar/landing.jpg",
@@ -1929,7 +1929,7 @@
       "width": 390,
       "height": 1282
     },
-    "sha256": "1d8d4b42b33695e3a24778535881c2e2bfb04a173557e2e1b2ef76a1a9dad0dd"
+    "sha256": "8bb63f96d6db63f9988cfc79a4ba4de0f4bb8da9b82f4eb7e72de6a0615a3ee2"
   },
   {
     "file": "screens/mobile/en/business-information.jpg",
@@ -1943,7 +1943,7 @@
       "width": 390,
       "height": 1228
     },
-    "sha256": "17f1bde51897401a7cda051840f6dc68a36f7366d594d32964e5e3e058f67432"
+    "sha256": "325151f7685171d5805be74a0413e4d29842b2b8e371a716e735b8076c038951"
   },
   {
     "file": "screens/mobile/en/business-setup.jpg",
@@ -1957,7 +1957,7 @@
       "width": 390,
       "height": 1362
     },
-    "sha256": "3177e1a413709c5febf906d73610d03545c1f4cb64eabc339e1fb06d2eb730ba"
+    "sha256": "575f11bf26652d6e80d4f1101eb7f4151a4ae35afd6a84105628748b04af8cf5"
   },
   {
     "file": "screens/mobile/en/dashboard-empty.jpg",
@@ -2083,7 +2083,7 @@
       "width": 390,
       "height": 1433
     },
-    "sha256": "cb21384466566a66a9943feb25599cf81efcc86f26210f00f8d2674271fa2aaf"
+    "sha256": "87f6bb646075cf4b5a215aa1e84ed95397f55b51c67214dba4a73f0505ede76c"
   },
   {
     "file": "screens/mobile/en/landing.jpg",
