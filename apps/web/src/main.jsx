@@ -27,3 +27,5 @@ import './styles/review.css';
 import './styles/mobile-workspace.css';
 
 import './styles/tablet-workspace.css';
+
+import './features/auth/email-verification.css';
