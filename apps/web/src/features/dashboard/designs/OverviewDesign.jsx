@@ -452,8 +452,8 @@ export default function OverviewDesign({ empty = false }) {
                   fontVariationSettings: '"opsz" 14',
                 }}
                 data-workspace-search={ui.preview ? '' : undefined}
-                aria-label={tr(ui.preview ? 'Search across pages' : 'Search your workspace')}
-                placeholder={tr(ui.preview ? 'Search across pages' : 'Search your workspace')}
+                aria-label={tr('Search across pages')}
+                placeholder={tr('Search across pages')}
                 value={ui.preview ? ui.workspaceQuery : ui.query}
                 onChange={(event) =>
                   (ui.preview ? ui.setWorkspaceQuery : ui.setQuery)(event.target.value)
@@ -478,16 +478,28 @@ export default function OverviewDesign({ empty = false }) {
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>
             </div>
-            <div className="f49" data-node-id="127:346" data-name="Notifications">
+            <button
+              type="button"
+              aria-label={tr('Notifications')}
+              aria-haspopup="dialog"
+              aria-expanded={ui.topbarMenu?.kind === 'notifications'}
+              onClick={(e) => ui.openTopbar('notifications', e.currentTarget)}
+              className="f49"
+              data-node-id="127:346"
+              data-name="Notifications"
+            >
               <img alt="" className="f5" src={imgNotifications} />
-            </div>
+            </button>
             <div className="f50" data-node-id="127:350" data-name="Divider" />
             <button
               className="f51"
               data-node-id="127:351"
               data-name="Profile"
               type="button"
-              onClick={() => ui.action('SA Sara Ahmed Workspace owner')}
+              aria-label={tr('Profile')}
+              aria-haspopup="dialog"
+              aria-expanded={ui.topbarMenu?.kind === 'profile'}
+              onClick={(e) => ui.openTopbar('profile', e.currentTarget)}
             >
               <div className="f52" data-node-id="127:352" data-name="Avatar">
                 <img
