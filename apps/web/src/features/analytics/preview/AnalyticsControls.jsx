@@ -1,10 +1,10 @@
 import UiArrow from '../../../components/ui/UiArrow.jsx';
 import { overviewDateLabel } from '../../dashboard/OverviewControls.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
-
-import React, { useState } from 'react';
+import { asset } from '../../../lib/assets.js';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import ChoiceMenu, { BranchMenu } from '../../../components/ui/ChoiceMenu.jsx';
-
+import '../../dashboard/WorkspaceScopeControls.jsx';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { getOverviewReport, defaultOverviewFilters } from '../../dashboard/overview-report.js';
 export const analyticsTabs = [
@@ -14,7 +14,6 @@ export const analyticsTabs = [
   ['trends', 'Trends & Signals'],
   ['comparison', 'Branch Comparison'],
 ];
-
 export function AnalyticsArrowText({ text }) {
   const { language, tr } = useProductView();
   const open = (e) => {
@@ -32,7 +31,6 @@ export function AnalyticsArrowText({ text }) {
       ['Cleanliness', 'Cleanliness', 'Cleanliness'],
       ['Ambience', 'Ambience', 'Ambience'],
     ];
-
     const found = groups.find(
       ([aspect, title]) => copy.includes(tr(title)) || copy.includes(tr(aspect)),
     );
@@ -134,75 +132,156 @@ export function DimensionResults() {
     </section>
   );
 }
-export function AnalyticsTabs() {
-  const { tr, analytics } = useProductView();
+function AnalyticsSectionIcon({ kind }) {
+  const names = {
+    sentiment: 'smile',
+    aspects: 'tag',
+    topics: 'message-square',
+    trends: 'chart-no-axes-combined',
+    comparison: 'file-chart-column',
+  };
+  const source = asset('dashboard/overview/' + names[kind] + '.svg');
   return (
-    <nav className="analytics-tabs" aria-label={tr('Analytics')}>
-      {analyticsTabs.map(([key, label]) => (
-        <a
-          key={key}
-          href={'#/analytics-' + key}
-          aria-current={analytics.kind === key ? 'page' : undefined}
-        >
-          {tr(label)}
-        </a>
-      ))}
-    </nav>
+    <span
+      className="analytics-section-icon"
+      data-section={kind}
+      aria-hidden="true"
+      style={{ maskImage: `url("${source}")`, WebkitMaskImage: `url("${source}")` }}
+    />
+  );
+}
+const analyticsTabScroll = { en: 0, ar: 0 };
+export function AnalyticsTabs() {
+  const { tr, analytics, language } = useProductView();
+  const tabsRef = useRef(null);
+  useLayoutEffect(() => {
+    const nav = tabsRef.current;
+    if (!nav || nav.scrollWidth <= nav.clientWidth) return;
+    nav.scrollLeft = analyticsTabScroll[language] || 0;
+    const active = nav.querySelector('[aria-current="page"]');
+    if (!active) return;
+    const bounds = nav.getBoundingClientRect();
+    const selected = active.getBoundingClientRect();
+    if (selected.left < bounds.left) nav.scrollLeft += selected.left - bounds.left;
+    else if (selected.right > bounds.right) nav.scrollLeft += selected.right - bounds.right;
+    analyticsTabScroll[language] = nav.scrollLeft;
+  }, [analytics.kind, language]);
+  return (
+    <>
+      <div className="analytics-mobile-navigation">
+        <ChoiceMenu
+          value={analytics.kind}
+          label={tr('Analytics')}
+          density="compact"
+          options={analyticsTabs.map(([value, label]) => ({
+            value,
+            label: tr(label),
+            icon: <AnalyticsSectionIcon kind={value} />,
+          }))}
+          onChange={(value) => {
+            location.hash = '/analytics-' + value;
+          }}
+        />
+      </div>
+      <nav
+        ref={tabsRef}
+        onScroll={(event) => {
+          analyticsTabScroll[language] = event.currentTarget.scrollLeft;
+        }}
+        className="analytics-tabs"
+        aria-label={tr('Analytics')}
+      >
+        {analyticsTabs.map(([key, label]) => (
+          <a
+            key={key}
+            href={'#/analytics-' + key}
+            aria-current={analytics.kind === key ? 'page' : undefined}
+          >
+            {tr(label)}
+          </a>
+        ))}
+      </nav>
+    </>
   );
 }
 export function AnalyticsFilters() {
   const { tr, analytics, dashboard, language } = useProductView();
   const { filters } = dashboard;
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const panelId = React.useId();
   const dateLabel = overviewDateLabel(filters, language);
   return (
-    <div className="analytics-filters" data-name="Shared filters">
+    <div className="analytics-filter-group" data-open={filtersOpen}>
       <button
         type="button"
-        className="analytics-date-button"
-        aria-label={tr('Choose date range')}
-        onClick={dashboard.openDate}
+        className="analytics-filter-toggle"
+        aria-expanded={filtersOpen}
+        aria-controls={panelId}
+        onClick={() => setFiltersOpen((value) => !value)}
       >
-        <ControlIcon name="date" />
-        <span>{dateLabel}</span>
+        {tr('Filters')}
+        <i className="filter-menu-chevron" aria-hidden="true" />
       </button>
-      <div className="analytics-select" data-control="branch">
-        <BranchMenu
-          tr={tr}
-          value={filters.branch}
-          onChange={(branch) => dashboard.setFilters((old) => ({ ...old, branch }))}
-        />
+      <p className="analytics-filter-summary">
+        {dateLabel} · {tr(filters.branch === 'all' ? 'All branches' : filters.branch)} ·{' '}
+        {tr(analytics.filters.language)}
+      </p>
+      <div id={panelId} className="analytics-filters" data-name="Shared filters">
+        <div className="analytics-date-field">
+          <span className="analytics-filter-label">{tr('Choose date range')}</span>
+          <button
+            type="button"
+            className="analytics-date-button"
+            aria-label={tr('Choose date range')}
+            onClick={dashboard.openDate}
+          >
+            <ControlIcon name="date" />
+            <span>{dateLabel}</span>
+          </button>
+        </div>
+        <div className="analytics-select" data-control="branch" data-field-label={tr('Branch')}>
+          <BranchMenu
+            tr={tr}
+            value={filters.branch}
+            onChange={(branch) => dashboard.setFilters((old) => ({ ...old, branch }))}
+          />
+        </div>
+        <div className="analytics-select" data-control="language" data-field-label={tr('Language')}>
+          <ChoiceMenu
+            label={tr('Language')}
+            value={analytics.filters.language}
+            onChange={(language) => analytics.setFilters((old) => ({ ...old, language }))}
+            options={['All languages', 'English', 'Arabic'].map((label) => ({
+              value: label,
+              label: tr(label),
+            }))}
+            icon={false}
+          />
+        </div>
+        <div
+          className="analytics-select analytics-survey-select"
+          data-control="survey"
+          data-field-label={tr('Survey')}
+        >
+          <ChoiceMenu
+            label={tr('Survey')}
+            value="survey"
+            onChange={() => {}}
+            options={[{ value: 'survey', label: tr('Customer experience survey') }]}
+            icon={false}
+          />
+        </div>
+        <button
+          className="analytics-reset"
+          disabled={!analytics.changed}
+          onClick={() => {
+            dashboard.setFilters({ ...defaultOverviewFilters });
+            analytics.setFilters({ language: 'All languages' });
+          }}
+        >
+          {tr('Reset')}
+        </button>
       </div>
-      <div className="analytics-select" data-control="language">
-        <ChoiceMenu
-          label={tr('Language')}
-          value={analytics.filters.language}
-          onChange={(language) => analytics.setFilters((old) => ({ ...old, language }))}
-          options={['All languages', 'English', 'Arabic'].map((label) => ({
-            value: label,
-            label: tr(label),
-          }))}
-          icon={false}
-        />
-      </div>
-      <div className="analytics-select analytics-survey-select" data-control="survey">
-        <ChoiceMenu
-          label={tr('Survey')}
-          value="survey"
-          onChange={() => {}}
-          options={[{ value: 'survey', label: tr('Customer experience survey') }]}
-          icon={false}
-        />
-      </div>
-      <button
-        className="analytics-reset"
-        disabled={!analytics.changed}
-        onClick={() => {
-          dashboard.setFilters({ ...defaultOverviewFilters });
-          analytics.setFilters({ language: 'All languages' });
-        }}
-      >
-        {tr('Reset')}
-      </button>
     </div>
   );
 }
@@ -374,9 +453,8 @@ const topics = {
   'Limited power sockets': { count: 12, quote: 'I couldn’t find a place to charge my laptop.' },
 };
 export function AnalyticsInteractions({ children, kind }) {
-  const { tr } = useProductView(),
-    [selected, setSelected] = useState(null),
-    [, ,] = useState('selected');
+  const { tr } = useProductView();
+  const [selected, setSelected] = useState(null);
   const exportData = () => {
     const text =
       '\uFEFF' +

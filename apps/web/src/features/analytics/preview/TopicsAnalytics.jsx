@@ -1,3 +1,4 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import React from 'react';
 import { asset } from '../../../lib/assets.js';
@@ -11,7 +12,7 @@ import {
   AnalyticsSmallSelect,
 } from './AnalyticsControls.jsx';
 import './analytics.css';
-const imgIcon = asset('preview/topics-imgIcon.svg');
+
 const imgInfo = asset('preview/topics-imgInfo.svg');
 export default function TopicsAnalytics() {
   const { tr, analytics } = useProductView();
@@ -20,8 +21,9 @@ export default function TopicsAnalytics() {
       <div className="an0" data-node-id="387:7477" data-name="Page content">
         <div className="an1" data-node-id="387:7478" data-name="Page introduction">
           <div className="an2" data-node-id="387:7479" data-name="Introduction">
-            <p className="an3" data-node-id="387:7480">
-              {tr('Topics & Complaints')}
+            <p className="an3" data-node-id="387:7480" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('Topics & Complaints')}</span>
             </p>
             <p
               className="an4"
@@ -569,13 +571,6 @@ export default function TopicsAnalytics() {
                       {tr('Topic-cluster details \u00b7 selected complaint')}
                     </p>
                   </div>
-                  <p
-                    className="an171"
-                    data-node-id="387:7617"
-                    style={{ fontVariationSettings: '"opsz" 14' }}
-                  >
-                    {tr('\u00d7')}
-                  </p>
                 </div>
                 <div className="an87" data-node-id="387:7618" data-name="Cluster status">
                   <div className="an88" data-node-id="387:7619" data-name="Status">

@@ -1,3 +1,4 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import ResponsiveChart from './ResponsiveChart.jsx';
 import React from 'react';
@@ -11,11 +12,11 @@ import {
   AnalyticsSmallSelect,
 } from './AnalyticsControls.jsx';
 import './analytics.css';
-const imgIcon = asset('preview/trends-imgIcon.svg');
+
 const imgInfo = asset('preview/trends-imgInfo.svg');
 const imgSeriesMarker = asset('preview/trends-imgSeriesMarker.svg');
 const imgSeriesMarker1 = asset('preview/trends-imgSeriesMarker1.svg');
-const imgChevronDown1 = asset('preview/trends-imgChevronDown1.svg');
+
 const imgTrendPoint = asset('preview/trends-imgTrendPoint.svg');
 const imgTrendPoint1 = asset('preview/trends-imgTrendPoint1.svg');
 const imgTrendLine = asset('preview/trends-imgTrendLine.svg');
@@ -30,8 +31,9 @@ export default function TrendsAnalytics() {
       <div className="an223" data-node-id="466:9230" data-name="Page content">
         <div className="an1" data-node-id="466:9231" data-name="Page introduction">
           <div className="an2" data-node-id="466:9232" data-name="Introduction">
-            <p className="an3" data-node-id="466:9233">
-              {tr('Trends & Signals')}
+            <p className="an3" data-node-id="466:9233" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('Trends & Signals')}</span>
             </p>
             <p
               className="an4"
@@ -267,7 +269,7 @@ export default function TrendsAnalytics() {
                 data-node-id="466:9314"
                 data-name="Historical trend and context"
               >
-                <ResponsiveChart width={792} height={235}>
+                <ResponsiveChart width={792} height={235} fillDesktop>
                   <div className="an227" data-node-id="466:9315" data-name="Historical trend chart">
                     <p
                       className="an228"

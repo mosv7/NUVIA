@@ -4195,3 +4195,117 @@
   font: 10px var(--ui-font, 'DM Sans', sans-serif);
   fill: #64738a;
 }
+
+/* Desktop charts fill their available canvas; chart controls remain aligned. */
+@media (min-width: 851px) {
+  #root .analytics-preview [data-name='Trends Overview'] [data-name='Trend controls'] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  #root .analytics-preview [data-name='Trends Overview'] [data-name='Chart settings'] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: auto;
+    transform: none;
+    align-self: center;
+  }
+  #root
+    .analytics-preview
+    [data-name='Trends Overview']
+    [data-name='Chart settings']
+    > .analytics-select {
+    min-height: 32px;
+    height: 32px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+  }
+  #root
+    .analytics-preview
+    [data-name='Trends Overview']
+    [data-name='Chart settings']
+    .choice-trigger {
+    min-height: 24px;
+    padding: 0 !important;
+  }
+  #root
+    .analytics-preview
+    [data-name='Trends Overview']
+    [data-name='Chart settings']
+    > [data-name='Status'] {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+  }
+  #root .analytics-preview [data-name='Trends Overview'] [data-name='Chart settings'] p {
+    margin: 0;
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+  #root .analytics-preview [data-name='Historical trend and context'] > .responsive-chart {
+    width: 100%;
+    min-width: 0;
+  }
+}
+@media (min-width: 1101px) {
+  #root .analytics-preview [data-name='Historical trend and context'] {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 26%);
+    gap: 16px;
+    align-items: start;
+  }
+  #root .analytics-preview [data-name='Historical context'] {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 851px) {
+  #root .analytics-preview .comparison-dimension-select {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  #root .analytics-preview .comparison-dimension-select > .choice-menu {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+  }
+  #root .analytics-preview .comparison-dimension-select .choice-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100% !important;
+    min-height: 38px;
+    padding: 0 !important;
+    gap: 10px;
+    text-align: start;
+  }
+  #root .analytics-preview .comparison-dimension-select .choice-trigger > span {
+    flex: 1;
+    min-width: 0;
+    white-space: normal;
+    line-height: 1.5;
+  }
+  #root .analytics-preview .comparison-dimension-select .choice-trigger::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    margin: -3px 2px 0;
+    border: 0;
+    border-right: 1.5px solid #64738a;
+    border-bottom: 1.5px solid #64738a;
+    transform: rotate(45deg);
+  }
+}

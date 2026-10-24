@@ -1,17 +1,26 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 
 // Preserve the chart's Figma geometry while fitting its complete canvas to the card.
-export default function ResponsiveChart({ width, height, children }) {
+export default function ResponsiveChart({ width, height, children, fillDesktop = false }) {
   const ref = useRef(null),
     [scale, setScale] = useState(1);
   useLayoutEffect(() => {
     const node = ref.current;
-    const resize = () => setScale(Math.min(1, node.clientWidth / width));
+    const resize = () => {
+      const availableScale = node.clientWidth / width;
+      setScale(
+        fillDesktop && window.innerWidth > 850 ? availableScale : Math.min(1, availableScale),
+      );
+    };
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(node);
-    return () => observer.disconnect();
-  }, [width]);
+    window.addEventListener('resize', resize);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', resize);
+    };
+  }, [width, fillDesktop]);
   return (
     <div
       ref={ref}

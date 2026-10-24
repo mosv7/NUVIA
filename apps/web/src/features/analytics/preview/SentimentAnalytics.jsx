@@ -1,3 +1,4 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import ResponsiveChart from './ResponsiveChart.jsx';
 import React from 'react';
@@ -11,7 +12,7 @@ import {
   AnalyticsArrowText,
 } from './AnalyticsControls.jsx';
 import './analytics.css';
-const imgIcon = asset('preview/sentiment-imgIcon.svg');
+
 const imgInfo = asset('preview/sentiment-imgInfo.svg');
 const imgSeriesMarker = asset('preview/sentiment-imgSeriesMarker.svg');
 const imgSeriesMarker1 = asset('preview/sentiment-imgSeriesMarker1.svg');
@@ -40,8 +41,9 @@ export default function SentimentAnalytics() {
       <div className="an0" data-node-id="306:1940" data-name="Page content">
         <div className="an1" data-node-id="306:1941" data-name="Page introduction">
           <div className="an2" data-node-id="306:1942" data-name="Introduction">
-            <p className="an3" data-node-id="306:1943">
-              {tr('Sentiment Analysis')}
+            <p className="an3" data-node-id="306:1943" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('Sentiment Analysis')}</span>
             </p>
             <p
               className="an4"
@@ -467,7 +469,7 @@ export default function SentimentAnalytics() {
                     </p>
                   </div>
                 </div>
-                <ResponsiveChart width={636} height={210}>
+                <ResponsiveChart width={636} height={210} fillDesktop>
                   <div className="an49" data-node-id="306:2066" data-name="Historical trend chart">
                     <p
                       className="an50"

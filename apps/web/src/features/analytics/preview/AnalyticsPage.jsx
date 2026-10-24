@@ -1,3 +1,4 @@
+import { useRouteState } from '../../../components/layout/navigation.js';
 import React, { useState } from 'react';
 import { useWorkspaceScale } from '../../../hooks/useWorkspaceScale.js';
 import { ProductProvider } from '../../../app/providers/ProductProvider.jsx';
@@ -22,8 +23,8 @@ export default function AnalyticsPage({ page, language, setLanguage }) {
   useWorkspaceScale();
   const kind = page.replace('analytics-', '');
   const [menuOpen, setMenuOpen] = useState(false),
-    [filters, setFilters] = useState({ ...defaultOverviewFilters }),
-    [extra, setExtra] = useState({ language: 'All languages' }),
+    [filters, setFilters] = useRouteState('analytics-scope', () => ({ ...defaultOverviewFilters })),
+    [extra, setExtra] = useRouteState('analytics-extra', { language: 'All languages' }),
     [dateOpen, setDateOpen] = useState(false);
   const tr = (text) => (language === 'ar' ? (arabic[text] ?? text) : text);
   const Screen = screens[kind] || SentimentAnalytics;

@@ -1,5 +1,6 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
-
+import './ResponsiveChart.jsx';
 import React, { useState } from 'react';
 import ChoiceMenu from '../../../components/ui/ChoiceMenu.jsx';
 import { asset } from '../../../lib/assets.js';
@@ -12,14 +13,12 @@ import {
   AnalyticsArrowText,
 } from './AnalyticsControls.jsx';
 import './analytics.css';
-const imgIcon = asset('preview/aspects-imgIcon.svg');
+
 const imgInfo = asset('preview/aspects-imgInfo.svg');
 const imgSeriesMarker = asset('preview/aspects-imgSeriesMarker.svg');
 const imgSeriesMarker1 = asset('preview/aspects-imgSeriesMarker1.svg');
 const imgSeriesMarker2 = asset('preview/aspects-imgSeriesMarker2.svg');
-const imgChevronDown2 = asset('preview/aspects-imgChevronDown2.svg');
-const imgTrendPoint = asset('preview/aspects-imgTrendPoint.svg');
-const imgTrendLine = asset('preview/aspects-imgTrendLine.svg');
+
 export default function AspectsAnalytics() {
   const { tr, analytics, formatNumber, language } = useProductView();
   const [trendAspect, setTrendAspect] = useState('Speed');
@@ -36,8 +35,9 @@ export default function AspectsAnalytics() {
       <div className="an0" data-node-id="369:7111" data-name="Page content">
         <div className="an1" data-node-id="369:7112" data-name="Page introduction">
           <div className="an2" data-node-id="369:7113" data-name="Introduction">
-            <p className="an3" data-node-id="369:7114">
-              {tr('Aspect-Based Analysis')}
+            <p className="an3" data-node-id="369:7114" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('Aspect-Based Analysis')}</span>
             </p>
             <p
               className="an4"
@@ -299,14 +299,12 @@ export default function AspectsAnalytics() {
                           data-name="Positive share"
                           style={{ width: '81%' }}
                         />
-
                         <div
                           className="an126"
                           data-node-id="369:7196"
                           data-name="Negative share"
                           style={{ width: '10%' }}
                         />
-
                         <div
                           className="an127"
                           data-node-id="369:7197"
@@ -373,14 +371,12 @@ export default function AspectsAnalytics() {
                           data-name="Positive share"
                           style={{ width: '65%' }}
                         />
-
                         <div
                           className="an131"
                           data-node-id="369:7209"
                           data-name="Negative share"
                           style={{ width: '20%' }}
                         />
-
                         <div
                           className="an132"
                           data-node-id="369:7210"
@@ -447,14 +443,12 @@ export default function AspectsAnalytics() {
                           data-name="Positive share"
                           style={{ width: '42%' }}
                         />
-
                         <div
                           className="an137"
                           data-node-id="369:7222"
                           data-name="Negative share"
                           style={{ width: '43%' }}
                         />
-
                         <div
                           className="an132"
                           data-node-id="369:7223"
@@ -521,14 +515,12 @@ export default function AspectsAnalytics() {
                           data-name="Positive share"
                           style={{ width: '88%' }}
                         />
-
                         <div
                           className="an140"
                           data-node-id="369:7235"
                           data-name="Negative share"
                           style={{ width: '7%' }}
                         />
-
                         <div
                           className="an141"
                           data-node-id="369:7236"
@@ -595,14 +587,12 @@ export default function AspectsAnalytics() {
                           data-name="Positive share"
                           style={{ width: '86%' }}
                         />
-
                         <div
                           className="an144"
                           data-node-id="369:7248"
                           data-name="Negative share"
                           style={{ width: '8%' }}
                         />
-
                         <div
                           className="an145"
                           data-node-id="369:7249"
@@ -751,7 +741,6 @@ export default function AspectsAnalytics() {
                     stroke="#1e68ef"
                     strokeWidth="2.5"
                   />
-
                   {trend.values.map((n, i) => (
                     <g key={i}>
                       <circle cx={50 + i * 105} cy={170 - n * 15} r="4" fill="#1e68ef">

@@ -1,3 +1,4 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import ResponsiveChart from './ResponsiveChart.jsx';
 import React from 'react';
@@ -11,7 +12,7 @@ import {
   AnalyticsInteractions,
 } from './AnalyticsControls.jsx';
 import './analytics.css';
-const imgIcon = asset('preview/comparison-imgIcon.svg');
+
 const imgInfo = asset('preview/comparison-imgInfo.svg');
 const imgSeriesMarker = asset('preview/comparison-imgSeriesMarker.svg');
 const imgSeriesMarker1 = asset('preview/comparison-imgSeriesMarker1.svg');
@@ -23,8 +24,9 @@ export default function ComparisonAnalytics() {
       <div className="an0" data-node-id="475:9550" data-name="Page content">
         <div className="an1" data-node-id="475:9551" data-name="Page introduction">
           <div className="an2" data-node-id="475:9552" data-name="Introduction">
-            <p className="an3" data-node-id="475:9553">
-              {tr('Branch Comparison')}
+            <p className="an3" data-node-id="475:9553" data-workspace-heading="true">
+              <HeadingBack />
+              <span>{tr('Branch Comparison')}</span>
             </p>
             <p
               className="an4"
