@@ -2943,7 +2943,9 @@
   line-height: normal;
   position: relative;
   flex-shrink: 0;
-  width: 314px;
+  width: auto;
+  min-width: 0;
+  flex: 1 1 0;
 }
 .surveys-content .sv257 {
   overflow-wrap: break-word;

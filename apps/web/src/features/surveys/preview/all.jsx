@@ -3,15 +3,14 @@ import React from 'react';
 import { asset } from '../../../lib/assets.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveyTableCheck, SurveySortButton } from './SurveyPrimitives.jsx';
-const imgDownload = asset('surveys-figma/all-imgDownload.svg');
+
 const imgPlus = asset('surveys-figma/all-imgPlus.svg');
 const imgIcon = asset('surveys-figma/all-imgIcon.svg');
 const imgRadio = asset('surveys-figma/all-imgRadio.svg');
 const imgIcon1 = asset('surveys-figma/all-imgIcon1.svg');
 const imgCircleCheck = asset('surveys-figma/all-imgCircleCheck.svg');
 const imgIcon2 = asset('surveys-figma/all-imgIcon2.svg');
-const imgStore = asset('surveys-figma/all-imgStore.svg');
-const imgArrowDownWideNarrow = asset('surveys-figma/all-imgArrowDownWideNarrow.svg');
+
 const imgIcon3 = asset('surveys-figma/all-imgIcon3.svg');
 const imgShare2 = asset('surveys-figma/all-imgShare2.svg');
 const imgPencil = asset('surveys-figma/all-imgPencil.svg');
@@ -211,9 +210,7 @@ export default function SurveyContent() {
               className="sv98"
               data-node-id="258:1903"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`All surveys  6`}
-            </UiText>
+            >{`All surveys  6`}</UiText>
             <div className="sv99" data-node-id="258:1904" data-name="Active indicator" />
           </button>
           <button
@@ -227,9 +224,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:1906"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Live  2`}
-            </UiText>
+            >{`Live  2`}</UiText>
             <div className="sv101" data-node-id="258:1907" data-name="Active indicator" />
           </button>
           <button
@@ -243,9 +238,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:1909"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Drafts  2`}
-            </UiText>
+            >{`Drafts  2`}</UiText>
             <div className="sv101" data-node-id="258:1910" data-name="Active indicator" />
           </button>
           <button
@@ -259,9 +252,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:1912"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Paused  1`}
-            </UiText>
+            >{`Paused  1`}</UiText>
             <div className="sv101" data-node-id="258:1913" data-name="Active indicator" />
           </button>
           <button
@@ -275,9 +266,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:1915"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Closed  1`}
-            </UiText>
+            >{`Closed  1`}</UiText>
             <div className="sv101" data-node-id="258:1916" data-name="Active indicator" />
           </button>
         </div>
@@ -386,9 +375,7 @@ export default function SurveyContent() {
                 className="sv121"
                 data-node-id="258:1947"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`6 questions · Arabic & English`}
-              </UiText>
+              >{`6 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:1948" data-name="Survey status">
@@ -484,9 +471,7 @@ export default function SurveyContent() {
                 className="sv121"
                 data-node-id="258:1971"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`3 questions · Arabic & English`}
-              </UiText>
+              >{`3 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:1972" data-name="Survey status">
@@ -582,9 +567,7 @@ export default function SurveyContent() {
                 className="sv121"
                 data-node-id="258:1995"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`5 questions · Arabic & English`}
-              </UiText>
+              >{`5 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:1996" data-name="Survey status">
@@ -667,9 +650,7 @@ export default function SurveyContent() {
                 className="sv121"
                 data-node-id="258:2015"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`4 questions · Arabic & English`}
-              </UiText>
+              >{`4 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:2016" data-name="Survey status">
@@ -745,16 +726,12 @@ export default function SurveyContent() {
                 className="sv130"
                 data-node-id="258:2034"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`Coffee & service check-in`}
-              </UiText>
+              >{`Coffee & service check-in`}</UiText>
               <UiText
                 className="sv121"
                 data-node-id="258:2035"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`4 questions · Arabic & English`}
-              </UiText>
+              >{`4 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:2036" data-name="Survey status">
@@ -850,9 +827,7 @@ export default function SurveyContent() {
                 className="sv121"
                 data-node-id="258:2059"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`6 questions · Arabic & English`}
-              </UiText>
+              >{`6 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:2060" data-name="Survey status">

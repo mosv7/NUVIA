@@ -2,13 +2,12 @@ import ReviewQuestion from './ReviewQuestion.jsx';
 import React, { useState } from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { asset } from '../../../lib/assets.js';
-
+import '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveyReviewMark } from './SurveyPrimitives.jsx';
 const imgRefreshCw = asset('surveys-figma/ai-review-imgRefreshCw.svg');
-const imgCheck = asset('surveys-figma/ai-review-imgCheck.svg');
-const imgPencilLine = asset('surveys-figma/ai-review-imgPencilLine.svg');
+
 const imgPlus = asset('surveys-figma/ai-review-imgPlus.svg');
-const imgCheck1 = asset('surveys-figma/ai-review-imgCheck1.svg');
+
 const imgFileCheck2 = asset('surveys-figma/ai-review-imgFileCheck2.svg');
 
 export default function PageContent() {
@@ -56,9 +55,7 @@ export default function PageContent() {
           className="sv10"
           data-node-id="298:633"
           style={{ fontVariationSettings: '"opsz" 14' }}
-        >
-          {`✓  Describe your survey`}
-        </UiText>
+        >{`✓  Describe your survey`}</UiText>
         <UiText
           className="sv11"
           data-node-id="298:634"
@@ -71,9 +68,7 @@ export default function PageContent() {
             className="sv13"
             data-node-id="298:636"
             style={{ fontVariationSettings: '"opsz" 14' }}
-          >
-            {`2  Review questions`}
-          </UiText>
+          >{`2  Review questions`}</UiText>
         </div>
         <UiText
           className="sv11"
@@ -86,9 +81,7 @@ export default function PageContent() {
           className="sv10"
           data-node-id="298:638"
           style={{ fontVariationSettings: '"opsz" 14' }}
-        >
-          {`3  Add to survey`}
-        </UiText>
+        >{`3  Add to survey`}</UiText>
       </div>
       <div className="sv14" data-node-id="298:639" data-name="Review workspace">
         <div className="sv15" data-node-id="298:640" data-name="Question suggestions">
@@ -115,28 +108,24 @@ export default function PageContent() {
               '5-point satisfaction',
               'How satisfied were you with the time it took to receive your order?',
             ],
-
             [
               '298:656',
               'Food quality',
               '5-star rating',
               'How would you rate the quality of the food and drinks you ordered?',
             ],
-
             [
               '298:668',
               'Staff friendliness',
               '5-point satisfaction',
               'How satisfied were you with the friendliness of our team today?',
             ],
-
             [
               '298:686',
               'Value for money',
               '5-point clarity',
               'How clear was the pricing for your order, including any combos?',
             ],
-
             [
               '298:698',
               'Overall experience',
@@ -323,9 +312,7 @@ export default function PageContent() {
                 className="sv53"
                 data-node-id="298:747"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`Cafe & workspace`}
-              </UiText>
+              >{`Cafe & workspace`}</UiText>
             </div>
             <UiText
               className="sv54"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { asset } from '../../../lib/assets.js';
-
+import '../../../components/ui/ControlIcon.jsx';
 import {
   UiText,
   SurveyField,
@@ -8,7 +8,7 @@ import {
   useSurveyEditor,
   SurveyReviewMark,
 } from './SurveyPrimitives.jsx';
-const imgFrame62 = asset('surveys-figma/create-imgFrame62.svg');
+
 const imgArrowLeft = asset('surveys-figma/create-imgArrowLeft.svg');
 const imgCheck = asset('surveys-figma/create-imgCheck.svg');
 const imgCircleCheck = asset('surveys-figma/create-imgCircleCheck.svg');
@@ -189,7 +189,6 @@ export default function SurveyContent() {
                 initialValue="Customer experience survey"
                 multiline={false}
               />
-
               <UiText
                 className="sv49"
                 data-node-id="259:4685"
@@ -215,7 +214,6 @@ export default function SurveyContent() {
                 }
                 multiline={true}
               />
-
               <UiText
                 className="sv49"
                 data-node-id="259:4690"
@@ -231,9 +229,7 @@ export default function SurveyContent() {
                 className="sv233"
                 data-node-id="259:4693"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`Languages & branches`}
-              </UiText>
+              >{`Languages & branches`}</UiText>
               <UiText
                 className="sv234"
                 data-node-id="259:4694"
@@ -581,9 +577,7 @@ export default function SurveyContent() {
                   className="sv260"
                   data-node-id="259:4774"
                   style={{ fontVariationSettings: '"opsz" 14' }}
-                >
-                  {`Overall experience & recommendation`}
-                </UiText>
+                >{`Overall experience & recommendation`}</UiText>
               </div>
               <div className="sv259" data-node-id="259:4775" data-name="Included feature">
                 <div className="sv148" data-node-id="259:4776" data-name="check">
@@ -593,9 +587,7 @@ export default function SurveyContent() {
                   className="sv260"
                   data-node-id="259:4778"
                   style={{ fontVariationSettings: '"opsz" 14' }}
-                >
-                  {`Food, service & value for money`}
-                </UiText>
+                >{`Food, service & value for money`}</UiText>
               </div>
               <div className="sv259" data-node-id="259:4779" data-name="Included feature">
                 <div className="sv148" data-node-id="259:4780" data-name="check">

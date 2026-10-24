@@ -1612,3 +1612,139 @@
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
+
+.survey-branch-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.survey-branch-filter fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.survey-branch-filter legend {
+  font-size: 12px;
+  color: #64738a;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.survey-branch-filter label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #dfe7f2;
+  border-radius: 8px;
+}
+.survey-branch-reset {
+  align-self: flex-start;
+  background: transparent;
+  color: #1e68ef;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+.survey-branch-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.survey-branch-actions button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.survey-branch-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.survey-branch-empty {
+  padding: 20px;
+  text-align: center;
+  line-height: 1.7;
+  border: 1px solid #dfe7f2;
+  border-radius: 10px;
+}
+.survey-branch-empty button {
+  margin-top: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+}
+#root .surveys-content [data-name='Survey row'][hidden] {
+  display: none !important;
+}
+
+.survey-modal.survey-branch-modal {
+  width: 340px;
+  max-width: calc(100vw - 32px);
+  padding: 20px;
+  box-sizing: border-box;
+}
+.survey-branch-modal .survey-branch-filter {
+  gap: 10px;
+}
+.survey-branch-modal .survey-branch-filter h2 {
+  font-size: 18px;
+  line-height: 1.4;
+  padding-inline-end: 24px;
+  margin: 0;
+}
+.survey-branch-modal .survey-branch-filter fieldset {
+  gap: 0;
+}
+.survey-branch-modal .survey-branch-filter legend {
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.survey-branch-modal .survey-branch-filter label {
+  border: 0;
+  border-bottom: 1px solid #edf1f7;
+  border-radius: 0;
+  min-height: 42px;
+  padding: 8px 2px;
+  gap: 9px;
+  margin: 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+.survey-branch-modal input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  accent-color: #2167ef;
+  margin: 0;
+}
+.survey-branch-modal .survey-branch-reset {
+  align-self: flex-start;
+  font-size: 12px;
+  padding: 4px 0;
+}
+.survey-branch-modal .survey-branch-actions {
+  padding-top: 8px;
+  gap: 8px;
+}
+.survey-branch-modal .survey-branch-actions button {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 13px;
+}
+
+.survey-branch-modal,
+.survey-branch-modal :is(h2, legend, label, button) {
+  font-family: var(--ui-font, 'DM Sans', sans-serif);
+  letter-spacing: normal;
+}
+.survey-branch-modal .survey-branch-filter h2 {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 1.5;
+  font-variation-settings: normal;
+}

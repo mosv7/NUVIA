@@ -1,6 +1,8 @@
+import { useRouteState } from '../../../components/layout/navigation.js';
+import { surveyBranches, matchesSurveyFilters } from './survey-branch-filter.js';
 import Results from './Results.jsx';
 import PreviewRating from './PreviewRating.jsx';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { ProductProvider } from '../../../app/providers/ProductProvider.jsx';
 import FeedbackShell from '../../../components/layout/WorkspaceShell.jsx';
 import { useWorkspaceScale } from '../../../hooks/useWorkspaceScale.js';
@@ -62,10 +64,15 @@ export default function SurveyPage({ page, language, setLanguage }) {
   useWorkspaceScale();
   const kind = page.replace('survey-', '');
   const Screen = screens[kind] || All;
+  const [branchFilter, setBranchFilter] = useRouteState('survey-branches', () =>
+    surveyBranches.map((branch) => branch.id),
+  );
+  const [branchDraft, setBranchDraft] = useState(() => surveyBranches.map((branch) => branch.id));
+  const [totalRows, setTotalRows] = useState(0);
   const [menu, setMenu] = useState(false),
     [notice, setNotice] = useState(''),
     [preview, setPreview] = useState(false),
-    [filter, setFilter] = useState(''),
+    [filter, setFilter] = useRouteState('survey-search', ''),
     [question, setQuestion] = useState(kind === 'choices' ? 2 : 1),
     [selected, setSelected] = useState(new Set()),
     [visibleIds, setVisibleIds] = useState([]),
@@ -82,7 +89,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
       const saved = localStorage.getItem('survey-editor-language');
       return enabled.includes(saved) ? saved : enabled[0];
     });
-  const tr = (t) => (language === 'ar' ? (arabic[t] ?? t) : t);
+  const tr = useCallback((t) => (language === 'ar' ? (arabic[t] ?? t) : t), [language]);
   const [startingPoint, setStartingPoint] = useState(
     () => localStorage.getItem('nuvia-survey-starting-point') || 'customer',
   );
@@ -126,23 +133,10 @@ export default function SurveyPage({ page, language, setLanguage }) {
     const saved = sessionStorage.getItem('survey-after-save');
     setNotice(saved ? tr(saved) : '');
     sessionStorage.removeItem('survey-after-save');
-    setFilter('');
     setSelected(new Set());
     if (!['questions', 'choices', 'edit'].includes(kind)) window.scrollTo(0, 0);
     if (saved) setTimeout(() => setNotice(''), 3500);
-  }, [page]);
-  useEffect(() => {
-    document.querySelectorAll('.surveys-content [data-name="Survey row"]').forEach((row) => {
-      row.hidden = !!filter && !row.textContent.toLowerCase().includes(filter.toLowerCase());
-    });
-    setVisibleIds(
-      [
-        ...document.querySelectorAll(
-          '.surveys-content [data-name="Survey row"]:not([hidden]) input[data-name="Select survey"]',
-        ),
-      ].map((input) => input.dataset.nodeId),
-    );
-  }, [filter, page]);
+  }, [page, kind, tr]);
   useEffect(() => {
     const id = pendingAddedQuestion.current;
     if (id !== activeQuestion) return;
@@ -170,9 +164,36 @@ export default function SurveyPage({ page, language, setLanguage }) {
     };
     const refresh = () => {
       const rows = [...document.querySelectorAll('.surveys-content [data-name="Survey row"]')];
+      const labels = {
+        all: tr('All 3 branches'),
+        ...Object.fromEntries(surveyBranches.map((branch) => [branch.id, tr(branch.label)])),
+      };
       rows.forEach((row) => {
-        row.hidden = !!filter && !row.textContent.toLowerCase().includes(filter.toLowerCase());
+        row.hidden = !matchesSurveyFilters({
+          text: row.textContent,
+          query: filter,
+          scope: row.querySelector('.sv125')?.textContent,
+          selectedBranches: branchFilter,
+          labels,
+        });
       });
+      setTotalRows(rows.length);
+      const searchInput = document.querySelector('.surveys-content .survey-search-input');
+      if (searchInput && searchInput.value !== filter) searchInput.value = filter;
+      const branchButton = document.querySelector(
+        '.surveys-content [data-survey-action="All 3 branches"]',
+      );
+      const branchText = branchButton?.querySelector('p');
+      if (branchText)
+        branchText.textContent =
+          branchFilter.length === 3
+            ? tr('All 3 branches')
+            : branchFilter.length === 1
+              ? tr(surveyBranches.find((branch) => branch.id === branchFilter[0]).label)
+              : language === 'ar'
+                ? branchFilter.length + ' فروع'
+                : branchFilter.length + ' branches';
+      branchButton?.setAttribute('aria-pressed', String(branchFilter.length < 3));
       const shown = rows.filter((row) => !row.hidden);
       setVisibleIds(
         shown.flatMap((row) =>
@@ -196,7 +217,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
       window.removeEventListener('survey-list-change', refresh);
       clearTimeout(timer);
     };
-  }, [page, language, filter]);
+  }, [page, language, filter, branchFilter, tr]);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText('https://nuvia.link/bloom-feedback');
@@ -470,7 +491,8 @@ export default function SurveyPage({ page, language, setLanguage }) {
       return;
     }
     if (/All 3 branches/.test(label)) {
-      setPreview('branches');
+      setBranchDraft([...branchFilter]);
+      setPreview('branch-filter');
       return;
     }
     if (/Last updated/.test(label)) {
@@ -533,6 +555,26 @@ export default function SurveyPage({ page, language, setLanguage }) {
               <SurveySelectionContext.Provider value={{ selected, setSelected, visibleIds }}>
                 <Screen key={page + '-' + language + '-' + question} question={activeQuestion} />
               </SurveySelectionContext.Provider>
+              {totalRows > 0 && visibleIds.length === 0 && (
+                <div className="survey-branch-empty" role="status">
+                  <p>
+                    {language === 'ar'
+                      ? 'لا توجد استبيانات تطابق البحث والفروع المختارة.'
+                      : 'No surveys match your search and selected branches.'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBranchFilter(surveyBranches.map((branch) => branch.id));
+                      setFilter('');
+                      const input = document.querySelector('.survey-search-input');
+                      if (input) input.value = '';
+                    }}
+                  >
+                    {tr('Reset')}
+                  </button>
+                </div>
+              )}
             </SurveyEditorContext.Provider>
           </div>
         </FeedbackShell>
@@ -544,7 +586,9 @@ export default function SurveyPage({ page, language, setLanguage }) {
         {preview && (
           <div className="survey-modal-backdrop" onClick={() => setPreview(false)}>
             <section
-              className="survey-modal"
+              className={
+                'survey-modal' + (preview === 'branch-filter' ? ' survey-branch-modal' : '')
+              }
               role="dialog"
               aria-modal="true"
               aria-label={tr('Preview')}
@@ -557,7 +601,58 @@ export default function SurveyPage({ page, language, setLanguage }) {
               >
                 ×
               </button>
-              {preview === 'branches' ? (
+              {preview === 'branch-filter' ? (
+                <div className="survey-branch-filter">
+                  <h2>{tr('Branches')}</h2>
+                  <button
+                    type="button"
+                    className="survey-branch-reset"
+                    onClick={() => setBranchDraft(surveyBranches.map((branch) => branch.id))}
+                  >
+                    {tr('All branches')}
+                  </button>
+                  <fieldset>
+                    <legend>
+                      {language === 'ar'
+                        ? 'عرض الاستبيانات التابعة للفروع المختارة'
+                        : 'Show surveys assigned to selected branches'}
+                    </legend>
+                    {surveyBranches.map((branch) => (
+                      <label key={branch.id}>
+                        <input
+                          type="checkbox"
+                          checked={branchDraft.includes(branch.id)}
+                          onChange={(event) =>
+                            setBranchDraft((current) =>
+                              event.target.checked
+                                ? [...current, branch.id]
+                                : current.filter((id) => id !== branch.id),
+                            )
+                          }
+                        />
+                        {tr(branch.label)}
+                      </label>
+                    ))}
+                  </fieldset>
+                  <div className="survey-branch-actions">
+                    <button type="button" onClick={() => setPreview(false)}>
+                      {tr('Cancel')}
+                    </button>
+                    <button
+                      type="button"
+                      className="survey-primary"
+                      disabled={!branchDraft.length}
+                      onClick={() => {
+                        setBranchFilter([...branchDraft]);
+                        setSelected(new Set());
+                        setPreview(false);
+                      }}
+                    >
+                      {language === 'ar' ? 'تم' : 'Done'}
+                    </button>
+                  </div>
+                </div>
+              ) : preview === 'branches' ? (
                 <>
                   <h2>{tr('All 3 branches')}</h2>
                   {['Cairo', 'Alexandria', 'Zamalek'].map((x) => (

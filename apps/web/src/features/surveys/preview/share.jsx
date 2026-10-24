@@ -4,22 +4,21 @@ import React from 'react';
 import { asset } from '../../../lib/assets.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveySwitch } from './SurveyPrimitives.jsx';
-const imgFrame62 = asset('surveys-figma/share-imgFrame62.svg');
+
 const imgArrowLeft = asset('surveys-figma/share-imgArrowLeft.svg');
 const imgPencil = asset('surveys-figma/share-imgPencil.svg');
 const imgExternalLink = asset('surveys-figma/share-imgExternalLink.svg');
 const imgCheck = asset('surveys-figma/share-imgCheck.svg');
 const imgCircleCheck = asset('surveys-figma/share-imgCircleCheck.svg');
 const imgSurveyQrCode = asset('surveys-figma/share-imgSurveyQrCode.svg');
-const imgDownload = asset('surveys-figma/share-imgDownload.svg');
-const imgDownload1 = asset('surveys-figma/share-imgDownload1.svg');
+
 const imgLink = asset('surveys-figma/share-imgLink.svg');
 const imgCopy = asset('surveys-figma/share-imgCopy.svg');
 const imgIcon = asset('surveys-figma/share-imgIcon.svg');
 const imgMessageCircle = asset('surveys-figma/share-imgMessageCircle.svg');
 const imgMail = asset('surveys-figma/share-imgMail.svg');
 const imgCopy1 = asset('surveys-figma/share-imgCopy1.svg');
-const imgStore = asset('surveys-figma/share-imgStore.svg');
+
 const imgQrCode = asset('surveys-figma/share-imgQrCode.svg');
 const imgLink1 = asset('surveys-figma/share-imgLink1.svg');
 const imgShieldCheck = asset('surveys-figma/share-imgShieldCheck.svg');
@@ -78,16 +77,9 @@ export default function SurveyContent() {
               data-name="Action"
               data-survey-action="Edit survey"
             >
-              <button
-                type="button"
-                className="sv6"
-                data-node-id="262:11765"
-                data-name="pencil"
-                data-survey-action="Edit survey"
-                aria-label="Edit survey"
-              >
+              <span className="sv6" data-node-id="262:11765" data-name="pencil" aria-hidden="true">
                 <img alt="" className="sv7" src={imgPencil} />
-              </button>
+              </span>
               <UiText
                 className="sv86"
                 data-node-id="262:11767"
@@ -203,9 +195,7 @@ export default function SurveyContent() {
             className="sv18"
             data-node-id="262:11795"
             style={{ fontVariationSettings: '"opsz" 14' }}
-          >
-            {`6 questions · About 2 minutes · Arabic & English · All 3 branches`}
-          </UiText>
+          >{`6 questions · About 2 minutes · Arabic & English · All 3 branches`}</UiText>
         </div>
         <UiText
           className="sv294"
@@ -222,9 +212,7 @@ export default function SurveyContent() {
               className="sv297"
               data-node-id="262:11800"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Let customers scan & share`}
-            </UiText>
+            >{`Let customers scan & share`}</UiText>
             <UiText
               className="sv298"
               data-node-id="262:11801"
@@ -330,9 +318,7 @@ export default function SurveyContent() {
               className="sv214"
               data-node-id="262:11825"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Include business name & invitation`}
-            </UiText>
+            >{`Include business name & invitation`}</UiText>
             <SurveySwitch className="sv215" />
           </div>
         </div>

@@ -3,15 +3,14 @@ import React from 'react';
 import { asset } from '../../../lib/assets.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveyTableCheck, SurveySortButton } from './SurveyPrimitives.jsx';
-const imgDownload = asset('surveys-figma/closed-imgDownload.svg');
+
 const imgPlus = asset('surveys-figma/closed-imgPlus.svg');
 const imgIcon = asset('surveys-figma/closed-imgIcon.svg');
 const imgRadio = asset('surveys-figma/closed-imgRadio.svg');
 const imgIcon1 = asset('surveys-figma/closed-imgIcon1.svg');
 const imgCircleCheck = asset('surveys-figma/closed-imgCircleCheck.svg');
 const imgIcon2 = asset('surveys-figma/closed-imgIcon2.svg');
-const imgStore = asset('surveys-figma/closed-imgStore.svg');
-const imgArrowDownWideNarrow = asset('surveys-figma/closed-imgArrowDownWideNarrow.svg');
+
 const imgIcon3 = asset('surveys-figma/closed-imgIcon3.svg');
 const imgIcon4 = asset('surveys-figma/closed-imgIcon4.svg');
 const imgPencil = asset('surveys-figma/closed-imgPencil.svg');
@@ -209,9 +208,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:4085"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`All surveys  6`}
-            </UiText>
+            >{`All surveys  6`}</UiText>
             <div className="sv229" data-node-id="258:4086" data-name="Active indicator" />
           </button>
           <button
@@ -225,9 +222,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:4088"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Live  2`}
-            </UiText>
+            >{`Live  2`}</UiText>
             <div className="sv101" data-node-id="258:4089" data-name="Active indicator" />
           </button>
           <button
@@ -241,9 +236,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:4091"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Drafts  2`}
-            </UiText>
+            >{`Drafts  2`}</UiText>
             <div className="sv101" data-node-id="258:4092" data-name="Active indicator" />
           </button>
           <button
@@ -257,9 +250,7 @@ export default function SurveyContent() {
               className="sv100"
               data-node-id="258:4094"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Paused  1`}
-            </UiText>
+            >{`Paused  1`}</UiText>
             <div className="sv101" data-node-id="258:4095" data-name="Active indicator" />
           </button>
           <button
@@ -273,9 +264,7 @@ export default function SurveyContent() {
               className="sv98"
               data-node-id="258:4097"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Closed  1`}
-            </UiText>
+            >{`Closed  1`}</UiText>
             <div className="sv99" data-node-id="258:4098" data-name="Active indicator" />
           </button>
         </div>
@@ -384,9 +373,7 @@ export default function SurveyContent() {
                 className="sv121"
                 data-node-id="258:4241"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`6 questions · Arabic & English`}
-              </UiText>
+              >{`6 questions · Arabic & English`}</UiText>
             </div>
           </div>
           <div className="sv122" data-node-id="258:4242" data-name="Survey status">

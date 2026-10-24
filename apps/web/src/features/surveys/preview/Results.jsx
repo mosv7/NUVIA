@@ -1,8 +1,9 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import React from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { createEditorQuestions } from './survey-editor.js';
 import { feedbackRows } from '../../feedback/feedback-data.js';
-
+import '../../../components/ui/ControlIcon.jsx';
 import { PreviewArrow } from '../../reports/preview/PreviewControls.jsx';
 export function distribution(total, weights) {
   const counts = weights.map((weight) => Math.floor((total * weight) / 100));
@@ -18,16 +19,22 @@ export default function Results() {
     ids = closed ? [1, 2, 3, 4, 5, 6] : [1, 3, 5, 6];
   const starCounts = distribution(total, [8, 12, 22, 30, 28]),
     average = starCounts.reduce((sum, value, index) => sum + value * (index + 1), 0) / total;
-
   return (
     <section className="survey-results">
       <header className="survey-results-heading">
         <div>
-          <button className="feedback-text-btn" onClick={() => (location.hash = '/survey-all')}>
+          <button
+            data-name="Back to surveys"
+            className="feedback-text-btn"
+            onClick={() => (location.hash = '/survey-all')}
+          >
             <PreviewArrow direction="back" />
             {tr('Back to surveys')}
           </button>
-          <h1>{tr('Survey results')}</h1>
+          <h1 className="workspace-heading">
+            <HeadingBack fallback="/survey-all" />
+            <span>{tr('Survey results')}</span>
+          </h1>
           <p>{tr(name)}</p>
         </div>
       </header>
@@ -65,7 +72,6 @@ export default function Results() {
                 ))}
               </details>
             );
-
           if (item.type === 'NPS') {
             labels =
               language === 'ar'
@@ -79,7 +85,6 @@ export default function Results() {
             labels = ['1', '2', '3', '4', '5'];
             weights = [8, 12, 22, 30, 28];
           }
-          const counts = distribution(total, weights);
           return (
             <article className="survey-results-card" key={id}>
               <h2>

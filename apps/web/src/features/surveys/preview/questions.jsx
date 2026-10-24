@@ -1,6 +1,6 @@
 import React from 'react';
 import { asset } from '../../../lib/assets.js';
-
+import '../../../components/ui/ControlIcon.jsx';
 import {
   UiText,
   SurveyField,
@@ -14,23 +14,17 @@ import {
   SurveyQuestionOutline,
   SurveyQuestionCount,
 } from './SurveyPrimitives.jsx';
-const imgFrame62 = asset('surveys-figma/questions-imgFrame62.svg');
-const imgIcon = asset('surveys-figma/questions-imgIcon.svg');
+
 const imgArrowLeft = asset('surveys-figma/questions-imgArrowLeft.svg');
 const imgCheck = asset('surveys-figma/questions-imgCheck.svg');
 const imgHand = asset('surveys-figma/questions-imgHand.svg');
-const imgStar = asset('surveys-figma/questions-imgStar.svg');
-const imgListChecks = asset('surveys-figma/questions-imgListChecks.svg');
-const imgStar1 = asset('surveys-figma/questions-imgStar1.svg');
-const imgGauge = asset('surveys-figma/questions-imgGauge.svg');
-const imgAlignLeft = asset('surveys-figma/questions-imgAlignLeft.svg');
+
 const imgHeart = asset('surveys-figma/questions-imgHeart.svg');
 const imgGripVertical = asset('surveys-figma/questions-imgGripVertical.svg');
 const imgCopy = asset('surveys-figma/questions-imgCopy.svg');
 const imgTrash2 = asset('surveys-figma/questions-imgTrash2.svg');
 const imgCircleCheck = asset('surveys-figma/questions-imgCircleCheck.svg');
-const imgStar2 = asset('surveys-figma/questions-imgStar2.svg');
-const imgIcon1 = asset('surveys-figma/questions-imgIcon1.svg');
+
 const imgPlus = asset('surveys-figma/questions-imgPlus.svg');
 const imgLightbulb = asset('surveys-figma/questions-imgLightbulb.svg');
 const imgClock3 = asset('surveys-figma/questions-imgClock3.svg');
@@ -146,7 +140,6 @@ export default function SurveyContent({ question = 1 }) {
       </div>
     </div>
   );
-
   return (
     <div className="sv0" data-node-id="262:10697" data-name="Survey content">
       <div className="sv149" data-node-id="262:11312" data-name="Page introduction">
@@ -561,9 +554,7 @@ export default function SurveyContent({ question = 1 }) {
               className="sv86"
               data-node-id="262:10944"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Save & close`}
-            </UiText>
+            >{`Save & close`}</UiText>
           </button>
           <button
             type="button"

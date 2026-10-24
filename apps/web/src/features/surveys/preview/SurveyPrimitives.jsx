@@ -1,3 +1,4 @@
+import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import React, { useState } from 'react';
 import arabic from '../../../lib/i18n/product-ar.json';
 import { asset } from '../../../lib/assets.js';
@@ -24,7 +25,6 @@ const linkLabels = [
   '← Edit business type or goal',
   'Download all branch QR codes →',
 ];
-
 export function UiText({ children, editorCopy = false, ...props }) {
   const { tr } = useProductView();
   const editor = useSurveyEditor();
@@ -45,6 +45,16 @@ export function UiText({ children, editorCopy = false, ...props }) {
           : child,
       );
   const Tag = linkLabels.includes(raw) ? 'button' : 'p';
+  if (['sv82', 'sv3'].includes(props.className)) {
+    const list = /^#\/survey-(all|empty|live|drafts|paused|closed)(?:[?]|$)/.test(location.hash);
+    return (
+      <p {...props} data-workspace-heading="true">
+        <HeadingBack fallback={list ? undefined : '/survey-all'} />
+        <span>{text}</span>
+      </p>
+    );
+  }
+
   return (
     <Tag {...props} {...(Tag === 'button' ? { type: 'button', 'data-survey-action': raw } : {})}>
       {typeof text === 'string'
@@ -83,7 +93,7 @@ export function SurveyField({ editorField, ...props }) {
     <StoredSurveyField {...props} />
   );
 }
-function EditorField({ field, fieldLanguage, multiline = false, ...props }) {
+function EditorField({ field, fieldLanguage, _initialValue, multiline = false, ...props }) {
   const { tr } = useProductView();
   const editor = useSurveyEditor();
   const item = editor.questions[editor.question];
@@ -207,7 +217,6 @@ export function SurveyLanguageEditor({ className }) {
         {editor.language === 'ar' ? 'العربية' : 'English'}
       </span>
     );
-
   return (
     <div
       className={'survey-language-tabs ' + className}
@@ -374,7 +383,6 @@ export function SurveyChoice({ index = 0, type = 'checkbox' }) {
           onChange={changeSelection}
           aria-label={(language === 'ar' ? 'اختيار ' : 'Select option ') + (index + 1)}
         />
-
         <span className="survey-choice-box">
           <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path
@@ -441,7 +449,6 @@ export function SurveyAISelect({ kind }) {
     { value: 'ar', label: tr('Arabic') },
     { value: 'both', label: tr('English + Arabic') },
   ];
-
   const options =
     kind === 'language'
       ? languages
@@ -532,8 +539,6 @@ export function SurveyQuestionList({ question, selectedCard }) {
 
 export function SurveyQuestionOutline() {
   const editor = useSurveyEditor();
-  useProductView();
-
   return (
     <div className="sv167" data-name="Question navigation">
       {editorQuestionIds(editor.questions).map((id) => {

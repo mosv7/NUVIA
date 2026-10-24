@@ -1,6 +1,6 @@
 import React from 'react';
 import { asset } from '../../../lib/assets.js';
-
+import '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveyField, SurveyAISelect } from './SurveyPrimitives.jsx';
 const imgArrowLeft = asset('surveys-figma/ai-imgArrowLeft.svg');
 const imgIcon = asset('surveys-figma/ai-imgIcon.svg');
@@ -52,9 +52,7 @@ export default function PageContent() {
             className="sv13"
             data-node-id="298:433"
             style={{ fontVariationSettings: '"opsz" 14' }}
-          >
-            {`1  Describe your survey`}
-          </UiText>
+          >{`1  Describe your survey`}</UiText>
         </div>
         <UiText
           className="sv11"
@@ -67,9 +65,7 @@ export default function PageContent() {
           className="sv10"
           data-node-id="298:435"
           style={{ fontVariationSettings: '"opsz" 14' }}
-        >
-          {`2  Review questions`}
-        </UiText>
+        >{`2  Review questions`}</UiText>
         <UiText
           className="sv11"
           data-node-id="298:436"
@@ -81,9 +77,7 @@ export default function PageContent() {
           className="sv10"
           data-node-id="298:437"
           style={{ fontVariationSettings: '"opsz" 14' }}
-        >
-          {`3  Add to survey`}
-        </UiText>
+        >{`3  Add to survey`}</UiText>
       </div>
       <div className="sv14" data-node-id="298:438" data-name="Survey setup">
         <div className="sv62" data-node-id="298:439" data-name="Survey form">
@@ -117,9 +111,7 @@ export default function PageContent() {
                   className="sv66"
                   data-node-id="298:447"
                   style={{ fontVariationSettings: '"opsz" 14' }}
-                >
-                  {`Cafe & workspace`}
-                </UiText>
+                >{`Cafe & workspace`}</UiText>
                 <div className="sv6" data-node-id="298:448" data-name="Icon">
                   <img alt="" className="sv7" src={imgIcon} />
                 </div>
@@ -128,9 +120,7 @@ export default function PageContent() {
                 className="sv67"
                 data-node-id="298:450"
                 style={{ fontVariationSettings: '"opsz" 14' }}
-              >
-                {`Pre-filled from your Bloom & Co. workspace. You can change it.`}
-              </UiText>
+              >{`Pre-filled from your Bloom & Co. workspace. You can change it.`}</UiText>
             </div>
             <div className="sv63" data-node-id="298:451" data-name="Form field">
               <UiText
@@ -149,7 +139,6 @@ export default function PageContent() {
                 }
                 multiline={true}
               />
-
               <UiText
                 className="sv67"
                 data-node-id="298:455"
@@ -182,9 +171,7 @@ export default function PageContent() {
                   className="sv25"
                   data-node-id="298:462"
                   style={{ fontVariationSettings: '"opsz" 14' }}
-                >
-                  {`Menu & pricing`}
-                </UiText>
+                >{`Menu & pricing`}</UiText>
               </div>
             </div>
             <div className="sv55" data-node-id="298:463" data-name="Divider" />

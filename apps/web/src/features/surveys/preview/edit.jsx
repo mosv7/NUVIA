@@ -1,6 +1,6 @@
 import React from 'react';
 import { asset } from '../../../lib/assets.js';
-
+import '../../../components/ui/ControlIcon.jsx';
 import {
   UiText,
   SurveyField,
@@ -14,26 +14,20 @@ import {
   SurveyQuestionOutline,
   SurveyQuestionCount,
 } from './SurveyPrimitives.jsx';
-const imgFrame62 = asset('surveys-figma/edit-imgFrame62.svg');
-const imgIcon = asset('surveys-figma/edit-imgIcon.svg');
+
 const imgArrowLeft = asset('surveys-figma/edit-imgArrowLeft.svg');
 const imgEye = asset('surveys-figma/edit-imgEye.svg');
 const imgCheck = asset('surveys-figma/edit-imgCheck.svg');
 const imgInfo = asset('surveys-figma/edit-imgInfo.svg');
 const imgCloudCheck = asset('surveys-figma/edit-imgCloudCheck.svg');
 const imgHand = asset('surveys-figma/edit-imgHand.svg');
-const imgStar = asset('surveys-figma/edit-imgStar.svg');
-const imgListChecks = asset('surveys-figma/edit-imgListChecks.svg');
-const imgStar1 = asset('surveys-figma/edit-imgStar1.svg');
-const imgGauge = asset('surveys-figma/edit-imgGauge.svg');
-const imgAlignLeft = asset('surveys-figma/edit-imgAlignLeft.svg');
+
 const imgHeart = asset('surveys-figma/edit-imgHeart.svg');
 const imgGripVertical = asset('surveys-figma/edit-imgGripVertical.svg');
 const imgCopy = asset('surveys-figma/edit-imgCopy.svg');
 const imgTrash2 = asset('surveys-figma/edit-imgTrash2.svg');
 const imgCircleCheck = asset('surveys-figma/edit-imgCircleCheck.svg');
-const imgStar2 = asset('surveys-figma/edit-imgStar2.svg');
-const imgIcon1 = asset('surveys-figma/edit-imgIcon1.svg');
+
 const imgPlus = asset('surveys-figma/edit-imgPlus.svg');
 const imgLightbulb = asset('surveys-figma/edit-imgLightbulb.svg');
 const imgClock3 = asset('surveys-figma/edit-imgClock3.svg');
@@ -149,7 +143,6 @@ export default function SurveyContent({ question = 1 }) {
       </div>
     </div>
   );
-
   return (
     <div className="sv0" data-node-id="262:11060" data-name="Survey content">
       <div className="sv149" data-node-id="262:11061" data-name="Page introduction">
@@ -191,9 +184,7 @@ export default function SurveyContent({ question = 1 }) {
               className="sv83"
               data-node-id="262:11072"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Customer experience survey · All 3 branches · Arabic & English`}
-            </UiText>
+            >{`Customer experience survey · All 3 branches · Arabic & English`}</UiText>
           </div>
           <div className="sv84" data-node-id="262:11073" data-name="Page actions">
             <button
@@ -613,9 +604,7 @@ export default function SurveyContent({ question = 1 }) {
               className="sv86"
               data-node-id="262:11306"
               style={{ fontVariationSettings: '"opsz" 14' }}
-            >
-              {`Save & close`}
-            </UiText>
+            >{`Save & close`}</UiText>
           </button>
           <button
             type="button"
