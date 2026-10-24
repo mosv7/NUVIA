@@ -145,7 +145,8 @@
 }
 
 /* A single shared blue language symbol across every account screen and viewport. */
-.auth-layout :is(.language, .capability) > .language-icon {
+.auth-layout :is(.language, .capability) > .language-icon,
+.business-onboarding .setup-footer .language > .language-icon {
   display: block;
   width: 16px;
   height: 16px;
