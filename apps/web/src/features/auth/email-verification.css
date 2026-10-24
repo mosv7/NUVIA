@@ -354,6 +354,6 @@
 }
 
 /* The rounded field wrapper owns the visible keyboard focus ring. */
-#root .auth-layout .input-wrap input:focus-visible {
+#root :is(.auth-layout, .business-onboarding) .input-wrap input:focus-visible {
   outline: none;
 }
