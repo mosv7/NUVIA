@@ -22,7 +22,7 @@ export default function VerificationPage({
     authApi
       .verify(token)
       .then(() => setState('verified'))
-      .catch(() => setState('invalid'));
+      .catch((error) => setState(error.code === 'INVALID_TOKEN' ? 'invalid' : 'verifyError'));
   }, [token, preview]);
   async function resend() {
     if (state === 'busy') return false;
@@ -47,6 +47,7 @@ export default function VerificationPage({
         busy: 'يرجى الانتظار…',
         verified: 'تم تأكيد بريدك. يمكنك تسجيل الدخول الآن.',
         invalid: 'رابط التأكيد غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.',
+        verifyError: 'تعذر إكمال تأكيد البريد. تحقق من الاتصال وأعد فتح رابط التأكيد الأخير.',
         sent: 'تم استلام الطلب. راجع بريدك إذا كان الحساب يحتاج إلى تأكيد.',
         error: 'تعذر إكمال الطلب. حاول مرة أخرى.',
       }
@@ -56,6 +57,8 @@ export default function VerificationPage({
         busy: 'Please wait…',
         verified: 'Email verified. You can log in now.',
         invalid: 'This verification link is invalid or expired. Request a new one.',
+        verifyError:
+          'Could not complete email verification. Check your connection and reopen the latest verification link.',
         sent: 'Request received. Check your email if your account needs verification.',
         error: 'Could not complete the request. Please try again.',
       };
