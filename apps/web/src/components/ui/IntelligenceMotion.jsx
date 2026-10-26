@@ -1,5 +1,5 @@
 import { asset } from '../../lib/assets.js';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './intelligence-motion.css';
 
 const variants = ['core', 'decisions', 'layers'];
@@ -202,7 +202,7 @@ function ReferenceCore() {
     </div>
   );
 }
-function ReferenceScene({ language }) {
+function ReferenceScene({ c, language }) {
   const ar = language === 'ar',
     sceneRef = useRef(null);
   const [frame, setFrame] = useState(0);

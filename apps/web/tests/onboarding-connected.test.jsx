@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { it, expect, vi } from 'vitest';
 import App from '../src/app/App.jsx';

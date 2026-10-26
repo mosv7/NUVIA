@@ -1,7 +1,7 @@
 import IntelligenceMotion from '../../components/ui/IntelligenceMotion.jsx';
 import { LanguageMenu } from '../../components/ui/ChoiceMenu.jsx';
-import React, { useEffect, useRef, useState } from 'react';
-import { landingCopy } from './copy.js';
+import { useEffect, useRef, useState } from 'react';
+import { landingCopy } from './landing-copy.js';
 import { en, ar } from '../../lib/i18n/auth-copy.js';
 import { asset } from '../../lib/assets.js';
 import Field from '../../components/ui/Field.jsx';
@@ -111,7 +111,6 @@ export default function LandingPage({ language, setLanguage }) {
       <strong>NUVIA</strong>
     </div>
   );
-
   return (
     <div
       className={`landing motion-preview motion-production motion-variant-${variant}`}
@@ -168,7 +167,7 @@ export default function LandingPage({ language, setLanguage }) {
           <p>{c.featuresBody}</p>
         </div>
         <div className="feature-grid">
-          {c.features.map(([title, body, img]) => (
+          {c.features.map(([title, body, img], i) => (
             <article className="feature-card reveal" key={title}>
               <span className="feature-icon">
                 <img src={icon(img)} alt="" />
@@ -254,7 +253,6 @@ export default function LandingPage({ language, setLanguage }) {
               onChange={change}
               error={errors.name}
             />
-
             <Field
               name="email"
               label={c.email}
@@ -264,7 +262,6 @@ export default function LandingPage({ language, setLanguage }) {
               onChange={change}
               error={errors.email}
             />
-
             <Field
               name="company"
               label={c.company}
@@ -273,7 +270,6 @@ export default function LandingPage({ language, setLanguage }) {
               onChange={change}
               error={errors.company}
             />
-
             <button type="submit" className="primary" disabled={busy}>
               {busy ? t.loading : c.book}
             </button>

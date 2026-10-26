@@ -1,0 +1,42 @@
+.app-page-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 50vh;
+  padding: 24px;
+  color: var(--dark, #10213d);
+  text-align: center;
+  font: inherit;
+}
+.app-page-state h1 {
+  font-size: 24px;
+  margin: 0;
+}
+.app-page-state p {
+  max-width: 36rem;
+  margin: 0;
+  color: var(--muted, #64738a);
+}
+.app-page-state button {
+  font: inherit;
+  cursor: pointer;
+  background: var(--primary, #1e68ef);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 20px;
+  min-height: 44px;
+}
+.app-page-state button:focus-visible {
+  outline: 3px solid var(--primary, #1e68ef);
+  outline-offset: 3px;
+}
+.app-loading-indicator {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #dfe7f2;
+  border-top-color: var(--primary, #1e68ef);
+  border-radius: 50%;
+}

@@ -1,8 +1,1109 @@
-{
-  "widths": [360, 600, 768, 820, 851, 1024, 1180, 1366],
-  "uiLanguages": ["en", "ar"],
-  "checks": 672,
-  "screens": 42,
-  "outOfViewportFindings": 0,
-  "scope": "Visible main content viewport bounds; not an exhaustive overlap or physical-device test."
-}
+[
+  {
+    "language": "en",
+    "width": 320,
+    "route": "dashboard",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "feedbacks",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "analytics-sentiment",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "analytics-aspects",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "analytics-topics",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "reports",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "report-details",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "survey-all",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "survey-create",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "survey-questions",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "survey-share",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "business",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "branches",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "branch-add",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "settings",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "settings-personal",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "settings-language",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "settings-password",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "settings-two-factor",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 320,
+    "route": "customer-feedback",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "dashboard",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "feedbacks",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "analytics-sentiment",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "analytics-aspects",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "analytics-topics",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "reports",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "report-details",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "survey-all",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "survey-create",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "survey-questions",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "survey-share",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "business",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "branches",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "branch-add",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "settings",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "settings-personal",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "settings-language",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "settings-password",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "settings-two-factor",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 768,
+    "route": "customer-feedback",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "dashboard",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "feedbacks",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "analytics-sentiment",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "analytics-aspects",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "analytics-topics",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "reports",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "report-details",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "survey-all",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "survey-create",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "survey-questions",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "survey-share",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "business",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "branches",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "branch-add",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "settings",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "settings-personal",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "settings-language",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "settings-password",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "settings-two-factor",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "route": "customer-feedback",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "dashboard",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "feedbacks",
+    "actualWidth": 320,
+    "clippedButtons": [
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل"
+    ],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "analytics-sentiment",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "analytics-aspects",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "analytics-topics",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "reports",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "report-details",
+    "actualWidth": 320,
+    "clippedButtons": ["عرض الرأي الأصلي", "عرض الرأي الأصلي"],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "survey-all",
+    "actualWidth": 320,
+    "clippedButtons": ["السابق", "التالي", "شارك استبيانك المنشور"],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "survey-create",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "survey-questions",
+    "actualWidth": 320,
+    "clippedButtons": ["تعديل تفاصيل الاستبيان"],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "survey-share",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "business",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "branches",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "branch-add",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "settings",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "settings-personal",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "settings-language",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "settings-password",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "settings-two-factor",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 320,
+    "route": "customer-feedback",
+    "actualWidth": 320,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 320
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "dashboard",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "feedbacks",
+    "actualWidth": 768,
+    "clippedButtons": [
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل"
+    ],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "analytics-sentiment",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "analytics-aspects",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "analytics-topics",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "reports",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "report-details",
+    "actualWidth": 768,
+    "clippedButtons": ["عرض الرأي الأصلي", "عرض الرأي الأصلي"],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "survey-all",
+    "actualWidth": 768,
+    "clippedButtons": ["السابق", "التالي", "شارك استبيانك المنشور"],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "survey-create",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "survey-questions",
+    "actualWidth": 768,
+    "clippedButtons": ["تعديل تفاصيل الاستبيان"],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "survey-share",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "business",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "branches",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "branch-add",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "settings",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "settings-personal",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "settings-language",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "settings-password",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "settings-two-factor",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 768,
+    "route": "customer-feedback",
+    "actualWidth": 768,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 768
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "dashboard",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "feedbacks",
+    "actualWidth": 1024,
+    "clippedButtons": [
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل",
+      "عرض التفاصيل"
+    ],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "analytics-sentiment",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "analytics-aspects",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "analytics-topics",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "reports",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "report-details",
+    "actualWidth": 1024,
+    "clippedButtons": ["عرض الرأي الأصلي", "عرض الرأي الأصلي"],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "survey-all",
+    "actualWidth": 1024,
+    "clippedButtons": ["السابق", "التالي", "شارك استبيانك المنشور"],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "survey-create",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "survey-questions",
+    "actualWidth": 1024,
+    "clippedButtons": ["تعديل تفاصيل الاستبيان"],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "survey-share",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "business",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "branches",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "branch-add",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "settings",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "settings-personal",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "settings-language",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "settings-password",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "settings-two-factor",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  },
+  {
+    "language": "ar",
+    "width": 1024,
+    "route": "customer-feedback",
+    "actualWidth": 1024,
+    "clippedButtons": [],
+    "missingAlt": 0,
+    "scrollWidth": 1024
+  }
+]

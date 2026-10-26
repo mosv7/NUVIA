@@ -76,7 +76,7 @@ UI changes require rendered desktop/narrow EN/AR checks and affected interaction
 ## Git and Delivery
 
 - Inspect branch/worktrees/working tree/remotes first, preserve unrelated work and use the intended current baseline.
-- Never use `codex/` in branch names. Use descriptive task names such as `refactor-monorepo`, `fix-feedback-empty` or `feat/survey-builder`.
+- Use descriptive task names such as `refactor-monorepo`, `fix-feedback-empty` or `feat/survey-builder`.
 - Use focused imperative commits and run `git diff --cached --check` before committing.
 - Push the task branch and create/update a PR against `main`; merge or push directly to `main` only when explicitly requested. Never force-push or rewrite shared history without authorization.
 - PRs explain final behavior, actual validation and limitations; include screenshots for visible UI changes. Verify current remote head/CI before claiming CI success.

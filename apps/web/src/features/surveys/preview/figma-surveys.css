@@ -2942,10 +2942,9 @@
   align-items: flex-start;
   line-height: normal;
   position: relative;
-  flex-shrink: 0;
-  width: auto;
-  min-width: 0;
   flex: 1 1 0;
+  min-width: 0;
+  width: auto;
 }
 .surveys-content .sv257 {
   overflow-wrap: break-word;
@@ -3008,9 +3007,10 @@
   align-content: stretch;
   display: flex;
   gap: 10px;
-  height: 62px;
+  height: auto;
+  min-height: 62px;
   align-items: flex-start;
-  overflow: clip;
+  overflow: visible;
   padding: 12px;
   position: relative;
   border-radius: 9px;

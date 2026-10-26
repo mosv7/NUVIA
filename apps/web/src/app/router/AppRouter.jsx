@@ -1,23 +1,32 @@
+import { validateAuth } from '../../validation/auth.js';
+import { safeLocalStorage } from '../../lib/storage.js';
 import { installRouteHistory } from '../../components/layout/navigation.js';
-import SurveyPage from '../../features/surveys/preview/SurveyPage.jsx';
-import AnalyticsPage from '../../features/analytics/preview/AnalyticsPage.jsx';
-import ExtraPreviewPage from '../../features/reports/preview/ExtraPreviewPage.jsx';
 import { currentRoute } from './routes.js';
 import AuthPage from '../../features/auth/AuthPage.jsx';
-import React, { useEffect, useRef, useState } from 'react';
+import { lazy, useEffect, useRef, useState } from 'react';
 import Field from '../../components/ui/Field.jsx';
 import { en, ar } from '../../lib/i18n/auth-copy.js';
 import { submitDemo, authApi } from '../../features/auth/api.js';
 import { useAuth } from '../providers/AuthProvider.jsx';
 import { routePolicy, afterLogin } from './access-policy.js';
 import VerificationPage from '../../features/auth/VerificationPage.jsx';
-import LandingPage from '../../features/landing/LandingPage.jsx';
-import DashboardPage from '../../features/dashboard/DashboardPage.jsx';
-import FeedbacksPage from '../../features/feedback/FeedbacksPage.jsx';
 import { asset as resolveAsset } from '../../lib/assets.js';
-import BusinessOnboarding, {
-  ConnectedBusinessOnboarding,
-} from '../../features/workspaces/BusinessOnboarding.jsx';
+const CustomerFeedback = lazy(
+  () => import('../../features/customer-feedback/CustomerFeedback.jsx'),
+);
+const SurveyPage = lazy(() => import('../../features/surveys/preview/SurveyPage.jsx'));
+const AnalyticsPage = lazy(() => import('../../features/analytics/preview/AnalyticsPage.jsx'));
+const ExtraPreviewPage = lazy(() => import('../../features/reports/preview/ExtraPreviewPage.jsx'));
+const LandingPage = lazy(() => import('../../features/landing/LandingPage.jsx'));
+const DashboardPage = lazy(() => import('../../features/dashboard/DashboardPage.jsx'));
+const FeedbacksPage = lazy(() => import('../../features/feedback/FeedbacksPage.jsx'));
+const BusinessOnboarding = lazy(() => import('../../features/workspaces/BusinessOnboarding.jsx'));
+const ConnectedBusinessOnboarding = lazy(() =>
+  import('../../features/workspaces/BusinessOnboarding.jsx').then((module) => ({
+    default: module.ConnectedBusinessOnboarding,
+  })),
+);
+const WorkspacePages = lazy(() => import('../../features/workspace/WorkspacePages.jsx'));
 export default function AppRouter() {
   useEffect(() => installRouteHistory(), []);
   const auth = useAuth(),
@@ -34,7 +43,12 @@ export default function AppRouter() {
     branchName: '',
   });
   const [page, setPage] = useState(currentRoute),
-    [language, setLanguage] = useState(() => localStorage.getItem('nuvia-language') || 'en'),
+    [language, setLanguage] = useState(
+      () =>
+        (['en', 'ar'].includes(new URLSearchParams(location.search).get('lang'))
+          ? new URLSearchParams(location.search).get('lang')
+          : safeLocalStorage.getItem('nuvia-language')) || 'en',
+    ),
     [values, setValues] = useState({
       name: '',
       email: '',
@@ -72,7 +86,7 @@ export default function AppRouter() {
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    localStorage.setItem('nuvia-language', language);
+    safeLocalStorage.setItem('nuvia-language', language);
   }, [language]);
   const resetParam = new URLSearchParams(location.hash.split('?')[1]).get('token');
   useEffect(() => {
@@ -112,17 +126,7 @@ export default function AppRouter() {
   async function submit(e) {
     e.preventDefault();
     if (busy) return;
-    const next = {};
-    if (isSignup && !values.name.trim()) next.name = 'required';
-    if (page !== 'reset' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))
-      next.email = values.email ? 'invalidEmail' : 'required';
-    if (!isForgot) {
-      if (!values.password) next.password = 'required';
-      else if (!isLogin && !/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(values.password))
-        next.password = 'weakPassword';
-      if (!isLogin && values.confirm !== values.password) next.confirm = 'mismatch';
-    }
-    if (isSignup && !values.terms) next.terms = 'termsError';
+    const next = validateAuth(page, values);
     setErrors(next);
     setNotice('');
     if (Object.keys(next).length) return;
@@ -232,11 +236,84 @@ export default function AppRouter() {
       </main>
     );
   }
+  const previewProduct =
+    preview &&
+    ([
+      'dashboard',
+      'dashboard-empty',
+      'feedback-details',
+      'analytics',
+      'surveys',
+      'nuvia-assistant',
+      'assistant',
+      'reports',
+      'report-details',
+      'notifications',
+      'subscription',
+      'action-board',
+      'evidence',
+    ].includes(page) ||
+      page.startsWith('feedbacks') ||
+      page.startsWith('analytics-') ||
+      page.startsWith('survey-'));
+  if (previewProduct)
+    return (
+      <div className="workspace-extension">
+        <WorkspacePages language={language} setLanguage={setLanguage} />
+      </div>
+    );
+  if (page === 'customer-feedback' && preview)
+    return (
+      <div className="customer-feedback-root">
+        <CustomerFeedback language={language} setLanguage={setLanguage} />
+      </div>
+    );
+  if (
+    [
+      'business',
+      'business-edit',
+      'business-add',
+      'branch',
+      'branches',
+      'branch-add',
+      'branch-edit',
+      'branch-history',
+      'subscription',
+      'notifications',
+      'analytics',
+      'surveys',
+      'assistant',
+      'action-board',
+      'evidence',
+    ].includes(page) ||
+    page.startsWith('settings')
+  )
+    return (
+      <div className="workspace-extension">
+        <WorkspacePages
+          key={preview ? 'preview' : auth.user?.id}
+          language={language}
+          setLanguage={setLanguage}
+        />
+      </div>
+    );
   const designOnly =
+    page === 'customer-feedback' ||
     page.startsWith('survey-') ||
     page.startsWith('analytics-') ||
     ['reports', 'report-details', 'feedbacks-loading', 'feedbacks-no-results'].includes(page);
   if (designOnly) {
+    if (
+      !preview &&
+      (page.startsWith('analytics-') ||
+        page === 'reports' ||
+        ['survey-all', 'survey-empty'].includes(page))
+    )
+      return (
+        <div className="workspace-extension">
+          <WorkspacePages language={language} setLanguage={setLanguage} />
+        </div>
+      );
     if (!preview)
       return (
         <main className="session-state">
@@ -341,7 +418,7 @@ export default function AppRouter() {
         onLogout={auth.logout}
       />
     );
-  if (page === 'dashboard' || page === 'dashboard-empty')
+  if (page === 'dashboard' || page === 'dashboard-empty' || page === 'overview')
     return (
       <DashboardPage
         language={language}

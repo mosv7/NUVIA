@@ -1,4 +1,3 @@
-import React from 'react';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { overviewDateLabel } from './OverviewControls.jsx';
@@ -89,8 +88,8 @@ export function ScopeMetric({ kind, children }) {
 }
 export function ScopeTrend({ children }) {
   const { ar, n, pct, r, f, dashboard, isMobile } = useScope();
-  if (!dashboard.isFiltered) return children;
-  if (!r.total)
+  if (!dashboard.isFiltered && !isMobile) return children;
+  if (!r?.total)
     return (
       <Empty
         title={ar ? 'لا توجد ردود في هذه الفترة' : 'No responses in this period'}
@@ -121,9 +120,7 @@ export function ScopeTrend({ children }) {
         overviewDateLabel(f, ar ? 'ar' : 'en')
       }
     >
-      <title>
-        {n(r.total)} {ar ? 'ردود' : 'responses'}
-      </title>
+      <title>{n(r.total) + ' ' + (ar ? 'ردود' : 'responses')}</title>
       {[0, 0.5, 1].map((k) => (
         <g key={k}>
           <line

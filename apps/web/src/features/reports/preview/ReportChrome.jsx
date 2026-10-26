@@ -1,4 +1,3 @@
-import React from 'react';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { getReport } from './report-library.js';

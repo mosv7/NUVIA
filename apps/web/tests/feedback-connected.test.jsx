@@ -1,4 +1,4 @@
-import React from 'react';
+import { safeLocalStorage } from '../src/lib/storage.js';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { it, expect, vi } from 'vitest';
 import App from '../src/app/App.jsx';
@@ -23,8 +23,8 @@ it.each(['feedbacks', 'feedbacks-empty', 'feedback-details'])(
       await screen.findByRole('heading', { name: 'Your first response starts here' }),
     ).toBeVisible();
     expect(screen.getByRole('region', { name: 'Filters' })).toBeVisible();
-    expect(document.querySelectorAll('.feedback-filter')).toHaveLength(6);
-    expect(screen.getByRole('button', { name: 'Segment', exact: true })).toBeDisabled();
+    expect(document.querySelectorAll('.feedback-filter')).toHaveLength(5);
+    expect(screen.getByRole('button', { name: 'Sentiment', exact: true })).toBeDisabled();
     expect(screen.getByRole('table')).toBeVisible();
     expect(screen.getByText('0 responses', { exact: true })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Export', exact: true })).toBeDisabled();
@@ -32,10 +32,7 @@ it.each(['feedbacks', 'feedbacks-empty', 'feedback-details'])(
     expect(screen.getAllByText('Actual Cafe').length).toBeGreaterThan(0);
     expect(screen.queryByText('Bloom & Co.')).not.toBeInTheDocument();
     expect(screen.queryByText('1,248 / 5,000 responses')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'View sample responses' })).toHaveAttribute(
-      'href',
-      '/preview/#/feedbacks',
-    );
+    expect(screen.queryByRole('link', { name: 'View sample responses' })).not.toBeInTheDocument();
     const clipboard = vi.fn();
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
@@ -60,7 +57,7 @@ it.each([
 ])(
   'preserves the reviewed overview empty copy in the %s design preview',
   async (language, copy) => {
-    localStorage.setItem('nuvia-language', language);
+    safeLocalStorage.setItem('nuvia-language', language);
     history.replaceState(null, '', '/preview/#/dashboard-empty');
     render(<App />);
     expect(await screen.findByText(copy)).toBeVisible();

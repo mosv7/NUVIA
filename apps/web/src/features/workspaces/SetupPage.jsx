@@ -1,15 +1,6 @@
-import React from 'react';
 import Field from '../../components/ui/Field.jsx';
 import { asset } from '../../lib/assets.js';
-export default function SetupPage({
-  copy,
-  values,
-  onChange,
-  error,
-  onContinue,
-  onBack,
-  busy = false,
-}) {
+export default function SetupPage({ copy, values, onChange, error, onContinue, onBack }) {
   const icon = (name) => asset(`business-setup/branches/${name}.svg`);
   return (
     <section className="setup-content">
@@ -59,7 +50,7 @@ export default function SetupPage({
             error={error ? copy.branchError : undefined}
           />
         )}
-        <button type="submit" className="primary" disabled={busy}>
+        <button type="submit" className="primary">
           {copy.continue}
         </button>
       </form>

@@ -1,3 +1,4 @@
+import { safeLocalStorage } from '../../../lib/storage.js';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import ChoiceMenu from '../../../components/ui/ChoiceMenu.jsx';
@@ -69,7 +70,9 @@ export function SurveyRow({ surveyName, initialStatus, children, ...props }) {
   const key = 'nuvia-survey-row:' + surveyName;
   const [records, setRecords] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(key)) || [{ id: 'original', status: initialStatus }];
+      return (
+        JSON.parse(safeLocalStorage.getItem(key)) || [{ id: 'original', status: initialStatus }]
+      );
     } catch {
       return [{ id: 'original', status: initialStatus }];
     }
@@ -85,7 +88,7 @@ export function SurveyRow({ surveyName, initialStatus, children, ...props }) {
         action,
         Date.now() + '-' + Math.random().toString(36).slice(2),
       );
-      localStorage.setItem(key, JSON.stringify(next));
+      safeLocalStorage.setItem(key, JSON.stringify(next));
       return next;
     });
   };
@@ -211,7 +214,12 @@ export function SurveyMoreMenu({ children, ...props }) {
       </div>
       {confirm &&
         createPortal(
-          <div className="survey-modal-backdrop survey-delete-backdrop" onClick={close}>
+          <div
+            className="survey-modal-backdrop survey-delete-backdrop"
+            onPointerDown={(event) => {
+              if (event.target === event.currentTarget) close(event);
+            }}
+          >
             <section
               className="survey-modal survey-delete-modal"
               role="alertdialog"

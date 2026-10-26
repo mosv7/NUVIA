@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 export function ratingColor(rating) {
   return rating <= 2 ? '#dc6672' : rating === 3 ? '#e6d342' : '#36a775';

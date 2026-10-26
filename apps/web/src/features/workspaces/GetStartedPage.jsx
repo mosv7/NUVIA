@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { asset } from '../../lib/assets.js';
 export default function GetStartedPage({ copy, values, onEdit, onStart }) {
   const [complete, setComplete] = useState(false),
@@ -37,7 +37,7 @@ export default function GetStartedPage({ copy, values, onEdit, onStart }) {
           </li>
         ))}
       </ul>
-      <button className="primary" onClick={onStart || (() => setComplete(true))}>
+      <button className="primary" onClick={() => (onStart ? onStart() : setComplete(true))}>
         {copy.getStarted}
       </button>
       <p className="setup-reassurance">{copy.reassurance}</p>

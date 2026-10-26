@@ -98,7 +98,7 @@ Run those in separate terminals if you choose that mode. Windows users can doubl
 2. Keep the mail worker running. With `MAIL_MODE=file`, open the newest corresponding JSON message in the root `.local/mail/` and follow the complete URL in its `text` field on the same computer.
 3. After verification, log in, save business information and configure the primary branch.
 4. Enter Overview, refresh or sign out/in, and check that saved setup persists.
-5. Open Feedback: six disabled filters, a zero-response state, illustration and getting-started steps are expected. Export/open-response controls are disabled; sharing reports that surveys are unavailable. Sample responses explicitly open `/preview/`.
+5. Open Feedback: five disabled filters, a zero-response state, illustration and getting-started steps are expected. Export/open-response controls are disabled; sharing reports that surveys are unavailable. Sample data is available only from explicit `/preview/` URLs; the empty account screen has no sample-response button.
 6. For recovery, use [Forgot password](http://127.0.0.1:5173/#/forgot) and follow the reset link in its corresponding local message. Reset links expire, are single-use and revoke existing sessions when consumed.
 
 Local mailbox files are **not Gmail delivery**. Real email requires SMTP provider configuration and acceptance testing. Messages contain private verification/reset URLs; do not share them. Data belongs to the selected database; accounts do not automatically transfer between local MongoDB, compose and Atlas.
@@ -107,7 +107,7 @@ Local mailbox files are **not Gmail delivery**. Real email requires SMTP provide
 
 Run `pnpm dev:web`, then open [Landing](http://127.0.0.1:5173/preview/#/landing), [Overview](http://127.0.0.1:5173/preview/#/dashboard), [empty Overview](http://127.0.0.1:5173/preview/#/dashboard-empty), [Feedback](http://127.0.0.1:5173/preview/#/feedbacks), [empty Feedback](http://127.0.0.1:5173/preview/#/feedbacks-empty) or [response details](http://127.0.0.1:5173/preview/#/feedback-details).
 
-Previews use illustrative data and do not create a real session or demonstrate completed AI services. `pnpm build` builds `apps/web/dist`; `pnpm preview` serves it locally without starting backend services. `pnpm previews` creates standalone review HTML in the root ignored `previews/` after building. See the [reviewed gallery](docs/ui/frontend/README.md).
+Previews use illustrative data and do not create a real session or demonstrate completed AI services. `pnpm build` builds `apps/web/dist`; `pnpm preview` serves it locally without starting backend services. `pnpm previews` creates an HTTP-served review copy in the root ignored `previews/` after building (serve it over HTTP; opening the files directly is not supported). See the [reviewed gallery](docs/ui/frontend/README.md).
 
 ## Optional Python scaffold
 
@@ -158,4 +158,14 @@ GitHub Actions checks web formatting/lint/tests/build, API/browser behavior, the
 - [Full 51-feature product map](docs/product/feature-list.md), [requirements](docs/product/requirements.md) and [future AI pipeline](docs/architecture/ai-pipeline.md). Feature scope is broader than current delivery.
 - [Earlier architecture/API/database proposals](docs/archive/README.md) remain historical, separate from implemented contracts.
 
-No open-source license has been selected. Keep focused PRs, report actual validation and limitations, preserve private data, and use branch names without `codex/`.
+No open-source license has been selected. Keep focused PRs, report actual validation and limitations, preserve private data, and use descriptive branch names.
+
+## Approved frontend update
+
+The current interface includes Business/Branches, responsive account settings and a five-question-type feedback preview. Existing session, verification, password-recovery and persisted onboarding controllers remain connected to the API. Business profile edits and branch create/rename/archive operations use the existing owner-scoped endpoints; failed saves retain input instead of claiming success. The current branch API stores names/status only: location fields are disabled on connected routes rather than discarded silently.
+
+Account routes use saved identity and empty analytics/reports/surveys. Profile editing, notification preferences, two-factor setup, device management, additional businesses, survey publishing/response collection and AI analysis do not yet have backend endpoints; their design previews do not establish working services. Unsupported connected mutations report that they are unavailable. `feedback.html` enters the explicit `/preview/#/customer-feedback` demonstration, with no real submission endpoint.
+
+Browser drafts/preferences use the versioned safe storage facade; old unversioned drafts are ignored, and unavailable storage falls back to memory. Configure `VITE_PUBLIC_SURVEY_URL` for display/copy/branch URLs and `NUVIA_API_TARGET` for the development proxy. Never put credentials in Vite variables.
+
+`pnpm test:proxy` runs the actual web transport through Vite to the API using an isolated MongoDB replica set and synthetic identities. It checks registration, verification, login/logout, onboarding and branch mutations without using application/customer data or SMTP.

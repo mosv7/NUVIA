@@ -1,6 +1,6 @@
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
-import React from 'react';
+
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import {

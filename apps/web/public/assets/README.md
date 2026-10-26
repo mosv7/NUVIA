@@ -13,11 +13,3 @@ Names describe their placement: `header-*`, `footer-*`, `form-*`, `story-*`, `he
 `hero-dashboard-*` files are decorative charts/icons in the landing page's dashboard preview, not a functioning dashboard.
 
 The file `src/assets.js` maps Figma source identifiers to these descriptive paths.
-
-`brand/`: approved combined NUVIA logo, with transparent light/dark SVG variants and a blue V.
-
-`dashboard/`: original overview, feedback list, empty state, and feedback detail assets.
-
-## Approved Overview additions
-
-figma-overview/ contains only icons referenced by the approved insight, recommendation and Quick Actions components. overview-empty/ contains the original Figma artwork parts used by the first-time Overview state. Shared navigation and branding continue to use their existing asset folders.

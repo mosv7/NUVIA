@@ -1,6 +1,5 @@
-import React from 'react';
 import { asset } from '../../../lib/assets.js';
-import '../../../components/ui/ControlIcon.jsx';
+
 import {
   UiText,
   SurveyField,

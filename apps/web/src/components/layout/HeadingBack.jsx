@@ -1,4 +1,3 @@
-import React from 'react';
 import UiArrow from '../ui/UiArrow.jsx';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { canGoBack, canShowContextBack, goBack } from './navigation.js';

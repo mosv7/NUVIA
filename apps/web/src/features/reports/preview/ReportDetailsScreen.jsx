@@ -2,10 +2,10 @@ import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import reportArabic from '../../../lib/i18n/product-ar.json';
 import { arabicUiNumbers } from '../../../lib/number-format.js';
 import { ReportNavigation } from './ReportChrome.jsx';
-import '../../../components/ui/ControlIcon.jsx';
+
 import { getReportDetails } from './report-details-data.js';
 import { getReport } from './report-library.js';
-import React, { useState } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { PreviewArrow, GenerateDialog, downloadReport } from './PreviewControls.jsx';
@@ -19,7 +19,10 @@ function ReportContent({ id }) {
   const ui = useProductView();
   const language = getReport(id).language === 'Arabic' ? 'ar' : ui.language;
   const formatNumber = (value) => (language === 'ar' ? arabicUiNumbers(value) : String(value));
-  const tr = (text) => (language === 'ar' ? formatNumber(reportArabic[text] ?? text) : text);
+  const tr = useCallback(
+    (text) => (language === 'ar' ? arabicUiNumbers(reportArabic[text] ?? text) : text),
+    [language],
+  );
   const details = getReportDetails(id);
   const content = (nodeId, fallback) =>
     nodeId === '300:1149'
@@ -29,13 +32,39 @@ function ReportContent({ id }) {
         : formatNumber(details.nodes[nodeId][language]);
   const [generate, setGenerate] = useState(false);
   const [evidence, setEvidence] = useState(null);
-
+  const [reportFilters] = useState({});
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const cards = [...ref.current.querySelectorAll('[data-report-card]')];
+    let count = 0;
+    cards.forEach((card, index) => {
+      card.hidden =
+        (reportFilters.language === 'Arabic'
+          ? index !== 3
+          : reportFilters.language === 'English'
+            ? index === 3
+            : false) ||
+        (reportFilters.date === 'august'
+          ? index !== 3
+          : reportFilters.date === 'september'
+            ? index === 3
+            : false);
+      if (!card.hidden) count++;
+    });
+    const counter = ref.current.querySelector('[data-node-id="299:901"]');
+    if (counter) counter.textContent = tr(count + ' reports');
+    const rows = ref.current.querySelector('[data-name="Report library"]');
+    if (rows)
+      rows.style.flexDirection = reportFilters.sort === 'oldest' ? 'column-reverse' : 'column';
+  }, [reportFilters, tr]);
   const reportTitle = getReport(id).title;
   return (
     <div
       className="figma-preview report-details"
       dir={language === 'ar' ? 'rtl' : 'ltr'}
       lang={language}
+      ref={ref}
       onClick={(e) => {
         const item = e.target.closest(
           '[data-name="Action"],[data-name="Back to reports"], [data-name="Evidence link"]',
@@ -932,23 +961,17 @@ function ReportContent({ id }) {
                     'The coffee is good, but we waited 25 minutes for the order.',
                   )}
                 </p>
-                <div
-                  className="pv154"
+                <button
+                  type="button"
+                  className="pv154 semantic-button"
                   data-node-id="300:1314"
                   data-name="Evidence action"
-                  role="button"
-                  tabIndex={0}
+
                   onClick={() =>
                     id === 'september'
                       ? (location.hash = '/feedback-details?id=1248')
                       : setEvidence('1')
                   }
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      location.hash = '/feedback-details?id=1248';
-                    }
-                  }}
                 >
                   <p
                     className="pv62"
@@ -960,7 +983,7 @@ function ReportContent({ id }) {
                   <div className="pv155" data-node-id="300:1316" data-name="arrow-up-right">
                     <PreviewArrow direction="external" />
                   </div>
-                </div>
+                </button>
               </div>
             </div>
             <div className="pv26" data-node-id="300:1318" data-name="Evidence source">
@@ -999,23 +1022,17 @@ function ReportContent({ id }) {
                     '\u201cThe team remembered my order and made me feel welcome.\u201d',
                   )}
                 </p>
-                <div
-                  className="pv154"
+                <button
+                  type="button"
+                  className="pv154 semantic-button"
                   data-node-id="300:1327"
                   data-name="Evidence action"
-                  role="button"
-                  tabIndex={0}
+
                   onClick={() =>
                     id === 'september'
                       ? (location.hash = '/feedback-details?id=1248')
                       : setEvidence('2')
                   }
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      location.hash = '/feedback-details?id=1248';
-                    }
-                  }}
                 >
                   <p
                     className="pv62"
@@ -1027,7 +1044,7 @@ function ReportContent({ id }) {
                   <div className="pv155" data-node-id="300:1329" data-name="arrow-up-right">
                     <PreviewArrow direction="external" />
                   </div>
-                </div>
+                </button>
               </div>
             </div>
             <div className="pv26" data-node-id="300:1331" data-name="Evidence source">
@@ -1093,7 +1110,12 @@ function ReportContent({ id }) {
       </div>
       {generate && <GenerateDialog onClose={() => setGenerate(false)} />}
       {evidence !== null && (
-        <div className="preview-modal-backdrop" onClick={() => setEvidence(null)}>
+        <div
+          className="preview-modal-backdrop"
+          onPointerDown={(event) => {
+            if (event.target === event.currentTarget) (() => setEvidence(null))(event);
+          }}
+        >
           <section
             className="preview-modal"
             role="dialog"

@@ -1,4 +1,3 @@
-import React from 'react';
 import { asset } from '../../../lib/assets.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveyTableCheck, SurveySortButton } from './SurveyPrimitives.jsx';

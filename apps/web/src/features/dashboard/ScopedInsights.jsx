@@ -1,4 +1,3 @@
-import React from 'react';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { overviewDateLabel } from './OverviewControls.jsx';
 export default function ScopedInsights({ kind, children }) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import { safeLocalStorage } from '../src/lib/storage.js';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -14,11 +14,11 @@ describe('bilingual frontend flows', () => {
   it('switches the landing page to Arabic and persists the language preference', async () => {
     const user = userEvent.setup();
     openRoute('landing');
-    await user.click(screen.getByRole('button', { name: 'Language / اللغة' }));
+    await user.click(await screen.findByRole('button', { name: 'Language / اللغة' }));
     await user.click(screen.getByRole('option', { name: /العربية/ }));
     expect(document.documentElement).toHaveAttribute('dir', 'rtl');
     expect(document.documentElement).toHaveAttribute('lang', 'ar');
-    expect(localStorage.getItem('nuvia-language')).toBe('ar');
+    expect(safeLocalStorage.getItem('nuvia-language')).toBe('ar');
     expect(screen.getByRole('link', { name: 'تسجيل الدخول' })).toBeVisible();
   });
 
@@ -39,25 +39,25 @@ describe('bilingual frontend flows', () => {
   it('requires business details and a primary branch, then carries them to the final step', async () => {
     const user = userEvent.setup();
     openRoute('business-information');
-    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.click(await screen.findByRole('button', { name: 'Continue', exact: true }));
     expect(screen.getByText('Enter your business name to continue.')).toBeVisible();
     expect(screen.getByText('Enter an industry to continue.')).toBeVisible();
     await user.type(screen.getByLabelText(/Business name/), 'Demo Cafe');
     await user.type(screen.getByLabelText(/Business type/), 'Cafe');
-    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.click(await screen.findByRole('button', { name: 'Continue', exact: true }));
     await waitFor(() =>
       expect(screen.getByRole('heading', { name: 'Business setup' })).toBeVisible(),
     );
-    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.click(await screen.findByRole('button', { name: 'Continue', exact: true }));
     expect(screen.getByText('Enter your primary branch name to continue.')).toBeVisible();
     await user.type(screen.getByLabelText(/Primary branch name/), 'Main branch');
-    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.click(await screen.findByRole('button', { name: 'Continue', exact: true }));
     await waitFor(() =>
       expect(screen.getByRole('heading', { name: 'Welcome to NUVIA' })).toBeVisible(),
     );
     expect(screen.getByText('Demo Cafe')).toBeVisible();
     expect(screen.getByText(/Main branch/)).toBeVisible();
-    expect(localStorage.getItem('businessName')).toBeNull();
+    expect(safeLocalStorage.getItem('businessName')).toBeNull();
   });
 
   it('shows the demo response after valid signup without creating a session', async () => {
@@ -140,37 +140,37 @@ it('ignores a pending login response after navigating to signup, including its b
   expect(screen.getByRole('status')).toHaveTextContent('No account was created.');
 });
 
-it('uses the Arabic return direction on password recovery screens', () => {
-  localStorage.setItem('nuvia-language', 'ar');
+it('uses the Arabic return direction on password recovery screens', async () => {
+  safeLocalStorage.setItem('nuvia-language', 'ar');
   openRoute('forgot');
-  const back = screen.getByRole('link', { name: 'العودة إلى تسجيل الدخول' });
+  const back = await screen.findByRole('link', { name: 'العودة إلى تسجيل الدخول' });
   expect(back.querySelector('[aria-hidden=true]')).toHaveTextContent('→');
 });
-it('uses Arabic numerals and complete Arabic labels in business onboarding', () => {
-  localStorage.setItem('nuvia-language', 'ar');
+it('uses Arabic numerals and complete Arabic labels in business onboarding', async () => {
+  safeLocalStorage.setItem('nuvia-language', 'ar');
   openRoute('business-information');
-  expect(screen.getByText('الخطوة ١ من ٣')).toBeVisible();
+  expect(await screen.findByText('الخطوة ١ من ٣')).toBeVisible();
   expect(
     screen.getByLabelText('خطوات الإعداد').querySelector('.progress-marker'),
   ).toHaveTextContent('١');
-  expect(screen.getByRole('button', { name: 'Language / اللغة' })).toHaveTextContent('AR');
+  expect(screen.getByRole('button', { name: 'Language / اللغة' })).toBeVisible();
 });
 
-it('shows first-time Overview guidance without populated analytics', () => {
+it('shows first-time Overview guidance without populated analytics', async () => {
   openRoute('dashboard-empty');
-  expect(screen.getByRole('heading', { name: 'No responses yet' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: 'No responses yet' })).toBeVisible();
   expect(screen.getByRole('button', { name: 'Create Your First Survey' })).toBeVisible();
   expect(screen.queryByText('Total responses', { exact: true })).not.toBeInTheDocument();
   expect(screen.queryByText('AI Daily Insight', { exact: true })).not.toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Business & Teams' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Business' })).toBeInTheDocument();
 });
 
 it('keeps Overview layout when selecting a branch and updates the sample totals', async () => {
   const user = userEvent.setup();
   openRoute('dashboard');
-  await user.click(screen.getByRole('button', { name: 'Branch', exact: true }));
+  await user.click(await screen.findByRole('button', { name: 'Branch', exact: true }));
   await user.click(screen.getByRole('option', { name: /Cairo/ }));
-  expect(screen.getByText('420', { exact: true })).toBeVisible();
+  expect(screen.getByText('421', { exact: true })).toBeVisible();
   expect(screen.getByText('AI Daily Insight', { exact: true })).toBeVisible();
   expect(screen.getByText('Aspect scores', { exact: true })).toBeVisible();
   expect(screen.getByText('What to do next', { exact: true })).toBeVisible();

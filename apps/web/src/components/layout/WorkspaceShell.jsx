@@ -1,10 +1,10 @@
 import NavigationIcon from './NavigationIcon.jsx';
 import { LanguageMenu } from '../ui/ChoiceMenu.jsx';
-import React from 'react';
+
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
+import '../../features/dashboard/designs/overview.css';
 import './workspace-shell.css';
-import './workspace.css';
 function DashboardArrowText({ text }) {
   return (
     <span className="dashboard-arrow-label">
@@ -53,7 +53,7 @@ const imgGlobe = asset('dashboard/overview/globe.svg');
 const imgChevronDown = asset('dashboard/overview/chevron-down.svg');
 const imgNotifications = asset('dashboard/overview/notifications.svg');
 
-export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
+export default function FeedbackShell({ children, title = 'Feedbacks' }) {
   const ui = useProductView();
   const tr = ui.tr;
   return (
@@ -131,7 +131,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             data-name="Navigation item"
             aria-current={ui.activeDestination === 'Overview' ? 'page' : undefined}
             type="button"
-            onClick={() => ui.action('Overview')}
+            onClick={() => ui.action('dashboard')}
           >
             <div className="f17" data-node-id="127:276" data-name="layout-dashboard">
               <NavigationIcon src={imgLayoutDashboard} destination="Overview" />
@@ -152,7 +152,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             data-name="Navigation item"
             aria-current={ui.activeDestination === 'Feedbacks' ? 'page' : undefined}
             type="button"
-            onClick={() => ui.action('Feedbacks 12')}
+            onClick={() => ui.action('feedbacks')}
           >
             <div className="f17" data-node-id="127:280" data-name="message-square">
               <NavigationIcon src={imgMessageSquare} destination="Feedbacks" />
@@ -184,7 +184,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:285"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Analytics')}
+            onClick={() => ui.action('analytics')}
           >
             <div
               className="f17"
@@ -210,7 +210,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:289"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Reports')}
+            onClick={() => ui.action('reports')}
           >
             <div className="f17" data-node-id="127:290" data-name="file-chart-column" dir="ltr">
               <NavigationIcon src={imgFileChartColumn} destination="Reports" />
@@ -231,7 +231,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:293"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Surveys')}
+            onClick={() => ui.action('surveys')}
           >
             <div className="f17" data-node-id="127:294" data-name="clipboard-list">
               <NavigationIcon src={imgClipboardList} destination="Surveys" />
@@ -247,17 +247,18 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             </p>
           </button>
           <button
-            className="f19"
+            className={ui.activeDestination === 'Business' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'Business' ? 'page' : undefined}
             data-node-id="127:297"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Segments')}
+            onClick={() => ui.action('business')}
           >
             <div className="f17" data-node-id="127:298" data-name="users">
               <NavigationIcon src={imgUsers} destination="Business" />
             </div>
             <p
-              className="f20"
+              className={ui.activeDestination === 'Business' ? 'f18' : 'f20'}
               data-node-id="127:300"
               style={{
                 fontVariationSettings: '"opsz" 14',
@@ -273,13 +274,13 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:302"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('NUVIA Assistant')}
+            onClick={() => ui.action('assistant')}
           >
             <div className="f17" data-node-id="127:303" data-name="sparkles">
               <NavigationIcon src={imgSparkles} destination="NUVIA Assistant" />
             </div>
             <p
-              className="f20"
+              className={ui.activeDestination === 'NUVIA Assistant' ? 'f18' : 'f20'}
               data-node-id="127:305"
               style={{
                 fontVariationSettings: '"opsz" 14',
@@ -292,17 +293,18 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
         <div className="f24" data-node-id="127:306" data-name="Flexible space" />
         <div className="f25" data-node-id="127:307" data-name="Account destinations">
           <button
-            className="f19"
+            className={ui.activeDestination === 'Subscription' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'Subscription' ? 'page' : undefined}
             data-node-id="127:308"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Subscription')}
+            onClick={() => ui.action('subscription')}
           >
             <div className="f17" data-node-id="127:309" data-name="credit-card">
               <NavigationIcon src={imgCreditCard} destination="Subscription" />
             </div>
             <p
-              className="f20"
+              className={ui.activeDestination === 'Subscription' ? 'f18' : 'f20'}
               data-node-id="127:311"
               style={{
                 fontVariationSettings: '"opsz" 14',
@@ -312,17 +314,18 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
             </p>
           </button>
           <button
-            className="f19"
+            className={ui.activeDestination === 'Settings' ? 'f16' : 'f19'}
+            aria-current={ui.activeDestination === 'Settings' ? 'page' : undefined}
             data-node-id="127:312"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Settings')}
+            onClick={() => ui.action('settings')}
           >
             <div className="f17" data-node-id="127:313" data-name="settings">
               <NavigationIcon src={imgSettings} destination="Settings" />
             </div>
             <p
-              className="f20"
+              className={ui.activeDestination === 'Settings' ? 'f18' : 'f20'}
               data-node-id="127:315"
               style={{
                 fontVariationSettings: '"opsz" 14',
@@ -333,7 +336,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
           </button>
         </div>
         {ui.preview && (
-          <div className="f26" data-node-id="127:316" data-name="Plan usage">
+          <div hidden={!ui.preview} className="f26" data-node-id="127:316" data-name="Plan usage">
             <div className="f27" data-node-id="127:317" data-name="Plan">
               <p
                 className="f28"
@@ -373,7 +376,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
                 fontVariationSettings: '"opsz" 14',
               }}
               type="button"
-              onClick={() => ui.action('Manage subscription →')}
+              onClick={() => ui.action('subscription')}
             >
               {<DashboardArrowText text={tr('Manage subscription →')} />}
             </button>
@@ -384,7 +387,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
           data-node-id="127:324"
           data-name="Help"
           type="button"
-          onClick={() => ui.action('Help center')}
+          onClick={() => ui.action('help-center')}
         >
           <div className="f35" data-node-id="127:325" data-name="circle-help">
             <img alt="" className="f5" src={imgCircleHelp} />
@@ -436,13 +439,11 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                data-workspace-search={ui.preview ? '' : undefined}
+                data-workspace-search=""
                 aria-label={tr('Search across pages')}
                 placeholder={tr('Search across pages')}
-                value={ui.preview ? ui.workspaceQuery : ui.query}
-                onChange={(event) =>
-                  (ui.preview ? ui.setWorkspaceQuery : ui.setQuery)(event.target.value)
-                }
+                value={ui.workspaceQuery}
+                onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />
               <p
                 className="f46"
@@ -458,7 +459,7 @@ export default function WorkspaceShell({ children, title = 'Feedbacks' }) {
               <div className="f35" data-node-id="127:341" data-name="globe">
                 <img alt="" className="f5" src={imgGlobe} />
               </div>
-              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={true} value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="127:344" data-name="chevron-down">
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>

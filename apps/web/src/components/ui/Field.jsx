@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { asset } from '../../lib/assets.js';
 export default function Field({
   name,
@@ -52,7 +52,12 @@ export default function Field({
         )}
       </div>
       {(error || hint) && (
-        <p id={`${name}-help`} className={error ? 'error-text' : 'hint'}>
+        <p
+          id={`${name}-help`}
+          aria-live={error ? 'polite' : undefined}
+          aria-atomic="true"
+          className={error ? 'error-text' : 'hint'}
+        >
           {error || hint}
         </p>
       )}

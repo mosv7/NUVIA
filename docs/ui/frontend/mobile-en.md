@@ -1,179 +1,283 @@
-# Phone - English
+# Mobile — EN
 
-Viewport: 390 x 844. Full-page screenshots.
+[Browse by section](screens/README.md). Synthetic preview data; account services are tested separately.
 
-## Analytics Aspects
+## analytics-sentiment
 
-![Analytics Aspects](screens/mobile/en/analytics-aspects.jpg)
+![analytics-sentiment](screens/analytics/mobile/en/analytics-sentiment.jpg)
 
-## Analytics Comparison
+## analytics-aspects
 
-![Analytics Comparison](screens/mobile/en/analytics-comparison.jpg)
+![analytics-aspects](screens/analytics/mobile/en/analytics-aspects.jpg)
 
-## Analytics Sentiment
+## analytics-topics
 
-![Analytics Sentiment](screens/mobile/en/analytics-sentiment.jpg)
+![analytics-topics](screens/analytics/mobile/en/analytics-topics.jpg)
 
-## Analytics Topics
+## analytics-trends
 
-![Analytics Topics](screens/mobile/en/analytics-topics.jpg)
+![analytics-trends](screens/analytics/mobile/en/analytics-trends.jpg)
 
-## Analytics Trends
+## analytics-comparison
 
-![Analytics Trends](screens/mobile/en/analytics-trends.jpg)
+![analytics-comparison](screens/analytics/mobile/en/analytics-comparison.jpg)
 
-## Business Error
+## nuvia-assistant
 
-![Business Error](screens/mobile/en/business-error.jpg)
+![nuvia-assistant](screens/assistant/mobile/en/nuvia-assistant.jpg)
 
-## Business Information
+## reports
 
-![Business Information](screens/mobile/en/business-information.jpg)
+![reports](screens/reports/mobile/en/reports.jpg)
 
-## Business Setup
+## report-details
 
-![Business Setup](screens/mobile/en/business-setup.jpg)
+![report-details](screens/reports/mobile/en/report-details.jpg)
 
-## Dashboard Empty
+## report-details?id=cairo
 
-![Dashboard Empty](screens/mobile/en/dashboard-empty.jpg)
+![report-details?id=cairo](screens/reports/mobile/en/report-details-cairo.jpg)
 
-## Dashboard
+## report-details?id=service
 
-![Dashboard](screens/mobile/en/dashboard.jpg)
+![report-details?id=service](screens/reports/mobile/en/report-details-service.jpg)
 
-## Feedback Details 1248
+## report-details?id=august
 
-![Feedback Details 1248](screens/mobile/en/feedback-details-1248.jpg)
+![report-details?id=august](screens/reports/mobile/en/report-details-august.jpg)
 
-## Feedbacks Empty
+## feedbacks-loading
 
-![Feedbacks Empty](screens/mobile/en/feedbacks-empty.jpg)
+![feedbacks-loading](screens/feedbacks/mobile/en/feedbacks-loading.jpg)
 
-## Feedbacks Loading
+## feedbacks-no-results
 
-![Feedbacks Loading](screens/mobile/en/feedbacks-loading.jpg)
+![feedbacks-no-results](screens/feedbacks/mobile/en/feedbacks-no-results.jpg)
 
-## Feedbacks No Results
+## survey-all
 
-![Feedbacks No Results](screens/mobile/en/feedbacks-no-results.jpg)
+![survey-all](screens/surveys/mobile/en/survey-all.jpg)
 
-## Feedbacks
+## survey-empty
 
-![Feedbacks](screens/mobile/en/feedbacks.jpg)
+![survey-empty](screens/surveys/mobile/en/survey-empty.jpg)
 
-## Forgot
+## survey-live
 
-![Forgot](screens/mobile/en/forgot.jpg)
+![survey-live](screens/surveys/mobile/en/survey-live.jpg)
 
-## Get Started
+## survey-drafts
 
-![Get Started](screens/mobile/en/get-started.jpg)
+![survey-drafts](screens/surveys/mobile/en/survey-drafts.jpg)
 
-## Landing
+## survey-paused
 
-![Landing](screens/mobile/en/landing.jpg)
+![survey-paused](screens/surveys/mobile/en/survey-paused.jpg)
 
-## Login
+## survey-closed
 
-![Login](screens/mobile/en/login.jpg)
+![survey-closed](screens/surveys/mobile/en/survey-closed.jpg)
 
-## Nuvia Assistant
+## survey-create
 
-![Nuvia Assistant](screens/mobile/en/nuvia-assistant.jpg)
+![survey-create](screens/surveys/mobile/en/survey-create.jpg)
 
-## Report Details August
+## survey-questions
 
-![Report Details August](screens/mobile/en/report-details-august.jpg)
+![survey-questions](screens/surveys/mobile/en/survey-questions.jpg)
 
-## Report Details Cairo
+## survey-choices
 
-![Report Details Cairo](screens/mobile/en/report-details-cairo.jpg)
+![survey-choices](screens/surveys/mobile/en/survey-choices.jpg)
 
-## Report Details Service
+## survey-edit
 
-![Report Details Service](screens/mobile/en/report-details-service.jpg)
+![survey-edit](screens/surveys/mobile/en/survey-edit.jpg)
 
-## Report Details
+## survey-share
 
-![Report Details](screens/mobile/en/report-details.jpg)
+![survey-share](screens/surveys/mobile/en/survey-share.jpg)
 
-## Reports
+## survey-ai
 
-![Reports](screens/mobile/en/reports.jpg)
+![survey-ai](screens/surveys/mobile/en/survey-ai.jpg)
 
-## Reset
+## survey-ai-review
 
-![Reset](screens/mobile/en/reset.jpg)
+![survey-ai-review](screens/surveys/mobile/en/survey-ai-review.jpg)
 
-## Signup
+## survey-results
 
-![Signup](screens/mobile/en/signup.jpg)
+![survey-results](screens/surveys/mobile/en/survey-results.jpg)
 
-## Survey Ai Review
+## landing
 
-![Survey Ai Review](screens/mobile/en/survey-ai-review.jpg)
+![landing](screens/landing/mobile/en/landing.jpg)
 
-## Survey Ai
+## dashboard
 
-![Survey Ai](screens/mobile/en/survey-ai.jpg)
+![dashboard](screens/overview/mobile/en/dashboard.jpg)
 
-## Survey All
+## dashboard-empty
 
-![Survey All](screens/mobile/en/survey-all.jpg)
+![dashboard-empty](screens/overview/mobile/en/dashboard-empty.jpg)
 
-## Survey Choices
+## feedbacks
 
-![Survey Choices](screens/mobile/en/survey-choices.jpg)
+![feedbacks](screens/feedbacks/mobile/en/feedbacks.jpg)
 
-## Survey Closed
+## feedbacks-empty
 
-![Survey Closed](screens/mobile/en/survey-closed.jpg)
+![feedbacks-empty](screens/feedbacks/mobile/en/feedbacks-empty.jpg)
 
-## Survey Create
+## feedback-details?id=1248
 
-![Survey Create](screens/mobile/en/survey-create.jpg)
+![feedback-details?id=1248](screens/feedbacks/mobile/en/feedback-details-1248.jpg)
 
-## Survey Drafts
+## login
 
-![Survey Drafts](screens/mobile/en/survey-drafts.jpg)
+![login](screens/authentication/mobile/en/login.jpg)
 
-## Survey Edit
+## signup
 
-![Survey Edit](screens/mobile/en/survey-edit.jpg)
+![signup](screens/authentication/mobile/en/signup.jpg)
 
-## Survey Empty
+## forgot
 
-![Survey Empty](screens/mobile/en/survey-empty.jpg)
+![forgot](screens/authentication/mobile/en/forgot.jpg)
 
-## Survey Live
+## reset
 
-![Survey Live](screens/mobile/en/survey-live.jpg)
+![reset](screens/authentication/mobile/en/reset.jpg)
 
-## Survey Paused
+## verify-email
 
-![Survey Paused](screens/mobile/en/survey-paused.jpg)
+![verify-email](screens/authentication/mobile/en/verify-email.jpg)
 
-## Survey Questions
+## verify-email-expired
 
-![Survey Questions](screens/mobile/en/survey-questions.jpg)
+![verify-email-expired](screens/authentication/mobile/en/verify-email-expired.jpg)
 
-## Survey Results
+## verify-email-verified
 
-![Survey Results](screens/mobile/en/survey-results.jpg)
+![verify-email-verified](screens/authentication/mobile/en/verify-email-verified.jpg)
 
-## Survey Share
+## business-information
 
-![Survey Share](screens/mobile/en/survey-share.jpg)
+![business-information](screens/onboarding/mobile/en/business-information.jpg)
 
-## Verify Email Expired
+## business-error
 
-![Verify Email Expired](screens/mobile/en/verify-email-expired.jpg)
+![business-error](screens/onboarding/mobile/en/business-error.jpg)
 
-## Verify Email Verified
+## business-setup
 
-![Verify Email Verified](screens/mobile/en/verify-email-verified.jpg)
+![business-setup](screens/onboarding/mobile/en/business-setup.jpg)
 
-## Verify Email
+## get-started
 
-![Verify Email](screens/mobile/en/verify-email.jpg)
+![get-started](screens/onboarding/mobile/en/get-started.jpg)
+
+## business
+
+![business](screens/business/mobile/en/business.jpg)
+
+## business-edit
+
+![business-edit](screens/business/mobile/en/business-edit.jpg)
+
+## business-add
+
+![business-add](screens/business/mobile/en/business-add.jpg)
+
+## branches
+
+![branches](screens/business/mobile/en/branches.jpg)
+
+## branch-add
+
+![branch-add](screens/business/mobile/en/branch-add.jpg)
+
+## branch-edit
+
+![branch-edit](screens/business/mobile/en/branch-edit.jpg)
+
+## branch-history
+
+![branch-history](screens/business/mobile/en/branch-history.jpg)
+
+## settings
+
+![settings](screens/settings/mobile/en/settings.jpg)
+
+## settings-personal
+
+![settings-personal](screens/settings/mobile/en/settings-personal.jpg)
+
+## settings-account
+
+![settings-account](screens/settings/mobile/en/settings-account.jpg)
+
+## settings-profile
+
+![settings-profile](screens/settings/mobile/en/settings-profile.jpg)
+
+## settings-language
+
+![settings-language](screens/settings/mobile/en/settings-language.jpg)
+
+## settings-security
+
+![settings-security](screens/settings/mobile/en/settings-security.jpg)
+
+## settings-password
+
+![settings-password](screens/settings/mobile/en/settings-password.jpg)
+
+## settings-two-factor
+
+![settings-two-factor](screens/settings/mobile/en/settings-two-factor.jpg)
+
+## settings-email
+
+![settings-email](screens/settings/mobile/en/settings-email.jpg)
+
+## settings-devices
+
+![settings-devices](screens/settings/mobile/en/settings-devices.jpg)
+
+## settings-notifications
+
+![settings-notifications](screens/settings/mobile/en/settings-notifications.jpg)
+
+## settings-notifications-email
+
+![settings-notifications-email](screens/settings/mobile/en/settings-notifications-email.jpg)
+
+## settings-notifications-inapp
+
+![settings-notifications-inapp](screens/settings/mobile/en/settings-notifications-inapp.jpg)
+
+## notifications
+
+![notifications](screens/notifications/mobile/en/notifications.jpg)
+
+## subscription
+
+![subscription](screens/subscription/mobile/en/subscription.jpg)
+
+## customer-feedback
+
+![customer-feedback](screens/customer-feedback/mobile/en/customer-feedback.jpg)
+
+## analytics-sentiment — empty
+
+![analytics-sentiment — empty](screens/analytics/mobile/en/analytics-sentiment-empty.jpg)
+
+## reports — empty
+
+![reports — empty](screens/reports/mobile/en/reports-empty.jpg)
+
+## branches — empty
+
+![branches — empty](screens/business/mobile/en/branches-empty.jpg)

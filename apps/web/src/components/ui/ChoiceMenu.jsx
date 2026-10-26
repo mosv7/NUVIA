@@ -1,6 +1,6 @@
 import LanguageIcon from './LanguageIcon.jsx';
 import ControlIcon from './ControlIcon.jsx';
-import React, { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './choice-menu.css';
 function BranchIcon() {
@@ -157,7 +157,7 @@ export default function ChoiceMenu({
             {selected.icon}
           </span>
         )}
-        <span hidden={iconOnly}>
+        <span hidden={iconOnly || overlay}>
           {compact ? selected.shortLabel || selected.code || selected.label : selected.label}
         </span>
         {iconOnly && <LanguageIcon />}

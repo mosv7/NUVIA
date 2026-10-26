@@ -5,7 +5,7 @@ import '../../ai-analysis/preview/assistant.css';
 import { OverviewDateDialog } from '../../dashboard/OverviewControls.jsx';
 import arabic from '../../../lib/i18n/product-ar.json';
 import { useWorkspaceScale } from '../../../hooks/useWorkspaceScale.js';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductProvider } from '../../../app/providers/ProductProvider.jsx';
 import FeedbackShell from '../../../components/layout/WorkspaceShell.jsx';
 import AssistantScreen from './AssistantScreen.jsx';

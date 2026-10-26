@@ -1,9 +1,10 @@
+import { safeSessionStorage } from '../../../lib/storage.js';
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
-import React from 'react';
+
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { createEditorQuestions } from './survey-editor.js';
 import { feedbackRows } from '../../feedback/feedback-data.js';
-import '../../../components/ui/ControlIcon.jsx';
+
 import { PreviewArrow } from '../../reports/preview/PreviewControls.jsx';
 export function distribution(total, weights) {
   const counts = weights.map((weight) => Math.floor((total * weight) / 100));
@@ -12,13 +13,14 @@ export function distribution(total, weights) {
 }
 export default function Results() {
   const { tr, language, formatNumber } = useProductView();
-  const name = sessionStorage.getItem('survey-results-name') || 'Coffee & service check-in',
+  const name = safeSessionStorage.getItem('survey-results-name') || 'Coffee & service check-in',
     closed = name === 'Summer customer pulse',
     total = closed ? 842 : 124;
   const questions = createEditorQuestions(),
     ids = closed ? [1, 2, 3, 4, 5, 6] : [1, 3, 5, 6];
   const starCounts = distribution(total, [8, 12, 22, 30, 28]),
     average = starCounts.reduce((sum, value, index) => sum + value * (index + 1), 0) / total;
+
   return (
     <section className="survey-results">
       <header className="survey-results-heading">
@@ -85,6 +87,7 @@ export default function Results() {
             labels = ['1', '2', '3', '4', '5'];
             weights = [8, 12, 22, 30, 28];
           }
+          distribution(total, weights);
           return (
             <article className="survey-results-card" key={id}>
               <h2>

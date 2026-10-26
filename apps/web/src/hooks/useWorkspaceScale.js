@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react';
 
 // The existing overview's desktop canvas is the reference for every product page.
-export function useWorkspaceScale() {
+export default function useWorkspaceScale() {
   useLayoutEffect(() => {
     const fit = () =>
       document.documentElement.style.setProperty(
@@ -16,3 +16,5 @@ export function useWorkspaceScale() {
     };
   }, []);
 }
+
+export { useWorkspaceScale };

@@ -1,5 +1,5 @@
 import { LanguageMenu } from '../../components/ui/ChoiceMenu.jsx';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../app/providers/AuthProvider.jsx';
 import { asset } from '../../lib/assets.js';
 import { setupCopy } from './setup-copy.js';
