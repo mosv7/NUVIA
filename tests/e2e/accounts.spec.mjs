@@ -128,7 +128,9 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
       await waitFor(() => page.url().endsWith('#/settings'));
       if (width === 393) {
         await page.getByRole('button', { name: /^Personal information/ }).click();
-        await page.getByRole('heading', { name: 'Personal information', exact: true }).waitFor();
+        await page
+          .getByRole('heading', { name: 'Personal information', exact: true, level: 2 })
+          .waitFor();
       } else await page.getByRole('heading', { name: 'Account settings', exact: true }).waitFor();
       assert.ok((await page.getByText('Browser Cafe', { exact: true }).count()) > 0);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
