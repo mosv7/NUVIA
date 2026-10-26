@@ -1,7 +1,7 @@
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import WorkspaceScopeControls from '../../dashboard/WorkspaceScopeControls.jsx';
 import { overviewDateLabel } from '../../dashboard/OverviewControls.jsx';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { PreviewArrow, GenerateDialog } from './PreviewControls.jsx';

@@ -1,179 +1,283 @@
-# Desktop - English
+# Desktop — EN
 
-Viewport: 1440 x 960. Full-page screenshots.
+Synthetic preview data. Account services are tested separately.
 
-## Analytics Aspects
+## analytics-sentiment
 
-![Analytics Aspects](screens/desktop/en/analytics-aspects.png)
+![analytics-sentiment](screens/desktop/en/analytics-sentiment.jpg)
 
-## Analytics Comparison
+## analytics-aspects
 
-![Analytics Comparison](screens/desktop/en/analytics-comparison.png)
+![analytics-aspects](screens/desktop/en/analytics-aspects.jpg)
 
-## Analytics Sentiment
+## analytics-topics
 
-![Analytics Sentiment](screens/desktop/en/analytics-sentiment.png)
+![analytics-topics](screens/desktop/en/analytics-topics.jpg)
 
-## Analytics Topics
+## analytics-trends
 
-![Analytics Topics](screens/desktop/en/analytics-topics.png)
+![analytics-trends](screens/desktop/en/analytics-trends.jpg)
 
-## Analytics Trends
+## analytics-comparison
 
-![Analytics Trends](screens/desktop/en/analytics-trends.png)
+![analytics-comparison](screens/desktop/en/analytics-comparison.jpg)
 
-## Business Error
+## nuvia-assistant
 
-![Business Error](screens/desktop/en/business-error.png)
+![nuvia-assistant](screens/desktop/en/nuvia-assistant.jpg)
 
-## Business Information
+## reports
 
-![Business Information](screens/desktop/en/business-information.png)
+![reports](screens/desktop/en/reports.jpg)
 
-## Business Setup
+## report-details
 
-![Business Setup](screens/desktop/en/business-setup.png)
+![report-details](screens/desktop/en/report-details.jpg)
 
-## Dashboard Empty
+## report-details?id=cairo
 
-![Dashboard Empty](screens/desktop/en/dashboard-empty.png)
+![report-details?id=cairo](screens/desktop/en/report-details-cairo.jpg)
 
-## Dashboard
+## report-details?id=service
 
-![Dashboard](screens/desktop/en/dashboard.png)
+![report-details?id=service](screens/desktop/en/report-details-service.jpg)
 
-## Feedback Details 1248
+## report-details?id=august
 
-![Feedback Details 1248](screens/desktop/en/feedback-details-1248.png)
+![report-details?id=august](screens/desktop/en/report-details-august.jpg)
 
-## Feedbacks Empty
+## feedbacks-loading
 
-![Feedbacks Empty](screens/desktop/en/feedbacks-empty.png)
+![feedbacks-loading](screens/desktop/en/feedbacks-loading.jpg)
 
-## Feedbacks Loading
+## feedbacks-no-results
 
-![Feedbacks Loading](screens/desktop/en/feedbacks-loading.png)
+![feedbacks-no-results](screens/desktop/en/feedbacks-no-results.jpg)
 
-## Feedbacks No Results
+## survey-all
 
-![Feedbacks No Results](screens/desktop/en/feedbacks-no-results.png)
+![survey-all](screens/desktop/en/survey-all.jpg)
 
-## Feedbacks
+## survey-empty
 
-![Feedbacks](screens/desktop/en/feedbacks.png)
+![survey-empty](screens/desktop/en/survey-empty.jpg)
 
-## Forgot
+## survey-live
 
-![Forgot](screens/desktop/en/forgot.png)
+![survey-live](screens/desktop/en/survey-live.jpg)
 
-## Get Started
+## survey-drafts
 
-![Get Started](screens/desktop/en/get-started.png)
+![survey-drafts](screens/desktop/en/survey-drafts.jpg)
 
-## Landing
+## survey-paused
 
-![Landing](screens/desktop/en/landing.png)
+![survey-paused](screens/desktop/en/survey-paused.jpg)
 
-## Login
+## survey-closed
 
-![Login](screens/desktop/en/login.png)
+![survey-closed](screens/desktop/en/survey-closed.jpg)
 
-## Nuvia Assistant
+## survey-create
 
-![Nuvia Assistant](screens/desktop/en/nuvia-assistant.png)
+![survey-create](screens/desktop/en/survey-create.jpg)
 
-## Report Details August
+## survey-questions
 
-![Report Details August](screens/desktop/en/report-details-august.png)
+![survey-questions](screens/desktop/en/survey-questions.jpg)
 
-## Report Details Cairo
+## survey-choices
 
-![Report Details Cairo](screens/desktop/en/report-details-cairo.png)
+![survey-choices](screens/desktop/en/survey-choices.jpg)
 
-## Report Details Service
+## survey-edit
 
-![Report Details Service](screens/desktop/en/report-details-service.png)
+![survey-edit](screens/desktop/en/survey-edit.jpg)
 
-## Report Details
+## survey-share
 
-![Report Details](screens/desktop/en/report-details.png)
+![survey-share](screens/desktop/en/survey-share.jpg)
 
-## Reports
+## survey-ai
 
-![Reports](screens/desktop/en/reports.png)
+![survey-ai](screens/desktop/en/survey-ai.jpg)
 
-## Reset
+## survey-ai-review
 
-![Reset](screens/desktop/en/reset.png)
+![survey-ai-review](screens/desktop/en/survey-ai-review.jpg)
 
-## Signup
+## survey-results
 
-![Signup](screens/desktop/en/signup.png)
+![survey-results](screens/desktop/en/survey-results.jpg)
 
-## Survey Ai Review
+## landing
 
-![Survey Ai Review](screens/desktop/en/survey-ai-review.png)
+![landing](screens/desktop/en/landing.jpg)
 
-## Survey Ai
+## dashboard
 
-![Survey Ai](screens/desktop/en/survey-ai.png)
+![dashboard](screens/desktop/en/dashboard.jpg)
 
-## Survey All
+## dashboard-empty
 
-![Survey All](screens/desktop/en/survey-all.png)
+![dashboard-empty](screens/desktop/en/dashboard-empty.jpg)
 
-## Survey Choices
+## feedbacks
 
-![Survey Choices](screens/desktop/en/survey-choices.png)
+![feedbacks](screens/desktop/en/feedbacks.jpg)
 
-## Survey Closed
+## feedbacks-empty
 
-![Survey Closed](screens/desktop/en/survey-closed.png)
+![feedbacks-empty](screens/desktop/en/feedbacks-empty.jpg)
 
-## Survey Create
+## feedback-details?id=1248
 
-![Survey Create](screens/desktop/en/survey-create.png)
+![feedback-details?id=1248](screens/desktop/en/feedback-details-1248.jpg)
 
-## Survey Drafts
+## login
 
-![Survey Drafts](screens/desktop/en/survey-drafts.png)
+![login](screens/desktop/en/login.jpg)
 
-## Survey Edit
+## signup
 
-![Survey Edit](screens/desktop/en/survey-edit.png)
+![signup](screens/desktop/en/signup.jpg)
 
-## Survey Empty
+## forgot
 
-![Survey Empty](screens/desktop/en/survey-empty.png)
+![forgot](screens/desktop/en/forgot.jpg)
 
-## Survey Live
+## reset
 
-![Survey Live](screens/desktop/en/survey-live.png)
+![reset](screens/desktop/en/reset.jpg)
 
-## Survey Paused
+## verify-email
 
-![Survey Paused](screens/desktop/en/survey-paused.png)
+![verify-email](screens/desktop/en/verify-email.jpg)
 
-## Survey Questions
+## verify-email-expired
 
-![Survey Questions](screens/desktop/en/survey-questions.png)
+![verify-email-expired](screens/desktop/en/verify-email-expired.jpg)
 
-## Survey Results
+## verify-email-verified
 
-![Survey Results](screens/desktop/en/survey-results.png)
+![verify-email-verified](screens/desktop/en/verify-email-verified.jpg)
 
-## Survey Share
+## business-information
 
-![Survey Share](screens/desktop/en/survey-share.png)
+![business-information](screens/desktop/en/business-information.jpg)
 
-## Verify Email Expired
+## business-error
 
-![Verify Email Expired](screens/desktop/en/verify-email-expired.jpg)
+![business-error](screens/desktop/en/business-error.jpg)
 
-## Verify Email Verified
+## business-setup
 
-![Verify Email Verified](screens/desktop/en/verify-email-verified.jpg)
+![business-setup](screens/desktop/en/business-setup.jpg)
 
-## Verify Email
+## get-started
 
-![Verify Email](screens/desktop/en/verify-email.png)
+![get-started](screens/desktop/en/get-started.jpg)
+
+## business
+
+![business](screens/desktop/en/business.jpg)
+
+## business-edit
+
+![business-edit](screens/desktop/en/business-edit.jpg)
+
+## business-add
+
+![business-add](screens/desktop/en/business-add.jpg)
+
+## branches
+
+![branches](screens/desktop/en/branches.jpg)
+
+## branch-add
+
+![branch-add](screens/desktop/en/branch-add.jpg)
+
+## branch-edit
+
+![branch-edit](screens/desktop/en/branch-edit.jpg)
+
+## branch-history
+
+![branch-history](screens/desktop/en/branch-history.jpg)
+
+## settings
+
+![settings](screens/desktop/en/settings.jpg)
+
+## settings-personal
+
+![settings-personal](screens/desktop/en/settings-personal.jpg)
+
+## settings-account
+
+![settings-account](screens/desktop/en/settings-account.jpg)
+
+## settings-profile
+
+![settings-profile](screens/desktop/en/settings-profile.jpg)
+
+## settings-language
+
+![settings-language](screens/desktop/en/settings-language.jpg)
+
+## settings-security
+
+![settings-security](screens/desktop/en/settings-security.jpg)
+
+## settings-password
+
+![settings-password](screens/desktop/en/settings-password.jpg)
+
+## settings-two-factor
+
+![settings-two-factor](screens/desktop/en/settings-two-factor.jpg)
+
+## settings-email
+
+![settings-email](screens/desktop/en/settings-email.jpg)
+
+## settings-devices
+
+![settings-devices](screens/desktop/en/settings-devices.jpg)
+
+## settings-notifications
+
+![settings-notifications](screens/desktop/en/settings-notifications.jpg)
+
+## settings-notifications-email
+
+![settings-notifications-email](screens/desktop/en/settings-notifications-email.jpg)
+
+## settings-notifications-inapp
+
+![settings-notifications-inapp](screens/desktop/en/settings-notifications-inapp.jpg)
+
+## notifications
+
+![notifications](screens/desktop/en/notifications.jpg)
+
+## subscription
+
+![subscription](screens/desktop/en/subscription.jpg)
+
+## customer-feedback
+
+![customer-feedback](screens/desktop/en/customer-feedback.jpg)
+
+## analytics-sentiment — empty
+
+![analytics-sentiment — empty](screens/desktop/en/analytics-sentiment-empty.jpg)
+
+## reports — empty
+
+![reports — empty](screens/desktop/en/reports-empty.jpg)
+
+## branches — empty
+
+![branches — empty](screens/desktop/en/branches-empty.jpg)

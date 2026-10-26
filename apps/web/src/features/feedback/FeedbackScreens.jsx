@@ -1,8 +1,9 @@
+import { PUBLIC_SURVEY_URL, displaySurveyUrl } from '../../config/links.js';
 import HeadingBack from '../../components/layout/HeadingBack.jsx';
 import { useRouteState } from '../../components/layout/navigation.js';
 import UiArrow from '../../components/ui/UiArrow.jsx';
 import ChoiceMenu, { BranchMenu } from '../../components/ui/ChoiceMenu.jsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControlIcon from '../../components/ui/ControlIcon.jsx';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
@@ -38,7 +39,6 @@ const emptyFilters = {
   language: 'all',
   aspect: 'all',
   branch: 'all',
-  segment: 'all',
 };
 function Filter({ name, label, options, value, onChange, disabled, calendar }) {
   const { tr } = useProductView();
@@ -73,11 +73,15 @@ function Filter({ name, label, options, value, onChange, disabled, calendar }) {
 }
 
 function NoResponses({ empty, onClear }) {
-  const { tr, preview, action, language } = useProductView();
+  const { tr, preview, action } = useProductView();
   const [shared, setShared] = useState(false);
   const share = async () => {
+    if (!preview) {
+      action('Share a survey');
+      return;
+    }
     try {
-      await navigator.clipboard.writeText('https://nuvia.link/bloom-feedback');
+      await navigator.clipboard.writeText(PUBLIC_SURVEY_URL);
       setShared('copied');
     } catch {
       setShared('manual');
@@ -104,22 +108,10 @@ function NoResponses({ empty, onClear }) {
       </p>
       {empty ? (
         <div className="feedback-empty-actions">
-          <button
-            className="feedback-btn feedback-primary"
-            onClick={preview ? share : () => action('Surveys')}
-          >
+          <button className="feedback-btn feedback-primary" onClick={share}>
             <Icon name="send" folder="feedbacks-empty" />
             {tr(shared === 'copied' ? 'Link copied' : 'Share a survey')}
           </button>
-          {preview ? (
-            <button className="feedback-btn" onClick={() => onClear()}>
-              {tr('View sample responses')}
-            </button>
-          ) : (
-            <a className="feedback-btn" href="/preview/#/feedbacks">
-              {tr('View sample responses')}
-            </a>
-          )}
         </div>
       ) : (
         <button className="feedback-btn feedback-primary" onClick={onClear}>
@@ -129,13 +121,7 @@ function NoResponses({ empty, onClear }) {
       )}
       {empty ? (
         <small aria-live="polite">
-          {!preview
-            ? language === 'ar'
-              ? 'مشاركة الاستبيانات غير متاحة بعد.'
-              : 'Survey sharing is not available yet.'
-            : shared
-              ? 'nuvia.link/bloom-feedback'
-              : tr('Already shared? New responses appear automatically.')}
+          {shared ? displaySurveyUrl() : tr('Already shared? New responses appear automatically.')}
         </small>
       ) : (
         <small>{tr('Your responses are still here. Only the view has changed.')}</small>
@@ -157,38 +143,30 @@ export function FeedbackList({ empty = false, loading = false, noResults = false
     [filtersOpen, setFiltersOpen] = useState(false);
   const survey = new URLSearchParams(location.hash.split('?')[1]).get('survey');
   const aspectScope = new URLSearchParams(location.hash.split('?')[1]).get('aspect');
-  const data = useMemo(
-    () =>
-      empty || loading
-        ? []
-        : feedbackRows.filter(
-            (row) =>
-              (!survey || row.survey === survey) &&
-              (!aspectScope || row.aspects.includes(aspectScope)),
-          ),
-    [empty, loading, survey, aspectScope],
-  );
-  const filtered = useMemo(
-    () =>
-      data
-        .filter((row) => {
-          const q = normalizeFeedbackSearch(ui.query);
-          const searchable = normalizeFeedbackSearch(
-            [row.text, row.id, tr(row.branch), tr(row.sentiment), ...row.aspects.map(tr)].join(' '),
-          );
-          return (
-            (!q || searchable.includes(q)) &&
-            (filters.sentiment === 'all' || row.sentiment === filters.sentiment) &&
-            (filters.language === 'all' || row.language === filters.language) &&
-            (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
-            (filters.branch === 'all' || row.branch === filters.branch) &&
-            ((filters.segment ?? 'all') === 'all' || row.segment === filters.segment) &&
-            (filters.date !== '1' || row.date === '2026-10-16')
-          );
-        })
-        .sort((a, b) => (descending ? b.id - a.id : a.id - b.id)),
-    [ui.query, filters, descending, data, tr],
-  );
+  const data =
+    empty || loading
+      ? []
+      : feedbackRows.filter(
+          (row) =>
+            (!survey || row.survey === survey) &&
+            (!aspectScope || row.aspects.includes(aspectScope)),
+        );
+  const filtered = data
+    .filter((row) => {
+      const q = normalizeFeedbackSearch(ui.query);
+      const searchable = normalizeFeedbackSearch(
+        [row.text, row.id, tr(row.branch), tr(row.sentiment), ...row.aspects.map(tr)].join(' '),
+      );
+      return (
+        (!q || searchable.includes(q)) &&
+        (filters.sentiment === 'all' || row.sentiment === filters.sentiment) &&
+        (filters.language === 'all' || row.language === filters.language) &&
+        (filters.aspect === 'all' || row.aspects.includes(filters.aspect)) &&
+        (filters.branch === 'all' || row.branch === filters.branch) &&
+        (filters.date !== '1' || row.date === '2026-10-16')
+      );
+    })
+    .sort((a, b) => (descending ? b.id - a.id : a.id - b.id));
   const pageSize = 8,
     visible = filtered.slice(page * pageSize, (page + 1) * pageSize),
     visibleSelected = filtered.filter((r) => selected.has(r.id)),
@@ -220,7 +198,6 @@ export function FeedbackList({ empty = false, loading = false, noResults = false
     language: 'Language',
     aspect: 'Aspect',
     branch: 'Branch',
-    segment: 'Segment',
   };
   const applied = Object.entries(filters)
     .filter(([key, value]) => value !== emptyFilters[key])
@@ -368,19 +345,6 @@ export function FeedbackList({ empty = false, loading = false, noResults = false
               ['Cairo', 'Cairo'],
               ['El Zamalek', 'El Zamalek'],
               ['Alex', 'Alex'],
-            ]}
-          />
-          <Filter
-            name="segment"
-            label="Segment"
-            value={filters.segment ?? 'all'}
-            onChange={update}
-            disabled={empty || loading}
-            options={[
-              ['all', 'All segments'],
-              ['Morning visitors', 'Morning visitors'],
-              ['Returning customers', 'Returning customers'],
-              ['New customers', 'New customers'],
             ]}
           />
         </div>

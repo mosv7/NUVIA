@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { it, expect, vi, beforeEach } from 'vitest';
 import App from '../src/app/App.jsx';
@@ -86,11 +85,11 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect(screen.queryByRole('button', { name: 'Log out', exact: true })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Open Ask NUVIA' }));
   expect(screen.getByRole('dialog', { name: 'Ask NUVIA' })).toBeVisible();
-  expect(screen.getByText('Cairo’s wait times need a closer look')).toBeVisible();
-  expect(screen.getByText('Data and replies in this preview are illustrative.')).toBeVisible();
+  expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
+  expect(screen.getAllByText(/AI Assistant is not available yet/).length).toBeGreaterThan(0);
   expect(location.hash).toBe('#/dashboard');
   fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
-  expect(screen.getByText('Cairo’s wait times need a closer look')).not.toBeVisible();
+  expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Notifications', exact: true }));
   expect(
     screen.getByText('No notifications yet. Updates about your workspace will appear here.'),
@@ -212,7 +211,7 @@ it('opens the connected assistant workspace without sample conversations or metr
   expect(screen.getByText('Sara Ahmed · Just now')).not.toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
   fireEvent.click(screen.getByRole('button', { name: 'View profile', exact: true }));
-  expect(screen.getByRole('dialog', { name: 'Profile' })).toBeVisible();
-  expect(screen.getByText('owner@example.test')).toBeVisible();
+  expect(location.hash).toBe('#/settings');
+  expect(screen.queryByRole('dialog', { name: 'Profile' })).not.toBeInTheDocument();
   expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
 });

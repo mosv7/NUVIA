@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 const destinations = {
+  Business: 'business',
+  Segments: 'business',
+  Settings: 'settings',
+  Subscription: 'subscription',
+  'Manage business': 'business',
+  'Manage subscription': 'subscription',
+  'View profile': 'settings',
   Surveys: 'survey-all',
   'Create Survey': 'survey-create',
   'Create survey': 'survey-create',

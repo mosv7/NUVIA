@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { authApi } from '../../features/auth/api.js';
 import { workspaceApi } from '../../features/workspaces/api.js';
 import { resetApiSession } from '../../lib/http/client.js';

@@ -1,11 +1,13 @@
-import GlobalSearch from '../../components/layout/GlobalSearch.jsx';
-import HeaderMenus from '../../components/layout/HeaderMenus.jsx';
+import { useAuth } from './AuthProvider.jsx';
 import ConnectedAssistantLauncher from '../../components/ui/ConnectedAssistantLauncher.jsx';
-import { useRouteState, routeForAction } from '../../components/layout/navigation.js';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import PreviewWorkspaceContext from '../../features/insights/PreviewWorkspaceContext.jsx';
+import { useRouteState } from '../../components/layout/navigation.js';
+import GlobalSearch from '../../components/layout/GlobalSearch.jsx';
+import { routeForAction } from '../../components/layout/navigation.js';
+import HeaderMenus from '../../components/layout/HeaderMenus.jsx';
+import { createContext, useContext, useEffect, useState } from 'react';
 import arabic from '../../lib/i18n/product-ar.json';
 import { arabicUiNumbers } from '../../lib/number-format.js';
-import { useAuth } from './AuthProvider.jsx';
 const englishCopy = {
   Feedbacks: 'Feedbacks',
   'All feedbacks': 'All feedbacks',
@@ -23,23 +25,22 @@ export function ProductProvider({
   menuOpen,
   dashboard,
   analytics,
-  workspace,
+  workspace: workspaceProp,
   onLogout,
-  preview = false,
+  preview: previewProp,
 }) {
-  const identity = useAuth()?.user;
-  const [query, setQuery] = useRouteState('feedback-query', '');
+  const auth = useAuth();
+  const preview = previewProp ?? auth?.preview ?? false;
+  const workspace = workspaceProp ?? auth?.workspace;
+  const identity = auth?.user;
+  const [notice, setNotice] = useState('');
+  const logout = onLogout ?? auth?.logout;
+  const previewWorkspace = useContext(PreviewWorkspaceContext);
+  const [query, setQuery] = useRouteState('feedback-search', '');
   const [workspaceQuery, setWorkspaceQuery] = useState('');
   const [topbarMenu, setTopbarMenu] = useState(null);
-  const openTopbar = (kind, anchor) => {
-    if (!preview && !['profile', 'notifications', 'business'].includes(kind)) {
-      setNotice(
-        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
-      );
-      return;
-    }
+  const openTopbar = (kind, anchor) =>
     setTopbarMenu((old) => (old?.kind === kind ? null : { kind, anchor }));
-  };
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 850);
   useEffect(() => {
     const resize = () => setIsMobile(window.innerWidth <= 850);
@@ -53,43 +54,21 @@ export function ProductProvider({
         return language === 'ar'
           ? `مرحبًا ${identity?.name || ''}. من هنا تتابع آراء عملائك.`
           : `Welcome back, ${identity?.name || ''}. Track your customer feedback here.`;
-      const selectedBranch = workspace?.branches?.find((branch) => branch.id === text);
-      if (selectedBranch) return selectedBranch.name;
       const actual = {
         'Bloom & Co.': workspace?.businessName || '',
         'Cafe &workspace': workspace?.industry || '',
         B: Array.from(workspace?.businessName || '')[0] || '',
         'Sara Ahmed': identity?.name || '',
         12: '0',
-        'All 3 branches': language === 'ar' ? 'كل الفروع' : 'All branches',
       };
       if (Object.hasOwn(actual, text)) return actual[text];
     }
+    if (text === 'Bloom & Co.' && previewWorkspace?.biz) return previewWorkspace.biz.name;
     return language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
-  };
-  const [notice, setNotice] = useState('');
-  const logout = async () => {
-    try {
-      await onLogout();
-      return true;
-    } catch {
-      setNotice(
-        language === 'ar'
-          ? 'تعذر تسجيل الخروج من الخادم. حاول مرة أخرى.'
-          : 'Could not log out from the server. Please try again.',
-      );
-      return false;
-    }
   };
   const navigateLabel = (label) => {
     const route = routeForAction(label, tr);
     if (!route) return false;
-    if (!preview && !['#/dashboard', '#/feedbacks', '#/nuvia-assistant'].includes(route)) {
-      setNotice(
-        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
-      );
-      return true;
-    }
     onNavigate?.();
     location.hash = route.slice(1);
     return true;
@@ -97,27 +76,31 @@ export function ProductProvider({
   const action = (label) => {
     if (
       !preview &&
-      !['Overview', 'Feedbacks', 'Feedbacks 12', 'All feedbacks', 'NUVIA Assistant'].includes(label)
+      !routeForAction(label, tr) &&
+      !['Overview', 'Feedbacks', 'All feedbacks', 'NUVIA Assistant'].includes(label)
     ) {
-      if (label === 'B Bloom & Co. Cafe &workspace' || label === 'Settings') {
-        location.hash = '/business-information';
-        return;
-      }
       setNotice(
         language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
       );
       return;
     }
-    if (preview && navigateLabel(label)) return;
+    if (navigateLabel(label)) return;
     if (label === 'NUVIA Assistant') {
-      if (!preview) {
-        onNavigate?.();
-        location.hash = '/nuvia-assistant';
-        return;
-      }
-      window.dispatchEvent(new Event('nuvia:ask'));
+      onNavigate?.();
+      location.hash = '/nuvia-assistant';
       return;
     }
+    if (label === 'Analytics') {
+      onNavigate?.();
+      location.hash = '/analytics-sentiment';
+      return;
+    }
+    if (label === 'Reports') {
+      onNavigate?.();
+      location.hash = '/reports';
+      return;
+    }
+
     const feedbackLabels = [
       'Feedbacks',
       'Feedbacks 12',
@@ -180,36 +163,44 @@ export function ProductProvider({
   return (
     <ProductContext.Provider
       value={{
-        dashboard,
-        analytics,
-        workspaceQuery,
-        setWorkspaceQuery,
+        previewWorkspace,
+        preview,
+        workspace,
+        identity,
+        logout,
+        setNotice,
         topbarMenu,
         setTopbarMenu,
         openTopbar,
-        navigateLabel,
-        workspace,
-        preview,
-        logout,
-        identity,
-        activeDestination: location.hash.startsWith('#/analytics-')
-          ? 'Analytics'
-          : location.hash.startsWith('#/report')
-            ? 'Reports'
-            : location.hash.startsWith('#/survey-')
-              ? 'Surveys'
-              : location.hash.startsWith('#/nuvia-assistant')
-                ? 'NUVIA Assistant'
-                : location.hash.startsWith('#/feedback')
-                  ? 'Feedbacks'
-                  : 'Overview',
+        dashboard,
+        analytics,
+        activeDestination: location.hash.startsWith('#/subscription')
+          ? 'Subscription'
+          : location.hash.startsWith('#/settings')
+            ? 'Settings'
+            : location.hash.startsWith('#/business') || location.hash.startsWith('#/branch')
+              ? 'Business'
+              : location.hash.startsWith('#/analytics')
+                ? 'Analytics'
+                : location.hash.startsWith('#/report')
+                  ? 'Reports'
+                  : location.hash.startsWith('#/nuvia-assistant')
+                    ? 'NUVIA Assistant'
+                    : location.hash.startsWith('#/feedback')
+                      ? 'Feedbacks'
+                      : location.hash.startsWith('#/survey')
+                        ? 'Surveys'
+                        : 'Overview',
         language,
         setLanguage,
         tr,
         formatNumber,
         query,
         setQuery,
+        workspaceQuery,
+        setWorkspaceQuery,
         action,
+        navigateLabel,
         isMobile,
         menuOpen,
         matches: (text) => {
@@ -227,13 +218,15 @@ export function ProductProvider({
       }}
     >
       {children}
-      {preview && <GlobalSearch />}
+      <GlobalSearch />
       <HeaderMenus />
-      {!preview && !location.hash.startsWith('#/nuvia-assistant') && <ConnectedAssistantLauncher />}
+      {!preview && !['#/nuvia-assistant', '#/assistant'].includes(location.hash.split('?')[0]) && (
+        <ConnectedAssistantLauncher />
+      )}
       {notice && (
-        <div className="workspace-action-notice" role="status">
-          {notice}
-          <button onClick={() => setNotice('')} aria-label={language === 'ar' ? 'إغلاق' : 'Close'}>
+        <div className="product-notice" role="status">
+          <span>{notice}</span>
+          <button type="button" onClick={() => setNotice('')}>
             ×
           </button>
         </div>

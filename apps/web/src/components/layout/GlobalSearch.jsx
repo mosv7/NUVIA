@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { safeLocalStorage } from '../../lib/storage.js';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { buildSearchIndex, searchIndex } from './search-index.js';
@@ -11,7 +12,7 @@ export default function GlobalSearch() {
     popup = useRef(null);
   const ar = language === 'ar';
   const results = useMemo(
-    () => searchIndex(buildSearchIndex(language, localStorage), workspaceQuery),
+    () => searchIndex(buildSearchIndex(language, safeLocalStorage), workspaceQuery),
     [workspaceQuery, language],
   );
   const choose = useCallback(

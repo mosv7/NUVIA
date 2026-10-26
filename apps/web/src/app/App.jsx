@@ -1,4 +1,4 @@
-import React from 'react';
+import { Suspense } from 'react';
 import { AuthProvider } from './providers/AuthProvider.jsx';
 import AppRouter from './router/AppRouter.jsx';
 export default function App() {
@@ -15,7 +15,9 @@ export default function App() {
       {galleryCapture && (
         <style>{`.product-page { position: relative; } #root .product-page > .nuvia-launcher { position: absolute !important; bottom: 20px !important; right: 20px !important; left: auto !important; } #root .product-page[dir="rtl"] > .nuvia-launcher { right: auto !important; left: 20px !important; }`}</style>
       )}
-      <AppRouter />
+      <Suspense fallback={null}>
+        <AppRouter />
+      </Suspense>
     </AuthProvider>
   );
 }

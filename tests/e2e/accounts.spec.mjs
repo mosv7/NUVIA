@@ -98,7 +98,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
     await page.goto(`${origin}/#/feedbacks`);
     await page.getByRole('heading', { name: 'Your first response starts here' }).waitFor();
-    assert.equal(await page.locator('.feedback-filter').count(), 6);
+    assert.equal(await page.locator('.feedback-filter').count(), 5);
     assert.equal(await page.locator('.feedback-table tbody tr').count(), 0);
     for (const width of [1440, 393]) {
       await page.setViewportSize({ width, height: width === 393 ? 800 : 900 });
@@ -116,25 +116,28 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
         logout.y >= 0 && logout.y + logout.height <= (width === 393 ? 800 : 900),
         'Sign out must remain reachable',
       );
-      await page.getByRole('button', { name: 'View profile', exact: true }).click();
-      const done = page.getByRole('button', { name: 'Done', exact: true });
-      await done.focus();
-      for (const key of ['Tab', 'Shift+Tab']) {
-        await page.keyboard.press(key);
-        assert.ok(await done.evaluate((element) => element === document.activeElement));
-      }
       await page.keyboard.press('Escape');
       assert.ok(
         await page
           .getByRole('button', { name: 'Profile', exact: true })
           .evaluate((element) => element === document.activeElement),
-        'Closing the profile must return focus to the account trigger',
+        'Escape returns focus to the account trigger',
       );
+      await page.getByRole('button', { name: 'Profile', exact: true }).click();
+      await page.getByRole('button', { name: 'View profile', exact: true }).click();
+      await waitFor(() => page.url().endsWith('#/settings'));
+      if (width === 393) {
+        await page.getByRole('button', { name: /^Personal information/ }).click();
+        await page.getByRole('heading', { name: 'Personal information', exact: true }).waitFor();
+      } else await page.getByRole('heading', { name: 'Account settings', exact: true }).waitFor();
+      assert.ok((await page.getByText('Browser Cafe', { exact: true }).count()) > 0);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await page.goto(`${origin}/#/feedbacks`);
+      await page.getByRole('heading', { name: 'Your first response starts here' }).waitFor();
     }
     await page.getByRole('button', { name: 'Open Ask NUVIA' }).click();
-    await page.getByRole('link', { name: 'View supporting feedback' }).click();
-    await waitFor(() => page.url() === `${origin}/preview/#/feedbacks`);
+    assert.equal(await page.getByRole('link', { name: 'View supporting feedback' }).count(), 0);
+    await page.goto(`${origin}/preview/#/feedbacks`);
     await page.getByText('Design preview · معاينة التصميم').waitFor();
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/dashboard`);
@@ -157,7 +160,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByRole('status').filter({ hasText: 'incorrect' }).waitFor();
     await login('Changed123');
     await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
-    await page.evaluate(() => localStorage.setItem('nuvia-language', 'ar'));
+    await page.goto(`${origin}/?lang=ar#/dashboard`);
     await page.setViewportSize({ width: 393, height: 800 });
     await page.reload();
     await page.getByRole('heading', { name: 'لا توجد ردود بعد' }).waitFor();

@@ -1,4 +1,3 @@
-import React from 'react';
 import { asset } from '../../lib/assets.js';
 const sources = { date: 'calendar-days.svg', branch: 'store.svg', export: 'download-export.svg' };
 export default function ControlIcon({ name }) {

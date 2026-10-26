@@ -18,3 +18,9 @@
 The current schema location is `apps/api/src/shared/database/models`, with explicit names for the seven existing collections. Services consume `deps.models`; public API DTOs remain separate. Keep hashing/encryption/timestamps explicit in services. Foreign-key-like references do not replace owner predicates or transaction sessions.
 
 Future modules have boundary READMEs instead of fake endpoints. Before implementing a survey, user/team or AI workflow, define its request/response contract, authorization, error/empty/loading behavior and meaningful tests. The [full feature map](../product/feature-list.md) is scope context, not authorization to implement every planned capability.
+
+## Workspace interface modules
+
+`apps/web/src/features/workspace/WorkspacePages.jsx` composes separate Business, Account, Notification, Security, state and dialog modules. `useWorkspaceModel.jsx` owns temporary view state and the connected workspace/branch adapter; it cancels stale reads and mutations on navigation. Unsupported account/settings operations are guarded at the boundary. Shared UI and the existing authenticated providers remain single implementations; the standalone source project is not nested or duplicated inside `apps/web`.
+
+Heavy analytics/report/survey routes and their screens load lazily. Feature CSS is deferred with its route; it is not a separate mobile stylesheet download that must be loaded at login. The large generated feature styles remain to preserve the reviewed design; their size has not been hidden by raising the bundle warning threshold.

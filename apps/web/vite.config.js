@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
 export default defineConfig({
+  esbuild: { jsx: 'automatic' },
   server: {
     port: 5173,
     strictPort: true,
-    proxy: { '/api': 'http://127.0.0.1:3001' },
+    proxy: {
+      '/api': {
+        target: process.env.NUVIA_API_TARGET || 'http://127.0.0.1:3001',
+        changeOrigin: false,
+      },
+    },
     host: '127.0.0.1',
     fs: {
       deny: [

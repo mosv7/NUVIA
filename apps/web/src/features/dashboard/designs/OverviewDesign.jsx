@@ -1,5 +1,8 @@
-import { ArrowText as DashboardArrowText } from '../../../components/ui/UiArrow.jsx';
 import OverviewEmpty from '../OverviewEmpty.jsx';
+import { ArrowText as DashboardArrowText } from '../../../components/ui/UiArrow.jsx';
+import ControlIcon from '../../../components/ui/ControlIcon.jsx';
+import NavigationIcon from '../../../components/layout/NavigationIcon.jsx';
+import WorkspaceScopeControls from '../WorkspaceScopeControls.jsx';
 import { ScopeMetric, ScopeTrend, ScopeSentiment, OverviewScopeStatus } from '../OverviewScope.jsx';
 import '../overview-scope.css';
 import { LanguageMenu } from '../../../components/ui/ChoiceMenu.jsx';
@@ -9,11 +12,10 @@ import {
   NewRecommendations,
   NewQuickActions,
 } from './OverviewAdditions.jsx';
-import React from 'react';
+
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
-import '../../../components/layout/workspace-shell.css';
-import { OverviewBranchSelect, overviewDateLabel } from '../OverviewControls.jsx';
+import './overview.css';
 
 const imgLogo = asset('dashboard/overview/logo.svg');
 const imgChevronsUpDown = asset('dashboard/overview/chevrons-up-down.svg');
@@ -31,10 +33,7 @@ const imgSearch = asset('dashboard/overview/search.svg');
 const imgGlobe = asset('dashboard/overview/globe.svg');
 const imgChevronDown = asset('dashboard/overview/chevron-down.svg');
 const imgNotifications = asset('dashboard/overview/notifications.svg');
-const imgStore = asset('dashboard/overview/store.svg');
-const imgChevronDown1 = asset('dashboard/overview/chevron-down1.svg');
-const imgCalendarDays = asset('dashboard/overview/calendar-days.svg');
-const imgDownload = asset('dashboard/overview/download-export.svg');
+
 const imgPlus = asset('dashboard/overview/plus.svg');
 const imgMessageSquare1 = asset('dashboard/overview/message-square1.svg');
 const imgSmile = asset('dashboard/overview/smile-metric.svg');
@@ -55,8 +54,8 @@ export default function OverviewDesign({ empty = false }) {
   const tr = ui.tr;
   return (
     <div
-      className="f0 product-view ds-overview"
       data-first-time={empty}
+      className="f0 product-view ds-overview"
       data-node-id="127:256"
       data-name="dashboard overview"
     >
@@ -83,7 +82,10 @@ export default function OverviewDesign({ empty = false }) {
           data-node-id="127:265"
           data-name="Business switcher"
           type="button"
-          onClick={() => ui.action('B Bloom & Co. Cafe &workspace')}
+          aria-label={tr('Business switcher')}
+          aria-haspopup="dialog"
+          aria-expanded={ui.topbarMenu?.kind === 'business'}
+          onClick={(e) => ui.openTopbar('business', e.currentTarget)}
         >
           <div className="f8" data-node-id="127:266" data-name="Business avatar">
             <p className="f9" data-node-id="127:267">
@@ -133,15 +135,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('Overview')}
           >
             <div className="f17" data-node-id="127:276" data-name="layout-dashboard">
-              <img
-                alt=""
-                className="f5"
-                src={
-                  ui.activeDestination === 'Feedbacks'
-                    ? asset('dashboard/overview/layout-dashboard-inactive.svg')
-                    : imgLayoutDashboard
-                }
-              />
+              <NavigationIcon src={imgLayoutDashboard} destination="Overview" />
             </div>
             <p
               className="f18"
@@ -205,7 +199,7 @@ export default function OverviewDesign({ empty = false }) {
               data-name="chart-no-axes-combined"
               dir="ltr"
             >
-              <img alt="" className="f5" src={imgChartNoAxesCombined} />
+              <NavigationIcon src={imgChartNoAxesCombined} destination="Analytics" />
             </div>
             <p
               className="f20"
@@ -225,7 +219,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('Reports')}
           >
             <div className="f17" data-node-id="127:290" data-name="file-chart-column" dir="ltr">
-              <img alt="" className="f5" src={imgFileChartColumn} />
+              <NavigationIcon src={imgFileChartColumn} destination="Reports" />
             </div>
             <p
               className="f20"
@@ -245,7 +239,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('Surveys')}
           >
             <div className="f17" data-node-id="127:294" data-name="clipboard-list">
-              <img alt="" className="f5" src={imgClipboardList} />
+              <NavigationIcon src={imgClipboardList} destination="Surveys" />
             </div>
             <p
               className="f20"
@@ -265,7 +259,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('Segments')}
           >
             <div className="f17" data-node-id="127:298" data-name="users">
-              <img alt="" className="f5" src={imgUsers} />
+              <NavigationIcon src={imgUsers} destination="Business" />
             </div>
             <p
               className="f20"
@@ -274,7 +268,7 @@ export default function OverviewDesign({ empty = false }) {
                 fontVariationSettings: '"opsz" 14',
               }}
             >
-              {tr('Business & Teams')}
+              {tr('Business')}
             </p>
           </button>
           <div className="f23" data-node-id="127:301" data-name="Divider" />
@@ -286,7 +280,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('NUVIA Assistant')}
           >
             <div className="f17" data-node-id="127:303" data-name="sparkles">
-              <img alt="" className="f5" src={imgSparkles} />
+              <NavigationIcon src={imgSparkles} destination="NUVIA Assistant" />
             </div>
             <p
               className="f20"
@@ -309,7 +303,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('Subscription')}
           >
             <div className="f17" data-node-id="127:309" data-name="credit-card">
-              <img alt="" className="f5" src={imgCreditCard} />
+              <NavigationIcon src={imgCreditCard} destination="Subscription" />
             </div>
             <p
               className="f20"
@@ -329,7 +323,7 @@ export default function OverviewDesign({ empty = false }) {
             onClick={() => ui.action('Settings')}
           >
             <div className="f17" data-node-id="127:313" data-name="settings">
-              <img alt="" className="f5" src={imgSettings} />
+              <NavigationIcon src={imgSettings} destination="Settings" />
             </div>
             <p
               className="f20"
@@ -343,7 +337,7 @@ export default function OverviewDesign({ empty = false }) {
           </button>
         </div>
         {ui.preview && (
-          <div className="f26" data-node-id="127:316" data-name="Plan usage">
+          <div hidden={!ui.preview} className="f26" data-node-id="127:316" data-name="Plan usage">
             <div className="f27" data-node-id="127:317" data-name="Plan">
               <p
                 className="f28"
@@ -451,13 +445,11 @@ export default function OverviewDesign({ empty = false }) {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                data-workspace-search={ui.preview ? '' : undefined}
+                data-workspace-search=""
                 aria-label={tr('Search across pages')}
                 placeholder={tr('Search across pages')}
-                value={ui.preview ? ui.workspaceQuery : ui.query}
-                onChange={(event) =>
-                  (ui.preview ? ui.setWorkspaceQuery : ui.setQuery)(event.target.value)
-                }
+                value={ui.workspaceQuery}
+                onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />
               <p
                 className="f46"
@@ -473,7 +465,7 @@ export default function OverviewDesign({ empty = false }) {
               <div className="f35" data-node-id="127:341" data-name="globe">
                 <img alt="" className="f5" src={imgGlobe} />
               </div>
-              <LanguageMenu iconOnly={ui.isMobile} value={ui.language} onChange={ui.setLanguage} />
+              <LanguageMenu iconOnly={true} value={ui.language} onChange={ui.setLanguage} />
               <div className="f48" data-node-id="127:344" data-name="chevron-down">
                 <img alt="" className="f5" src={imgChevronDown} />
               </div>
@@ -551,92 +543,57 @@ export default function OverviewDesign({ empty = false }) {
                   {tr('Welcome back, Sara. Here’s what your customers are telling you.')}
                 </p>
               </div>
-              <div className="f51" data-node-id="127:365" data-name="Overview actions">
-                <div className="f62" data-node-id="127:366" data-name="Dashboard filter">
-                  <div className="f35" data-node-id="127:367" data-name="store">
-                    <img alt="" className="f5" src={imgStore} />
-                  </div>
-                  <p
-                    className="f63"
-                    data-node-id="127:369"
-                    style={{
-                      fontVariationSettings: '"opsz" 14',
-                    }}
+              {!empty && (
+                <div className="f51" data-node-id="127:365" data-name="Overview actions">
+                  <WorkspaceScopeControls />
+                  <button
+                    className="f64 ui-control ui-export"
+                    data-node-id="127:376"
+                    data-name="Action"
+                    type="button"
+                    aria-label={tr('Export report')}
+                    title={tr('Export report')}
+                    onClick={() => ui.action('Export report')}
                   >
-                    {tr(
-                      ui.dashboard.filters.branch === 'all'
-                        ? 'All 3 branches'
-                        : ui.dashboard.filters.branch,
-                    )}
-                  </p>
-                  <OverviewBranchSelect />
-                  <div className="f13" data-node-id="127:370" data-name="chevron-down">
-                    <img alt="" className="f5" src={imgChevronDown1} />
-                  </div>
+                    <div className="f35" data-node-id="127:377" data-name="download">
+                      <ControlIcon name="export" />
+                    </div>
+                    <p
+                      className="f65"
+                      data-node-id="127:379"
+                      style={{
+                        fontVariationSettings: '"opsz" 14',
+                      }}
+                    >
+                      {tr('Export report')}
+                    </p>
+                  </button>
+                  <button
+                    className="f66"
+                    data-node-id="127:380"
+                    data-name="Action"
+                    type="button"
+                    aria-label={tr('Upload file')}
+                    title={tr('Upload file')}
+                    onClick={() => ui.action('Upload file')}
+                  >
+                    <div className="f35" data-node-id="127:381" data-name="plus">
+                      <img alt="" className="f5" src={imgPlus} />
+                    </div>
+                    <p
+                      className="f67"
+                      data-node-id="127:383"
+                      style={{
+                        fontVariationSettings: '"opsz" 14',
+                      }}
+                    >
+                      {tr('Upload file')}
+                    </p>
+                  </button>
                 </div>
-                <button
-                  className="f64"
-                  data-node-id="127:372"
-                  data-name="Action"
-                  type="button"
-                  onClick={ui.dashboard.openDate}
-                >
-                  <div className="f35" data-node-id="127:373" data-name="calendar-days">
-                    <img alt="" className="f5" src={imgCalendarDays} />
-                  </div>
-                  <p
-                    className="f65"
-                    data-node-id="127:375"
-                    style={{
-                      fontVariationSettings: '"opsz" 14',
-                    }}
-                  >
-                    {overviewDateLabel(ui.dashboard.filters, ui.language)}
-                  </p>
-                </button>
-                <button
-                  className="f64"
-                  data-node-id="127:376"
-                  data-name="Action"
-                  type="button"
-                  onClick={() => ui.action('Export report')}
-                >
-                  <div className="f35" data-node-id="127:377" data-name="download">
-                    <img alt="" className="f5" src={imgDownload} />
-                  </div>
-                  <p
-                    className="f65"
-                    data-node-id="127:379"
-                    style={{
-                      fontVariationSettings: '"opsz" 14',
-                    }}
-                  >
-                    {tr('Export report')}
-                  </p>
-                </button>
-                <button
-                  className="f66"
-                  data-node-id="127:380"
-                  data-name="Action"
-                  type="button"
-                  onClick={() => ui.action('Upload file')}
-                >
-                  <div className="f35" data-node-id="127:381" data-name="plus">
-                    <img alt="" className="f5" src={imgPlus} />
-                  </div>
-                  <p
-                    className="f67"
-                    data-node-id="127:383"
-                    style={{
-                      fontVariationSettings: '"opsz" 14',
-                    }}
-                  >
-                    {tr('Upload file')}
-                  </p>
-                </button>
-              </div>
+              )}
             </div>
-            {!empty && ui.dashboard.isFiltered && <OverviewScopeStatus />}
+            {ui.dashboard.isFiltered && <OverviewScopeStatus />}
             {!empty && (
               <div className="f68" data-node-id="127:384" data-name="Key metrics">
                 <div

@@ -1,6 +1,6 @@
 import { ArrowText as DashboardArrowText } from '../../../components/ui/UiArrow.jsx';
 import ScopedInsights from '../ScopedInsights.jsx';
-import React from 'react';
+
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import './overview-additions.css';
 
@@ -792,13 +792,14 @@ export function NewBranchAttention() {
             >
               {ui.tr('3 branches · 1,250 reviews')}
             </p>
-            <p
-              className="v151"
+            <button
+              type="button"
+              className="v151 semantic-button"
               data-node-id="325:6160"
               style={{ fontVariationSettings: '"opsz" 14' }}
             >
               <DashboardArrowText text={ui.tr('Compare branches →')} />
-            </p>
+            </button>
           </div>
         </ScopedInsights>
       </div>

@@ -45,6 +45,7 @@ export function bootstrapSession() {
 export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
   if (path === '/auth/session' && method === 'GET') return bootstrapSession();
   if (method !== 'GET' && !csrfToken) await bootstrapSession();
+  if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
   const version = epoch;
   let data;
   try {

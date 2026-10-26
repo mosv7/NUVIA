@@ -32,10 +32,23 @@ module.exports = [
       ...js.configs.recommended.rules,
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
-      'no-unused-vars': ['error', { varsIgnorePattern: '^React$', argsIgnorePattern: '^_' }],
+      'no-unused-vars': [
+        'warn',
+        {
+          args: 'none',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
+      'no-restricted-globals': ['error', 'localStorage', 'sessionStorage'],
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
+  },
+  {
+    files: ['apps/web/src/lib/storage.js', 'apps/web/tests/**'],
+    rules: { 'no-restricted-globals': 'off' },
   },
   {
     files: ['packages/shared-types/src/**/*.js'],

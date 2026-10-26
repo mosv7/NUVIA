@@ -1,4 +1,3 @@
-import React from 'react';
 import Field from '../../components/ui/Field.jsx';
 import { asset } from '../../lib/assets.js';
 export default function BusinessInformationPage({
@@ -8,7 +7,6 @@ export default function BusinessInformationPage({
   errors,
   onContinue,
   folder,
-  busy = false,
 }) {
   const hasError = Object.values(errors).some(Boolean),
     icon = (name) => asset(`business-setup/${folder}/${name}.svg`);
@@ -45,7 +43,7 @@ export default function BusinessInformationPage({
           error={errors.industry ? copy.industryError : undefined}
           hint={!hasError ? copy.industryHint : undefined}
         />
-        <button type="submit" className="primary" disabled={busy}>
+        <button type="submit" className="primary">
           {copy.continue}
         </button>
       </form>

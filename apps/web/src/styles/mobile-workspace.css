@@ -3160,3 +3160,19 @@
   border-color: #1e68ef;
   box-shadow: 0 0 0 3px #1e68ef1f;
 }
+
+@media (max-width: 380px) {
+  #root .surveys-content [data-name='Workflow step'] {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+    min-height: 64px;
+  }
+  #root .surveys-content [data-name='Workflow step'] > p {
+    flex: 0 0 auto;
+    width: 100%;
+    text-align: center;
+    overflow-wrap: break-word;
+  }
+}

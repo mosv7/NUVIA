@@ -1,6 +1,6 @@
 import { useRouteState } from '../../components/layout/navigation.js';
 import { useWorkspaceScale } from '../../hooks/useWorkspaceScale.js';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { asset } from '../../lib/assets.js';
 import { ProductProvider } from '../../app/providers/ProductProvider.jsx';
 import OverviewDesign from './designs/OverviewDesign.jsx';

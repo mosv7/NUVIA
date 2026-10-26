@@ -1,24 +1,15 @@
+import { lazy } from 'react';
+import { PUBLIC_SURVEY_URL } from '../../../config/links.js';
+import { safeLocalStorage, safeSessionStorage } from '../../../lib/storage.js';
 import { useRouteState } from '../../../components/layout/navigation.js';
 import { surveyBranches, matchesSurveyFilters } from './survey-branch-filter.js';
-import Results from './Results.jsx';
+
 import PreviewRating from './PreviewRating.jsx';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { ProductProvider } from '../../../app/providers/ProductProvider.jsx';
 import FeedbackShell from '../../../components/layout/WorkspaceShell.jsx';
 import { useWorkspaceScale } from '../../../hooks/useWorkspaceScale.js';
-import All from './all.jsx';
-import Empty from './empty.jsx';
-import Live from './live.jsx';
-import Drafts from './drafts.jsx';
-import Paused from './paused.jsx';
-import Closed from './closed.jsx';
-import Create from './create.jsx';
-import Questions from './questions.jsx';
-import Choices from './choices.jsx';
-import Edit from './edit.jsx';
-import Share from './share.jsx';
-import AI from './ai.jsx';
-import AIReview from './ai-review.jsx';
+
 import arabic from '../../../lib/i18n/product-ar.json';
 import {
   editorStorageKey,
@@ -33,6 +24,21 @@ import {
 import { SurveySelectionContext, SurveyEditorContext } from './SurveyPrimitives.jsx';
 import './figma-surveys.css';
 import './surveys.css';
+const Results = lazy(() => import('./Results.jsx'));
+const All = lazy(() => import('./all.jsx'));
+const Empty = lazy(() => import('./empty.jsx'));
+const Live = lazy(() => import('./live.jsx'));
+const Drafts = lazy(() => import('./drafts.jsx'));
+const Paused = lazy(() => import('./paused.jsx'));
+const Closed = lazy(() => import('./closed.jsx'));
+const Create = lazy(() => import('./create.jsx'));
+const Questions = lazy(() => import('./questions.jsx'));
+const Choices = lazy(() => import('./choices.jsx'));
+const Edit = lazy(() => import('./edit.jsx'));
+const Share = lazy(() => import('./share.jsx'));
+const AI = lazy(() => import('./ai.jsx'));
+const AIReview = lazy(() => import('./ai-review.jsx'));
+
 const screens = {
   results: Results,
   all: All,
@@ -76,27 +82,28 @@ export default function SurveyPage({ page, language, setLanguage }) {
     [question, setQuestion] = useState(kind === 'choices' ? 2 : 1),
     [selected, setSelected] = useState(new Set()),
     [visibleIds, setVisibleIds] = useState([]),
-    [editorQuestions, setEditorQuestions] = useState(() => loadEditorQuestions(localStorage)),
-    [enabledLanguages, setEnabledLanguages] = useState(() => loadEditorLanguages(localStorage)),
+    [editorQuestions, setEditorQuestions] = useState(() => loadEditorQuestions(safeLocalStorage)),
+    [enabledLanguages, setEnabledLanguages] = useState(() => loadEditorLanguages(safeLocalStorage)),
     [editorView, setEditorView] = useState(
       () =>
-        localStorage.getItem('survey-editor-view') ||
-        localStorage.getItem('survey-editor-language') ||
+        safeLocalStorage.getItem('survey-editor-view') ||
+        safeLocalStorage.getItem('survey-editor-language') ||
         'en',
     ),
     [editorLanguage, setEditorLanguage] = useState(() => {
-      const enabled = loadEditorLanguages(localStorage);
-      const saved = localStorage.getItem('survey-editor-language');
+      const enabled = loadEditorLanguages(safeLocalStorage);
+      const saved = safeLocalStorage.getItem('survey-editor-language');
       return enabled.includes(saved) ? saved : enabled[0];
     });
   const tr = useCallback((t) => (language === 'ar' ? (arabic[t] ?? t) : t), [language]);
   const [startingPoint, setStartingPoint] = useState(
-    () => localStorage.getItem('nuvia-survey-starting-point') || 'customer',
+    () => safeLocalStorage.getItem('nuvia-survey-starting-point') || 'customer',
   );
   const editStorageKey = 'nuvia-survey-edit-template-v1';
   const [editQuestions, setEditQuestions] = useState(() =>
     loadEditorQuestions({
-      getItem: (key) => (key === editorStorageKey ? localStorage.getItem(editStorageKey) : null),
+      getItem: (key) =>
+        key === editorStorageKey ? safeLocalStorage.getItem(editStorageKey) : null,
       length: 0,
     }),
   );
@@ -113,26 +120,26 @@ export default function SurveyPage({ page, language, setLanguage }) {
   const updateQuestion = (id, patch) =>
     setActiveQuestions((previous) => {
       const next = updateEditorQuestion(previous, id, patch);
-      localStorage.setItem(activeStorageKey, JSON.stringify(next));
+      safeLocalStorage.setItem(activeStorageKey, JSON.stringify(next));
       return next;
     });
   const changeEditorLanguage = (value) => {
     if (value === 'both' && enabledLanguages.length === 2) {
       setEditorView('both');
       setEditorLanguage('en');
-      localStorage.setItem('survey-editor-view', 'both');
-      localStorage.setItem('survey-editor-language', 'en');
+      safeLocalStorage.setItem('survey-editor-view', 'both');
+      safeLocalStorage.setItem('survey-editor-language', 'en');
     } else if (enabledLanguages.includes(value)) {
       setEditorView(value);
       setEditorLanguage(value);
-      localStorage.setItem('survey-editor-view', value);
-      localStorage.setItem('survey-editor-language', value);
+      safeLocalStorage.setItem('survey-editor-view', value);
+      safeLocalStorage.setItem('survey-editor-language', value);
     }
   };
   useEffect(() => {
-    const saved = sessionStorage.getItem('survey-after-save');
+    const saved = safeSessionStorage.getItem('survey-after-save');
     setNotice(saved ? tr(saved) : '');
-    sessionStorage.removeItem('survey-after-save');
+    safeSessionStorage.removeItem('survey-after-save');
     setSelected(new Set());
     if (!['questions', 'choices', 'edit'].includes(kind)) window.scrollTo(0, 0);
     if (saved) setTimeout(() => setNotice(''), 3500);
@@ -220,7 +227,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
   }, [page, language, filter, branchFilter, tr]);
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText('https://nuvia.link/bloom-feedback');
+      await navigator.clipboard.writeText(PUBLIC_SURVEY_URL);
       message('Link copied');
     } catch {
       message('Copy the link shown in the survey link field');
@@ -244,7 +251,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
           : removeEditorQuestion(activeQuestions, activeQuestion);
       pendingAddedQuestion.current = result.id;
       setActiveQuestions(result.questions);
-      localStorage.setItem(activeStorageKey, JSON.stringify(result.questions));
+      safeLocalStorage.setItem(activeStorageKey, JSON.stringify(result.questions));
       setQuestion(result.id);
       if (kind !== 'edit') go('questions');
       message(label === 'question-copy' ? 'Question copied' : 'Question deleted');
@@ -286,7 +293,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
       return;
     }
     if (/Generate with|NUVIA AI/.test(label)) {
-      sessionStorage.setItem(
+      safeSessionStorage.setItem(
         'survey-ai-append',
         String(['questions', 'choices', 'edit'].includes(kind)),
       );
@@ -338,7 +345,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
         });
       }
       setActiveQuestions(next);
-      localStorage.setItem(activeStorageKey, JSON.stringify(next));
+      safeLocalStorage.setItem(activeStorageKey, JSON.stringify(next));
       setQuestion(firstId);
       pendingAddedQuestion.current = firstId;
       go('questions');
@@ -352,9 +359,9 @@ export default function SurveyPage({ page, language, setLanguage }) {
           : 'customer';
       const next = createStartingQuestions(choice);
       setStartingPoint(choice);
-      localStorage.setItem('nuvia-survey-starting-point', choice);
+      safeLocalStorage.setItem('nuvia-survey-starting-point', choice);
       setEditorQuestions(next);
-      localStorage.setItem(editorStorageKey, JSON.stringify(next));
+      safeLocalStorage.setItem(editorStorageKey, JSON.stringify(next));
       setQuestion(1);
       go('questions');
       return;
@@ -383,7 +390,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
         value: field.value,
         checked: field.checked,
       }));
-      localStorage.setItem(
+      safeLocalStorage.setItem(
         'survey-preview-draft',
         JSON.stringify({
           fields,
@@ -396,7 +403,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
       if (/Save & close/.test(label)) {
         button.disabled = true;
         setTimeout(() => {
-          sessionStorage.setItem('survey-after-save', 'Draft saved');
+          safeSessionStorage.setItem('survey-after-save', 'Draft saved');
           go('drafts');
         }, 800);
       }
@@ -465,14 +472,14 @@ export default function SurveyPage({ page, language, setLanguage }) {
         return;
       }
       setEnabledLanguages(next);
-      localStorage.setItem('survey-enabled-languages', JSON.stringify(next));
+      safeLocalStorage.setItem('survey-enabled-languages', JSON.stringify(next));
       if (next.length === 1) {
         setEditorView(next[0]);
-        localStorage.setItem('survey-editor-view', next[0]);
+        safeLocalStorage.setItem('survey-editor-view', next[0]);
       }
       if (!next.includes(editorLanguage)) {
         setEditorLanguage(next[0]);
-        localStorage.setItem('survey-editor-language', next[0]);
+        safeLocalStorage.setItem('survey-editor-language', next[0]);
       }
       return;
     }
@@ -485,7 +492,7 @@ export default function SurveyPage({ page, language, setLanguage }) {
       const added = addEditorQuestion(activeQuestions);
       pendingAddedQuestion.current = added.id;
       setActiveQuestions(added.questions);
-      localStorage.setItem(activeStorageKey, JSON.stringify(added.questions));
+      safeLocalStorage.setItem(activeStorageKey, JSON.stringify(added.questions));
       setQuestion(added.id);
       if (kind !== 'edit') go('questions');
       return;
@@ -508,7 +515,6 @@ export default function SurveyPage({ page, language, setLanguage }) {
   };
   return (
     <ProductProvider
-      preview={true}
       language={language}
       setLanguage={setLanguage}
       menuOpen={menu}
@@ -584,7 +590,12 @@ export default function SurveyPage({ page, language, setLanguage }) {
           </div>
         )}
         {preview && (
-          <div className="survey-modal-backdrop" onClick={() => setPreview(false)}>
+          <div
+            className="survey-modal-backdrop"
+            onPointerDown={(event) => {
+              if (event.target === event.currentTarget) (() => setPreview(false))(event);
+            }}
+          >
             <section
               className={
                 'survey-modal' + (preview === 'branch-filter' ? ' survey-branch-modal' : '')

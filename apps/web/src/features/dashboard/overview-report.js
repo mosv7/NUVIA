@@ -61,22 +61,19 @@ aggregates.forEach((row) => {
   row.starts = cumulative - allocatedStarts;
   allocatedStarts = cumulative;
 });
-// Weekly aggregate already includes responses inside the reference period.
-feedbackRows
-  .filter((row) => row.date > defaultOverviewFilters.end || row.date < defaultOverviewFilters.start)
-  .forEach((row) =>
-    aggregates.push({
-      date: row.date,
-      branch: row.branch,
-      total: 1,
-      positive: row.sentiment === 'Positive' ? 1 : 0,
-      neutral: row.sentiment === 'Neutral' ? 1 : 0,
-      negative: row.sentiment === 'Negative' ? 1 : 0,
-      mixed: row.sentiment === 'Mixed' ? 1 : 0,
-      rating: null,
-      starts: null,
-    }),
-  );
+feedbackRows.forEach((row) =>
+  aggregates.push({
+    date: row.date,
+    branch: row.branch,
+    total: 1,
+    positive: row.sentiment === 'Positive' ? 1 : 0,
+    neutral: row.sentiment === 'Neutral' ? 1 : 0,
+    negative: row.sentiment === 'Negative' ? 1 : 0,
+    mixed: row.sentiment === 'Mixed' ? 1 : 0,
+    rating: null,
+    starts: null,
+  }),
+);
 function summarize(rows) {
   const result = {
     total: 0,

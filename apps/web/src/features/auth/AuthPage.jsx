@@ -1,4 +1,3 @@
-import React from 'react';
 import { LanguageMenu } from '../../components/ui/ChoiceMenu.jsx';
 import LanguageIcon from '../../components/ui/LanguageIcon.jsx';
 export default function AuthPage({

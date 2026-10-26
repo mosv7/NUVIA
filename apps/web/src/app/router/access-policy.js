@@ -1,4 +1,12 @@
-const publicRoutes = ['landing', 'login', 'signup', 'forgot', 'reset', 'verify-email'];
+const publicRoutes = [
+  'landing',
+  'customer-feedback',
+  'login',
+  'signup',
+  'forgot',
+  'reset',
+  'verify-email',
+];
 export function routePolicy({ route, preview = false, user, workspace }) {
   if (preview || publicRoutes.includes(route)) return { allow: true };
   if (!user) return { allow: false, redirect: 'login' };

@@ -1,8 +1,8 @@
 import ReviewQuestion from './ReviewQuestion.jsx';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { asset } from '../../../lib/assets.js';
-import '../../../components/ui/ControlIcon.jsx';
+
 import { UiText, SurveyReviewMark } from './SurveyPrimitives.jsx';
 const imgRefreshCw = asset('surveys-figma/ai-review-imgRefreshCw.svg');
 

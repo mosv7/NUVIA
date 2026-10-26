@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@fontsource/manrope/400.css';
 import '@fontsource/manrope/500.css';
@@ -18,7 +18,9 @@ import './styles/app.css';
 import './styles/site-chrome.css';
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <Suspense fallback={null}>
+      <App />
+    </Suspense>
   </React.StrictMode>,
 );
 
@@ -29,3 +31,6 @@ import './styles/mobile-workspace.css';
 import './styles/tablet-workspace.css';
 
 import './features/auth/email-verification.css';
+
+import './styles/focus.css';
+import './styles/account-controls.css';
