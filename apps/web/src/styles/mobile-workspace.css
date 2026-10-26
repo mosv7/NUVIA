@@ -284,11 +284,7 @@
 
 @media (max-width: 850px) {
   #root .auth-layout:has(.signup) .auth-panel > header,
-  #root .auth-layout .auth-panel:has(.signup) > header {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 12px;
-  }
+  #root .auth-layout .auth-panel:has(.signup) > header,
   #root .auth-layout .auth-panel > header:has(+ .signup) {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -2537,9 +2533,7 @@
     flex: 0 0 7px;
     margin-inline: 4px;
   }
-  #root [aria-expanded='true'] > .filter-menu-chevron {
-    transform: rotate(225deg) !important;
-  }
+  #root [aria-expanded='true'] > .filter-menu-chevron,
   #root .feedback-filters[data-open='true'] .filter-menu-chevron {
     transform: rotate(225deg) !important;
   }
@@ -2945,9 +2939,7 @@
       [data-name='Page heading'],
       [data-name='Title and status'],
       [data-name='Report introduction']
-    ) {
-    overflow: visible;
-  }
+    ),
   #root .feedback-shell :has(> [data-workspace-heading='true']) {
     overflow: visible;
   }
@@ -3159,4 +3151,20 @@
 #root .assistant-compose:focus-within {
   border-color: #1e68ef;
   box-shadow: 0 0 0 3px #1e68ef1f;
+}
+
+@media (max-width: 380px) {
+  #root .surveys-content [data-name='Workflow step'] {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+    min-height: 64px;
+  }
+  #root .surveys-content [data-name='Workflow step'] > p {
+    flex: 0 0 auto;
+    width: 100%;
+    text-align: center;
+    overflow-wrap: break-word;
+  }
 }

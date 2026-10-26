@@ -1,7 +1,7 @@
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import { useRouteState } from '../../../components/layout/navigation.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { PreviewFilter, GenerateDialog, downloadReport } from './PreviewControls.jsx';

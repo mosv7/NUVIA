@@ -1,8 +1,7 @@
-import React from 'react';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import './overview-empty.css';
-import { asset as resolveAsset } from '../../lib/assets.js';
-const asset = (name) => resolveAsset('overview-empty/' + name + '.svg');
+
+const asset = (name) => new URL('./empty-assets/' + name + '.svg', import.meta.url).href;
 export default function OverviewEmpty() {
   const { language, action, workspace, preview } = useProductView();
   const ar = language === 'ar';
@@ -66,7 +65,7 @@ export default function OverviewEmpty() {
               : `Once response collection and analysis are available for ${workspace?.businessName || ''}, your metrics will appear here.`}
         </p>
       </div>
-      <button className="first-survey-create" onClick={() => action('Create Survey')}>
+      <button className="first-survey-create" onClick={() => action('create-survey')}>
         <img src={asset('button-plus')} alt="" width="16" height="16" />
         {ar ? 'أنشئ استبيانك الأول' : 'Create Your First Survey'}
       </button>

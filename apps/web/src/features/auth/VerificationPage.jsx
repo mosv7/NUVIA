@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { authApi } from './api.js';
 import EmailVerificationView from './EmailVerificationView.jsx';
 export default function VerificationPage({

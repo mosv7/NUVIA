@@ -1,3 +1,4 @@
+import { safeLocalStorage } from '../../../lib/storage.js';
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import React, { useState } from 'react';
 import arabic from '../../../lib/i18n/product-ar.json';
@@ -93,7 +94,7 @@ export function SurveyField({ editorField, ...props }) {
     <StoredSurveyField {...props} />
   );
 }
-function EditorField({ field, fieldLanguage, _initialValue, multiline = false, ...props }) {
+function EditorField({ field, fieldLanguage, initialValue, multiline = false, ...props }) {
   const { tr } = useProductView();
   const editor = useSurveyEditor();
   const item = editor.questions[editor.question];
@@ -131,12 +132,12 @@ function StoredSurveyField({ initialValue = '', multiline = false, ...props }) {
   const key = 'survey-preview-field-' + props['data-node-id'] + '-' + initialValue;
   const [value, setValue] = useState(
     () =>
-      localStorage.getItem(key) ??
+      safeLocalStorage.getItem(key) ??
       (props['data-edit-language'] ? initialValue.trim() : tr(initialValue.trim())),
   );
   const change = (e) => {
     setValue(e.target.value);
-    localStorage.setItem(key, e.target.value);
+    safeLocalStorage.setItem(key, e.target.value);
   };
   return (
     <div {...props}>
@@ -457,7 +458,7 @@ export function SurveyAISelect({ kind }) {
           label: formatNumber(n) + ' ' + tr('Questions'),
         }));
   const [value, setValue] = useState(
-    () => localStorage.getItem('survey-ai-' + kind) || (kind === 'language' ? 'en' : '5'),
+    () => safeLocalStorage.getItem('survey-ai-' + kind) || (kind === 'language' ? 'en' : '5'),
   );
   return (
     <div className="survey-select-shell">
@@ -470,7 +471,7 @@ export function SurveyAISelect({ kind }) {
         options={options}
         onChange={(next) => {
           setValue(next);
-          localStorage.setItem('survey-ai-' + kind, next);
+          safeLocalStorage.setItem('survey-ai-' + kind, next);
         }}
       />
     </div>
@@ -539,6 +540,7 @@ export function SurveyQuestionList({ question, selectedCard }) {
 
 export function SurveyQuestionOutline() {
   const editor = useSurveyEditor();
+
   return (
     <div className="sv167" data-name="Question navigation">
       {editorQuestionIds(editor.questions).map((id) => {

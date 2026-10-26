@@ -2,9 +2,9 @@ import UiArrow from '../../../components/ui/UiArrow.jsx';
 import { overviewDateLabel } from '../../dashboard/OverviewControls.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { asset } from '../../../lib/assets.js';
-import React, { useState, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import ChoiceMenu, { BranchMenu } from '../../../components/ui/ChoiceMenu.jsx';
-import '../../dashboard/WorkspaceScopeControls.jsx';
+
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { getOverviewReport, defaultOverviewFilters } from '../../dashboard/overview-report.js';
 export const analyticsTabs = [
@@ -29,6 +29,10 @@ export function AnalyticsArrowText({ text }) {
       ['Price', 'Pricing', 'Value'],
       ['Service', 'Friendly service', 'Service'],
       ['Cleanliness', 'Cleanliness', 'Cleanliness'],
+      ['Ambience', 'Workspace atmosphere', 'Ambience'],
+      ['Ambience', 'Limited power sockets', 'Ambience'],
+      ['Wi-Fi', 'Unreliable Wi-Fi', 'Wi-Fi'],
+      ['Service', 'Order accuracy', 'Service'],
       ['Ambience', 'Ambience', 'Ambience'],
     ];
     const found = groups.find(
@@ -452,9 +456,55 @@ const topics = {
   'Unreliable Wi-Fi': { count: 18, quote: 'The connection dropped during my meeting.' },
   'Limited power sockets': { count: 12, quote: 'I couldn’t find a place to charge my laptop.' },
 };
+const relatedAspect = (key) =>
+  ({
+    Speed: 'Wait time',
+    'Long waiting times': 'Wait time',
+    Service: 'Service',
+    'Friendly staff': 'Service',
+    Price: 'Value',
+    'Unclear combo pricing': 'Value',
+    'Product Quality': 'Coffee',
+    'Coffee & food quality': 'Coffee',
+    Cleanliness: 'Cleanliness',
+    'Workspace atmosphere': 'Ambience',
+    'Order accuracy': 'Service',
+    'Unreliable Wi-Fi': 'Wi-Fi',
+    'Limited power sockets': 'Ambience',
+  })[key] || key;
+const relatedFeedbackRoute = (key) => '/feedbacks?aspect=' + encodeURIComponent(relatedAspect(key));
 export function AnalyticsInteractions({ children, kind }) {
   const { tr } = useProductView();
   const [selected, setSelected] = useState(null);
+  const detailRef = useRef(null);
+  useEffect(() => {
+    if (!selected) return;
+    const trigger = document.activeElement;
+    const dialog = detailRef.current;
+    const controls = () =>
+      [...dialog.querySelectorAll('button,a[href],[tabindex="0"]')].filter(
+        (node) => !node.disabled,
+      );
+    controls()[0]?.focus();
+    const key = (event) => {
+      if (event.key !== 'Tab') return;
+      const nodes = controls();
+      const first = nodes[0],
+        last = nodes.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    dialog.addEventListener('keydown', key);
+    return () => {
+      dialog.removeEventListener('keydown', key);
+      trigger?.focus();
+    };
+  }, [selected]);
   const exportData = () => {
     const text =
       '\uFEFF' +
@@ -473,6 +523,7 @@ export function AnalyticsInteractions({ children, kind }) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   const click = (e) => {
+    if (e.target.closest('.analytics-detail-dialog')) return;
     const item = e.target.closest(
       '[data-name="Action"],[data-name="Aspect result"],[data-name="Topic cluster"],[data-name="Related response"],[data-name="Emerging theme"]',
     );
@@ -490,22 +541,35 @@ export function AnalyticsInteractions({ children, kind }) {
       location.hash = '/feedback-details?id=1032';
       return;
     }
-    if (/All responses|View all|View Related|عرض الرد|كل الردود|الردود المرتبطة/.test(text)) {
-      location.hash = '/feedbacks';
-      return;
-    }
     const values = kind === 'aspects' ? Object.keys(aspectData) : Object.keys(topics);
     const key = values.find((key) => text.startsWith(tr(key)) || text.startsWith(key));
     if (key) {
       setSelected({ key, ...(aspectData[key] || topics[key]) });
+      return;
+    }
+    if (/All responses|View all|View Related|عرض الرد|كل الردود|الردود المرتبطة/.test(text)) {
+      location.hash = '/feedbacks';
     }
   };
+  // The native buttons remain the keyboard targets; this container only delegates their clicks.
+  const controlsRef = useRef(null);
+  useEffect(() => {
+    const node = controlsRef.current;
+    node?.addEventListener('click', click);
+    return () => node?.removeEventListener('click', click);
+  });
   return (
-    <div className="figma-preview analytics-preview" data-analytics-kind={kind} onClick={click}>
+    <div ref={controlsRef} className="figma-preview analytics-preview" data-analytics-kind={kind}>
       {children}
       {selected && (
-        <div className="analytics-detail-backdrop" onClick={() => setSelected(null)}>
+        <div
+          className="analytics-detail-backdrop"
+          onPointerDown={(event) => {
+            if (event.target === event.currentTarget) (() => setSelected(null))(event);
+          }}
+        >
           <section
+            ref={detailRef}
             className="analytics-detail-dialog"
             role="dialog"
             aria-modal="true"
@@ -546,7 +610,7 @@ export function AnalyticsInteractions({ children, kind }) {
             <p>{tr('Illustrative data only · No live analysis results')}</p>
             <button
               className="feedback-btn feedback-primary"
-              onClick={() => (location.hash = '/feedbacks')}
+              onClick={() => (location.hash = relatedFeedbackRoute(selected.key))}
             >
               {tr('View Related Responses')}
             </button>

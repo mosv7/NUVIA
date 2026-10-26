@@ -43,7 +43,30 @@
     "business-information",
     "business-error",
     "business-setup",
-    "get-started"
+    "get-started",
+    "business",
+    "business-edit",
+    "business-add",
+    "branches",
+    "branch-add",
+    "branch-edit",
+    "branch-history",
+    "settings",
+    "settings-personal",
+    "settings-account",
+    "settings-profile",
+    "settings-language",
+    "settings-security",
+    "settings-password",
+    "settings-two-factor",
+    "settings-email",
+    "settings-devices",
+    "settings-notifications",
+    "settings-notifications-email",
+    "settings-notifications-inapp",
+    "notifications",
+    "subscription",
+    "customer-feedback"
   ],
   "views": [
     {
@@ -57,5 +80,6 @@
       "height": 844
     }
   ],
-  "languages": ["en", "ar"]
+  "languages": ["en", "ar"],
+  "emptyStates": ["analytics-sentiment", "reports", "branches"]
 }

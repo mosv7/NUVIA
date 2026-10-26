@@ -1,5 +1,5 @@
 import { useWorkspaceScale } from '../../hooks/useWorkspaceScale.js';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { asset } from '../../lib/assets.js';
 import { ProductProvider } from '../../app/providers/ProductProvider.jsx';
 import WorkspaceShell from '../../components/layout/WorkspaceShell.jsx';

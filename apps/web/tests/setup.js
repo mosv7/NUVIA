@@ -1,5 +1,9 @@
+import { safeLocalStorage, safeSessionStorage } from '../src/lib/storage.js';
 import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+// Lazy route imports can exceed the library's 1s default on cold Windows CI caches.
+configure({ asyncUtilTimeout: 5000 });
 import { afterEach, beforeEach } from 'vitest';
 
 // jsdom does not implement the browser dialog lifecycle used by feature cards.
@@ -12,6 +16,9 @@ HTMLDialogElement.prototype.close = function () {
 
 beforeEach(() => {
   localStorage.clear();
+  for (const store of [safeLocalStorage, safeSessionStorage]) {
+    while (store.length) store.removeItem(store.key(0));
+  }
   history.replaceState(null, '', '/#/landing');
   document.documentElement.dir = 'ltr';
   document.documentElement.lang = 'en';

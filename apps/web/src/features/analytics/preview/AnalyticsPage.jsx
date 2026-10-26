@@ -1,5 +1,6 @@
+import { lazy } from 'react';
 import { useRouteState } from '../../../components/layout/navigation.js';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useWorkspaceScale } from '../../../hooks/useWorkspaceScale.js';
 import { ProductProvider } from '../../../app/providers/ProductProvider.jsx';
 import FeedbackShell from '../../../components/layout/WorkspaceShell.jsx';
@@ -7,11 +8,13 @@ import Assistant from '../../ai-analysis/preview/Assistant.jsx';
 import { OverviewDateDialog } from '../../dashboard/OverviewControls.jsx';
 import { defaultOverviewFilters } from '../../dashboard/overview-report.js';
 import arabic from '../../../lib/i18n/product-ar.json';
-import SentimentAnalytics from './SentimentAnalytics.jsx';
-import AspectsAnalytics from './AspectsAnalytics.jsx';
-import TopicsAnalytics from './TopicsAnalytics.jsx';
-import TrendsAnalytics from './TrendsAnalytics.jsx';
-import ComparisonAnalytics from './ComparisonAnalytics.jsx';
+
+const SentimentAnalytics = lazy(() => import('./SentimentAnalytics.jsx'));
+const AspectsAnalytics = lazy(() => import('./AspectsAnalytics.jsx'));
+const TopicsAnalytics = lazy(() => import('./TopicsAnalytics.jsx'));
+const TrendsAnalytics = lazy(() => import('./TrendsAnalytics.jsx'));
+const ComparisonAnalytics = lazy(() => import('./ComparisonAnalytics.jsx'));
+
 const screens = {
   sentiment: SentimentAnalytics,
   aspects: AspectsAnalytics,
@@ -42,7 +45,6 @@ export default function AnalyticsPage({ page, language, setLanguage }) {
   };
   return (
     <ProductProvider
-      preview={true}
       dashboard={dashboard}
       analytics={analytics}
       language={language}

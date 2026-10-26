@@ -1,3 +1,4 @@
+import { screenshotPath, screenshotSection } from './screenshot-paths.mjs';
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { fileURLToPath } from 'node:url';
@@ -35,20 +36,30 @@ try {
         viewport: { width: view.width, height: view.height },
         reducedMotion: 'reduce',
       });
-      await context.addInitScript(
-        (locale) => localStorage.setItem('nuvia-language', locale),
-        language,
-      );
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
-      for (const route of matrix.routes) {
-        await page.goto(base + '/preview/?capture=gallery#/' + route, { waitUntil: 'networkidle' });
+      const captures = [
+        ...matrix.routes.map((route) => ({ route })),
+        ...(matrix.emptyStates || []).map((route) => ({ route, state: 'empty' })),
+      ];
+      for (const { route, state } of captures) {
+        await page.goto(
+          base +
+            '/preview/?capture=gallery&lang=' +
+            language +
+            (state ? '&state=' + state : '') +
+            '#/' +
+            route,
+          {
+            waitUntil: 'networkidle',
+          },
+        );
         await page.evaluate(async () => {
           await document.fonts.ready;
           await Promise.all([...document.images].map((image) => image.decode().catch(() => {})));
         });
-        const file = `screens/${view.name}/${language}/${route.replace('?id=', '-')}.png`;
+        const file = screenshotPath(view.name, language, route, state);
         const destination = path.join(output, file);
         await fs.mkdir(path.dirname(destination), { recursive: true });
         const data = await page.screenshot({
@@ -66,6 +77,8 @@ try {
         manifest.push({
           file,
           route: '#/' + route,
+          section: screenshotSection(route),
+          ...(state ? { state } : {}),
           language,
           viewport: { width: view.width, height: view.height },
           image: { width: data.readUInt32BE(16), height: data.readUInt32BE(20) },

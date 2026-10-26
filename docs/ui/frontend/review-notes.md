@@ -1,50 +1,34 @@
-# Frontend review notes
+# Frontend verification — 26 October 2026
 
-The delivery preserves the monorepo's connected authentication provider, access policy, HTTP client, workspace ownership and honest empty account states. Illustrative analytics, reports, assistant replies and survey data remain behind the explicit preview boundary.
+## Scope
 
-## Changes and review
+The approved Frontend presentation is reconciled with the modular monorepo. Authentication providers, access policy, CSRF/session transport, request cancellation and owner-scoped workspace services remain in place. Backend and AI-service implementation files are unchanged.
 
-- Compact mobile controls, consistent contextual back controls and retained source-page filters.
-- Branch multi-selection applies on Done and combines with survey search in English and Arabic.
-- Responsive feedback cards at intermediate widths retain every field without forcing a wide table.
-- Survey AI cards, headings, sharing controls and action rows adapt to the available workspace width.
-- Report branch context stacks when the desktop sidebar leaves insufficient space.
-- Assistant scope controls sit at the start of the conversation frame on phones; small metadata keeps its muted background.
-- Unreachable duplicate source modules were removed after checking the bundle import graph; unused asset bindings and copied report-filter effects were removed.
+Connected accounts use saved identity and honest empty/unavailable states. Synthetic feedback, analytics, reports, assistant replies and customer-form submission remain explicit previews. Survey publishing, public response persistence, analysis, billing, profile mutation, preferences and two-factor service endpoints are not implemented by the existing backend. Their preview controls do not prove production support.
+
+## Completed changes
+
+- Removed the internal public review page from build inputs; retained public feedback redirect without duplicate source trees.
+- Enabled unused-variable warnings and removed unused bindings; unified LF/Prettier formatting.
+- Split WorkspacePages into feature-focused modules; lazy-loaded analytics, reports and surveys.
+- Centralized the public survey URL and versioned guarded browser-storage access. Direct global storage access is prohibited outside the facade.
+- Restored native action controls, image alternatives, visible keyboard focus and dialog focus restoration/trapping.
+- Retained approved empty Overview, Feedbacks and Surveys, responsive menus, link arrows/colours, full-width subscription frame and feedback answer controls.
+- Business/profile/branch actions use the existing real API; unsupported location edits and future services report their availability honestly.
+- Refreshed 280 EN/AR desktop/mobile screenshots with actual dimensions and hashes.
 
 ## Verification
 
-- Web build completed; Vite retains a large-chunk advisory.
-- Web ESLint completed with zero errors and zero warnings.
-- Connected authentication/workspace and preview tests passed locally.
-- 672 viewport-bound checks covered 42 screens/states, both languages and eight widths.
-- 176 fresh screenshots cover desktop and phone in English and Arabic. Tablet layouts were checked during the responsive audit; tablet images are excluded.
-- Date selection, sort direction, branch selection/Done and contextual return controls were checked in the preview.
+- Original desktop Frontend: lint, 173 tests, build and formatting checks passed after promotion.
+- Monorepo frontend: 173 tests passed; lint passed with zero warnings.
+- Existing backend suite: 21 tests passed against an isolated MongoDB replica set.
+- Development-server private-file denial regression passed.
+- Real Vite proxy integration passed: session bootstrap, registration, unverified-login rejection, token verification, cookie login, persistent onboarding, owner-scoped create/list/update/archive branches and logout. Only synthetic test identities and an isolated disposable database were used. The test chooses an available port rather than depending on Windows port 5173.
+- 120 representative viewport reviews checked widths 320, 768 and 1024 in both languages. No horizontal document overflow or missing image alternatives appeared. At 320px the workflow-step labels were adjusted to stack. Some Arabic glyphs extend beyond nominal line-height metrics while overflow remains visible; these measurements are retained in the audit and are not described as hidden content.
+- The 320 × 568 mobile menu retained Growth plan and Help center. View Related Responses preserved its aspect query instead of opening an unfiltered list.
 
-## Limits
+## Limits and reproducibility
 
-These are browser-emulated viewport checks, not physical iPad/Safari acceptance. Database, mail delivery and real backend integration must be tested with the project's private environment after integration. Generated preview reports and survey actions do not establish implemented backend services.
+The local Windows environment rejects pnpm workspace-link creation. Frozen resolution/download was verified, then the same pinned ESLint, Vitest, Vite and Prettier tools were invoked directly for local checks. CI uses the repository's standard pnpm commands. Full browser account lifecycle CI, physical iPad/Safari, private Atlas acceptance and real SMTP delivery are separate checks; do not infer they passed from preview captures. The existing AI scaffold remains health-only.
 
-The Segment filter is restored with a regression assertion for all six disabled connected-account filters. The account browser lifecycle and all CI jobs passed after the correction.
-
-## Connected verification design restoration
-
-The connected email verification route now uses the approved original presentation, including pending, expired and verified states. Verification token consumption, real resend requests and the explicit preview boundary are retained. Signup carries its submitted email into verification in memory without persisting credentials. Successful verification continues to login, not an unauthenticated business setup.
-
-The signup, login, recovery and business setup presentation was compared with the original frontend. Ten account/setup routes were checked in English and Arabic at 390, 820 and 1440 pixels: 60 additional viewport-bound checks.
-
-Account language controls now use one shared 16px blue globe in login, signup, recovery and verification screens, including the story caption. Updated captures include these controls in both interface languages.
-
-Account headers use an icon-only back control opposite the NUVIA logo, mirrored in Arabic, without changing authentication behavior. The browser tab is titled NUVIA and uses the square brand icon for readability at favicon size.
-
-## Source reconciliation and connected workspace review
-
-The original Frontend folder remains the visual reference. The final review visited all 44 gallery routes in English and Arabic at widths 390, 820 and 1440 (264 viewport-bound checks). Report details retained one contextual back arrow, and Overview retained none. These checks do not prove that every overlap or physical device is covered.
-
-Business onboarding now shows the shared blue globe at desktop and narrow sizes. Its text inputs use the rounded wrapper focus ring without a second rectangular outline.
-
-Connected Overview and Feedbacks retain the floating assistant: clicking it opens the reviewed panel above the current page without changing the route. The sidebar opens the complete assistant workspace. The complete connected assistant workspace uses saved business/branch labels, zero responses and an explicit unavailable-service state. At the user’s request the floating panel preserves the original illustrative cards and local sample replies, with its existing illustrative-content footer. It does not call an AI backend. Account menus retain View profile and Account & security with saved identity, and Sign out calls the real logout endpoint. The separate bottom logout button is removed.
-
-The unreferenced legacy assistant module, launcher export and nine old style rules were removed. Its separate stylesheet was removed after the import audit confirmed it had no remaining consumer. All 117 remaining source modules/styles are reachable from the web entry point.
-
-Validation: 42 web tests passed; lint and production build passed. API, database, mail and shared-contract sources remain unchanged. Analytics/report generation and survey publishing are still unimplemented backend services; their design routes remain explicit previews.
+Large feature CSS is loaded with its lazy route. It was not blindly purged because generated selectors affect the approved design. Screenshots are a visual reference, not proof of all possible layouts.

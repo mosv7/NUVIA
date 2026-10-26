@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { UiText, SurveyReviewMark } from './SurveyPrimitives.jsx';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { asset } from '../../../lib/assets.js';

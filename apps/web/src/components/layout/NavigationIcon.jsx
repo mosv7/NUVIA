@@ -1,4 +1,3 @@
-import React from 'react';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 
 export default function NavigationIcon({ src, destination }) {

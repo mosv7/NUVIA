@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import ResponsiveChart from '../src/features/analytics/preview/ResponsiveChart.jsx';

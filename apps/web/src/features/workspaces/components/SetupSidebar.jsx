@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { asset } from '../../../lib/assets.js';
 export default function SetupSidebar({ copy, step, folder }) {
   const [rating, setRating] = useState(3);

@@ -1,4 +1,3 @@
-import React from 'react';
 const rotations = { forward: 0, back: 180, up: -90, down: 90, external: -45 };
 export default function UiArrow({
   direction = 'forward',

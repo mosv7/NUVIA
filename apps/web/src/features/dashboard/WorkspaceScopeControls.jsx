@@ -1,4 +1,3 @@
-import React from 'react';
 import ControlIcon from '../../components/ui/ControlIcon.jsx';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';

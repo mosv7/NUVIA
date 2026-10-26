@@ -1,7 +1,7 @@
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
-import './ResponsiveChart.jsx';
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import ChoiceMenu from '../../../components/ui/ChoiceMenu.jsx';
 import { asset } from '../../../lib/assets.js';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';

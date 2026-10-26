@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { asset } from '../../../lib/assets.js';
 function AssistantIcon() {
@@ -11,7 +11,7 @@ function AssistantIcon() {
     />
   );
 }
-export default function Assistant({ presentationOnly = false }) {
+export default function Assistant() {
   const { language, tr, preview } = useProductView(),
     ar = language === 'ar',
     dialog = useRef(null),
@@ -20,7 +20,6 @@ export default function Assistant({ presentationOnly = false }) {
   const [open, setOpen] = useState(false),
     [draft, setDraft] = useState(''),
     [messages, setMessages] = useState([]);
-  const displayPreview = preview || presentationOnly;
   const restoreFocus = useRef(true);
   useEffect(() => {
     if (!open) return;
@@ -55,16 +54,7 @@ export default function Assistant({ presentationOnly = false }) {
   }, [messages]);
   const ask = (text) => {
     if (!text.trim()) return;
-    if (!displayPreview) {
-      setMessages((old) => [
-        ...old,
-        { role: 'user', text: text.trim() },
-        {
-          role: 'assistant',
-          topic: 'other',
-          text: ar ? 'المساعد الذكي غير متاح بعد.' : 'AI Assistant is not available yet.',
-        },
-      ]);
+    if (!preview) {
       setDraft('');
       return;
     }
@@ -161,44 +151,48 @@ export default function Assistant({ presentationOnly = false }) {
             </button>
           </header>
           <div className="assistant-messages" aria-live="polite">
-            {displayPreview ? (
-              <div className="assistant-summary">
-                <span className="assistant-summary-label">
-                  {ar ? 'ملخص آراء العملاء' : 'CUSTOMER FEEDBACK SUMMARY'}
-                </span>
-                <h3>
-                  {ar
-                    ? 'أوقات الانتظار في القاهرة تحتاج إلى مراجعة'
-                    : 'Cairo’s wait times need a closer look'}
-                </h3>
-                <p>
-                  {ar
-                    ? 'تشير 104 مراجعات إلى تأخير، ضعف الشهر السابق. راجع تغطية فريق العمل في ساعات الذروة.'
-                    : '104 reviews mention delays, twice the previous month. Review peak-hour staffing as a next step.'}
-                </p>
-                <blockquote>
-                  <p dir="auto">
+            {preview ? (
+              <>
+                <div className="assistant-summary">
+                  <span className="assistant-summary-label">
+                    {ar ? 'ملخص آراء العملاء' : 'CUSTOMER FEEDBACK SUMMARY'}
+                  </span>
+                  <h3>
                     {ar
-                      ? 'القهوة ممتازة لكن انتظرنا الطلب ٢٥ دقيقة.'
-                      : '“The coffee is good, but we waited 25 minutes for the order.”'}
+                      ? 'أوقات الانتظار في القاهرة تحتاج إلى مراجعة'
+                      : 'Cairo’s wait times need a closer look'}
+                  </h3>
+                  <p>
+                    {ar
+                      ? 'تشير 104 مراجعات إلى تأخير، ضعف الشهر السابق. راجع تغطية فريق العمل في ساعات الذروة.'
+                      : '104 reviews mention delays, twice the previous month. Review peak-hour staffing as a next step.'}
                   </p>
-                  <cite>
-                    {ar ? 'مراجعة Google · القاهرة · 18 سبتمبر' : 'Google review · Cairo · Sep 18'}
-                  </cite>
-                </blockquote>
-                <a href="/preview/#/feedbacks" onClick={() => setOpen(false)}>
-                  {ar ? 'عرض الآراء الداعمة' : 'View supporting feedback'}{' '}
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path
-                      d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </a>
-              </div>
+                  <blockquote>
+                    <p dir="auto">
+                      {ar
+                        ? 'القهوة ممتازة لكن انتظرنا الطلب ٢٥ دقيقة.'
+                        : '“The coffee is good, but we waited 25 minutes for the order.”'}
+                    </p>
+                    <cite>
+                      {ar
+                        ? 'مراجعة Google · القاهرة · 18 سبتمبر'
+                        : 'Google review · Cairo · Sep 18'}
+                    </cite>
+                  </blockquote>
+                  <a href="/preview/#/feedbacks" onClick={() => setOpen(false)}>
+                    {ar ? 'عرض الآراء الداعمة' : 'View supporting feedback'}{' '}
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path
+                        d="M3.5 8h8M8 4.5 11.5 8 8 11.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </>
             ) : (
               <div className="assistant-summary">
                 <span className="assistant-summary-label">
@@ -258,12 +252,12 @@ export default function Assistant({ presentationOnly = false }) {
               </button>
             </label>
             <small>
-              {displayPreview
-                ? ar
+              {ar
+                ? preview
                   ? 'البيانات والإجابات في هذه المعاينة تجريبية.'
-                  : 'Data and replies in this preview are illustrative.'
-                : ar
-                  ? 'المساعد الذكي غير متاح بعد.'
+                  : 'المساعد الذكي غير متاح بعد.'
+                : preview
+                  ? 'Data and replies in this preview are illustrative.'
                   : 'AI Assistant is not available yet.'}
             </small>
           </form>

@@ -118,4 +118,4 @@ Replace demo notices only on connected flows. Provide loading, failed-save and r
 
 ## Delivery
 
-Implement on `codex/backend-foundation`; keep credentials and remote chat attachments ignored. Update README, contracts and a decision record to distinguish this delivered slice from earlier architecture proposals and the future Python AI service. Commit only reviewed source/configuration/examples/tests/docs, run staged whitespace checks, and prepare a focused PR with actual validation and limitations. Do not merge into main as part of this task.
+Implement on a dedicated backend-foundation branch; keep credentials and remote chat attachments ignored. Update README, contracts and a decision record to distinguish this delivered slice from earlier architecture proposals and the future Python AI service. Commit only reviewed source/configuration/examples/tests/docs, run staged whitespace checks, and prepare a focused PR with actual validation and limitations. Do not merge into main as part of this task.

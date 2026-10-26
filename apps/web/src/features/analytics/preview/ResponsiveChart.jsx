@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 // Preserve the chart's Figma geometry while fitting its complete canvas to the card.
 export default function ResponsiveChart({ width, height, children, fillDesktop = false }) {

@@ -3,7 +3,7 @@ import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { getReport } from './report-library.js';
 import arabic from '../../../lib/i18n/product-ar.json';
 import WorkspaceScopeControls from '../../dashboard/WorkspaceScopeControls.jsx';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ChoiceMenu from '../../../components/ui/ChoiceMenu.jsx';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { asset } from '../../../lib/assets.js';
@@ -157,7 +157,12 @@ export function downloadReport(id = 'september', language = 'en') {
 export function GenerateDialog({ onClose }) {
   const { tr, dashboard } = useProductView();
   return (
-    <div className="preview-modal-backdrop" onClick={onClose}>
+    <div
+      className="preview-modal-backdrop"
+      onPointerDown={(event) => {
+        if (event.target === event.currentTarget) onClose(event);
+      }}
+    >
       <section
         role="dialog"
         aria-modal="true"

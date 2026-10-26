@@ -1,6 +1,7 @@
+import { en, ar } from '../../lib/i18n/auth-copy.js';
 import ChoiceMenu from '../ui/ChoiceMenu.jsx';
 import LanguageIcon from '../ui/LanguageIcon.jsx';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
@@ -44,72 +45,22 @@ function MenuIcon({ name }) {
 }
 export default function HeaderMenus() {
   const {
+      previewWorkspace,
+      logout,
+      preview,
       tr,
       language,
       setLanguage,
       isMobile,
       topbarMenu,
       setTopbarMenu,
-      preview,
-      logout,
-      identity,
-      workspace,
-      action,
     } = useProductView(),
     ref = useRef(null),
-    profileDialog = useRef(null),
-    profileTrigger = useRef(null),
     [profile, setProfile] = useState(false),
-    [signingOut, setSigningOut] = useState(false),
-    [position, setPosition] = useState({});
+    [position, setPosition] = useState({}),
+    [signoutError, setSignoutError] = useState(false),
+    [signingOut, setSigningOut] = useState(false);
   const close = useCallback(() => setTopbarMenu(null), [setTopbarMenu]);
-  const profileOpen = Boolean(profile);
-  useEffect(() => {
-    if (!profileOpen) return;
-    const dialog = profileDialog.current;
-    const backdrop = dialog.parentElement;
-    const background = Array.from(document.body.children)
-      .filter((element) => element !== backdrop)
-      .map((element) => [element, element.getAttribute('inert')]);
-    background.forEach(([element]) => element.setAttribute('inert', ''));
-    const buttons = () => Array.from(dialog.querySelectorAll('button:not(:disabled)'));
-    const containFocus = (event) => {
-      if (!dialog.contains(event.target)) buttons()[0]?.focus();
-    };
-    const key = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        setProfile(false);
-      } else if (event.key === 'Tab') {
-        const controls = buttons();
-        const first = controls[0];
-        const last = controls.at(-1);
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last?.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first?.focus();
-        }
-      }
-    };
-    document.addEventListener('focusin', containFocus);
-    dialog.addEventListener('keydown', key);
-    return () => {
-      document.removeEventListener('focusin', containFocus);
-      dialog.removeEventListener('keydown', key);
-      background.forEach(([element, inert]) => {
-        if (inert === null) element.removeAttribute('inert');
-        else element.setAttribute('inert', inert);
-      });
-      if (profileTrigger.current?.isConnected) profileTrigger.current.focus();
-    };
-  }, [profileOpen]);
-  const openProfile = (kind) => {
-    profileTrigger.current = topbarMenu.anchor;
-    close();
-    setProfile(kind);
-  };
   useEffect(() => {
     if (!topbarMenu) return;
     const place = () => {
@@ -183,19 +134,38 @@ export default function HeaderMenus() {
           ) : topbarMenu.kind === 'profile' ? (
             <>
               <header>
-                <span className="workspace-avatar workspace-account-avatar">
-                  <img src={asset('dashboard/overview/account-avatar.svg')} alt="" />
-                </span>
-                <div>
-                  <strong>{tr('Sara Ahmed')}</strong>
-                  <small>{tr('Workspace owner')}</small>
-                </div>
+                <button
+                  type="button"
+                  className="workspace-profile-shortcut"
+                  aria-label={tr('Account settings')}
+                  onClick={() => navigate('settings')}
+                >
+                  <span className="workspace-avatar workspace-account-avatar">
+                    <img src={asset('dashboard/overview/account-avatar.svg')} alt="" />
+                  </span>
+                  <div>
+                    <strong>{tr('Sara Ahmed')}</strong>
+                    <small>{tr('Workspace owner')}</small>
+                  </div>
+                </button>
               </header>
-              <button className="workspace-menu-item" onClick={() => openProfile(true)}>
+              <button
+                className="workspace-menu-item"
+                onClick={() => {
+                  close();
+                  location.hash = '/settings';
+                }}
+              >
                 <MenuIcon name="profile" />
                 {tr('View profile')}
               </button>
-              <button className="workspace-menu-item" onClick={() => openProfile('security')}>
+              <button
+                className="workspace-menu-item"
+                onClick={() => {
+                  close();
+                  location.hash = '/settings-security';
+                }}
+              >
                 <MenuIcon name="settings" />
                 {tr('Account & security')}
               </button>
@@ -222,52 +192,57 @@ export default function HeaderMenus() {
                 className="workspace-menu-item workspace-signout"
                 disabled={signingOut}
                 onClick={async () => {
-                  if (preview) {
-                    navigate('login');
-                    return;
-                  }
                   setSigningOut(true);
-                  const succeeded = await logout();
-                  setSigningOut(false);
-                  if (succeeded) close();
+                  setSignoutError(false);
+                  try {
+                    if (!preview) await logout();
+                    navigate('login');
+                  } catch {
+                    setSignoutError(true);
+                  } finally {
+                    setSigningOut(false);
+                  }
                 }}
               >
                 <MenuIcon name="signout" />
                 {tr('Sign out')}
               </button>
+              {signoutError && <p role="alert">{(language === 'ar' ? ar : en).requestFailed}</p>}
             </>
           ) : (
             <>
               <header>
                 <strong>{tr('Your businesses')}</strong>
               </header>
-              <button className="workspace-menu-item" onClick={close}>
-                <span className="workspace-avatar">
-                  {preview ? 'B' : Array.from(workspace?.businessName || '')[0]}
-                </span>
+              <button className="workspace-menu-item" onClick={() => navigate('business')}>
+                <span className="workspace-avatar">B</span>
                 <span>
-                  {preview ? 'Bloom & Co.' : workspace?.businessName}
+                  {previewWorkspace?.biz?.name || 'Bloom & Co.'}
                   <small>{tr('Current business')}</small>
                 </span>
                 <span className="workspace-current">✓</span>
               </button>
-              <button
-                className="workspace-menu-item"
-                onClick={() => navigate('business-information')}
-              >
+              {previewWorkspace?.otherBusinesses?.map((b) => (
+                <button
+                  key={b.name}
+                  className="workspace-menu-item"
+                  onClick={() => {
+                    previewWorkspace.switchBusiness(b);
+                    close();
+                  }}
+                >
+                  <span className="workspace-avatar">{b.name[0]}</span>
+                  <span>
+                    {b.name}
+                    <small>{b.industry}</small>
+                  </span>
+                </button>
+              ))}
+              <button className="workspace-menu-item" onClick={() => navigate('business')}>
                 <MenuIcon name="store" />
                 {tr('Manage business')}
               </button>
-              <button
-                className="workspace-menu-item"
-                onClick={() => {
-                  if (preview) navigate('business-information');
-                  else {
-                    close();
-                    action('Add business');
-                  }
-                }}
-              >
+              <button className="workspace-menu-item" onClick={() => navigate('business-add')}>
                 <MenuIcon name="plus" />
                 {tr('Add business')}
               </button>
@@ -276,28 +251,29 @@ export default function HeaderMenus() {
         </section>
       )}
       {profile && (
-        <div className="workspace-modal-backdrop" onClick={() => setProfile(false)}>
+        <div
+          className="workspace-modal-backdrop"
+          onPointerDown={(event) => {
+            if (event.target === event.currentTarget) (() => setProfile(false))(event);
+          }}
+        >
           <section
-            ref={profileDialog}
             className="workspace-profile-dialog"
             role="dialog"
             aria-modal="true"
             aria-label={tr(profile === 'security' ? 'Account & security' : 'Profile')}
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setProfile(false);
+            }}
           >
             <span className="workspace-avatar workspace-account-avatar">
               <img src={asset('dashboard/overview/account-avatar.svg')} alt="" />
             </span>
             <h2>{tr(profile === 'security' ? 'Account & security' : 'Sara Ahmed')}</h2>
             {profile === 'security' && <strong>{tr('Sara Ahmed')}</strong>}
-            <p>
-              {tr('Workspace owner')} · {preview ? 'Bloom & Co.' : workspace?.businessName}
-            </p>
-            {preview ? (
-              <small>{tr('Sample workspace profile')}</small>
-            ) : (
-              <small>{identity?.email}</small>
-            )}
+            <p>{tr('Workspace owner')} · Bloom &amp; Co.</p>
+            <small>{tr('Sample workspace profile')}</small>
             {profile === 'security' && (
               <div className="workspace-security-actions">
                 <button onClick={() => setProfile(true)}>{tr('View profile')}</button>

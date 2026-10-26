@@ -1,6 +1,7 @@
+import { displaySurveyUrl, branchSurveyUrl } from '../../../config/links.js';
 import DownloadQrButton from './DownloadQrButton.jsx';
 import CopyLinkButton from './CopyLinkButton.jsx';
-import React from 'react';
+
 import { asset } from '../../../lib/assets.js';
 import ControlIcon from '../../../components/ui/ControlIcon.jsx';
 import { UiText, SurveySwitch } from './SurveyPrimitives.jsx';
@@ -253,7 +254,7 @@ export default function SurveyContent() {
               data-node-id="262:11809"
               style={{ fontVariationSettings: '"opsz" 14' }}
             >
-              nuvia.link/bloom-feedback
+              {displaySurveyUrl()}
             </UiText>
           </div>
           <div className="sv1" data-node-id="262:11810" data-name="Download formats">
@@ -358,7 +359,7 @@ export default function SurveyContent() {
                     data-node-id="262:11839"
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
-                    nuvia.link/bloom-feedback
+                    {displaySurveyUrl()}
                   </UiText>
                 </div>
                 <CopyLinkButton
@@ -488,7 +489,7 @@ export default function SurveyContent() {
                     data-node-id="262:11872"
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
-                    nuvia.link/bloom-feedback?b=cairo
+                    {displaySurveyUrl(branchSurveyUrl('cairo'))}
                   </UiText>
                 </div>
                 <div className="sv6" data-node-id="262:11873" data-name="copy">
@@ -532,7 +533,7 @@ export default function SurveyContent() {
                     data-node-id="262:11885"
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
-                    nuvia.link/bloom-feedback?b=zamalek
+                    {displaySurveyUrl(branchSurveyUrl('zamalek'))}
                   </UiText>
                 </div>
                 <div className="sv6" data-node-id="262:11886" data-name="copy">
@@ -576,7 +577,7 @@ export default function SurveyContent() {
                     data-node-id="262:11898"
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
-                    nuvia.link/bloom-feedback?b=alex
+                    {displaySurveyUrl(branchSurveyUrl('alex'))}
                   </UiText>
                 </div>
                 <div className="sv6" data-node-id="262:11899" data-name="copy">

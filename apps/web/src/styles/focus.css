@@ -1,0 +1,31 @@
+/* Keyboard-only focus remains visible even on controls with a custom pointer focus. */
+:root
+  #root
+  :is(
+    button,
+    a,
+    input,
+    textarea,
+    select,
+    [tabindex],
+    [role='link'],
+    [role='button']
+  ):focus-visible {
+  outline: 2px solid #1e68ef !important;
+  outline-offset: 3px !important;
+}
+:where(.semantic-button) {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  text-align: inherit;
+}
+
+/* The overlaid native trigger is transparent; its parent shows the keyboard focus. */
+:root #root .choice-menu-overlay:focus-within {
+  outline: 2px solid #1e68ef;
+  outline-offset: 3px;
+  border-radius: 4px;
+}

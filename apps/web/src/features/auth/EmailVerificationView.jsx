@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { asset } from '../../lib/assets.js';
 import { LanguageMenu } from '../../components/ui/ChoiceMenu.jsx';
 import LanguageIcon from '../../components/ui/LanguageIcon.jsx';

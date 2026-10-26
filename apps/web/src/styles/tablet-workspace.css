@@ -192,3 +192,285 @@
   width: auto;
   white-space: normal;
 }
+
+/* Keep generated survey cards fluid when the workspace narrows. */
+#root .surveys-content [data-name='Download formats'] {
+  flex-wrap: wrap;
+  height: auto;
+  overflow: visible;
+  gap: 12px;
+}
+#root .surveys-content [data-name='Print display preference'] {
+  height: auto;
+  overflow: visible;
+  gap: 12px;
+}
+#root .surveys-content [data-name='Print display preference'] > p {
+  flex: 1 1 0;
+  width: auto;
+}
+#root .surveys-content :is(.sv92, .sv224, .sv136, .sv23) {
+  flex-wrap: wrap;
+  height: auto;
+  overflow: visible;
+}
+#root .surveys-content .sv245 {
+  height: auto;
+  min-height: 38px;
+}
+#root .surveys-content .sv245 > p {
+  white-space: normal;
+}
+#root .surveys-content .sv311 {
+  overflow-wrap: anywhere;
+  height: auto;
+}
+/* Chart axes retain their own compact typography instead of body-copy metrics. */
+#root
+  .figma-preview
+  :is(.an77, .an80, .an81, .an82, .an83, .an244, .an246, .an247, .an248, .an249)
+  > p {
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  height: auto;
+}
+#root .product-navigation .f10 {
+  white-space: normal;
+  overflow: visible;
+}
+#root .product-navigation .f10 > p {
+  width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 850px) {
+  #root .ds-overview :is(.f72, .f134, .v150, .v194) {
+    flex-wrap: wrap;
+    height: auto;
+    overflow: visible;
+  }
+  #root .ds-overview :is(.f72, .f134, .v150, .v194) > p {
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  #root .product-header .f39 {
+    white-space: normal;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+/* Narrow cards wrap their text instead of hiding the final words. */
+#root .ds-overview :is(.f130, .v193, .v170),
+#root .figma-preview :is(.an41, .pv78, .pv129) {
+  min-width: 0;
+  white-space: normal;
+  height: auto;
+  overflow: visible;
+}
+#root :is(.f130, .an41, .pv129) > p {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  flex-shrink: 1;
+}
+#root .product-page .overview-moved-aspects .v175 {
+  flex-wrap: wrap;
+}
+#root .product-page .overview-moved-aspects .v176 {
+  white-space: normal;
+  max-width: 100%;
+}
+#root .surveys-content :is(.sv245, .sv73, .sv36, .sv318, .sv80) {
+  height: auto;
+  overflow: visible;
+}
+#root .surveys-content :is(.sv239, .sv245) > p {
+  flex-shrink: 1;
+  overflow-wrap: anywhere;
+}
+#root .surveys-content .sv311 > p {
+  min-width: 0;
+  flex: 1 1 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 850px) {
+  #root .surveys-content .sv291 {
+    flex-wrap: wrap;
+    gap: 12px;
+    height: auto;
+  }
+  #root .surveys-content .sv291 .sv143 {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  #root .surveys-content :is(.sv73, .sv36, .sv80) {
+    flex-wrap: wrap;
+  }
+  #root .surveys-content :is(.sv73, .sv36, .sv80) > p {
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+  #root .ds-overview .f129,
+  #root .figma-preview .an39 {
+    flex-wrap: wrap;
+  }
+  #root .ds-overview .f130,
+  #root .figma-preview .an41 {
+    flex-basis: 70px;
+  }
+  #root .ds-overview .v193 > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  #root .ds-overview .v193 p {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    flex-shrink: 1;
+  }
+  #root .workspace-extension .f39 {
+    height: auto;
+    overflow: visible;
+    white-space: normal;
+  }
+  #root .workspace-extension .f39 p {
+    white-space: normal;
+    flex-shrink: 1;
+    overflow-wrap: anywhere;
+  }
+  #root .figma-preview .pv78 {
+    flex-wrap: wrap;
+  }
+}
+
+#root .figma-preview .pv154 {
+  height: auto;
+  min-height: 32px;
+  padding-block: 6px;
+  white-space: normal;
+}
+#root .figma-preview .pv154 > p {
+  flex-shrink: 1;
+  white-space: normal;
+}
+#root .surveys-content .sv296 {
+  height: auto;
+  overflow: visible;
+}
+#root .surveys-content .sv296 > p {
+  max-width: 100%;
+  flex-shrink: 1;
+  white-space: normal;
+}
+@media (max-width: 1100px) {
+  #root .figma-preview .pv87 {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  #root .figma-preview .pv88 {
+    flex: 1 1 120px;
+    width: auto;
+    white-space: normal;
+    overflow: visible;
+  }
+}
+
+#root .surveys-content .sv282 {
+  width: 100%;
+  min-width: 0;
+}
+
+#root .surveys-content :is(.sv74, .sv37) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#root .surveys-content [data-name='Recovery actions'] {
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 10px;
+}
+#root .surveys-content [data-name='Recovery actions'] > button {
+  max-width: 100%;
+  height: auto;
+  min-height: 40px;
+}
+#root .figma-preview .pv135 p {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  flex-shrink: 1;
+}
+
+/* The drawer business switcher has a compact two-line label. */
+#root .product-navigation .f10 > p {
+  font-size: 12px;
+  line-height: 18px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#root .product-navigation .f10 > p + p {
+  font-size: 11px;
+}
+
+#root .surveys-content .sv56 {
+  flex-wrap: wrap;
+  height: auto;
+  gap: 8px;
+  overflow: visible;
+}
+
+/* Recommendation headings must fit the padded card, including narrow previews. */
+#root .ds-overview .v194 > .v195 {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-shrink: 1;
+}
+#root .ds-overview .v195 > p {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Language choices keep the reviewed control height while allowing wrapped labels. */
+#root .surveys-content [data-name='Language option'] {
+  height: auto;
+  min-height: 44px;
+  padding-block: 10px;
+  overflow: visible;
+}
+
+@media (max-width: 850px) {
+  #root .report-details [data-name='Report introduction'] > [data-workspace-heading='true'] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    align-self: stretch;
+    align-items: flex-start;
+  }
+  #root .report-details [data-workspace-heading='true'] > span {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+}
+
+@media (max-width: 850px) {
+  #root .report-details > .pv0 {
+    padding-top: 12px;
+    gap: 12px;
+  }
+  #root .report-details [data-name='Report navigation'] {
+    margin-bottom: 0;
+  }
+}

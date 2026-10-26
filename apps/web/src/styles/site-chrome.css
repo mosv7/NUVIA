@@ -143,13 +143,24 @@
   object-fit: contain;
   flex-shrink: 0;
 }
-
-/* A single shared blue language symbol across every account screen and viewport. */
-.auth-layout :is(.language, .capability) > .language-icon,
-.business-onboarding .setup-footer .language > .language-icon {
+/* One language icon and brand color across all screen families. */
+:root {
+  --language-icon-color: #1e68ef;
+}
+.language::before,
+[data-name='Language'] > [data-name='globe']::before {
+  content: '';
   display: block;
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
-  color: #1e68ef;
+  background-color: var(--language-icon-color);
+  mask: url('/assets/auth/signup/footer-language-globe.svg') center/contain no-repeat;
+  -webkit-mask: url('/assets/auth/signup/footer-language-globe.svg') center/contain no-repeat;
+}
+.language > img,
+.language > .language-icon,
+.language > svg,
+[data-name='Language'] > [data-name='globe'] > img {
+  display: none !important;
 }

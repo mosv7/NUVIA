@@ -45,6 +45,7 @@ jobs:
           key: mongo-7.0.24-${{ runner.os }}-${{ runner.arch }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:backend
+      - run: pnpm test:proxy
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e:accounts
       - uses: actions/upload-artifact@v4

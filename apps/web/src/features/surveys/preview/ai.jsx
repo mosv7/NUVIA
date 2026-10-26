@@ -1,6 +1,5 @@
-import React from 'react';
 import { asset } from '../../../lib/assets.js';
-import '../../../components/ui/ControlIcon.jsx';
+
 import { UiText, SurveyField, SurveyAISelect } from './SurveyPrimitives.jsx';
 const imgArrowLeft = asset('surveys-figma/ai-imgArrowLeft.svg');
 const imgIcon = asset('surveys-figma/ai-imgIcon.svg');

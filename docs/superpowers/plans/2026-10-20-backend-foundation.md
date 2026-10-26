@@ -18,9 +18,9 @@
 - Use Node crypto scrypt with a random 16-byte salt, N=32768, r=8, p=1, a 64-byte derived key, and a sufficient bounded memory allowance.
 - Session expiry is 24 hours, or 30 days with Remember me. Verification tokens expire after 24 hours; reset tokens after 30 minutes.
 - Cookie: HttpOnly, SameSite=Lax, Secure in production, Path=/. No credentials or session tokens in browser storage.
-- MongoDB, SMTP and mail-encryption credentials remain server-side; never print secrets. Keep `.local/config/atlas-credentials.env`, `.local/` and `.codex-remote-attachments/` ignored.
+- MongoDB, SMTP and mail-encryption credentials remain server-side; never print secrets. Keep `.local/config/atlas-credentials.env`, `.local/` and `.*-remote-attachments/` ignored.
 - Use the normal system resolver and TLS negotiation by default. No hard-coded DNS servers/Atlas IPs and no disabled TLS verification.
-- Work on `codex/backend-foundation`. Do not merge main. Commit exact files only, after staged whitespace validation.
+- Work on a dedicated backend-foundation branch. Do not merge main. Commit exact files only, after staged whitespace validation.
 - Every implementation task follows red -> green tests -> commit; tests must verify behavior, not reproduce internal helpers.
 
 ## Review Focus
