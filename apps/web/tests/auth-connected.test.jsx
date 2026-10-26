@@ -16,8 +16,19 @@ it('redirects anonymous private navigation to login without displaying sample an
   expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();
   expect(screen.queryByText('1,248')).not.toBeInTheDocument();
 });
-it('real signup creates an account and moves to verification while clearing credentials', async () => {
-  const register = vi.spyOn(authApi, 'register').mockResolvedValue({ id: 'owner' });
+it('real signup enters persistent onboarding without claiming email verification', async () => {
+  const register = vi
+    .spyOn(authApi, 'register')
+    .mockResolvedValue({ data: { user: { id: 'owner' } } });
+  authApi.session.mockResolvedValueOnce({ user: null, workspace: null }).mockResolvedValueOnce({
+    user: {
+      id: 'owner',
+      name: 'Owner',
+      email: 'owner@example.test',
+      emailVerificationAvailable: false,
+    },
+    workspace: null,
+  });
   open('signup');
   fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'Owner' } });
   fireEvent.change(screen.getByLabelText('Work email'), {
@@ -31,9 +42,9 @@ it('real signup creates an account and moves to verification while clearing cred
   });
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.click(screen.getByRole('button', { name: 'Create account', exact: true }));
-  expect(await screen.findByRole('heading', { name: 'Check your inbox' })).toBeVisible();
-  expect(screen.getByText('owner@example.test', { exact: true })).toBeVisible();
-  expect(document.querySelector('.email-verification')).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: 'Business information' })).toBeVisible();
+  expect(location.hash).toBe('#/business-information');
+  expect(screen.queryByRole('heading', { name: 'Email verified' })).not.toBeInTheDocument();
   expect(register).toHaveBeenCalledWith(
     expect.objectContaining({ email: 'owner@example.test', locale: 'en' }),
     expect.any(AbortSignal),
@@ -102,16 +113,13 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();
   expect(logout).toHaveBeenCalledTimes(1);
 });
-it('consumes a verification link opened while the verification page is already mounted', async () => {
-  const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ status: 'verified' });
-  open('verify-email');
-  await act(async () => {
-    location.hash = '/verify-email?token=' + 'a'.repeat(64);
-    window.dispatchEvent(new HashChangeEvent('hashchange'));
-  });
-  expect(await screen.findByText('Email verified. You can log in now.')).toBeVisible();
-  expect(verify).toHaveBeenCalledTimes(1);
-  expect(location.hash).not.toContain('token=');
+it('marks old real verification links under development without consuming tokens', async () => {
+  const verify = vi.spyOn(authApi, 'verify');
+  open('verify-email?token=' + 'a'.repeat(64));
+  expect(
+    await screen.findByRole('heading', { name: 'Email verification is under development' }),
+  ).toBeVisible();
+  expect(verify).not.toHaveBeenCalled();
 });
 it('preview verification never bootstraps sessions or sends real verification requests', async () => {
   const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ status: 'verified' });
@@ -134,22 +142,6 @@ it('preview verification never bootstraps sessions or sends real verification re
   expect(authApi.session).not.toHaveBeenCalled();
 });
 
-it('the approved verification screen resends to the edited email using the real API', async () => {
-  const resend = vi.spyOn(authApi, 'resend').mockResolvedValue({ status: 'accepted' });
-  open('verify-email');
-  fireEvent.click(await screen.findByRole('button', { name: 'Change', exact: true }));
-  fireEvent.change(screen.getByLabelText('Email address'), {
-    target: { value: 'resend@example.test' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: 'Save email', exact: true }));
-  fireEvent.click(screen.getByRole('button', { name: 'Resend verification link', exact: true }));
-  await waitFor(() => expect(resend).toHaveBeenCalledWith('resend@example.test'));
-  expect(
-    await screen.findByText(
-      'Request received. Check your email if your account needs verification.',
-    ),
-  ).toBeVisible();
-});
 it.each([
   ['verify-email-expired', 'This link has expired'],
   ['verify-email-verified', 'Email verified'],
@@ -160,28 +152,6 @@ it.each([
   expect(await screen.findByRole('heading', { name: title, exact: true })).toBeVisible();
   expect(verify).not.toHaveBeenCalled();
   expect(authApi.session).not.toHaveBeenCalled();
-});
-
-it.each(['NETWORK_ERROR', 'CSRF_REJECTED', 'SERVICE_UNAVAILABLE'])(
-  'does not call a verification link expired when the request fails with %s',
-  async (code) => {
-    const verify = vi.spyOn(authApi, 'verify').mockRejectedValue({ code });
-    open('verify-email?token=' + 'a'.repeat(64));
-    expect(
-      await screen.findByText(
-        'Could not complete email verification. Check your connection and reopen the latest verification link.',
-      ),
-    ).toBeVisible();
-    expect(
-      screen.queryByRole('heading', { name: 'This link has expired' }),
-    ).not.toBeInTheDocument();
-    expect(verify).toHaveBeenCalledTimes(1);
-  },
-);
-it('shows an expired verification state only for an invalid token response', async () => {
-  vi.spyOn(authApi, 'verify').mockRejectedValue({ code: 'INVALID_TOKEN' });
-  open('verify-email?token=' + 'a'.repeat(64));
-  expect(await screen.findByRole('heading', { name: 'This link has expired' })).toBeVisible();
 });
 
 it('opens the connected assistant workspace without sample conversations or metrics', async () => {

@@ -1,7 +1,16 @@
 import { apiRequest } from '../../lib/http/client.js';
+import { presentWorkspace } from '../workspaces/business-types.js';
 export const authApi = {
-  session: () => apiRequest('/auth/session'),
-  register: (body, signal) => apiRequest('/auth/register', { method: 'POST', body, signal }),
+  session: async () => {
+    const session = await apiRequest('/auth/session');
+    return { ...session, workspace: presentWorkspace(session.workspace) };
+  },
+  register: ({ name, email, password, passwordConfirmation, locale }, signal) =>
+    apiRequest('/auth/register', {
+      method: 'POST',
+      body: { name, email, password, passwordConfirmation, preferredLanguage: locale },
+      signal,
+    }),
   login: (body, signal) => apiRequest('/auth/login', { method: 'POST', body, signal }),
   logout: () => apiRequest('/auth/logout', { method: 'POST', body: {} }),
   verify: (token, signal) =>
@@ -10,7 +19,12 @@ export const authApi = {
     apiRequest('/auth/resend-verification', { method: 'POST', body: { email }, signal }),
   forgot: (email, signal) =>
     apiRequest('/auth/forgot-password', { method: 'POST', body: { email }, signal }),
-  reset: (body, signal) => apiRequest('/auth/reset-password', { method: 'POST', body, signal }),
+  reset: (body, signal) =>
+    apiRequest('/auth/reset-password', {
+      method: 'POST',
+      body: { ...body, passwordConfirmation: body.passwordConfirmation ?? body.password },
+      signal,
+    }),
 };
 // Explicit /preview/ routes only. Never stores credentials or sessions.
 export async function submitDemo(action, values) {

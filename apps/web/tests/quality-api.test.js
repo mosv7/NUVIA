@@ -13,9 +13,9 @@ describe('real cookie and CSRF API transport', () => {
       .mockResolvedValueOnce(ok({ csrfToken: 'test-csrf' }))
       .mockResolvedValueOnce(ok({ user: { id: 'test-user' } }));
     await authApi.login({ email: 'test@example.com', password: 'test-only', remember: false });
-    expect(fetch.mock.calls[0][0]).toBe('/api/v1/auth/session');
+    expect(fetch.mock.calls[0][0]).toBe('/api/auth/session');
     const [url, opts] = fetch.mock.calls[1];
-    expect(url).toBe('/api/v1/auth/login');
+    expect(url).toBe('/api/auth/login');
     expect(opts.credentials).toBe('include');
     expect(opts.headers['X-CSRF-Token']).toBe('test-csrf');
     expect(JSON.parse(opts.body)).toEqual({

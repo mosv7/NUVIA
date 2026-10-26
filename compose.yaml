@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: infra/docker/workspace.Dockerfile
       target: api
-    environment: &api-environment
+    environment:
       NODE_ENV: development
       HOST: 0.0.0.0
       PORT: 3001
@@ -34,7 +34,9 @@ services:
       MONGODB_DATABASE: nuvia_development
       APP_ORIGIN: http://127.0.0.1:5173
       MAIL_MODE: file
-      MAIL_ENCRYPTION_KEY: ${MAIL_ENCRYPTION_KEY:?Run pnpm setup:local first}
+      JWT_SECRET: ${JWT_SECRET:?Run pnpm setup:local and configure JWT_SECRET first}
+    volumes:
+      - ./.local/mail:/workspace/.local/mail
     depends_on:
       mongo-init:
         condition: service_completed_successfully
@@ -45,24 +47,11 @@ services:
           node,
           --input-type=module,
           -e,
-          "const r=await fetch('http://127.0.0.1:3001/api/v1/health/ready');process.exit(r.ok?0:1)",
+          "const r=await fetch('http://127.0.0.1:3001/api/health/ready');process.exit(r.ok?0:1)",
         ]
       interval: 5s
       timeout: 5s
       retries: 20
-
-  mail:
-    build:
-      context: .
-      dockerfile: infra/docker/workspace.Dockerfile
-      target: api
-    command: [node, apps/api/scripts/mail-worker.mjs]
-    environment: *api-environment
-    volumes:
-      - ./.local/mail:/workspace/.local/mail
-    depends_on:
-      api:
-        condition: service_healthy
 
   web:
     build:

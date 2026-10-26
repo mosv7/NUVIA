@@ -1,5 +1,5 @@
 import ControlIcon from '../../components/ui/ControlIcon.jsx';
-import { BranchMenu } from '../../components/ui/ChoiceMenu.jsx';
+import ChoiceMenu from '../../components/ui/ChoiceMenu.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { asset } from '../../lib/assets.js';
@@ -8,10 +8,19 @@ import { defaultOverviewFilters, overviewPreset } from './overview-report.js';
 import './overview-controls.css';
 
 export function OverviewBranchSelect() {
-  const { tr, dashboard } = useProductView();
+  const { tr, dashboard, workspace, preview } = useProductView();
   return (
-    <BranchMenu
-      tr={tr}
+    <ChoiceMenu
+      control="branch"
+      label={tr('Branch')}
+      options={[
+        { value: 'all', label: tr('All branches') },
+        ...(preview
+          ? ['Cairo', 'El Zamalek', 'Alex'].map((name) => ({ value: name, label: tr(name) }))
+          : (workspace?.branches || [])
+              .filter((branch) => !branch.archivedAt)
+              .map((branch) => ({ value: branch.id, label: branch.name }))),
+      ]}
       overlay
       value={dashboard.filters.branch}
       onChange={(branch) => dashboard.setFilters((old) => ({ ...old, branch }))}

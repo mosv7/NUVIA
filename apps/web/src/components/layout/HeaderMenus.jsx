@@ -48,6 +48,7 @@ export default function HeaderMenus() {
       previewWorkspace,
       logout,
       preview,
+      workspace,
       tr,
       language,
       setLanguage,
@@ -215,9 +216,11 @@ export default function HeaderMenus() {
                 <strong>{tr('Your businesses')}</strong>
               </header>
               <button className="workspace-menu-item" onClick={() => navigate('business')}>
-                <span className="workspace-avatar">B</span>
+                <span className="workspace-avatar">
+                  {preview ? 'B' : Array.from(workspace?.businessName || '')[0]}
+                </span>
                 <span>
-                  {previewWorkspace?.biz?.name || 'Bloom & Co.'}
+                  {preview ? previewWorkspace?.biz?.name || 'Bloom & Co.' : workspace?.businessName}
                   <small>{tr('Current business')}</small>
                 </span>
                 <span className="workspace-current">✓</span>

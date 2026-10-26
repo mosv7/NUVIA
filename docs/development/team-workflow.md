@@ -18,9 +18,9 @@ Choose one accountable owner for each issue. Responsibilities may overlap, but a
 
 Keep requirements and technical contracts in `docs/`. Use GitHub issues for actionable work, pull requests for implementation review, and `docs/decisions/` for accepted architectural decisions. Chat discussions become durable only when their outcomes are recorded.
 
-The existing `AGENTS.md` is preserved as requested. Its references to an empty workspace describe the initial state; current setup/status is documented in README and these files.
+Current repository rules live in `AGENTS.md`; implementation status lives in README and the maintained API/architecture documents.
 
-Proposed code organization follows AGENTS: `apps/web/`, `apps/api/src/`, `src/ai/`, `tests/`, and `assets/`. Document framework-driven deviations before introducing them.
+Current runtime organization is `apps/web/`, sole product API `backend/`, health-only `apps/ai-service/`, shared contracts and root cross-app tests. Do not recreate the removed `apps/api` backend.
 
 ## Delivery order
 

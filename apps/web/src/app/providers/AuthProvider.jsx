@@ -49,13 +49,13 @@ export function AuthProvider({ children, preview = false }) {
       setView((old) => (old.status === 'loading' ? { ...old, status: 'ready' } : old));
     }
   }, []);
-  const login = async (body, signal) => {
+  const authenticate = async (operation, body, signal) => {
     const id = ++generation.current;
     const controller = new AbortController();
     active.current = controller;
     if (signal) signal.addEventListener('abort', () => controller.abort(), { once: true });
     try {
-      await authApi.login(body, controller.signal);
+      await operation(body, controller.signal);
     } catch (error) {
       if (id === generation.current) setView((old) => ({ ...old, status: 'ready' }));
       throw error;
@@ -84,11 +84,13 @@ export function AuthProvider({ children, preview = false }) {
         ...view,
         preview,
         refresh,
-        login,
+        login: (body, signal) => authenticate(authApi.login, body, signal),
+        register: (body, signal) => authenticate(authApi.register, body, signal),
         logout,
         cancel,
         saveWorkspace: (body, signal) => save(workspaceApi.save, body, signal),
         completeSetup: (body, signal) => save(workspaceApi.completeSetup, body, signal),
+        finishOnboarding: (body, signal) => save(workspaceApi.finishOnboarding, body, signal),
       }}
     >
       {children}

@@ -26,7 +26,7 @@ components:
 
 # NUVIA design context
 
-The maintained visual references are the ordered galleries in `docs/ui/frontend/` and the existing account/onboarding/product components. This change connects behavior and adds verification state; it does not introduce a new visual identity. The brand reference is the approved geometric NUVIA mark, blue actions, white surfaces, and restrained line illustrations.
+The maintained visual references are the ordered galleries in `docs/ui/frontend/` and the existing account/onboarding/product components. The sole backend is `backend/`; current authentication connects through `/api`. It does not introduce a new visual identity. The brand reference is the approved geometric NUVIA mark, blue actions, white surfaces, and restrained line illustrations.
 
 Owners create an account and business workspace, then review customer feedback on desktop or phone. English and Arabic/RTL are supported; locale does not imply a deployment country. Marketing landing and product workspace use the same brand, with denser navigation and controls inside the product.
 
@@ -39,9 +39,9 @@ Existing headers use 76px desktop / 72px mobile geometry and responsive product 
 ## Interaction contract
 
 - Forms validate locally and on the server, disable duplicate submission while pending and announce failure/success through status/alert regions. Failed saving retains non-secret fields and never advances the step.
-- Hash routes support refresh and persisted onboarding. Public account routes remain reachable; product routes require a verified owner and completed setup.
+- Hash routes support refresh and persisted onboarding. Public account routes remain reachable; product routes require a signed-in owner and completed setup. Registration signs in directly; email verification is unavailable with the sole backend.
 - Arabic changes document direction, labels and navigation semantics. User-entered names are displayed as entered. Dates use the user's locale and workspace reporting defaults.
 - Private product routes show saved identity/workspace data and honest empty/unavailable states. Sample records, canned assistant replies and synthetic subscription/usage claims belong only to explicit `/preview/` routes.
-- Account feedback routes reuse `FeedbackShell` and `FeedbackList` with the reviewed empty layout: heading, six filters, zero-response table, illustration, actions and getting-started steps. Sample responses open `/preview/#/feedbacks`; survey sharing reports its unavailable state until a real publishing API exists. Keep the approved empty Overview copy in previews, with availability-aware copy in account routes.
+- Account feedback routes reuse `FeedbackShell` and `FeedbackList` with the reviewed empty layout: heading, five filters, zero-response table, illustration, actions and getting-started steps. Sample responses open `/preview/#/feedbacks`; survey sharing reports its unavailable state while the connected frontend flow remains under development. Backend publishing state alone does not establish public response collection. Keep the approved empty Overview copy in previews, with availability-aware copy in account routes.
 - Preserve visible focus, keyboard-operable menus, password visibility controls, native form semantics and reduced-motion behavior. No additional decorative motion is introduced.
 - Verify changes through frontend tests and the account browser scenario at desktop and 393px mobile widths in both languages. Reference screenshots remain previews, not proof of real backend/AI behavior.

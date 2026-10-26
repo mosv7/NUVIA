@@ -34,7 +34,7 @@ describe('API transport', () => {
       body: { email: 'a@example.test' },
     });
     expect(fetch).toHaveBeenCalledTimes(2);
-    expect(fetch.mock.calls[1][0]).toBe('/api/v1/auth/forgot-password');
+    expect(fetch.mock.calls[1][0]).toBe('/api/auth/forgot-password');
     expect(fetch.mock.calls[1][1].credentials).toBe('include');
     expect(fetch.mock.calls[1][1].headers['X-CSRF-Token']).toBe('csrf');
     expect(localStorage.length).toBe(0);

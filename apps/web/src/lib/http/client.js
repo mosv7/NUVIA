@@ -20,12 +20,25 @@ async function request(path, options = {}) {
     throw Object.assign(new Error('NETWORK_ERROR'), { code: 'NETWORK_ERROR', status: 0 });
   }
   const data = response.status === 204 ? undefined : await response.json().catch(() => ({}));
-  if (!response.ok)
-    throw Object.assign(new Error(data?.error?.code || 'REQUEST_FAILED'), {
-      code: data?.error?.code || 'REQUEST_FAILED',
+  if (!response.ok) {
+    const code =
+      data?.error?.code ||
+      data?.code ||
+      (response.status === 401
+        ? path === '/auth/login'
+          ? 'INVALID_CREDENTIALS'
+          : 'AUTH_REQUIRED'
+        : response.status === 429
+          ? 'RATE_LIMITED'
+          : /email already exists/i.test(data?.message || '')
+            ? 'EMAIL_USED'
+            : 'REQUEST_FAILED');
+    throw Object.assign(new Error(code), {
+      code,
       status: response.status,
       details: data?.error?.details || [],
     });
+  }
   return data;
 }
 export function bootstrapSession() {
@@ -56,7 +69,10 @@ export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
       headers: method === 'GET' ? {} : { 'X-CSRF-Token': csrfToken },
     });
   } catch (error) {
-    if (version === epoch && ['AUTH_REQUIRED', 'CSRF_REJECTED'].includes(error.code)) {
+    if (
+      version === epoch &&
+      ['AUTH_REQUIRED', 'SESSION_EXPIRED', 'CSRF_REJECTED'].includes(error.code)
+    ) {
       resetApiSession();
       window.dispatchEvent(new Event('nuvia:session-expired'));
     }

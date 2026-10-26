@@ -1,55 +1,12 @@
-import { MongoMemoryReplSet } from 'mongodb-memory-server-core';
-import { createServer } from 'vite';
 import { chromium } from 'playwright';
 import { existsSync } from 'node:fs';
-import { mkdtemp, mkdir, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { resolve, join } from 'node:path';
-import { randomUUID } from 'node:crypto';
-import { loadConfig } from '../../apps/api/src/config/env.mjs';
-import { connectDatabase, ensureSchema } from '../../apps/api/src/shared/database/connection.mjs';
-import { createApp } from '../../apps/api/src/app.mjs';
+import { mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { startConnectedFixture } from './backend-fixture.mjs';
 import { runAccountScenario } from './accounts.spec.mjs';
-let replica, connection, apiServer, frontend, browser;
-const mailDirectory = await mkdtemp(join(tmpdir(), 'nuvia-browser-mail-'));
+const fixture = await startConnectedFixture();
+let browser;
 try {
-  const localBinary = resolve('.local/tools/mongod.exe');
-  replica = await MongoMemoryReplSet.create({
-    binary: {
-      version: '7.0.24',
-      ...(existsSync(localBinary) ? { systemBinary: localBinary } : {}),
-    },
-    replSet: { count: 1, storageEngine: 'wiredTiger' },
-  });
-  const config = loadConfig({
-    NODE_ENV: 'test',
-    MONGODB_URI: replica.getUri(),
-    MONGODB_DATABASE: `nuvia_test_${randomUUID()}`,
-    MAIL_ENCRYPTION_KEY: 'b'.repeat(64),
-    MAIL_DIRECTORY: mailDirectory,
-  });
-  connection = await connectDatabase(config);
-  await ensureSchema(connection.models);
-  const deps = { ...connection, config, now: () => new Date() };
-  apiServer = createApp(deps).listen(0, '127.0.0.1');
-  await new Promise((done, reject) => {
-    apiServer.once('listening', done);
-    apiServer.once('error', reject);
-  });
-  frontend = await createServer({
-    root: resolve('apps/web'),
-    configFile: resolve('apps/web/vite.config.js'),
-    configLoader: 'runner',
-    server: {
-      host: '127.0.0.1',
-      port: 5188,
-      strictPort: true,
-      proxy: { '/api': `http://127.0.0.1:${apiServer.address().port}` },
-    },
-  });
-  await frontend.listen();
-  const origin = `http://127.0.0.1:${frontend.httpServer.address().port}`;
-  config.appOrigin = origin;
   const executable =
     process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ||
     [
@@ -62,18 +19,8 @@ try {
   });
   const output = resolve('test-results/accounts');
   await mkdir(output, { recursive: true });
-  await runAccountScenario({ browser, origin, deps, output });
-} catch (error) {
-  console.error(error);
-  process.exitCode = 1;
+  await runAccountScenario({ browser, ...fixture, output });
 } finally {
   await browser?.close();
-  await frontend?.close();
-  if (apiServer) {
-    apiServer.closeAllConnections();
-    await new Promise((done) => apiServer.close(done));
-  }
-  await connection?.close();
-  await replica?.stop();
-  await rm(mailDirectory, { recursive: true, force: true });
+  await fixture.close();
 }

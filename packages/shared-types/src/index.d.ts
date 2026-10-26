@@ -1,4 +1,4 @@
-export const API_PREFIX: '/api/v1';
+export const API_PREFIX: '/api';
 export const SUPPORTED_LOCALES: readonly ['ar', 'en'];
 export type Locale = 'ar' | 'en';
 
@@ -7,7 +7,7 @@ export interface UserView {
   name: string;
   email: string;
   locale: Locale;
-  emailVerified: boolean;
+  emailVerificationAvailable: false;
 }
 
 export interface BranchView {
@@ -15,6 +15,9 @@ export interface BranchView {
   name: string;
   archivedAt: string | null;
   isPrimary: boolean;
+  country?: string;
+  city?: string;
+  address?: string;
 }
 
 export interface WorkspaceView {
@@ -23,9 +26,9 @@ export interface WorkspaceView {
   industry: string;
   locale: Locale;
   reportingTimezone: string;
-  branchType: 'single' | 'multiple';
+  branchType: 'single' | 'multiple' | null;
   primaryBranchId: string | null;
-  onboardingStep: 'branches' | 'complete';
+  onboardingStep: 'branches' | 'welcome' | 'complete';
   branches: BranchView[];
 }
 
@@ -36,6 +39,8 @@ export interface SessionView {
 }
 
 export interface ApiErrorBody {
-  error: { code: string; message: string; details: { field: string; reason: string }[] };
-  request_id: string;
+  message?: string;
+  code?: string;
+  error?: { code: string; message: string; details?: { field: string; reason: string }[] };
+  errors?: { field: string; message: string }[];
 }

@@ -1,9 +1,10 @@
 packages:
   - apps/web
-  - apps/api
+  - backend
   - packages/*
 
 allowBuilds:
   esbuild: true
+  bcrypt: true
 
 engineStrict: true

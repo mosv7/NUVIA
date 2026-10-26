@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { asset } from '../../lib/assets.js';
 import { ProductProvider } from '../../app/providers/ProductProvider.jsx';
 import OverviewDesign from './designs/OverviewDesign.jsx';
+import '../../components/layout/workspace-shell.css';
 import Assistant from '../ai-analysis/preview/Assistant.jsx';
 import '../ai-analysis/preview/assistant.css';
 import '../../components/layout/workspace.css';

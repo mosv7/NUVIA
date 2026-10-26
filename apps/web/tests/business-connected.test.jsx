@@ -45,20 +45,23 @@ it('saves approved business identity through the existing workspace API', async 
   expect(await screen.findByRole('heading', { name: 'Updated Cafe' })).toBeVisible();
   expect(screen.queryByText('Bloom & Co.')).not.toBeInTheDocument();
 });
-it('does not claim an unsupported location field is persisted when adding a branch', async () => {
+it('persists the branch name and required location fields through the selected backend', async () => {
   const create = vi
     .spyOn(workspaceApi, 'createBranch')
     .mockResolvedValue({ id: 'new', name: 'Second branch' });
   setup('branch-add');
   const name = await screen.findByLabelText(/Branch name/);
-  expect(screen.getByLabelText(/Country/)).toBeDisabled();
-  expect(screen.getByLabelText(/City/)).toBeDisabled();
+  fireEvent.change(screen.getByLabelText(/Country/), { target: { value: 'Egypt' } });
+  fireEvent.change(screen.getByLabelText(/City/), { target: { value: 'Cairo' } });
+  fireEvent.change(screen.getByLabelText(/Street address/), {
+    target: { value: 'Synthetic street' },
+  });
   fireEvent.change(name, { target: { value: 'Second branch' } });
   fireEvent.click(screen.getByRole('button', { name: 'Save branch', exact: true }));
   await waitFor(() =>
     expect(create).toHaveBeenCalledWith(
       'workspace',
-      { name: 'Second branch' },
+      { name: 'Second branch', country: 'Egypt', city: 'Cairo', address: 'Synthetic street' },
       expect.any(AbortSignal),
     ),
   );
@@ -77,4 +80,9 @@ it('keeps the edited values and reports failure instead of optimistic success', 
   );
   expect(screen.getByLabelText(/Business name/)).toHaveValue('Retained Cafe');
   expect(location.hash).toBe('#/business-edit');
+});
+
+it('restores a selected branch after opening its edit URL directly', async () => {
+  setup('branch-edit?id=primary');
+  await waitFor(() => expect(screen.getByLabelText(/Branch name/)).toHaveValue('Saved branch'));
 });

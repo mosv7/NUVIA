@@ -1,49 +1,21 @@
 # Current architecture
 
-NUVIA is a JavaScript/Python monorepo. Node owns the public product API and MongoDB persistence. React uses that API on one browser origin. FastAPI is currently a separate **health-only scaffold**, not an analysis backend.
+`backend/` is the single public Node/Express/Mongoose API. `apps/api/` has been removed. `apps/web/` is the React/Vite browser client, `packages/shared-types/` contains public contracts only, and `apps/ai-service/` is an independent FastAPI health-only scaffold.
 
-## Application boundaries
+## Runtime ownership
 
-| Owner                      | Path                       | Implemented responsibility                                                                                                         |
-| -------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Web                        | `apps/web`                 | React/Vite, hash routing, auth/setup UI, connected empty workspaces and explicit design previews                                   |
-| API                        | `apps/api`                 | Express, protected sessions/CSRF, account recovery, owner-scoped workspace/branch persistence, Mongoose models and mail processing |
-| AI scaffold                | `apps/ai-service`          | FastAPI liveness with `analysis_available: false`; no inference, RAG or product integration                                        |
-| Public contracts           | `packages/shared-types`    | Shared API prefix/locales and public DTO declarations; no database models or secrets                                               |
-| Development infrastructure | `infra` and `compose.yaml` | Optional local replica set, same-origin nginx routing, API/mail/web images and optional AI scaffold                                |
+- `backend/app.js` composes Express routes; `backend/server.js` loads root development configuration and starts the database/server. Backend sources are CommonJS `.js`.
+- `backend/src/routes`, `controllers`, `services`, `middlewares` and `validations` own public request handling, business behavior and authorization. `backend/src/models` owns Mongoose models.
+- Web `app/router` and providers own access and session state. `features/*` owns screens/adapters, with reusable controls/layout/hooks/styles shared by the existing design system.
+- Browser requests use same-origin `/api` through Vite/nginx. Cookie sessions require exact Origin and CSRF for mutations; bearer authentication remains for API clients. Credentials never belong in browser storage.
+- Registration signs in directly. Verification/resend is unavailable. Password reset uses single-use tokens and development file mail or explicitly configured SMTP; there is no separate mail worker.
+- Surveys/questions/templates have backend endpoints, including survey publishing state. Public response collection, live analytics and frontend completion remain under development.
+- FastAPI reports `analysis_available: false`; no browser-to-MongoDB, browser-to-AI or Node-to-AI analysis flow is implemented.
 
-JavaScript/JSX and `.mjs` remain in use. The source layout is ready for deliberate feature growth; there is no TypeScript, Redux, React Router or production deployment migration in this change.
+## Configuration and data
 
-## Web ownership
+Process environment overrides root `.env` during development; production reads process environment. Require a private MongoDB URI, explicit database selection and a strong `JWT_SECRET`. Legacy private credential files from the removed API are not loaded automatically. Startup/operations must not silently switch databases.
 
-`src/app/App.jsx` chooses preview mode and composes providers. `app/router` owns route names/access decisions and route orchestration; `features/auth/AuthPage.jsx` owns account-screen markup. `app/providers` owns resolved account/workspace state and product shell state. Feature folders own their screen behavior, API clients and local drafts. `components/ui` and `components/layout` own shared controls, shell geometry and common CSS; `hooks`/`lib` own reusable behavior, transport, assets, localization and formatting.
+The backend uses ObjectId models for business owners, businesses, branches, surveys, questions, options and password resets. The removed API's UUID account/workspace collections are **not migrated or automatically compatible**. No records, IDs or databases should be deleted as part of this switch. See [models](mongodb-models.md).
 
-Account product routes use saved identity/workspace data. `/preview/` is the only owner of synthetic metrics, sample feedback and canned assistant replies. Existing imported design variants are reference/preview code, not implemented product APIs. The shared scale hook preserves the reviewed desktop/mobile geometry.
-
-## API ownership
-
-`src/config` resolves the repository root and private configuration independently of package working directory. `modules/auth`, `modules/workspaces` and `modules/mail` implement existing business behavior. `middleware` contains request security, limits and safe errors. `integrations/mail` owns delivery adapters; `integrations/ai-service` is a documented future boundary. `shared/database` owns connection-scoped Mongoose models and explicit transaction handling.
-
-The `users`, `dashboard` and `ai` module boundary documents are extension guidance, not working CRUD/analytics endpoints. The current User model stays internal to `shared/database/models`; authentication remains responsible for account creation/recovery.
-
-## Connected request flow
-
-1. Browser requests `/api/v1/auth/session` through Vite or nginx on the same origin.
-2. Node resolves a protected cookie session and returns safe user/workspace DTOs plus CSRF context.
-3. Mutations require matching Origin/CSRF and strict Zod validation.
-4. Services use `deps.models`, owner predicates and explicit sessions for transactional changes.
-5. Mail intent is encrypted in the outbox; a separate worker dispatches local development mail or configured SMTP.
-6. The web resumes saved setup and renders honest empty/unavailable states.
-
-No browser-to-MongoDB or browser-to-AI path exists. Future inference should cross a documented authenticated Node-to-FastAPI contract, with owner-scoped inputs and versioned/evidence-backed outputs.
-
-## Runtime and operational boundaries
-
-- JavaScript packages use pinned pnpm workspaces and each app declares its own dependencies. The root owns shared tooling and cross-app browser tests.
-- Python dependencies/lockfile are owned by `apps/ai-service`; Python is optional for existing web/API work.
-- Root `.env`, `.local/config`, `.local/mail` and test binaries remain root-relative. Production reads process environment only.
-- `pnpm dev` starts and stops its own API/mail/web process group. It does not start MongoDB, switch URIs or kill occupied unrelated ports.
-- Optional compose uses a separate development MongoDB volume, localhost-bound HTTP web origin and internal database network. It is not production/CD and does not import Atlas data.
-- Existing UUID/ObjectId formats, Mongoose index definitions, DTOs, hashing/encryption and transaction invariants are preserved.
-
-See [public API](../api/README.md), [models](mongodb-models.md), [developer workflow](../development/monorepo.md), [module boundaries](../development/module-boundaries.md) and [validation evidence](../development/backend-validation.md). Earlier proposals are explicitly [archived](../archive/README.md).
+`pnpm dev` owns web/backend only. Root scripts own additive index setup and read-only connectivity checks. Compose owns a separate local replica-set volume, never an Atlas import. Root `.local/` remains ignored private runtime space. See [API](../api/README.md), [backend operations](../development/backend.md) and [module boundaries](../development/module-boundaries.md).

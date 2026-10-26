@@ -8,16 +8,19 @@ module.exports = [
   { ignores: ['**/dist/**', '**/node_modules/**', '**/previews/**', '**/*.d.ts'] },
   { files: ['tests/e2e/**/*.mjs'], languageOptions: { globals: globals.browser } },
   {
-    files: [
-      'apps/api/**/*.mjs',
-      'apps/web/tests/**/*.mjs',
-      'scripts/**/*.mjs',
-      'tests/e2e/**/*.mjs',
-    ],
+    files: ['apps/web/tests/**/*.mjs', 'scripts/**/*.mjs', 'tests/e2e/**/*.mjs'],
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: globals.node },
     rules: {
       ...js.configs.recommended.rules,
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
+  {
+    files: ['backend/**/*.js'],
+    languageOptions: { ecmaVersion: 'latest', sourceType: 'commonjs', globals: globals.node },
+    rules: {
+      ...js.configs.recommended.rules,
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
     },
   },
   {

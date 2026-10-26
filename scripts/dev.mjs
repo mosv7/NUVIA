@@ -15,8 +15,7 @@ for (const port of [3001, 5173]) {
 }
 
 const services = [
-  ['api', ['--watch', resolve(root, 'apps/api/src/server.mjs')], root],
-  ['mail', [resolve(root, 'apps/api/scripts/mail-worker.mjs')], root],
+  ['api', ['--watch', resolve(root, 'backend/server.js')], root],
   [
     'web',
     [resolve(root, 'apps/web/node_modules/vite/bin/vite.js'), '--host', '127.0.0.1'],
@@ -62,7 +61,7 @@ for (const [name, args, cwd] of services) {
 }
 process.on('SIGINT', () => stop());
 process.on('SIGTERM', () => stop());
-console.log('Starting NUVIA web/API/mail; Ctrl+C stops this group.');
+console.log('Starting NUVIA web/backend; Ctrl+C stops this group.');
 async function waitFor(url) {
   const deadline = Date.now() + 20000;
   while (!stopping && Date.now() < deadline) {
@@ -81,7 +80,7 @@ async function waitFor(url) {
 }
 try {
   await Promise.all([
-    waitFor('http://127.0.0.1:3001/api/v1/health/ready'),
+    waitFor('http://127.0.0.1:3001/api/health/ready'),
     waitFor('http://127.0.0.1:5173/'),
   ]);
   if (!stopping) console.log('NUVIA ready at http://127.0.0.1:5173/');
