@@ -1,6 +1,6 @@
 [
   {
-    "file": "screens/desktop/en/analytics-sentiment.jpg",
+    "file": "screens/analytics/desktop/en/analytics-sentiment.jpg",
     "route": "#/analytics-sentiment",
     "language": "en",
     "viewport": {
@@ -11,10 +11,11 @@
       "width": 1440,
       "height": 1541
     },
-    "sha256": "65989e71145ebd1b94821e668a59d88f2bb1e0d0d7813e4b9a4730b5f5c9b067"
+    "sha256": "65989e71145ebd1b94821e668a59d88f2bb1e0d0d7813e4b9a4730b5f5c9b067",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/en/analytics-aspects.jpg",
+    "file": "screens/analytics/desktop/en/analytics-aspects.jpg",
     "route": "#/analytics-aspects",
     "language": "en",
     "viewport": {
@@ -25,10 +26,11 @@
       "width": 1440,
       "height": 1591
     },
-    "sha256": "a21303ca3e7d43d37055c9855eee00d64e9749a9479de781c6ad318fdb087db5"
+    "sha256": "a21303ca3e7d43d37055c9855eee00d64e9749a9479de781c6ad318fdb087db5",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/en/analytics-topics.jpg",
+    "file": "screens/analytics/desktop/en/analytics-topics.jpg",
     "route": "#/analytics-topics",
     "language": "en",
     "viewport": {
@@ -39,10 +41,11 @@
       "width": 1440,
       "height": 1610
     },
-    "sha256": "7e20b44f8aedf6a8ae298264019a61e2cd3a132e20b00f49ff96c46fed075ef1"
+    "sha256": "7e20b44f8aedf6a8ae298264019a61e2cd3a132e20b00f49ff96c46fed075ef1",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/en/analytics-trends.jpg",
+    "file": "screens/analytics/desktop/en/analytics-trends.jpg",
     "route": "#/analytics-trends",
     "language": "en",
     "viewport": {
@@ -53,10 +56,11 @@
       "width": 1440,
       "height": 1637
     },
-    "sha256": "2b12a8601d419dc884aa98d4b6c053980bb97a69c61885dd28014454a80dbbbf"
+    "sha256": "2b12a8601d419dc884aa98d4b6c053980bb97a69c61885dd28014454a80dbbbf",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/en/analytics-comparison.jpg",
+    "file": "screens/analytics/desktop/en/analytics-comparison.jpg",
     "route": "#/analytics-comparison",
     "language": "en",
     "viewport": {
@@ -67,10 +71,11 @@
       "width": 1440,
       "height": 1588
     },
-    "sha256": "1f98648b1ba79c6d4d31e9f5768783f41d5f0f76223b0363f9f1c72f5c33675b"
+    "sha256": "1f98648b1ba79c6d4d31e9f5768783f41d5f0f76223b0363f9f1c72f5c33675b",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/en/nuvia-assistant.jpg",
+    "file": "screens/assistant/desktop/en/nuvia-assistant.jpg",
     "route": "#/nuvia-assistant",
     "language": "en",
     "viewport": {
@@ -81,10 +86,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "c0bf369711ce6aeae87f564c8a1ef0db2872eecdb42dc018c88b6562b1f02856"
+    "sha256": "c0bf369711ce6aeae87f564c8a1ef0db2872eecdb42dc018c88b6562b1f02856",
+    "section": "assistant"
   },
   {
-    "file": "screens/desktop/en/reports.jpg",
+    "file": "screens/reports/desktop/en/reports.jpg",
     "route": "#/reports",
     "language": "en",
     "viewport": {
@@ -95,10 +101,11 @@
       "width": 1440,
       "height": 1030
     },
-    "sha256": "d8e640f964d5c2e66b3748da4b57281b530ba3716216b06ec2eeaf8ea804b26e"
+    "sha256": "d8e640f964d5c2e66b3748da4b57281b530ba3716216b06ec2eeaf8ea804b26e",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/en/report-details.jpg",
+    "file": "screens/reports/desktop/en/report-details.jpg",
     "route": "#/report-details",
     "language": "en",
     "viewport": {
@@ -109,10 +116,11 @@
       "width": 1440,
       "height": 2312
     },
-    "sha256": "3cf14c5e1ea8410ef9653a2f5776ee18b0ffd2550e22a928c91c82ece28dbcd6"
+    "sha256": "3cf14c5e1ea8410ef9653a2f5776ee18b0ffd2550e22a928c91c82ece28dbcd6",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/en/report-details-cairo.jpg",
+    "file": "screens/reports/desktop/en/report-details-cairo.jpg",
     "route": "#/report-details?id=cairo",
     "language": "en",
     "viewport": {
@@ -123,10 +131,11 @@
       "width": 1440,
       "height": 2262
     },
-    "sha256": "3039f0d67416e0f43fce33af499c793e700a267c02fbf719946bfdde2290239c"
+    "sha256": "3039f0d67416e0f43fce33af499c793e700a267c02fbf719946bfdde2290239c",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/en/report-details-service.jpg",
+    "file": "screens/reports/desktop/en/report-details-service.jpg",
     "route": "#/report-details?id=service",
     "language": "en",
     "viewport": {
@@ -137,10 +146,11 @@
       "width": 1440,
       "height": 2286
     },
-    "sha256": "5b902e6bf45f79b4dbb4a3da2d5b68f59b4d95ccf4fd3a6435904efa5f86d8a3"
+    "sha256": "5b902e6bf45f79b4dbb4a3da2d5b68f59b4d95ccf4fd3a6435904efa5f86d8a3",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/en/report-details-august.jpg",
+    "file": "screens/reports/desktop/en/report-details-august.jpg",
     "route": "#/report-details?id=august",
     "language": "en",
     "viewport": {
@@ -151,10 +161,11 @@
       "width": 1440,
       "height": 2227
     },
-    "sha256": "f1502ae4bf59d75baf7b80bf7cedaced263848f810e76947551c045879f9abe8"
+    "sha256": "f1502ae4bf59d75baf7b80bf7cedaced263848f810e76947551c045879f9abe8",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/en/feedbacks-loading.jpg",
+    "file": "screens/feedbacks/desktop/en/feedbacks-loading.jpg",
     "route": "#/feedbacks-loading",
     "language": "en",
     "viewport": {
@@ -165,10 +176,11 @@
       "width": 1440,
       "height": 1148
     },
-    "sha256": "c8a8d13925595a3499af2e1ff5fe2403ab2734a7756086ce8aeb99b66c31cf84"
+    "sha256": "c8a8d13925595a3499af2e1ff5fe2403ab2734a7756086ce8aeb99b66c31cf84",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/en/feedbacks-no-results.jpg",
+    "file": "screens/feedbacks/desktop/en/feedbacks-no-results.jpg",
     "route": "#/feedbacks-no-results",
     "language": "en",
     "viewport": {
@@ -179,10 +191,11 @@
       "width": 1440,
       "height": 1150
     },
-    "sha256": "96266949756d09b6e9f8c3b2dc7ae9a06b9af82467a62e65b5e13de97bdca317"
+    "sha256": "96266949756d09b6e9f8c3b2dc7ae9a06b9af82467a62e65b5e13de97bdca317",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/en/survey-all.jpg",
+    "file": "screens/surveys/desktop/en/survey-all.jpg",
     "route": "#/survey-all",
     "language": "en",
     "viewport": {
@@ -193,10 +206,11 @@
       "width": 1440,
       "height": 1084
     },
-    "sha256": "a51d12cb04931c0ebd66de14e1f1557d2cbd389d915ff0b0455559e468087df8"
+    "sha256": "a51d12cb04931c0ebd66de14e1f1557d2cbd389d915ff0b0455559e468087df8",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-empty.jpg",
+    "file": "screens/surveys/desktop/en/survey-empty.jpg",
     "route": "#/survey-empty",
     "language": "en",
     "viewport": {
@@ -207,10 +221,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "de535a892fd14b2fff6608324418e9a7491f83e2d8bbb6ecf942ea13a824d641"
+    "sha256": "de535a892fd14b2fff6608324418e9a7491f83e2d8bbb6ecf942ea13a824d641",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-live.jpg",
+    "file": "screens/surveys/desktop/en/survey-live.jpg",
     "route": "#/survey-live",
     "language": "en",
     "viewport": {
@@ -221,10 +236,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "edf36d46c984777dc24d062f328cfb20696055116358f4d12c6f9a3712b3c778"
+    "sha256": "edf36d46c984777dc24d062f328cfb20696055116358f4d12c6f9a3712b3c778",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-drafts.jpg",
+    "file": "screens/surveys/desktop/en/survey-drafts.jpg",
     "route": "#/survey-drafts",
     "language": "en",
     "viewport": {
@@ -235,10 +251,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "adfd46649afdfb3fff66e556bb2519c94c657052a6312056582f466fd0631f46"
+    "sha256": "adfd46649afdfb3fff66e556bb2519c94c657052a6312056582f466fd0631f46",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-paused.jpg",
+    "file": "screens/surveys/desktop/en/survey-paused.jpg",
     "route": "#/survey-paused",
     "language": "en",
     "viewport": {
@@ -249,10 +266,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "f039df5d9f652ce19b4966b5858340e7bad0d8d5485b9c8ba883255ce8cde2af"
+    "sha256": "f039df5d9f652ce19b4966b5858340e7bad0d8d5485b9c8ba883255ce8cde2af",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-closed.jpg",
+    "file": "screens/surveys/desktop/en/survey-closed.jpg",
     "route": "#/survey-closed",
     "language": "en",
     "viewport": {
@@ -263,10 +281,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "f7eaea999456f6450b082a4928242998a26e594fc52dfa81992c40019f306563"
+    "sha256": "f7eaea999456f6450b082a4928242998a26e594fc52dfa81992c40019f306563",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-create.jpg",
+    "file": "screens/surveys/desktop/en/survey-create.jpg",
     "route": "#/survey-create",
     "language": "en",
     "viewport": {
@@ -277,10 +296,11 @@
       "width": 1440,
       "height": 1155
     },
-    "sha256": "42d18958500e01d95682b17d417c9ee44f255735ffaf52f4a18e5ada4a2b917f"
+    "sha256": "42d18958500e01d95682b17d417c9ee44f255735ffaf52f4a18e5ada4a2b917f",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-questions.jpg",
+    "file": "screens/surveys/desktop/en/survey-questions.jpg",
     "route": "#/survey-questions",
     "language": "en",
     "viewport": {
@@ -291,10 +311,11 @@
       "width": 1440,
       "height": 1199
     },
-    "sha256": "9e9ffb89a8a4ebf96759da285efa7d7cf3578fc830ad7b638482ee2ffdd46d88"
+    "sha256": "9e9ffb89a8a4ebf96759da285efa7d7cf3578fc830ad7b638482ee2ffdd46d88",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-choices.jpg",
+    "file": "screens/surveys/desktop/en/survey-choices.jpg",
     "route": "#/survey-choices",
     "language": "en",
     "viewport": {
@@ -305,10 +326,11 @@
       "width": 1440,
       "height": 1268
     },
-    "sha256": "60f7ac74b8dcf4e7736b48ce71ada4c723dcb1b17fee825df0f1207be47c70b3"
+    "sha256": "60f7ac74b8dcf4e7736b48ce71ada4c723dcb1b17fee825df0f1207be47c70b3",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-edit.jpg",
+    "file": "screens/surveys/desktop/en/survey-edit.jpg",
     "route": "#/survey-edit",
     "language": "en",
     "viewport": {
@@ -319,10 +341,11 @@
       "width": 1440,
       "height": 1259
     },
-    "sha256": "cb21415f9c532fe87e78968ffdb1e10a2c6850684fa067590e574824b647a1bd"
+    "sha256": "cb21415f9c532fe87e78968ffdb1e10a2c6850684fa067590e574824b647a1bd",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-share.jpg",
+    "file": "screens/surveys/desktop/en/survey-share.jpg",
     "route": "#/survey-share",
     "language": "en",
     "viewport": {
@@ -333,10 +356,11 @@
       "width": 1440,
       "height": 1198
     },
-    "sha256": "fa2da2c2a41b44c2281c66c21b4cd7cc9796ec1af5737adabb413e8c6e322b1f"
+    "sha256": "fa2da2c2a41b44c2281c66c21b4cd7cc9796ec1af5737adabb413e8c6e322b1f",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-ai.jpg",
+    "file": "screens/surveys/desktop/en/survey-ai.jpg",
     "route": "#/survey-ai",
     "language": "en",
     "viewport": {
@@ -347,10 +371,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "ca168a1f7b1bcfe43fca6517338e15d16e734fbd50c2a89f51a7bccac3bd9ae2"
+    "sha256": "ca168a1f7b1bcfe43fca6517338e15d16e734fbd50c2a89f51a7bccac3bd9ae2",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-ai-review.jpg",
+    "file": "screens/surveys/desktop/en/survey-ai-review.jpg",
     "route": "#/survey-ai-review",
     "language": "en",
     "viewport": {
@@ -361,10 +386,11 @@
       "width": 1440,
       "height": 962
     },
-    "sha256": "04f336b6b8348c61c991b88b61cc7b50f979a8557061a9060af453a93b3a77a5"
+    "sha256": "04f336b6b8348c61c991b88b61cc7b50f979a8557061a9060af453a93b3a77a5",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/survey-results.jpg",
+    "file": "screens/surveys/desktop/en/survey-results.jpg",
     "route": "#/survey-results",
     "language": "en",
     "viewport": {
@@ -375,10 +401,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "6c8d039f646ad8741c35da37d47401805ace842f18653b7079b7955231cb8a10"
+    "sha256": "6c8d039f646ad8741c35da37d47401805ace842f18653b7079b7955231cb8a10",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/en/landing.jpg",
+    "file": "screens/landing/desktop/en/landing.jpg",
     "route": "#/landing",
     "language": "en",
     "viewport": {
@@ -389,10 +416,11 @@
       "width": 1440,
       "height": 4155
     },
-    "sha256": "20e7b7db82e200cf9fb027c759fe2aff6335687fb141301f7f460c296c1d4088"
+    "sha256": "20e7b7db82e200cf9fb027c759fe2aff6335687fb141301f7f460c296c1d4088",
+    "section": "landing"
   },
   {
-    "file": "screens/desktop/en/dashboard.jpg",
+    "file": "screens/overview/desktop/en/dashboard.jpg",
     "route": "#/dashboard",
     "language": "en",
     "viewport": {
@@ -403,10 +431,11 @@
       "width": 1440,
       "height": 1392
     },
-    "sha256": "7b855873da51ff0156d040c1af3d00a7b6c62de5cfe44444a54860023d0a26f6"
+    "sha256": "7b855873da51ff0156d040c1af3d00a7b6c62de5cfe44444a54860023d0a26f6",
+    "section": "overview"
   },
   {
-    "file": "screens/desktop/en/dashboard-empty.jpg",
+    "file": "screens/overview/desktop/en/dashboard-empty.jpg",
     "route": "#/dashboard-empty",
     "language": "en",
     "viewport": {
@@ -417,10 +446,11 @@
       "width": 1440,
       "height": 1392
     },
-    "sha256": "82abc081f09cca7a0d23af2c5d30e47d636c7743ae5323e7dc9866e5f5462818"
+    "sha256": "82abc081f09cca7a0d23af2c5d30e47d636c7743ae5323e7dc9866e5f5462818",
+    "section": "overview"
   },
   {
-    "file": "screens/desktop/en/feedbacks.jpg",
+    "file": "screens/feedbacks/desktop/en/feedbacks.jpg",
     "route": "#/feedbacks",
     "language": "en",
     "viewport": {
@@ -431,10 +461,11 @@
       "width": 1440,
       "height": 1150
     },
-    "sha256": "96266949756d09b6e9f8c3b2dc7ae9a06b9af82467a62e65b5e13de97bdca317"
+    "sha256": "96266949756d09b6e9f8c3b2dc7ae9a06b9af82467a62e65b5e13de97bdca317",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/en/feedbacks-empty.jpg",
+    "file": "screens/feedbacks/desktop/en/feedbacks-empty.jpg",
     "route": "#/feedbacks-empty",
     "language": "en",
     "viewport": {
@@ -445,10 +476,11 @@
       "width": 1440,
       "height": 1122
     },
-    "sha256": "457d8e004def1edfae9b3605000e208c1267361ada06654ef90d721634582494"
+    "sha256": "457d8e004def1edfae9b3605000e208c1267361ada06654ef90d721634582494",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/en/feedback-details-1248.jpg",
+    "file": "screens/feedbacks/desktop/en/feedback-details-1248.jpg",
     "route": "#/feedback-details?id=1248",
     "language": "en",
     "viewport": {
@@ -459,10 +491,11 @@
       "width": 1440,
       "height": 1130
     },
-    "sha256": "d3b85b8021ba1be654f216ed839a66ceb4b6a7b78310c61140096c9fae8f4d68"
+    "sha256": "d3b85b8021ba1be654f216ed839a66ceb4b6a7b78310c61140096c9fae8f4d68",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/en/login.jpg",
+    "file": "screens/authentication/desktop/en/login.jpg",
     "route": "#/login",
     "language": "en",
     "viewport": {
@@ -473,10 +506,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "c938e280e2d8e5402478aba35a5594a8e33e6eb87f30ed371250e3b2b6bc9766"
+    "sha256": "c938e280e2d8e5402478aba35a5594a8e33e6eb87f30ed371250e3b2b6bc9766",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/signup.jpg",
+    "file": "screens/authentication/desktop/en/signup.jpg",
     "route": "#/signup",
     "language": "en",
     "viewport": {
@@ -487,10 +521,11 @@
       "width": 1440,
       "height": 1008
     },
-    "sha256": "c8edbc2e3667abc108a1e4558032e3312d41500369e138d868870e4f10764872"
+    "sha256": "c8edbc2e3667abc108a1e4558032e3312d41500369e138d868870e4f10764872",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/forgot.jpg",
+    "file": "screens/authentication/desktop/en/forgot.jpg",
     "route": "#/forgot",
     "language": "en",
     "viewport": {
@@ -501,10 +536,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "5f85db291c5b3c2d116054d3001dc983d95e095434a866c35a72a5eb37c20494"
+    "sha256": "5f85db291c5b3c2d116054d3001dc983d95e095434a866c35a72a5eb37c20494",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/reset.jpg",
+    "file": "screens/authentication/desktop/en/reset.jpg",
     "route": "#/reset",
     "language": "en",
     "viewport": {
@@ -515,10 +551,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "eed9960db02322a5b2fd4cadab06a1cf1ace4345c03309e51849f575173396ca"
+    "sha256": "eed9960db02322a5b2fd4cadab06a1cf1ace4345c03309e51849f575173396ca",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/verify-email.jpg",
+    "file": "screens/authentication/desktop/en/verify-email.jpg",
     "route": "#/verify-email",
     "language": "en",
     "viewport": {
@@ -529,10 +566,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "d3ab3f50186d3d3d7a3d3b52bc4810d694cd15affa416073cdffbfcf9695b079"
+    "sha256": "d3ab3f50186d3d3d7a3d3b52bc4810d694cd15affa416073cdffbfcf9695b079",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/verify-email-expired.jpg",
+    "file": "screens/authentication/desktop/en/verify-email-expired.jpg",
     "route": "#/verify-email-expired",
     "language": "en",
     "viewport": {
@@ -543,10 +581,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "c7c116f1ea7faf4c669b328add14daca23b0650004551e92a85cbeede72437cc"
+    "sha256": "c7c116f1ea7faf4c669b328add14daca23b0650004551e92a85cbeede72437cc",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/verify-email-verified.jpg",
+    "file": "screens/authentication/desktop/en/verify-email-verified.jpg",
     "route": "#/verify-email-verified",
     "language": "en",
     "viewport": {
@@ -557,10 +596,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a33b651fa4a1d212b7e2afc93d803fc6c8675955cec7a20a49c7455146854b09"
+    "sha256": "a33b651fa4a1d212b7e2afc93d803fc6c8675955cec7a20a49c7455146854b09",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/en/business-information.jpg",
+    "file": "screens/onboarding/desktop/en/business-information.jpg",
     "route": "#/business-information",
     "language": "en",
     "viewport": {
@@ -571,10 +611,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "94b262a80a7f4dbbc9ee6c95513b95c8edb7d8719db2f281ecd67ff1e42881c3"
+    "sha256": "94b262a80a7f4dbbc9ee6c95513b95c8edb7d8719db2f281ecd67ff1e42881c3",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/en/business-error.jpg",
+    "file": "screens/onboarding/desktop/en/business-error.jpg",
     "route": "#/business-error",
     "language": "en",
     "viewport": {
@@ -585,10 +626,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "b8bc84de8b6738fa4ffaba50fb5d3f268efee53583a145e7bbd24eac65e3d4ce"
+    "sha256": "b8bc84de8b6738fa4ffaba50fb5d3f268efee53583a145e7bbd24eac65e3d4ce",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/en/business-setup.jpg",
+    "file": "screens/onboarding/desktop/en/business-setup.jpg",
     "route": "#/business-setup",
     "language": "en",
     "viewport": {
@@ -599,10 +641,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0cf9391ca86edd9f475721db6a13984e9103697579e4d0cce1f6835c64b7f6df"
+    "sha256": "0cf9391ca86edd9f475721db6a13984e9103697579e4d0cce1f6835c64b7f6df",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/en/get-started.jpg",
+    "file": "screens/onboarding/desktop/en/get-started.jpg",
     "route": "#/get-started",
     "language": "en",
     "viewport": {
@@ -613,10 +656,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "dde4975843ace5be688ffe35d2cd43bbdde70a930405cd409141e902dd159bff"
+    "sha256": "dde4975843ace5be688ffe35d2cd43bbdde70a930405cd409141e902dd159bff",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/en/business.jpg",
+    "file": "screens/business/desktop/en/business.jpg",
     "route": "#/business",
     "language": "en",
     "viewport": {
@@ -627,10 +671,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "9eb2b80081078ee68c2c9e91dd826a4a167bbd45cd07e5ee69a25609b8d106f0"
+    "sha256": "9eb2b80081078ee68c2c9e91dd826a4a167bbd45cd07e5ee69a25609b8d106f0",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/business-edit.jpg",
+    "file": "screens/business/desktop/en/business-edit.jpg",
     "route": "#/business-edit",
     "language": "en",
     "viewport": {
@@ -641,10 +686,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "ada382c480bdfbf2160a57453bced002ed57a44ef4392961635f675903196caf"
+    "sha256": "ada382c480bdfbf2160a57453bced002ed57a44ef4392961635f675903196caf",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/business-add.jpg",
+    "file": "screens/business/desktop/en/business-add.jpg",
     "route": "#/business-add",
     "language": "en",
     "viewport": {
@@ -655,10 +701,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "d32c6590c2b3129d7989df1f9b6ee0d6b97762fa3b05ce4a67ec4ff1777bdc46"
+    "sha256": "d32c6590c2b3129d7989df1f9b6ee0d6b97762fa3b05ce4a67ec4ff1777bdc46",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/branches.jpg",
+    "file": "screens/business/desktop/en/branches.jpg",
     "route": "#/branches",
     "language": "en",
     "viewport": {
@@ -669,10 +716,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "9a520695461c704647cd7103290e31712dd23d651441000bc6d94e1b5ea7033f"
+    "sha256": "9a520695461c704647cd7103290e31712dd23d651441000bc6d94e1b5ea7033f",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/branch-add.jpg",
+    "file": "screens/business/desktop/en/branch-add.jpg",
     "route": "#/branch-add",
     "language": "en",
     "viewport": {
@@ -683,10 +731,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "5e64ce231e167f810bfcf556ded7cb9ce57a5cd20e85193cda67cfd41c8de175"
+    "sha256": "5e64ce231e167f810bfcf556ded7cb9ce57a5cd20e85193cda67cfd41c8de175",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/branch-edit.jpg",
+    "file": "screens/business/desktop/en/branch-edit.jpg",
     "route": "#/branch-edit",
     "language": "en",
     "viewport": {
@@ -697,10 +746,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "a9a1c16ee032c398d9ca9a58c684abf49b1ca6e5081b9c47b0276897b77e1b55"
+    "sha256": "a9a1c16ee032c398d9ca9a58c684abf49b1ca6e5081b9c47b0276897b77e1b55",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/branch-history.jpg",
+    "file": "screens/business/desktop/en/branch-history.jpg",
     "route": "#/branch-history",
     "language": "en",
     "viewport": {
@@ -711,10 +761,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "30e35ef7130854912122119d892d5f0c9e6641b0bb5d0573d13e6e4a147c356f"
+    "sha256": "30e35ef7130854912122119d892d5f0c9e6641b0bb5d0573d13e6e4a147c356f",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/en/settings.jpg",
+    "file": "screens/settings/desktop/en/settings.jpg",
     "route": "#/settings",
     "language": "en",
     "viewport": {
@@ -725,10 +776,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "55aef1f0b470d2b9a7c7557634d77865fd2fb1cf6c5baf90a1db9c0b989109f9"
+    "sha256": "55aef1f0b470d2b9a7c7557634d77865fd2fb1cf6c5baf90a1db9c0b989109f9",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-personal.jpg",
+    "file": "screens/settings/desktop/en/settings-personal.jpg",
     "route": "#/settings-personal",
     "language": "en",
     "viewport": {
@@ -739,10 +791,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "a50ce4328518e6f20222126bbf76a995b409bdbdce70528cd847f6dbfbb7e9f4"
+    "sha256": "a50ce4328518e6f20222126bbf76a995b409bdbdce70528cd847f6dbfbb7e9f4",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-account.jpg",
+    "file": "screens/settings/desktop/en/settings-account.jpg",
     "route": "#/settings-account",
     "language": "en",
     "viewport": {
@@ -753,10 +806,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "62bf8033339a15fe95859d5b2328495e95dd11d0dc47c745e01ff79c7e748958"
+    "sha256": "62bf8033339a15fe95859d5b2328495e95dd11d0dc47c745e01ff79c7e748958",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-profile.jpg",
+    "file": "screens/settings/desktop/en/settings-profile.jpg",
     "route": "#/settings-profile",
     "language": "en",
     "viewport": {
@@ -767,10 +821,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "ea9212a47e29e0cbf88b6b417daf8977cdfb2a46cdc398ea7f6e4bde9f8cc646"
+    "sha256": "ea9212a47e29e0cbf88b6b417daf8977cdfb2a46cdc398ea7f6e4bde9f8cc646",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-language.jpg",
+    "file": "screens/settings/desktop/en/settings-language.jpg",
     "route": "#/settings-language",
     "language": "en",
     "viewport": {
@@ -781,10 +836,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "224c480686b69f43016781a971100ab61e52375d62a688e6f9f5409d2e71d64b"
+    "sha256": "224c480686b69f43016781a971100ab61e52375d62a688e6f9f5409d2e71d64b",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-security.jpg",
+    "file": "screens/settings/desktop/en/settings-security.jpg",
     "route": "#/settings-security",
     "language": "en",
     "viewport": {
@@ -795,10 +851,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "9fd7f8ef473d06f21839aff689cdb3389bb2e8077c060250f5eec529a438140d"
+    "sha256": "9fd7f8ef473d06f21839aff689cdb3389bb2e8077c060250f5eec529a438140d",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-password.jpg",
+    "file": "screens/settings/desktop/en/settings-password.jpg",
     "route": "#/settings-password",
     "language": "en",
     "viewport": {
@@ -809,10 +866,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "54b5072e8cb6e439031a1ca246b4a51d1b6968b992cbc1109bdbf83be6d37091"
+    "sha256": "54b5072e8cb6e439031a1ca246b4a51d1b6968b992cbc1109bdbf83be6d37091",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-two-factor.jpg",
+    "file": "screens/settings/desktop/en/settings-two-factor.jpg",
     "route": "#/settings-two-factor",
     "language": "en",
     "viewport": {
@@ -823,10 +881,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "3e277d7fcaba7f4535b597f8c96fd3351293f75b51926f41c870631122fbb560"
+    "sha256": "3e277d7fcaba7f4535b597f8c96fd3351293f75b51926f41c870631122fbb560",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-email.jpg",
+    "file": "screens/settings/desktop/en/settings-email.jpg",
     "route": "#/settings-email",
     "language": "en",
     "viewport": {
@@ -837,10 +896,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "e4a21cdaaae6147f0bb32df1b4c9ff21f56e441db9e18ba22ebfa8dbf4b64d7a"
+    "sha256": "e4a21cdaaae6147f0bb32df1b4c9ff21f56e441db9e18ba22ebfa8dbf4b64d7a",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-devices.jpg",
+    "file": "screens/settings/desktop/en/settings-devices.jpg",
     "route": "#/settings-devices",
     "language": "en",
     "viewport": {
@@ -851,10 +911,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "b674cff2c346bdc6f1e961ff508ecf97d1240ad611b5a0f4d022e9288d4a554e"
+    "sha256": "b674cff2c346bdc6f1e961ff508ecf97d1240ad611b5a0f4d022e9288d4a554e",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-notifications.jpg",
+    "file": "screens/settings/desktop/en/settings-notifications.jpg",
     "route": "#/settings-notifications",
     "language": "en",
     "viewport": {
@@ -865,10 +926,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "b56892cd612ae5b89714473834b59cb73ca1cde0c7f4794665f383e1d722bfa2"
+    "sha256": "b56892cd612ae5b89714473834b59cb73ca1cde0c7f4794665f383e1d722bfa2",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-notifications-email.jpg",
+    "file": "screens/settings/desktop/en/settings-notifications-email.jpg",
     "route": "#/settings-notifications-email",
     "language": "en",
     "viewport": {
@@ -879,10 +941,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "56fceb76d0ceaa58bce9f948c947a785ee45bf4e2e5c60c3a69bdae1e4e5c39d"
+    "sha256": "56fceb76d0ceaa58bce9f948c947a785ee45bf4e2e5c60c3a69bdae1e4e5c39d",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/settings-notifications-inapp.jpg",
+    "file": "screens/settings/desktop/en/settings-notifications-inapp.jpg",
     "route": "#/settings-notifications-inapp",
     "language": "en",
     "viewport": {
@@ -893,10 +956,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "a430bc5793a6cdcd82144e5be60f6a579bcd435dd977d5b953c53734edabd88f"
+    "sha256": "a430bc5793a6cdcd82144e5be60f6a579bcd435dd977d5b953c53734edabd88f",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/en/notifications.jpg",
+    "file": "screens/notifications/desktop/en/notifications.jpg",
     "route": "#/notifications",
     "language": "en",
     "viewport": {
@@ -907,10 +971,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "9090a3ea30776eea71ed14850d1f92d4b7ff1d78f36a6e452ea20ab5df323172"
+    "sha256": "9090a3ea30776eea71ed14850d1f92d4b7ff1d78f36a6e452ea20ab5df323172",
+    "section": "notifications"
   },
   {
-    "file": "screens/desktop/en/subscription.jpg",
+    "file": "screens/subscription/desktop/en/subscription.jpg",
     "route": "#/subscription",
     "language": "en",
     "viewport": {
@@ -921,10 +986,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "38171bdccdc36aa6423b02617f9b6d4722e1a103accdca01181824710b551bf0"
+    "sha256": "38171bdccdc36aa6423b02617f9b6d4722e1a103accdca01181824710b551bf0",
+    "section": "subscription"
   },
   {
-    "file": "screens/desktop/en/customer-feedback.jpg",
+    "file": "screens/customer-feedback/desktop/en/customer-feedback.jpg",
     "route": "#/customer-feedback",
     "language": "en",
     "viewport": {
@@ -935,10 +1001,11 @@
       "width": 1440,
       "height": 1744
     },
-    "sha256": "506200002f8968a66e0a835c96de9ee4b7b40bd5378cefe9a0000b7e7585fbcb"
+    "sha256": "506200002f8968a66e0a835c96de9ee4b7b40bd5378cefe9a0000b7e7585fbcb",
+    "section": "customer-feedback"
   },
   {
-    "file": "screens/desktop/en/analytics-sentiment-empty.jpg",
+    "file": "screens/analytics/desktop/en/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "en",
     "state": "empty",
@@ -950,10 +1017,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "f1148055f763195f871ebfc4d91e1ca91142b2eebc271e0447949e3c5782b3be"
+    "sha256": "f1148055f763195f871ebfc4d91e1ca91142b2eebc271e0447949e3c5782b3be",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/en/reports-empty.jpg",
+    "file": "screens/reports/desktop/en/reports-empty.jpg",
     "route": "#/reports",
     "language": "en",
     "state": "empty",
@@ -965,10 +1033,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "5910e1b60773e4b7666558b0797c0565e75639fb585cbedad4b9c5b37b5160eb"
+    "sha256": "5910e1b60773e4b7666558b0797c0565e75639fb585cbedad4b9c5b37b5160eb",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/en/branches-empty.jpg",
+    "file": "screens/business/desktop/en/branches-empty.jpg",
     "route": "#/branches",
     "language": "en",
     "state": "empty",
@@ -980,10 +1049,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "9ca94f69c0e309be237ca854ffab1dc7f82e17baee0df71374338850770acece"
+    "sha256": "9ca94f69c0e309be237ca854ffab1dc7f82e17baee0df71374338850770acece",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/analytics-sentiment.jpg",
+    "file": "screens/analytics/mobile/en/analytics-sentiment.jpg",
     "route": "#/analytics-sentiment",
     "language": "en",
     "viewport": {
@@ -994,10 +1064,11 @@
       "width": 390,
       "height": 2681
     },
-    "sha256": "07e608625c8baef82c08a082ee0bdbbc7e8af18afd8492309df456c56ee98bb6"
+    "sha256": "07e608625c8baef82c08a082ee0bdbbc7e8af18afd8492309df456c56ee98bb6",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/en/analytics-aspects.jpg",
+    "file": "screens/analytics/mobile/en/analytics-aspects.jpg",
     "route": "#/analytics-aspects",
     "language": "en",
     "viewport": {
@@ -1008,10 +1079,11 @@
       "width": 390,
       "height": 3124
     },
-    "sha256": "690baaaf1c7fe668af77717e3d89e5c6c0bcc150a10b742c14baf8a4849b7267"
+    "sha256": "690baaaf1c7fe668af77717e3d89e5c6c0bcc150a10b742c14baf8a4849b7267",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/en/analytics-topics.jpg",
+    "file": "screens/analytics/mobile/en/analytics-topics.jpg",
     "route": "#/analytics-topics",
     "language": "en",
     "viewport": {
@@ -1022,10 +1094,11 @@
       "width": 390,
       "height": 3415
     },
-    "sha256": "b083aca3e6fcf52580f79d3cb7caafebffaa718c794dd488d33a9d59aba595d4"
+    "sha256": "b083aca3e6fcf52580f79d3cb7caafebffaa718c794dd488d33a9d59aba595d4",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/en/analytics-trends.jpg",
+    "file": "screens/analytics/mobile/en/analytics-trends.jpg",
     "route": "#/analytics-trends",
     "language": "en",
     "viewport": {
@@ -1036,10 +1109,11 @@
       "width": 390,
       "height": 2902
     },
-    "sha256": "91aab5be5b0fdf725c3ff016dfd28d4296f29bd2c0b9f0286fe3b664e5e5befd"
+    "sha256": "91aab5be5b0fdf725c3ff016dfd28d4296f29bd2c0b9f0286fe3b664e5e5befd",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/en/analytics-comparison.jpg",
+    "file": "screens/analytics/mobile/en/analytics-comparison.jpg",
     "route": "#/analytics-comparison",
     "language": "en",
     "viewport": {
@@ -1050,10 +1124,11 @@
       "width": 390,
       "height": 2682
     },
-    "sha256": "ce2dd808a560d5f1a7c00edab3c42d3fac019bb6506c6c00bfd1b635066d09eb"
+    "sha256": "ce2dd808a560d5f1a7c00edab3c42d3fac019bb6506c6c00bfd1b635066d09eb",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/en/nuvia-assistant.jpg",
+    "file": "screens/assistant/mobile/en/nuvia-assistant.jpg",
     "route": "#/nuvia-assistant",
     "language": "en",
     "viewport": {
@@ -1064,10 +1139,11 @@
       "width": 390,
       "height": 1405
     },
-    "sha256": "834fcc41f50055f9d5252774f04cfc140a1237544433ccbb2ea6b655930b337b"
+    "sha256": "834fcc41f50055f9d5252774f04cfc140a1237544433ccbb2ea6b655930b337b",
+    "section": "assistant"
   },
   {
-    "file": "screens/mobile/en/reports.jpg",
+    "file": "screens/reports/mobile/en/reports.jpg",
     "route": "#/reports",
     "language": "en",
     "viewport": {
@@ -1078,10 +1154,11 @@
       "width": 390,
       "height": 1947
     },
-    "sha256": "afe8d4b1dc2bba5ff511d50d2c57d74cc04ada85967f4435f256ba908382dbc7"
+    "sha256": "afe8d4b1dc2bba5ff511d50d2c57d74cc04ada85967f4435f256ba908382dbc7",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/en/report-details.jpg",
+    "file": "screens/reports/mobile/en/report-details.jpg",
     "route": "#/report-details",
     "language": "en",
     "viewport": {
@@ -1092,10 +1169,11 @@
       "width": 390,
       "height": 4346
     },
-    "sha256": "6bd993e4fc2d73d51107a22cecfcc35c12330c0acbcc4c955706433e41f5fbf9"
+    "sha256": "6bd993e4fc2d73d51107a22cecfcc35c12330c0acbcc4c955706433e41f5fbf9",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/en/report-details-cairo.jpg",
+    "file": "screens/reports/mobile/en/report-details-cairo.jpg",
     "route": "#/report-details?id=cairo",
     "language": "en",
     "viewport": {
@@ -1106,10 +1184,11 @@
       "width": 390,
       "height": 4078
     },
-    "sha256": "a19d7e484eb0f1dacdc69a37ab2cd709b4f15a8635ece975fccd1ce67b5d7084"
+    "sha256": "a19d7e484eb0f1dacdc69a37ab2cd709b4f15a8635ece975fccd1ce67b5d7084",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/en/report-details-service.jpg",
+    "file": "screens/reports/mobile/en/report-details-service.jpg",
     "route": "#/report-details?id=service",
     "language": "en",
     "viewport": {
@@ -1120,10 +1199,11 @@
       "width": 390,
       "height": 4098
     },
-    "sha256": "d092a112fd3a74d0e1d76d6216a355a4fe5f2147eed241b675685d0e82721a8a"
+    "sha256": "d092a112fd3a74d0e1d76d6216a355a4fe5f2147eed241b675685d0e82721a8a",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/en/report-details-august.jpg",
+    "file": "screens/reports/mobile/en/report-details-august.jpg",
     "route": "#/report-details?id=august",
     "language": "en",
     "viewport": {
@@ -1134,10 +1214,11 @@
       "width": 390,
       "height": 3813
     },
-    "sha256": "55f9e40ee576ec2b9032ba672d1eed002a02d11c89efbf3434ea32654bc6b28f"
+    "sha256": "55f9e40ee576ec2b9032ba672d1eed002a02d11c89efbf3434ea32654bc6b28f",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/en/feedbacks-loading.jpg",
+    "file": "screens/feedbacks/mobile/en/feedbacks-loading.jpg",
     "route": "#/feedbacks-loading",
     "language": "en",
     "viewport": {
@@ -1148,10 +1229,11 @@
       "width": 390,
       "height": 2434
     },
-    "sha256": "d36fc34154f1260c9a16a24250e11ef5da5f5cb4aa4b0142445ba84702e85ae4"
+    "sha256": "d36fc34154f1260c9a16a24250e11ef5da5f5cb4aa4b0142445ba84702e85ae4",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/en/feedbacks-no-results.jpg",
+    "file": "screens/feedbacks/mobile/en/feedbacks-no-results.jpg",
     "route": "#/feedbacks-no-results",
     "language": "en",
     "viewport": {
@@ -1162,10 +1244,11 @@
       "width": 390,
       "height": 2434
     },
-    "sha256": "d36fc34154f1260c9a16a24250e11ef5da5f5cb4aa4b0142445ba84702e85ae4"
+    "sha256": "d36fc34154f1260c9a16a24250e11ef5da5f5cb4aa4b0142445ba84702e85ae4",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/en/survey-all.jpg",
+    "file": "screens/surveys/mobile/en/survey-all.jpg",
     "route": "#/survey-all",
     "language": "en",
     "viewport": {
@@ -1176,10 +1259,11 @@
       "width": 390,
       "height": 2069
     },
-    "sha256": "ab6ccc620312128c49e28e2a92b66bd51725a048e8c0cd7b9afedcdee8f062d3"
+    "sha256": "ab6ccc620312128c49e28e2a92b66bd51725a048e8c0cd7b9afedcdee8f062d3",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-empty.jpg",
+    "file": "screens/surveys/mobile/en/survey-empty.jpg",
     "route": "#/survey-empty",
     "language": "en",
     "viewport": {
@@ -1190,10 +1274,11 @@
       "width": 390,
       "height": 1124
     },
-    "sha256": "4343e3ce91c08c73be5bd2bb035d9ee04c930a69f5218da60a7119a1a37d40c2"
+    "sha256": "4343e3ce91c08c73be5bd2bb035d9ee04c930a69f5218da60a7119a1a37d40c2",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-live.jpg",
+    "file": "screens/surveys/mobile/en/survey-live.jpg",
     "route": "#/survey-live",
     "language": "en",
     "viewport": {
@@ -1204,10 +1289,11 @@
       "width": 390,
       "height": 1264
     },
-    "sha256": "27fdd810d827faac5ac8c1edae523c7e4648071948d38618aa386f9120517f30"
+    "sha256": "27fdd810d827faac5ac8c1edae523c7e4648071948d38618aa386f9120517f30",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-drafts.jpg",
+    "file": "screens/surveys/mobile/en/survey-drafts.jpg",
     "route": "#/survey-drafts",
     "language": "en",
     "viewport": {
@@ -1218,10 +1304,11 @@
       "width": 390,
       "height": 1056
     },
-    "sha256": "721553e06db05f22a978fe564720fc5eb05a784ed82d409db2c89d0ee1bdf3ed"
+    "sha256": "721553e06db05f22a978fe564720fc5eb05a784ed82d409db2c89d0ee1bdf3ed",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-paused.jpg",
+    "file": "screens/surveys/mobile/en/survey-paused.jpg",
     "route": "#/survey-paused",
     "language": "en",
     "viewport": {
@@ -1232,10 +1319,11 @@
       "width": 390,
       "height": 866
     },
-    "sha256": "d6186df99f43069a6b000cddb437c9d219c71e54adc7757d292b218fbd4bc560"
+    "sha256": "d6186df99f43069a6b000cddb437c9d219c71e54adc7757d292b218fbd4bc560",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-closed.jpg",
+    "file": "screens/surveys/mobile/en/survey-closed.jpg",
     "route": "#/survey-closed",
     "language": "en",
     "viewport": {
@@ -1246,10 +1334,11 @@
       "width": 390,
       "height": 866
     },
-    "sha256": "b1c8cf7ab683683263bad91b543dd8fe4a204d7a89fab37cf09432f3535aad2f"
+    "sha256": "b1c8cf7ab683683263bad91b543dd8fe4a204d7a89fab37cf09432f3535aad2f",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-create.jpg",
+    "file": "screens/surveys/mobile/en/survey-create.jpg",
     "route": "#/survey-create",
     "language": "en",
     "viewport": {
@@ -1260,10 +1349,11 @@
       "width": 390,
       "height": 2032
     },
-    "sha256": "dafb3ad25adac2f430196e7e1f24477f08c1695a985adbbc316f36855f84f4e0"
+    "sha256": "dafb3ad25adac2f430196e7e1f24477f08c1695a985adbbc316f36855f84f4e0",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-questions.jpg",
+    "file": "screens/surveys/mobile/en/survey-questions.jpg",
     "route": "#/survey-questions",
     "language": "en",
     "viewport": {
@@ -1274,10 +1364,11 @@
       "width": 390,
       "height": 2452
     },
-    "sha256": "b5c3216b95029125e1f08530fa149c328c9ca7f34e4cf1b4222208df0125aec6"
+    "sha256": "b5c3216b95029125e1f08530fa149c328c9ca7f34e4cf1b4222208df0125aec6",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-choices.jpg",
+    "file": "screens/surveys/mobile/en/survey-choices.jpg",
     "route": "#/survey-choices",
     "language": "en",
     "viewport": {
@@ -1288,10 +1379,11 @@
       "width": 390,
       "height": 2372
     },
-    "sha256": "154439b87c85a3e40928b0864565f7c2ece7b2cce485aafb1e4178ddacbfef1c"
+    "sha256": "154439b87c85a3e40928b0864565f7c2ece7b2cce485aafb1e4178ddacbfef1c",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-edit.jpg",
+    "file": "screens/surveys/mobile/en/survey-edit.jpg",
     "route": "#/survey-edit",
     "language": "en",
     "viewport": {
@@ -1302,10 +1394,11 @@
       "width": 390,
       "height": 2540
     },
-    "sha256": "e725fbe684b399d965e304405213abe630af3f9ea8ad1bc4e5f28a576a69d6e4"
+    "sha256": "e725fbe684b399d965e304405213abe630af3f9ea8ad1bc4e5f28a576a69d6e4",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-share.jpg",
+    "file": "screens/surveys/mobile/en/survey-share.jpg",
     "route": "#/survey-share",
     "language": "en",
     "viewport": {
@@ -1316,10 +1409,11 @@
       "width": 390,
       "height": 2114
     },
-    "sha256": "03cfe09ae58f28ab6a4ff47f9f85f20094fb2dc9cafc1a8fb98c5e0e331dee24"
+    "sha256": "03cfe09ae58f28ab6a4ff47f9f85f20094fb2dc9cafc1a8fb98c5e0e331dee24",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-ai.jpg",
+    "file": "screens/surveys/mobile/en/survey-ai.jpg",
     "route": "#/survey-ai",
     "language": "en",
     "viewport": {
@@ -1330,10 +1424,11 @@
       "width": 390,
       "height": 1584
     },
-    "sha256": "807b78ed4c2f8ba3790f3f531ab89ca9f3600644ae47a855c6dcb1408edb604e"
+    "sha256": "807b78ed4c2f8ba3790f3f531ab89ca9f3600644ae47a855c6dcb1408edb604e",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-ai-review.jpg",
+    "file": "screens/surveys/mobile/en/survey-ai-review.jpg",
     "route": "#/survey-ai-review",
     "language": "en",
     "viewport": {
@@ -1344,10 +1439,11 @@
       "width": 390,
       "height": 1806
     },
-    "sha256": "91c8588097844542173cd7530ad1e747652301675cc8be8bc4f294f0248ae2ac"
+    "sha256": "91c8588097844542173cd7530ad1e747652301675cc8be8bc4f294f0248ae2ac",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/survey-results.jpg",
+    "file": "screens/surveys/mobile/en/survey-results.jpg",
     "route": "#/survey-results",
     "language": "en",
     "viewport": {
@@ -1358,10 +1454,11 @@
       "width": 390,
       "height": 1094
     },
-    "sha256": "bf22baf6a946da77c50c8d6dead992568ce4521071cfa5a08e228979ab8bd0ac"
+    "sha256": "bf22baf6a946da77c50c8d6dead992568ce4521071cfa5a08e228979ab8bd0ac",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/en/landing.jpg",
+    "file": "screens/landing/mobile/en/landing.jpg",
     "route": "#/landing",
     "language": "en",
     "viewport": {
@@ -1372,10 +1469,11 @@
       "width": 390,
       "height": 5948
     },
-    "sha256": "c2617b7c6ae21a9711268e19fa5f8ace904f489de27d8bd62055947a29c8d94e"
+    "sha256": "c2617b7c6ae21a9711268e19fa5f8ace904f489de27d8bd62055947a29c8d94e",
+    "section": "landing"
   },
   {
-    "file": "screens/mobile/en/dashboard.jpg",
+    "file": "screens/overview/mobile/en/dashboard.jpg",
     "route": "#/dashboard",
     "language": "en",
     "viewport": {
@@ -1386,10 +1484,11 @@
       "width": 390,
       "height": 2503
     },
-    "sha256": "e56505265b2287e41b740dca6555e882bba7189f36e8ba60e2ed02608043199d"
+    "sha256": "e56505265b2287e41b740dca6555e882bba7189f36e8ba60e2ed02608043199d",
+    "section": "overview"
   },
   {
-    "file": "screens/mobile/en/dashboard-empty.jpg",
+    "file": "screens/overview/mobile/en/dashboard-empty.jpg",
     "route": "#/dashboard-empty",
     "language": "en",
     "viewport": {
@@ -1400,10 +1499,11 @@
       "width": 390,
       "height": 2503
     },
-    "sha256": "e56505265b2287e41b740dca6555e882bba7189f36e8ba60e2ed02608043199d"
+    "sha256": "e56505265b2287e41b740dca6555e882bba7189f36e8ba60e2ed02608043199d",
+    "section": "overview"
   },
   {
-    "file": "screens/mobile/en/feedbacks.jpg",
+    "file": "screens/feedbacks/mobile/en/feedbacks.jpg",
     "route": "#/feedbacks",
     "language": "en",
     "viewport": {
@@ -1414,10 +1514,11 @@
       "width": 390,
       "height": 2434
     },
-    "sha256": "d36fc34154f1260c9a16a24250e11ef5da5f5cb4aa4b0142445ba84702e85ae4"
+    "sha256": "d36fc34154f1260c9a16a24250e11ef5da5f5cb4aa4b0142445ba84702e85ae4",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/en/feedbacks-empty.jpg",
+    "file": "screens/feedbacks/mobile/en/feedbacks-empty.jpg",
     "route": "#/feedbacks-empty",
     "language": "en",
     "viewport": {
@@ -1428,10 +1529,11 @@
       "width": 390,
       "height": 952
     },
-    "sha256": "21d9ea063758e78432694991d99ae500e9fa34b70cd1ddc5fe7e2358af42d415"
+    "sha256": "21d9ea063758e78432694991d99ae500e9fa34b70cd1ddc5fe7e2358af42d415",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/en/feedback-details-1248.jpg",
+    "file": "screens/feedbacks/mobile/en/feedback-details-1248.jpg",
     "route": "#/feedback-details?id=1248",
     "language": "en",
     "viewport": {
@@ -1442,10 +1544,11 @@
       "width": 390,
       "height": 2254
     },
-    "sha256": "f868b31c6f284b05af6d43577ec1e4d282b637d468e1e1c2fe70da2b8bfa8cc1"
+    "sha256": "f868b31c6f284b05af6d43577ec1e4d282b637d468e1e1c2fe70da2b8bfa8cc1",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/en/login.jpg",
+    "file": "screens/authentication/mobile/en/login.jpg",
     "route": "#/login",
     "language": "en",
     "viewport": {
@@ -1456,10 +1559,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "3adeb351a2858802d653ddd9e293c3809f89d4c9ef5e2f3fb80b65e4c49d3c01"
+    "sha256": "3adeb351a2858802d653ddd9e293c3809f89d4c9ef5e2f3fb80b65e4c49d3c01",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/signup.jpg",
+    "file": "screens/authentication/mobile/en/signup.jpg",
     "route": "#/signup",
     "language": "en",
     "viewport": {
@@ -1470,10 +1574,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "3a83857896e562efa87f583923ed1b5725d4be518403e3b3e447c31b0cbcf315"
+    "sha256": "3a83857896e562efa87f583923ed1b5725d4be518403e3b3e447c31b0cbcf315",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/forgot.jpg",
+    "file": "screens/authentication/mobile/en/forgot.jpg",
     "route": "#/forgot",
     "language": "en",
     "viewport": {
@@ -1484,10 +1589,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "c8acefa94569817c0f457c5e64ad90009e3c289f6b1ef8b8d9013ae07a5ba6e1"
+    "sha256": "c8acefa94569817c0f457c5e64ad90009e3c289f6b1ef8b8d9013ae07a5ba6e1",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/reset.jpg",
+    "file": "screens/authentication/mobile/en/reset.jpg",
     "route": "#/reset",
     "language": "en",
     "viewport": {
@@ -1498,10 +1604,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "1fa2e288cc7a10404a8073a7c25b30ea19863dd23fe6b815121ed8de0a0d5f2e"
+    "sha256": "1fa2e288cc7a10404a8073a7c25b30ea19863dd23fe6b815121ed8de0a0d5f2e",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/verify-email.jpg",
+    "file": "screens/authentication/mobile/en/verify-email.jpg",
     "route": "#/verify-email",
     "language": "en",
     "viewport": {
@@ -1512,10 +1619,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "2484a8819a20f2a9caf452d7b8b5282a753dee8caa5aa30c95ec4d9470fa3813"
+    "sha256": "2484a8819a20f2a9caf452d7b8b5282a753dee8caa5aa30c95ec4d9470fa3813",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/verify-email-expired.jpg",
+    "file": "screens/authentication/mobile/en/verify-email-expired.jpg",
     "route": "#/verify-email-expired",
     "language": "en",
     "viewport": {
@@ -1526,10 +1634,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "a2f961139542ff55a1162b50410ef8a68b5ffe721b3e1662ed94fb98d9666ebb"
+    "sha256": "a2f961139542ff55a1162b50410ef8a68b5ffe721b3e1662ed94fb98d9666ebb",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/verify-email-verified.jpg",
+    "file": "screens/authentication/mobile/en/verify-email-verified.jpg",
     "route": "#/verify-email-verified",
     "language": "en",
     "viewport": {
@@ -1540,10 +1649,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "89376ab485a8635b919bb68bb822ebfc8a8bf46a24be4538e055d0a63f88002a"
+    "sha256": "89376ab485a8635b919bb68bb822ebfc8a8bf46a24be4538e055d0a63f88002a",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/en/business-information.jpg",
+    "file": "screens/onboarding/mobile/en/business-information.jpg",
     "route": "#/business-information",
     "language": "en",
     "viewport": {
@@ -1554,10 +1664,11 @@
       "width": 390,
       "height": 1228
     },
-    "sha256": "325151f7685171d5805be74a0413e4d29842b2b8e371a716e735b8076c038951"
+    "sha256": "325151f7685171d5805be74a0413e4d29842b2b8e371a716e735b8076c038951",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/en/business-error.jpg",
+    "file": "screens/onboarding/mobile/en/business-error.jpg",
     "route": "#/business-error",
     "language": "en",
     "viewport": {
@@ -1568,10 +1679,11 @@
       "width": 390,
       "height": 1282
     },
-    "sha256": "8bb63f96d6db63f9988cfc79a4ba4de0f4bb8da9b82f4eb7e72de6a0615a3ee2"
+    "sha256": "8bb63f96d6db63f9988cfc79a4ba4de0f4bb8da9b82f4eb7e72de6a0615a3ee2",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/en/business-setup.jpg",
+    "file": "screens/onboarding/mobile/en/business-setup.jpg",
     "route": "#/business-setup",
     "language": "en",
     "viewport": {
@@ -1582,10 +1694,11 @@
       "width": 390,
       "height": 1362
     },
-    "sha256": "575f11bf26652d6e80d4f1101eb7f4151a4ae35afd6a84105628748b04af8cf5"
+    "sha256": "575f11bf26652d6e80d4f1101eb7f4151a4ae35afd6a84105628748b04af8cf5",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/en/get-started.jpg",
+    "file": "screens/onboarding/mobile/en/get-started.jpg",
     "route": "#/get-started",
     "language": "en",
     "viewport": {
@@ -1596,10 +1709,11 @@
       "width": 390,
       "height": 1433
     },
-    "sha256": "87f6bb646075cf4b5a215aa1e84ed95397f55b51c67214dba4a73f0505ede76c"
+    "sha256": "87f6bb646075cf4b5a215aa1e84ed95397f55b51c67214dba4a73f0505ede76c",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/en/business.jpg",
+    "file": "screens/business/mobile/en/business.jpg",
     "route": "#/business",
     "language": "en",
     "viewport": {
@@ -1610,10 +1724,11 @@
       "width": 390,
       "height": 1168
     },
-    "sha256": "32cae417d6b5fb87280276489cc0e7077958e70994892a21def7ccceebd803f0"
+    "sha256": "32cae417d6b5fb87280276489cc0e7077958e70994892a21def7ccceebd803f0",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/business-edit.jpg",
+    "file": "screens/business/mobile/en/business-edit.jpg",
     "route": "#/business-edit",
     "language": "en",
     "viewport": {
@@ -1624,10 +1739,11 @@
       "width": 390,
       "height": 1076
     },
-    "sha256": "0d171e766198522ec21b57214d8d5d21f24aa4b07c3cb55645d4423af5b18077"
+    "sha256": "0d171e766198522ec21b57214d8d5d21f24aa4b07c3cb55645d4423af5b18077",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/business-add.jpg",
+    "file": "screens/business/mobile/en/business-add.jpg",
     "route": "#/business-add",
     "language": "en",
     "viewport": {
@@ -1638,10 +1754,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "420790184e135d48eb6d4b939d4ebad936cb72ece20503c0de6fb7254f8420d0"
+    "sha256": "420790184e135d48eb6d4b939d4ebad936cb72ece20503c0de6fb7254f8420d0",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/branches.jpg",
+    "file": "screens/business/mobile/en/branches.jpg",
     "route": "#/branches",
     "language": "en",
     "viewport": {
@@ -1652,10 +1769,11 @@
       "width": 390,
       "height": 1314
     },
-    "sha256": "030099df7e271396ce534aab39c58ce976bf4b14fdaf00973b49aa96b5c05de7"
+    "sha256": "030099df7e271396ce534aab39c58ce976bf4b14fdaf00973b49aa96b5c05de7",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/branch-add.jpg",
+    "file": "screens/business/mobile/en/branch-add.jpg",
     "route": "#/branch-add",
     "language": "en",
     "viewport": {
@@ -1666,10 +1784,11 @@
       "width": 390,
       "height": 938
     },
-    "sha256": "0ba8333ac9c4e8293b0a43702d4536aef575a5e1454959aae89f7a4fae453ecb"
+    "sha256": "0ba8333ac9c4e8293b0a43702d4536aef575a5e1454959aae89f7a4fae453ecb",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/branch-edit.jpg",
+    "file": "screens/business/mobile/en/branch-edit.jpg",
     "route": "#/branch-edit",
     "language": "en",
     "viewport": {
@@ -1680,10 +1799,11 @@
       "width": 390,
       "height": 938
     },
-    "sha256": "a3b09f7dc7f1c5761e9e7e550377fff2f48723c5678f81767f659566c41a9d43"
+    "sha256": "a3b09f7dc7f1c5761e9e7e550377fff2f48723c5678f81767f659566c41a9d43",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/branch-history.jpg",
+    "file": "screens/business/mobile/en/branch-history.jpg",
     "route": "#/branch-history",
     "language": "en",
     "viewport": {
@@ -1694,10 +1814,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "936b3eaa0bd6ba48d9f88cfe3f6ebe99fa8aee09ce1d42bbe6a22378d44d7a22"
+    "sha256": "936b3eaa0bd6ba48d9f88cfe3f6ebe99fa8aee09ce1d42bbe6a22378d44d7a22",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/en/settings.jpg",
+    "file": "screens/settings/mobile/en/settings.jpg",
     "route": "#/settings",
     "language": "en",
     "viewport": {
@@ -1708,10 +1829,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "cca47dad1d70156ef1be4d630704fb1b9eb9dc6f7408f057502d39479d92b7c2"
+    "sha256": "cca47dad1d70156ef1be4d630704fb1b9eb9dc6f7408f057502d39479d92b7c2",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-personal.jpg",
+    "file": "screens/settings/mobile/en/settings-personal.jpg",
     "route": "#/settings-personal",
     "language": "en",
     "viewport": {
@@ -1722,10 +1844,11 @@
       "width": 390,
       "height": 867
     },
-    "sha256": "45f156ac489e1854f3d57f20804d2ee803d9b0a47fadbbf5f4e2fc849a2acf96"
+    "sha256": "45f156ac489e1854f3d57f20804d2ee803d9b0a47fadbbf5f4e2fc849a2acf96",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-account.jpg",
+    "file": "screens/settings/mobile/en/settings-account.jpg",
     "route": "#/settings-account",
     "language": "en",
     "viewport": {
@@ -1736,10 +1859,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "ef885e7343fa67fb4c22bff6e2713d25fa5f6fbd288d80ae31c5cce85ea6d899"
+    "sha256": "ef885e7343fa67fb4c22bff6e2713d25fa5f6fbd288d80ae31c5cce85ea6d899",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-profile.jpg",
+    "file": "screens/settings/mobile/en/settings-profile.jpg",
     "route": "#/settings-profile",
     "language": "en",
     "viewport": {
@@ -1750,10 +1874,11 @@
       "width": 390,
       "height": 1237
     },
-    "sha256": "7cb9b55fc3e98da3cd4796a14bdc0b52fa7a6c036761aa137da1465bc9c270ca"
+    "sha256": "7cb9b55fc3e98da3cd4796a14bdc0b52fa7a6c036761aa137da1465bc9c270ca",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-language.jpg",
+    "file": "screens/settings/mobile/en/settings-language.jpg",
     "route": "#/settings-language",
     "language": "en",
     "viewport": {
@@ -1764,10 +1889,11 @@
       "width": 390,
       "height": 1045
     },
-    "sha256": "21ab4ee3b91a53fae1468d07e49f1e1a94f9f09cdae843e5e8b0d92df736250e"
+    "sha256": "21ab4ee3b91a53fae1468d07e49f1e1a94f9f09cdae843e5e8b0d92df736250e",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-security.jpg",
+    "file": "screens/settings/mobile/en/settings-security.jpg",
     "route": "#/settings-security",
     "language": "en",
     "viewport": {
@@ -1778,10 +1904,11 @@
       "width": 390,
       "height": 950
     },
-    "sha256": "454df8e1f57a275b6ccd7a76e20cff50d891b2336b846f54547035c37b156a93"
+    "sha256": "454df8e1f57a275b6ccd7a76e20cff50d891b2336b846f54547035c37b156a93",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-password.jpg",
+    "file": "screens/settings/mobile/en/settings-password.jpg",
     "route": "#/settings-password",
     "language": "en",
     "viewport": {
@@ -1792,10 +1919,11 @@
       "width": 390,
       "height": 866
     },
-    "sha256": "f89f72775687f4821f541217b4ea74cf6bc755dc3cab19dd8c07dc40febb2fe0"
+    "sha256": "f89f72775687f4821f541217b4ea74cf6bc755dc3cab19dd8c07dc40febb2fe0",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-two-factor.jpg",
+    "file": "screens/settings/mobile/en/settings-two-factor.jpg",
     "route": "#/settings-two-factor",
     "language": "en",
     "viewport": {
@@ -1806,10 +1934,11 @@
       "width": 390,
       "height": 1163
     },
-    "sha256": "d09e44a2cef4015e14f8ab777c0488eebfb4b627deddd2bf6a12121cc8a1d399"
+    "sha256": "d09e44a2cef4015e14f8ab777c0488eebfb4b627deddd2bf6a12121cc8a1d399",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-email.jpg",
+    "file": "screens/settings/mobile/en/settings-email.jpg",
     "route": "#/settings-email",
     "language": "en",
     "viewport": {
@@ -1820,10 +1949,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "79aaa3c1b876d30ccd6e89caff0f6ae13bad94e09509abfe6056f198dfe5cb54"
+    "sha256": "79aaa3c1b876d30ccd6e89caff0f6ae13bad94e09509abfe6056f198dfe5cb54",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-devices.jpg",
+    "file": "screens/settings/mobile/en/settings-devices.jpg",
     "route": "#/settings-devices",
     "language": "en",
     "viewport": {
@@ -1834,10 +1964,11 @@
       "width": 390,
       "height": 998
     },
-    "sha256": "406c3029c47d1efd6daa707d9e41445b925564cf7dd71d998e47efa59290846d"
+    "sha256": "406c3029c47d1efd6daa707d9e41445b925564cf7dd71d998e47efa59290846d",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-notifications.jpg",
+    "file": "screens/settings/mobile/en/settings-notifications.jpg",
     "route": "#/settings-notifications",
     "language": "en",
     "viewport": {
@@ -1848,10 +1979,11 @@
       "width": 390,
       "height": 1020
     },
-    "sha256": "aae59c614559ebbbe1fe25d666f9bbffd4a35beb624a510a8414616da5ee5884"
+    "sha256": "aae59c614559ebbbe1fe25d666f9bbffd4a35beb624a510a8414616da5ee5884",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-notifications-email.jpg",
+    "file": "screens/settings/mobile/en/settings-notifications-email.jpg",
     "route": "#/settings-notifications-email",
     "language": "en",
     "viewport": {
@@ -1862,10 +1994,11 @@
       "width": 390,
       "height": 888
     },
-    "sha256": "18df485b97acfe43ba5576758948d7906abbd6833db169fe00276a1caa87106f"
+    "sha256": "18df485b97acfe43ba5576758948d7906abbd6833db169fe00276a1caa87106f",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/settings-notifications-inapp.jpg",
+    "file": "screens/settings/mobile/en/settings-notifications-inapp.jpg",
     "route": "#/settings-notifications-inapp",
     "language": "en",
     "viewport": {
@@ -1876,10 +2009,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "2d93134be156b63619cba743fa37fbb569340585a5e8f7997058d6cd0ab5032c"
+    "sha256": "2d93134be156b63619cba743fa37fbb569340585a5e8f7997058d6cd0ab5032c",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/en/notifications.jpg",
+    "file": "screens/notifications/mobile/en/notifications.jpg",
     "route": "#/notifications",
     "language": "en",
     "viewport": {
@@ -1890,10 +2024,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "8a7500b1d8463440508c278af0498895ce5006d88d7e14b8130664849b0efe36"
+    "sha256": "8a7500b1d8463440508c278af0498895ce5006d88d7e14b8130664849b0efe36",
+    "section": "notifications"
   },
   {
-    "file": "screens/mobile/en/subscription.jpg",
+    "file": "screens/subscription/mobile/en/subscription.jpg",
     "route": "#/subscription",
     "language": "en",
     "viewport": {
@@ -1904,10 +2039,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "4d42e163755a091476e5765bea691f0548f11396287704a3476fb964eb35ae58"
+    "sha256": "4d42e163755a091476e5765bea691f0548f11396287704a3476fb964eb35ae58",
+    "section": "subscription"
   },
   {
-    "file": "screens/mobile/en/customer-feedback.jpg",
+    "file": "screens/customer-feedback/mobile/en/customer-feedback.jpg",
     "route": "#/customer-feedback",
     "language": "en",
     "viewport": {
@@ -1918,10 +2054,11 @@
       "width": 390,
       "height": 1710
     },
-    "sha256": "719e474fb6bded712cc7ed32477d6fcf1d56bcf78be8da5247237bf6dbfdb7ed"
+    "sha256": "719e474fb6bded712cc7ed32477d6fcf1d56bcf78be8da5247237bf6dbfdb7ed",
+    "section": "customer-feedback"
   },
   {
-    "file": "screens/mobile/en/analytics-sentiment-empty.jpg",
+    "file": "screens/analytics/mobile/en/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "en",
     "state": "empty",
@@ -1933,10 +2070,11 @@
       "width": 390,
       "height": 260
     },
-    "sha256": "4a62af9aad55933c9b96aa935b98c75cb792d66716c1a6d6063fdb7cfa015307"
+    "sha256": "4a62af9aad55933c9b96aa935b98c75cb792d66716c1a6d6063fdb7cfa015307",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/en/reports-empty.jpg",
+    "file": "screens/reports/mobile/en/reports-empty.jpg",
     "route": "#/reports",
     "language": "en",
     "state": "empty",
@@ -1948,10 +2086,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "be9d0bbc9940ee1e5a66b036b0c542879a2b6ca3c20165d199eaeac0fb90f055"
+    "sha256": "be9d0bbc9940ee1e5a66b036b0c542879a2b6ca3c20165d199eaeac0fb90f055",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/en/branches-empty.jpg",
+    "file": "screens/business/mobile/en/branches-empty.jpg",
     "route": "#/branches",
     "language": "en",
     "state": "empty",
@@ -1963,10 +2102,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "c0236ca49645e0039c3b0cd13023eda4b0181190744b1e17f544e0e429711397"
+    "sha256": "c0236ca49645e0039c3b0cd13023eda4b0181190744b1e17f544e0e429711397",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/analytics-sentiment.jpg",
+    "file": "screens/analytics/desktop/ar/analytics-sentiment.jpg",
     "route": "#/analytics-sentiment",
     "language": "ar",
     "viewport": {
@@ -1977,10 +2117,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "c74d0065a503944ad98fcb7f8ed0200e53e6b66be91bfbc4639b334a626010b8"
+    "sha256": "c74d0065a503944ad98fcb7f8ed0200e53e6b66be91bfbc4639b334a626010b8",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/ar/analytics-aspects.jpg",
+    "file": "screens/analytics/desktop/ar/analytics-aspects.jpg",
     "route": "#/analytics-aspects",
     "language": "ar",
     "viewport": {
@@ -1991,10 +2132,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "aa8622b47fb90a5a3fb222fb684892bbd072485ec9e970d5683966e6610eb509"
+    "sha256": "aa8622b47fb90a5a3fb222fb684892bbd072485ec9e970d5683966e6610eb509",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/ar/analytics-topics.jpg",
+    "file": "screens/analytics/desktop/ar/analytics-topics.jpg",
     "route": "#/analytics-topics",
     "language": "ar",
     "viewport": {
@@ -2005,10 +2147,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "76df33544bb029b3631e186f90723beaabbb98d1e30c21b04b3d21c494e1e5dd"
+    "sha256": "76df33544bb029b3631e186f90723beaabbb98d1e30c21b04b3d21c494e1e5dd",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/ar/analytics-trends.jpg",
+    "file": "screens/analytics/desktop/ar/analytics-trends.jpg",
     "route": "#/analytics-trends",
     "language": "ar",
     "viewport": {
@@ -2019,10 +2162,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "728779b641b23c91b22147828f6c17f69b96eb908d52a39e339740f8438ac2c2"
+    "sha256": "728779b641b23c91b22147828f6c17f69b96eb908d52a39e339740f8438ac2c2",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/ar/analytics-comparison.jpg",
+    "file": "screens/analytics/desktop/ar/analytics-comparison.jpg",
     "route": "#/analytics-comparison",
     "language": "ar",
     "viewport": {
@@ -2033,10 +2177,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "2b4a4fd7f1ae9407952374ff6ee4496f2b3e0d2247924604678eba9d7c0f9b3d"
+    "sha256": "2b4a4fd7f1ae9407952374ff6ee4496f2b3e0d2247924604678eba9d7c0f9b3d",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/ar/nuvia-assistant.jpg",
+    "file": "screens/assistant/desktop/ar/nuvia-assistant.jpg",
     "route": "#/nuvia-assistant",
     "language": "ar",
     "viewport": {
@@ -2047,10 +2192,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "dd10a950017576853f3ec936b45aaaf7352ebfc19843f60dfae3ccacb4f034f1"
+    "sha256": "dd10a950017576853f3ec936b45aaaf7352ebfc19843f60dfae3ccacb4f034f1",
+    "section": "assistant"
   },
   {
-    "file": "screens/desktop/ar/reports.jpg",
+    "file": "screens/reports/desktop/ar/reports.jpg",
     "route": "#/reports",
     "language": "ar",
     "viewport": {
@@ -2061,10 +2207,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "e7a9fa8a1541758a601b593e784f198e066a211920635dec02820477a25ea989"
+    "sha256": "e7a9fa8a1541758a601b593e784f198e066a211920635dec02820477a25ea989",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/ar/report-details.jpg",
+    "file": "screens/reports/desktop/ar/report-details.jpg",
     "route": "#/report-details",
     "language": "ar",
     "viewport": {
@@ -2075,10 +2222,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "061723c508215aaaa409604f2143781965a039d0ae02088fb3892d15fe7bdc24"
+    "sha256": "061723c508215aaaa409604f2143781965a039d0ae02088fb3892d15fe7bdc24",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/ar/report-details-cairo.jpg",
+    "file": "screens/reports/desktop/ar/report-details-cairo.jpg",
     "route": "#/report-details?id=cairo",
     "language": "ar",
     "viewport": {
@@ -2089,10 +2237,11 @@
       "width": 1440,
       "height": 2227
     },
-    "sha256": "46a3862ee16bce38e563e4daf14d0c3ab04ca71a5c15de0c6f0bf27caf7d82b4"
+    "sha256": "46a3862ee16bce38e563e4daf14d0c3ab04ca71a5c15de0c6f0bf27caf7d82b4",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/ar/report-details-service.jpg",
+    "file": "screens/reports/desktop/ar/report-details-service.jpg",
     "route": "#/report-details?id=service",
     "language": "ar",
     "viewport": {
@@ -2103,10 +2252,11 @@
       "width": 1440,
       "height": 2246
     },
-    "sha256": "af2415f217f45d89d41f1b5539efbaa7642d22b04664b27ab0cc5ce361502db1"
+    "sha256": "af2415f217f45d89d41f1b5539efbaa7642d22b04664b27ab0cc5ce361502db1",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/ar/report-details-august.jpg",
+    "file": "screens/reports/desktop/ar/report-details-august.jpg",
     "route": "#/report-details?id=august",
     "language": "ar",
     "viewport": {
@@ -2117,10 +2267,11 @@
       "width": 1440,
       "height": 2227
     },
-    "sha256": "83b67520ba33dc49c594523b5a496779aa22604915abc5616c45cc490a55560a"
+    "sha256": "83b67520ba33dc49c594523b5a496779aa22604915abc5616c45cc490a55560a",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/ar/feedbacks-loading.jpg",
+    "file": "screens/feedbacks/desktop/ar/feedbacks-loading.jpg",
     "route": "#/feedbacks-loading",
     "language": "ar",
     "viewport": {
@@ -2131,10 +2282,11 @@
       "width": 1440,
       "height": 1165
     },
-    "sha256": "5bebbdf0ad6a611cff04fb1437283a9c49bbdd79a61d86c5876a6210033c226a"
+    "sha256": "5bebbdf0ad6a611cff04fb1437283a9c49bbdd79a61d86c5876a6210033c226a",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/ar/feedbacks-no-results.jpg",
+    "file": "screens/feedbacks/desktop/ar/feedbacks-no-results.jpg",
     "route": "#/feedbacks-no-results",
     "language": "ar",
     "viewport": {
@@ -2145,10 +2297,11 @@
       "width": 1440,
       "height": 1165
     },
-    "sha256": "5bebbdf0ad6a611cff04fb1437283a9c49bbdd79a61d86c5876a6210033c226a"
+    "sha256": "5bebbdf0ad6a611cff04fb1437283a9c49bbdd79a61d86c5876a6210033c226a",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/ar/survey-all.jpg",
+    "file": "screens/surveys/desktop/ar/survey-all.jpg",
     "route": "#/survey-all",
     "language": "ar",
     "viewport": {
@@ -2159,10 +2312,11 @@
       "width": 1440,
       "height": 1210
     },
-    "sha256": "b7b12d9b7eddf49f89ff672669c2d3e9d7f50a7a600f0710c6f7d1035e8537a0"
+    "sha256": "b7b12d9b7eddf49f89ff672669c2d3e9d7f50a7a600f0710c6f7d1035e8537a0",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-empty.jpg",
+    "file": "screens/surveys/desktop/ar/survey-empty.jpg",
     "route": "#/survey-empty",
     "language": "ar",
     "viewport": {
@@ -2173,10 +2327,11 @@
       "width": 1440,
       "height": 991
     },
-    "sha256": "001804bbff24ef850c7aac05e25fda0800284a05e6236f350ca2d803ec9b944b"
+    "sha256": "001804bbff24ef850c7aac05e25fda0800284a05e6236f350ca2d803ec9b944b",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-live.jpg",
+    "file": "screens/surveys/desktop/ar/survey-live.jpg",
     "route": "#/survey-live",
     "language": "ar",
     "viewport": {
@@ -2187,10 +2342,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0ada8113299e887a8e2274cb3b5d4abfd5102a70cf79c68072aa1792a0ceb05b"
+    "sha256": "0ada8113299e887a8e2274cb3b5d4abfd5102a70cf79c68072aa1792a0ceb05b",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-drafts.jpg",
+    "file": "screens/surveys/desktop/ar/survey-drafts.jpg",
     "route": "#/survey-drafts",
     "language": "ar",
     "viewport": {
@@ -2201,10 +2357,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0f964847ec546062ec3351dd15984638d30222ceee76427cd46ea09dc3201b5d"
+    "sha256": "0f964847ec546062ec3351dd15984638d30222ceee76427cd46ea09dc3201b5d",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-paused.jpg",
+    "file": "screens/surveys/desktop/ar/survey-paused.jpg",
     "route": "#/survey-paused",
     "language": "ar",
     "viewport": {
@@ -2215,10 +2372,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "9864c54524b15f08a93f2b96dc010499759abd22f7a249e3b0bef6c215408d9f"
+    "sha256": "9864c54524b15f08a93f2b96dc010499759abd22f7a249e3b0bef6c215408d9f",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-closed.jpg",
+    "file": "screens/surveys/desktop/ar/survey-closed.jpg",
     "route": "#/survey-closed",
     "language": "ar",
     "viewport": {
@@ -2229,10 +2387,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "62f66fd0cddbe465509059598979d4d7ef067d8614da8b3fdc7041f390bd05ab"
+    "sha256": "62f66fd0cddbe465509059598979d4d7ef067d8614da8b3fdc7041f390bd05ab",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-create.jpg",
+    "file": "screens/surveys/desktop/ar/survey-create.jpg",
     "route": "#/survey-create",
     "language": "ar",
     "viewport": {
@@ -2243,10 +2402,11 @@
       "width": 1440,
       "height": 1282
     },
-    "sha256": "2f299f546b65dd4e8a114c34ee032560f3f89e226f800a6b456ecdc3aae19191"
+    "sha256": "2f299f546b65dd4e8a114c34ee032560f3f89e226f800a6b456ecdc3aae19191",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-questions.jpg",
+    "file": "screens/surveys/desktop/ar/survey-questions.jpg",
     "route": "#/survey-questions",
     "language": "ar",
     "viewport": {
@@ -2257,10 +2417,11 @@
       "width": 1440,
       "height": 1312
     },
-    "sha256": "7b6bc28374c374c7535c20fd914a360e9860253c6c3d28532d99af2d3ce90d91"
+    "sha256": "7b6bc28374c374c7535c20fd914a360e9860253c6c3d28532d99af2d3ce90d91",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-choices.jpg",
+    "file": "screens/surveys/desktop/ar/survey-choices.jpg",
     "route": "#/survey-choices",
     "language": "ar",
     "viewport": {
@@ -2271,10 +2432,11 @@
       "width": 1440,
       "height": 1334
     },
-    "sha256": "36fc4093cc9703aa96c4fd8035ef613b2d57d727dea319d2970a7839c14be42f"
+    "sha256": "36fc4093cc9703aa96c4fd8035ef613b2d57d727dea319d2970a7839c14be42f",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-edit.jpg",
+    "file": "screens/surveys/desktop/ar/survey-edit.jpg",
     "route": "#/survey-edit",
     "language": "ar",
     "viewport": {
@@ -2285,10 +2447,11 @@
       "width": 1440,
       "height": 1382
     },
-    "sha256": "3406997b56070e061921df228cb8a5ca4fd8e2b5bfb312391450052c2ac3d220"
+    "sha256": "3406997b56070e061921df228cb8a5ca4fd8e2b5bfb312391450052c2ac3d220",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-share.jpg",
+    "file": "screens/surveys/desktop/ar/survey-share.jpg",
     "route": "#/survey-share",
     "language": "ar",
     "viewport": {
@@ -2299,10 +2462,11 @@
       "width": 1440,
       "height": 1330
     },
-    "sha256": "1bb80715ad047a1fb68fa1fdf349803416e4af82c0dcb74265ccba2e24b785b5"
+    "sha256": "1bb80715ad047a1fb68fa1fdf349803416e4af82c0dcb74265ccba2e24b785b5",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-ai.jpg",
+    "file": "screens/surveys/desktop/ar/survey-ai.jpg",
     "route": "#/survey-ai",
     "language": "ar",
     "viewport": {
@@ -2313,10 +2477,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "14d5f6a95fddf4f8f005a5eb76b5c60079cf88ca90cbf03e18310701ba1adda4"
+    "sha256": "14d5f6a95fddf4f8f005a5eb76b5c60079cf88ca90cbf03e18310701ba1adda4",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-ai-review.jpg",
+    "file": "screens/surveys/desktop/ar/survey-ai-review.jpg",
     "route": "#/survey-ai-review",
     "language": "ar",
     "viewport": {
@@ -2327,10 +2492,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "82cf41da20620d8a8c9c5c16ea1f8a017c90318097c26fa42d98d8e44da8115d"
+    "sha256": "82cf41da20620d8a8c9c5c16ea1f8a017c90318097c26fa42d98d8e44da8115d",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/survey-results.jpg",
+    "file": "screens/surveys/desktop/ar/survey-results.jpg",
     "route": "#/survey-results",
     "language": "ar",
     "viewport": {
@@ -2341,10 +2507,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "6fec60e9e7f80f8ea39f17b804e5eb355d5843e471f3099dee421a9096a3c1e2"
+    "sha256": "6fec60e9e7f80f8ea39f17b804e5eb355d5843e471f3099dee421a9096a3c1e2",
+    "section": "surveys"
   },
   {
-    "file": "screens/desktop/ar/landing.jpg",
+    "file": "screens/landing/desktop/ar/landing.jpg",
     "route": "#/landing",
     "language": "ar",
     "viewport": {
@@ -2355,10 +2522,11 @@
       "width": 1440,
       "height": 4073
     },
-    "sha256": "406a7266cbd86336740a56a0f0021c8dca6c191db94cedc832dc28a9776ba4a3"
+    "sha256": "406a7266cbd86336740a56a0f0021c8dca6c191db94cedc832dc28a9776ba4a3",
+    "section": "landing"
   },
   {
-    "file": "screens/desktop/ar/dashboard.jpg",
+    "file": "screens/overview/desktop/ar/dashboard.jpg",
     "route": "#/dashboard",
     "language": "ar",
     "viewport": {
@@ -2369,10 +2537,11 @@
       "width": 1440,
       "height": 1606
     },
-    "sha256": "cf20f8a56dec80b210b3718b0b8f95442b6bd1b7435b39d6fc693c3021892377"
+    "sha256": "cf20f8a56dec80b210b3718b0b8f95442b6bd1b7435b39d6fc693c3021892377",
+    "section": "overview"
   },
   {
-    "file": "screens/desktop/ar/dashboard-empty.jpg",
+    "file": "screens/overview/desktop/ar/dashboard-empty.jpg",
     "route": "#/dashboard-empty",
     "language": "ar",
     "viewport": {
@@ -2383,10 +2552,11 @@
       "width": 1440,
       "height": 1606
     },
-    "sha256": "cf20f8a56dec80b210b3718b0b8f95442b6bd1b7435b39d6fc693c3021892377"
+    "sha256": "cf20f8a56dec80b210b3718b0b8f95442b6bd1b7435b39d6fc693c3021892377",
+    "section": "overview"
   },
   {
-    "file": "screens/desktop/ar/feedbacks.jpg",
+    "file": "screens/feedbacks/desktop/ar/feedbacks.jpg",
     "route": "#/feedbacks",
     "language": "ar",
     "viewport": {
@@ -2397,10 +2567,11 @@
       "width": 1440,
       "height": 1165
     },
-    "sha256": "5bebbdf0ad6a611cff04fb1437283a9c49bbdd79a61d86c5876a6210033c226a"
+    "sha256": "5bebbdf0ad6a611cff04fb1437283a9c49bbdd79a61d86c5876a6210033c226a",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/ar/feedbacks-empty.jpg",
+    "file": "screens/feedbacks/desktop/ar/feedbacks-empty.jpg",
     "route": "#/feedbacks-empty",
     "language": "ar",
     "viewport": {
@@ -2411,10 +2582,11 @@
       "width": 1440,
       "height": 1144
     },
-    "sha256": "1c9184c596cad699e58e11df3fd2b226580173c7939dbe94fa401157c8b7e56a"
+    "sha256": "1c9184c596cad699e58e11df3fd2b226580173c7939dbe94fa401157c8b7e56a",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/ar/feedback-details-1248.jpg",
+    "file": "screens/feedbacks/desktop/ar/feedback-details-1248.jpg",
     "route": "#/feedback-details?id=1248",
     "language": "ar",
     "viewport": {
@@ -2425,10 +2597,11 @@
       "width": 1440,
       "height": 1174
     },
-    "sha256": "fb7f25c4eecd6048cfb40809049a8e84ce05bb8489638869d9b2995b899e8411"
+    "sha256": "fb7f25c4eecd6048cfb40809049a8e84ce05bb8489638869d9b2995b899e8411",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/desktop/ar/login.jpg",
+    "file": "screens/authentication/desktop/ar/login.jpg",
     "route": "#/login",
     "language": "ar",
     "viewport": {
@@ -2439,10 +2612,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "041247d0a96899eda6259ed81be26a4019ff43cacc9bdbe6a21a2f8c9bcd8ee9"
+    "sha256": "041247d0a96899eda6259ed81be26a4019ff43cacc9bdbe6a21a2f8c9bcd8ee9",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/signup.jpg",
+    "file": "screens/authentication/desktop/ar/signup.jpg",
     "route": "#/signup",
     "language": "ar",
     "viewport": {
@@ -2453,10 +2627,11 @@
       "width": 1440,
       "height": 1008
     },
-    "sha256": "9f71aea322db4c6091858161fbac65de177e94aaa1c18b30c5e75471b8ab254d"
+    "sha256": "9f71aea322db4c6091858161fbac65de177e94aaa1c18b30c5e75471b8ab254d",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/forgot.jpg",
+    "file": "screens/authentication/desktop/ar/forgot.jpg",
     "route": "#/forgot",
     "language": "ar",
     "viewport": {
@@ -2467,10 +2642,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a093a3c605cb49892cfa99f5c45d95bfe614ff73f698ddffa2fbcb75791342d2"
+    "sha256": "a093a3c605cb49892cfa99f5c45d95bfe614ff73f698ddffa2fbcb75791342d2",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/reset.jpg",
+    "file": "screens/authentication/desktop/ar/reset.jpg",
     "route": "#/reset",
     "language": "ar",
     "viewport": {
@@ -2481,10 +2657,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "6e0a0f3f2053c1effd8c06d65d76aa8bceebc806628069b66d35e58e925fa2d4"
+    "sha256": "6e0a0f3f2053c1effd8c06d65d76aa8bceebc806628069b66d35e58e925fa2d4",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/verify-email.jpg",
+    "file": "screens/authentication/desktop/ar/verify-email.jpg",
     "route": "#/verify-email",
     "language": "ar",
     "viewport": {
@@ -2495,10 +2672,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "3a41042f82133b1f1c2bd323104483bc63c58ec8090d8a87e5efa6071da3f602"
+    "sha256": "3a41042f82133b1f1c2bd323104483bc63c58ec8090d8a87e5efa6071da3f602",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/verify-email-expired.jpg",
+    "file": "screens/authentication/desktop/ar/verify-email-expired.jpg",
     "route": "#/verify-email-expired",
     "language": "ar",
     "viewport": {
@@ -2509,10 +2687,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "dc7f0e399799e9e5570d3cc70062a8b16e5e357d6a9cb7dcbe5de3b1ea474970"
+    "sha256": "dc7f0e399799e9e5570d3cc70062a8b16e5e357d6a9cb7dcbe5de3b1ea474970",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/verify-email-verified.jpg",
+    "file": "screens/authentication/desktop/ar/verify-email-verified.jpg",
     "route": "#/verify-email-verified",
     "language": "ar",
     "viewport": {
@@ -2523,10 +2702,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "d353d2bd263437af64f51c5057f7c6d73fae2653e3c58ab2e092545902cc25d5"
+    "sha256": "d353d2bd263437af64f51c5057f7c6d73fae2653e3c58ab2e092545902cc25d5",
+    "section": "authentication"
   },
   {
-    "file": "screens/desktop/ar/business-information.jpg",
+    "file": "screens/onboarding/desktop/ar/business-information.jpg",
     "route": "#/business-information",
     "language": "ar",
     "viewport": {
@@ -2537,10 +2717,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a1b2987cf3dd95b672f234d4a13d2a779c185ee0093472c7baf8c8b953810dc5"
+    "sha256": "a1b2987cf3dd95b672f234d4a13d2a779c185ee0093472c7baf8c8b953810dc5",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/ar/business-error.jpg",
+    "file": "screens/onboarding/desktop/ar/business-error.jpg",
     "route": "#/business-error",
     "language": "ar",
     "viewport": {
@@ -2551,10 +2732,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "960e16280cbf7203fac3cc91cab50852e6066314af84fd346e15392b9cffd1f0"
+    "sha256": "960e16280cbf7203fac3cc91cab50852e6066314af84fd346e15392b9cffd1f0",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/ar/business-setup.jpg",
+    "file": "screens/onboarding/desktop/ar/business-setup.jpg",
     "route": "#/business-setup",
     "language": "ar",
     "viewport": {
@@ -2565,10 +2747,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "1383d29b79ae5dcbe0be83f7136d69dd6c036a7ecb5cc25ecd1dfd0b525be267"
+    "sha256": "1383d29b79ae5dcbe0be83f7136d69dd6c036a7ecb5cc25ecd1dfd0b525be267",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/ar/get-started.jpg",
+    "file": "screens/onboarding/desktop/ar/get-started.jpg",
     "route": "#/get-started",
     "language": "ar",
     "viewport": {
@@ -2579,10 +2762,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "dcfa7881a5fa93982cd2e8044ff4170339702565e3db1f7a629edb718b91267c"
+    "sha256": "dcfa7881a5fa93982cd2e8044ff4170339702565e3db1f7a629edb718b91267c",
+    "section": "onboarding"
   },
   {
-    "file": "screens/desktop/ar/business.jpg",
+    "file": "screens/business/desktop/ar/business.jpg",
     "route": "#/business",
     "language": "ar",
     "viewport": {
@@ -2593,10 +2777,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "f8d82a30b86073914230e8be693fcdc8992b4dda3e21f10b30c49f770bd3436f"
+    "sha256": "f8d82a30b86073914230e8be693fcdc8992b4dda3e21f10b30c49f770bd3436f",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/business-edit.jpg",
+    "file": "screens/business/desktop/ar/business-edit.jpg",
     "route": "#/business-edit",
     "language": "ar",
     "viewport": {
@@ -2607,10 +2792,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "6f43043eafb19db74363b88b1cbe7d97afa0d36e06ab2891dc71c2fad488c84a"
+    "sha256": "6f43043eafb19db74363b88b1cbe7d97afa0d36e06ab2891dc71c2fad488c84a",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/business-add.jpg",
+    "file": "screens/business/desktop/ar/business-add.jpg",
     "route": "#/business-add",
     "language": "ar",
     "viewport": {
@@ -2621,10 +2807,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "899e6af9c2ccdd4d733ad750a5cc98fd1a153780157b607f7a7392431f167980"
+    "sha256": "899e6af9c2ccdd4d733ad750a5cc98fd1a153780157b607f7a7392431f167980",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/branches.jpg",
+    "file": "screens/business/desktop/ar/branches.jpg",
     "route": "#/branches",
     "language": "ar",
     "viewport": {
@@ -2635,10 +2822,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "da0b0fa14d2e164f7598aedb96ca7ee35bc0ebd54ca8162fd190f84c5d33e756"
+    "sha256": "da0b0fa14d2e164f7598aedb96ca7ee35bc0ebd54ca8162fd190f84c5d33e756",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/branch-add.jpg",
+    "file": "screens/business/desktop/ar/branch-add.jpg",
     "route": "#/branch-add",
     "language": "ar",
     "viewport": {
@@ -2649,10 +2837,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "dd8a9c8e352a10303b9f920b98622a9eee6907138607ee2fe5bd1308625dd736"
+    "sha256": "dd8a9c8e352a10303b9f920b98622a9eee6907138607ee2fe5bd1308625dd736",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/branch-edit.jpg",
+    "file": "screens/business/desktop/ar/branch-edit.jpg",
     "route": "#/branch-edit",
     "language": "ar",
     "viewport": {
@@ -2663,10 +2852,11 @@
       "width": 1440,
       "height": 2210
     },
-    "sha256": "6dba9c5824267c7a01fd8f64836873206675ce68903d9f9edd905cc82ddf01e5"
+    "sha256": "6dba9c5824267c7a01fd8f64836873206675ce68903d9f9edd905cc82ddf01e5",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/branch-history.jpg",
+    "file": "screens/business/desktop/ar/branch-history.jpg",
     "route": "#/branch-history",
     "language": "ar",
     "viewport": {
@@ -2677,10 +2867,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "37860c28f2ebd157ae5c6746119c227586ef3317e55a21e578e05b032a579324"
+    "sha256": "37860c28f2ebd157ae5c6746119c227586ef3317e55a21e578e05b032a579324",
+    "section": "business"
   },
   {
-    "file": "screens/desktop/ar/settings.jpg",
+    "file": "screens/settings/desktop/ar/settings.jpg",
     "route": "#/settings",
     "language": "ar",
     "viewport": {
@@ -2691,10 +2882,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "8f8f233135a2d8501ecce2f5e97539d12aacf359cccbc5b6515a79f6193fe271"
+    "sha256": "8f8f233135a2d8501ecce2f5e97539d12aacf359cccbc5b6515a79f6193fe271",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-personal.jpg",
+    "file": "screens/settings/desktop/ar/settings-personal.jpg",
     "route": "#/settings-personal",
     "language": "ar",
     "viewport": {
@@ -2705,10 +2897,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "82f4e5b01855a98964bfdd8c70ed68e9c2092b6dc797c05d35b6911e9821d43b"
+    "sha256": "82f4e5b01855a98964bfdd8c70ed68e9c2092b6dc797c05d35b6911e9821d43b",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-account.jpg",
+    "file": "screens/settings/desktop/ar/settings-account.jpg",
     "route": "#/settings-account",
     "language": "ar",
     "viewport": {
@@ -2719,10 +2912,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "5aed86e6da298c38d11de9992ada35735c2ee57de5811668bd8d95370544a000"
+    "sha256": "5aed86e6da298c38d11de9992ada35735c2ee57de5811668bd8d95370544a000",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-profile.jpg",
+    "file": "screens/settings/desktop/ar/settings-profile.jpg",
     "route": "#/settings-profile",
     "language": "ar",
     "viewport": {
@@ -2733,10 +2927,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "eb6ac7e7df57dd5b2d072c13cd60da122050ffa04b83fa416d4a19b9fcfd996c"
+    "sha256": "eb6ac7e7df57dd5b2d072c13cd60da122050ffa04b83fa416d4a19b9fcfd996c",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-language.jpg",
+    "file": "screens/settings/desktop/ar/settings-language.jpg",
     "route": "#/settings-language",
     "language": "ar",
     "viewport": {
@@ -2747,10 +2942,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "7c440676a954906938b6fd00a08df453e136119bda47060808156461ecc28915"
+    "sha256": "7c440676a954906938b6fd00a08df453e136119bda47060808156461ecc28915",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-security.jpg",
+    "file": "screens/settings/desktop/ar/settings-security.jpg",
     "route": "#/settings-security",
     "language": "ar",
     "viewport": {
@@ -2761,10 +2957,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "f2f7bd98d564cf04926d1ea4d429197bd6788f27f8df7f29aa143c506eaec1b8"
+    "sha256": "f2f7bd98d564cf04926d1ea4d429197bd6788f27f8df7f29aa143c506eaec1b8",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-password.jpg",
+    "file": "screens/settings/desktop/ar/settings-password.jpg",
     "route": "#/settings-password",
     "language": "ar",
     "viewport": {
@@ -2775,10 +2972,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a661923e05fb781d6bae6d0828073f0d5c1add4b4530b3a2bcfe5a6adc76a3a7"
+    "sha256": "a661923e05fb781d6bae6d0828073f0d5c1add4b4530b3a2bcfe5a6adc76a3a7",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-two-factor.jpg",
+    "file": "screens/settings/desktop/ar/settings-two-factor.jpg",
     "route": "#/settings-two-factor",
     "language": "ar",
     "viewport": {
@@ -2789,10 +2987,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a5701771be1eb824d8b5aeff5d5ad15be08e8e09b539bf3760d3fa0d11ad36bd"
+    "sha256": "a5701771be1eb824d8b5aeff5d5ad15be08e8e09b539bf3760d3fa0d11ad36bd",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-email.jpg",
+    "file": "screens/settings/desktop/ar/settings-email.jpg",
     "route": "#/settings-email",
     "language": "ar",
     "viewport": {
@@ -2803,10 +3002,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "62817b35b25394ab7204d0d718b08369da6d30c9852714025f63a988f6711935"
+    "sha256": "62817b35b25394ab7204d0d718b08369da6d30c9852714025f63a988f6711935",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-devices.jpg",
+    "file": "screens/settings/desktop/ar/settings-devices.jpg",
     "route": "#/settings-devices",
     "language": "ar",
     "viewport": {
@@ -2817,10 +3017,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "6b8db8d19b0850ece97381728bb347bcd36c19bbace948244dd2aec3b7101a79"
+    "sha256": "6b8db8d19b0850ece97381728bb347bcd36c19bbace948244dd2aec3b7101a79",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-notifications.jpg",
+    "file": "screens/settings/desktop/ar/settings-notifications.jpg",
     "route": "#/settings-notifications",
     "language": "ar",
     "viewport": {
@@ -2831,10 +3032,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "70e3cbd7d2701c1a2301493166cf78cfaee339e71619177f3d11afa03d83fa63"
+    "sha256": "70e3cbd7d2701c1a2301493166cf78cfaee339e71619177f3d11afa03d83fa63",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-notifications-email.jpg",
+    "file": "screens/settings/desktop/ar/settings-notifications-email.jpg",
     "route": "#/settings-notifications-email",
     "language": "ar",
     "viewport": {
@@ -2845,10 +3047,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "5fbd7c8611e4b1e734ea323e8d597bc90bc73bd4eb39d7de32d019f5d5a1d481"
+    "sha256": "5fbd7c8611e4b1e734ea323e8d597bc90bc73bd4eb39d7de32d019f5d5a1d481",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/settings-notifications-inapp.jpg",
+    "file": "screens/settings/desktop/ar/settings-notifications-inapp.jpg",
     "route": "#/settings-notifications-inapp",
     "language": "ar",
     "viewport": {
@@ -2859,10 +3062,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "4baef3650236d3c10aaa734bc130109f5f9a85645f5ba4bffbefdd4ac4feff2f"
+    "sha256": "4baef3650236d3c10aaa734bc130109f5f9a85645f5ba4bffbefdd4ac4feff2f",
+    "section": "settings"
   },
   {
-    "file": "screens/desktop/ar/notifications.jpg",
+    "file": "screens/notifications/desktop/ar/notifications.jpg",
     "route": "#/notifications",
     "language": "ar",
     "viewport": {
@@ -2873,10 +3077,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "a16e7428dcf5c801a9232c2afbf757094a740e16bde8fe93c539d58b8f3e1788"
+    "sha256": "a16e7428dcf5c801a9232c2afbf757094a740e16bde8fe93c539d58b8f3e1788",
+    "section": "notifications"
   },
   {
-    "file": "screens/desktop/ar/subscription.jpg",
+    "file": "screens/subscription/desktop/ar/subscription.jpg",
     "route": "#/subscription",
     "language": "ar",
     "viewport": {
@@ -2887,10 +3092,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "c9757a8755389ff1857b4eea06bfb5b2cc8df564333bb1ac18fa1a2e1ff974d4"
+    "sha256": "c9757a8755389ff1857b4eea06bfb5b2cc8df564333bb1ac18fa1a2e1ff974d4",
+    "section": "subscription"
   },
   {
-    "file": "screens/desktop/ar/customer-feedback.jpg",
+    "file": "screens/customer-feedback/desktop/ar/customer-feedback.jpg",
     "route": "#/customer-feedback",
     "language": "ar",
     "viewport": {
@@ -2901,10 +3107,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "be903f4d5a5b7eeccf6c75b2e468f22e5375078785be1a47a766ba07ff3390e5"
+    "sha256": "be903f4d5a5b7eeccf6c75b2e468f22e5375078785be1a47a766ba07ff3390e5",
+    "section": "customer-feedback"
   },
   {
-    "file": "screens/desktop/ar/analytics-sentiment-empty.jpg",
+    "file": "screens/analytics/desktop/ar/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "ar",
     "state": "empty",
@@ -2916,10 +3123,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0a4012d452e3e70e7a1ea60f3e6766b0894b66ae5ed13b5557f9deb54b944b09"
+    "sha256": "0a4012d452e3e70e7a1ea60f3e6766b0894b66ae5ed13b5557f9deb54b944b09",
+    "section": "analytics"
   },
   {
-    "file": "screens/desktop/ar/reports-empty.jpg",
+    "file": "screens/reports/desktop/ar/reports-empty.jpg",
     "route": "#/reports",
     "language": "ar",
     "state": "empty",
@@ -2931,10 +3139,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0eea887aaf12b58638ccca91db15073c7c0e50f3246d81ec89797687dde9f07e"
+    "sha256": "0eea887aaf12b58638ccca91db15073c7c0e50f3246d81ec89797687dde9f07e",
+    "section": "reports"
   },
   {
-    "file": "screens/desktop/ar/branches-empty.jpg",
+    "file": "screens/business/desktop/ar/branches-empty.jpg",
     "route": "#/branches",
     "language": "ar",
     "state": "empty",
@@ -2946,10 +3155,11 @@
       "width": 1440,
       "height": 960
     },
-    "sha256": "0973688f050d03987983b422f38a946784dc823c02431fb7f3d66d47a86156b1"
+    "sha256": "0973688f050d03987983b422f38a946784dc823c02431fb7f3d66d47a86156b1",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/analytics-sentiment.jpg",
+    "file": "screens/analytics/mobile/ar/analytics-sentiment.jpg",
     "route": "#/analytics-sentiment",
     "language": "ar",
     "viewport": {
@@ -2960,10 +3170,11 @@
       "width": 390,
       "height": 260
     },
-    "sha256": "91492b874782c4e2634f71e07b967824c3724ea4b5b2adb7da94574b99ddc98f"
+    "sha256": "91492b874782c4e2634f71e07b967824c3724ea4b5b2adb7da94574b99ddc98f",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/ar/analytics-aspects.jpg",
+    "file": "screens/analytics/mobile/ar/analytics-aspects.jpg",
     "route": "#/analytics-aspects",
     "language": "ar",
     "viewport": {
@@ -2974,10 +3185,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "3876909cf87044a79c358a6beeb8117684304924eea77d19c53a9db957023c65"
+    "sha256": "3876909cf87044a79c358a6beeb8117684304924eea77d19c53a9db957023c65",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/ar/analytics-topics.jpg",
+    "file": "screens/analytics/mobile/ar/analytics-topics.jpg",
     "route": "#/analytics-topics",
     "language": "ar",
     "viewport": {
@@ -2988,10 +3200,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "d721a7a4b4d50474e76c508dc0e161c5f4a21d2886c039445112aa42692e0431"
+    "sha256": "d721a7a4b4d50474e76c508dc0e161c5f4a21d2886c039445112aa42692e0431",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/ar/analytics-trends.jpg",
+    "file": "screens/analytics/mobile/ar/analytics-trends.jpg",
     "route": "#/analytics-trends",
     "language": "ar",
     "viewport": {
@@ -3002,10 +3215,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "600ba6ca8e86e26f331613bed314271c3350dc01426edc99c9776fcb6491cca2"
+    "sha256": "600ba6ca8e86e26f331613bed314271c3350dc01426edc99c9776fcb6491cca2",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/ar/analytics-comparison.jpg",
+    "file": "screens/analytics/mobile/ar/analytics-comparison.jpg",
     "route": "#/analytics-comparison",
     "language": "ar",
     "viewport": {
@@ -3016,10 +3230,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "f5067c32c616756478ea217af742c2039efab3ff28e2845141057bbacab6002d"
+    "sha256": "f5067c32c616756478ea217af742c2039efab3ff28e2845141057bbacab6002d",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/ar/nuvia-assistant.jpg",
+    "file": "screens/assistant/mobile/ar/nuvia-assistant.jpg",
     "route": "#/nuvia-assistant",
     "language": "ar",
     "viewport": {
@@ -3030,10 +3245,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "215a8f454e7af7299f00df7ee5976953e1060aea060d6915c3fe99d6af44b1ce"
+    "sha256": "215a8f454e7af7299f00df7ee5976953e1060aea060d6915c3fe99d6af44b1ce",
+    "section": "assistant"
   },
   {
-    "file": "screens/mobile/ar/reports.jpg",
+    "file": "screens/reports/mobile/ar/reports.jpg",
     "route": "#/reports",
     "language": "ar",
     "viewport": {
@@ -3044,10 +3260,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "4a46e7650a2f01eacb66328361a377ca67f612c2c86de6367f06c9152af26d1e"
+    "sha256": "4a46e7650a2f01eacb66328361a377ca67f612c2c86de6367f06c9152af26d1e",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/ar/report-details.jpg",
+    "file": "screens/reports/mobile/ar/report-details.jpg",
     "route": "#/report-details",
     "language": "ar",
     "viewport": {
@@ -3058,10 +3275,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "2db9da7ad09747e056e21b7934a861dfb4da04115cde4a1ac4908c20713b8b07"
+    "sha256": "2db9da7ad09747e056e21b7934a861dfb4da04115cde4a1ac4908c20713b8b07",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/ar/report-details-cairo.jpg",
+    "file": "screens/reports/mobile/ar/report-details-cairo.jpg",
     "route": "#/report-details?id=cairo",
     "language": "ar",
     "viewport": {
@@ -3072,10 +3290,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "e87d9552c437ba62d05d7763c4970efc86885a95c98b610c7a324b7d4f6f3007"
+    "sha256": "e87d9552c437ba62d05d7763c4970efc86885a95c98b610c7a324b7d4f6f3007",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/ar/report-details-service.jpg",
+    "file": "screens/reports/mobile/ar/report-details-service.jpg",
     "route": "#/report-details?id=service",
     "language": "ar",
     "viewport": {
@@ -3086,10 +3305,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "9adde667df52dd2c663672164e3a8c071ed883df72ea61c67791a8d63b39f826"
+    "sha256": "9adde667df52dd2c663672164e3a8c071ed883df72ea61c67791a8d63b39f826",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/ar/report-details-august.jpg",
+    "file": "screens/reports/mobile/ar/report-details-august.jpg",
     "route": "#/report-details?id=august",
     "language": "ar",
     "viewport": {
@@ -3100,10 +3320,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "70f1d1a5fc617f101e578406797b874edd06a1eb880b434dc97423f26cf9d857"
+    "sha256": "70f1d1a5fc617f101e578406797b874edd06a1eb880b434dc97423f26cf9d857",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/ar/feedbacks-loading.jpg",
+    "file": "screens/feedbacks/mobile/ar/feedbacks-loading.jpg",
     "route": "#/feedbacks-loading",
     "language": "ar",
     "viewport": {
@@ -3114,10 +3335,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "66c4a02e6d81e2560c91b30a935015529ff67bfdb5c1984c31b7470cd1571304"
+    "sha256": "66c4a02e6d81e2560c91b30a935015529ff67bfdb5c1984c31b7470cd1571304",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/ar/feedbacks-no-results.jpg",
+    "file": "screens/feedbacks/mobile/ar/feedbacks-no-results.jpg",
     "route": "#/feedbacks-no-results",
     "language": "ar",
     "viewport": {
@@ -3128,10 +3350,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "66c4a02e6d81e2560c91b30a935015529ff67bfdb5c1984c31b7470cd1571304"
+    "sha256": "66c4a02e6d81e2560c91b30a935015529ff67bfdb5c1984c31b7470cd1571304",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/ar/survey-all.jpg",
+    "file": "screens/surveys/mobile/ar/survey-all.jpg",
     "route": "#/survey-all",
     "language": "ar",
     "viewport": {
@@ -3142,10 +3365,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "473af8fdcf6dcd0bff5989b5216ad7211f56b0ab5e434725143b47cc695b48ae"
+    "sha256": "473af8fdcf6dcd0bff5989b5216ad7211f56b0ab5e434725143b47cc695b48ae",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-empty.jpg",
+    "file": "screens/surveys/mobile/ar/survey-empty.jpg",
     "route": "#/survey-empty",
     "language": "ar",
     "viewport": {
@@ -3156,10 +3380,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "1a440d257d1cedea9e60e33387ceac5c421749f06bab327a9ce8f960fc0dcd8f"
+    "sha256": "1a440d257d1cedea9e60e33387ceac5c421749f06bab327a9ce8f960fc0dcd8f",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-live.jpg",
+    "file": "screens/surveys/mobile/ar/survey-live.jpg",
     "route": "#/survey-live",
     "language": "ar",
     "viewport": {
@@ -3170,10 +3395,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "4036c56609a7dfd9d972f8c0012253fe22d296a5b1c4fb2bca9194e10ed5092f"
+    "sha256": "4036c56609a7dfd9d972f8c0012253fe22d296a5b1c4fb2bca9194e10ed5092f",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-drafts.jpg",
+    "file": "screens/surveys/mobile/ar/survey-drafts.jpg",
     "route": "#/survey-drafts",
     "language": "ar",
     "viewport": {
@@ -3184,10 +3410,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "c9ed6c0b93919e22cbfa5e77effe4cef284e9b69206c9dd29ee153b498be6dae"
+    "sha256": "c9ed6c0b93919e22cbfa5e77effe4cef284e9b69206c9dd29ee153b498be6dae",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-paused.jpg",
+    "file": "screens/surveys/mobile/ar/survey-paused.jpg",
     "route": "#/survey-paused",
     "language": "ar",
     "viewport": {
@@ -3198,10 +3425,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "327e799e3551f649c0bceca250f3c77b902a64929caa83b859ab1051497b93fb"
+    "sha256": "327e799e3551f649c0bceca250f3c77b902a64929caa83b859ab1051497b93fb",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-closed.jpg",
+    "file": "screens/surveys/mobile/ar/survey-closed.jpg",
     "route": "#/survey-closed",
     "language": "ar",
     "viewport": {
@@ -3212,10 +3440,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "f52b34b8ba6aae98d8bd83a014dc4af0549067d60b2fff96591ca4d4b290b4c9"
+    "sha256": "f52b34b8ba6aae98d8bd83a014dc4af0549067d60b2fff96591ca4d4b290b4c9",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-create.jpg",
+    "file": "screens/surveys/mobile/ar/survey-create.jpg",
     "route": "#/survey-create",
     "language": "ar",
     "viewport": {
@@ -3226,10 +3455,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "bad280071751e4aa1667ed46f347c628d5fcd7092d1bac88f702c16bd2abb91f"
+    "sha256": "bad280071751e4aa1667ed46f347c628d5fcd7092d1bac88f702c16bd2abb91f",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-questions.jpg",
+    "file": "screens/surveys/mobile/ar/survey-questions.jpg",
     "route": "#/survey-questions",
     "language": "ar",
     "viewport": {
@@ -3240,10 +3470,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "6ffc800dc8226480403033787317c0006d70857816b939c5d9ffe640228b90f4"
+    "sha256": "6ffc800dc8226480403033787317c0006d70857816b939c5d9ffe640228b90f4",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-choices.jpg",
+    "file": "screens/surveys/mobile/ar/survey-choices.jpg",
     "route": "#/survey-choices",
     "language": "ar",
     "viewport": {
@@ -3254,10 +3485,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "0bdd0a862579bbb1311707f064cb6dbbc34eabd1d9ceea088654a25f1e455143"
+    "sha256": "0bdd0a862579bbb1311707f064cb6dbbc34eabd1d9ceea088654a25f1e455143",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-edit.jpg",
+    "file": "screens/surveys/mobile/ar/survey-edit.jpg",
     "route": "#/survey-edit",
     "language": "ar",
     "viewport": {
@@ -3268,10 +3500,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "9d5de35f36a90b76ee661da59968648a6a8cf7b4b140939d57f7d892b9499c90"
+    "sha256": "9d5de35f36a90b76ee661da59968648a6a8cf7b4b140939d57f7d892b9499c90",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-share.jpg",
+    "file": "screens/surveys/mobile/ar/survey-share.jpg",
     "route": "#/survey-share",
     "language": "ar",
     "viewport": {
@@ -3282,10 +3515,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "4f8463fcf6793380fb6b6fe097a2888267270449f4d1af3a81f1b15330c378dc"
+    "sha256": "4f8463fcf6793380fb6b6fe097a2888267270449f4d1af3a81f1b15330c378dc",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-ai.jpg",
+    "file": "screens/surveys/mobile/ar/survey-ai.jpg",
     "route": "#/survey-ai",
     "language": "ar",
     "viewport": {
@@ -3296,10 +3530,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "e05ce0dd3028abeabdd8ceff7dc8f07a133b0bf528976df2f749043bcad7fd41"
+    "sha256": "e05ce0dd3028abeabdd8ceff7dc8f07a133b0bf528976df2f749043bcad7fd41",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-ai-review.jpg",
+    "file": "screens/surveys/mobile/ar/survey-ai-review.jpg",
     "route": "#/survey-ai-review",
     "language": "ar",
     "viewport": {
@@ -3310,10 +3545,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "eaf4fc0819ab60796c4172bc52bfc3543a73033104206988bce4d1437e85ca8a"
+    "sha256": "eaf4fc0819ab60796c4172bc52bfc3543a73033104206988bce4d1437e85ca8a",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/survey-results.jpg",
+    "file": "screens/surveys/mobile/ar/survey-results.jpg",
     "route": "#/survey-results",
     "language": "ar",
     "viewport": {
@@ -3324,10 +3560,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "eaf4fc0819ab60796c4172bc52bfc3543a73033104206988bce4d1437e85ca8a"
+    "sha256": "eaf4fc0819ab60796c4172bc52bfc3543a73033104206988bce4d1437e85ca8a",
+    "section": "surveys"
   },
   {
-    "file": "screens/mobile/ar/landing.jpg",
+    "file": "screens/landing/mobile/ar/landing.jpg",
     "route": "#/landing",
     "language": "ar",
     "viewport": {
@@ -3338,10 +3575,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "15b7aef9b18e6899ab211a02c79195c7ffed3f3fca1b7a82897d3bb5d76a17a2"
+    "sha256": "15b7aef9b18e6899ab211a02c79195c7ffed3f3fca1b7a82897d3bb5d76a17a2",
+    "section": "landing"
   },
   {
-    "file": "screens/mobile/ar/dashboard.jpg",
+    "file": "screens/overview/mobile/ar/dashboard.jpg",
     "route": "#/dashboard",
     "language": "ar",
     "viewport": {
@@ -3352,10 +3590,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "23301f698af05c2a86ec32de3cc0aa82b439477c81b31f9f31f0f6ddb3880263"
+    "sha256": "23301f698af05c2a86ec32de3cc0aa82b439477c81b31f9f31f0f6ddb3880263",
+    "section": "overview"
   },
   {
-    "file": "screens/mobile/ar/dashboard-empty.jpg",
+    "file": "screens/overview/mobile/ar/dashboard-empty.jpg",
     "route": "#/dashboard-empty",
     "language": "ar",
     "viewport": {
@@ -3366,10 +3605,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "6b4d8fb3434c8afaf384414000e9232a4c41b60742218ae054a16558d5ac1a2e"
+    "sha256": "6b4d8fb3434c8afaf384414000e9232a4c41b60742218ae054a16558d5ac1a2e",
+    "section": "overview"
   },
   {
-    "file": "screens/mobile/ar/feedbacks.jpg",
+    "file": "screens/feedbacks/mobile/ar/feedbacks.jpg",
     "route": "#/feedbacks",
     "language": "ar",
     "viewport": {
@@ -3380,10 +3620,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "66c4a02e6d81e2560c91b30a935015529ff67bfdb5c1984c31b7470cd1571304"
+    "sha256": "66c4a02e6d81e2560c91b30a935015529ff67bfdb5c1984c31b7470cd1571304",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/ar/feedbacks-empty.jpg",
+    "file": "screens/feedbacks/mobile/ar/feedbacks-empty.jpg",
     "route": "#/feedbacks-empty",
     "language": "ar",
     "viewport": {
@@ -3394,10 +3635,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "b3d2c7f8fa1e1db213c06b6ef5e9950a5674c8bb2c4d1dd7cb0eed665443df2e"
+    "sha256": "b3d2c7f8fa1e1db213c06b6ef5e9950a5674c8bb2c4d1dd7cb0eed665443df2e",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/ar/feedback-details-1248.jpg",
+    "file": "screens/feedbacks/mobile/ar/feedback-details-1248.jpg",
     "route": "#/feedback-details?id=1248",
     "language": "ar",
     "viewport": {
@@ -3408,10 +3650,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "02c92bee622e99affbe18444dc3bd7aaf67aeb6ccbff778612525e8ffde2ba20"
+    "sha256": "02c92bee622e99affbe18444dc3bd7aaf67aeb6ccbff778612525e8ffde2ba20",
+    "section": "feedbacks"
   },
   {
-    "file": "screens/mobile/ar/login.jpg",
+    "file": "screens/authentication/mobile/ar/login.jpg",
     "route": "#/login",
     "language": "ar",
     "viewport": {
@@ -3422,10 +3665,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "a07b8152e05ea9c1c226f5c257ea33670755150857d94786efaf8143c638e604"
+    "sha256": "a07b8152e05ea9c1c226f5c257ea33670755150857d94786efaf8143c638e604",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/signup.jpg",
+    "file": "screens/authentication/mobile/ar/signup.jpg",
     "route": "#/signup",
     "language": "ar",
     "viewport": {
@@ -3436,10 +3680,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "9871d4ae2bf3769c0a6769776894b969218470c9c71ed1f27205deb6f6dd3f3d"
+    "sha256": "9871d4ae2bf3769c0a6769776894b969218470c9c71ed1f27205deb6f6dd3f3d",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/forgot.jpg",
+    "file": "screens/authentication/mobile/ar/forgot.jpg",
     "route": "#/forgot",
     "language": "ar",
     "viewport": {
@@ -3450,10 +3695,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "af6dfccfccde097d3da9078da9e5c33fefeed6dac33cea5f3e19696c009efad2"
+    "sha256": "af6dfccfccde097d3da9078da9e5c33fefeed6dac33cea5f3e19696c009efad2",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/reset.jpg",
+    "file": "screens/authentication/mobile/ar/reset.jpg",
     "route": "#/reset",
     "language": "ar",
     "viewport": {
@@ -3464,10 +3710,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "abd508b96529dade9dca9295bd1a10fb4274d576f6eb7fd2235a82d735c2d78f"
+    "sha256": "abd508b96529dade9dca9295bd1a10fb4274d576f6eb7fd2235a82d735c2d78f",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/verify-email.jpg",
+    "file": "screens/authentication/mobile/ar/verify-email.jpg",
     "route": "#/verify-email",
     "language": "ar",
     "viewport": {
@@ -3478,10 +3725,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "c1f41eb938d8a76f822f635eb0e9e68e7fe394dc6e594ccc7bddd307d0b14a85"
+    "sha256": "c1f41eb938d8a76f822f635eb0e9e68e7fe394dc6e594ccc7bddd307d0b14a85",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/verify-email-expired.jpg",
+    "file": "screens/authentication/mobile/ar/verify-email-expired.jpg",
     "route": "#/verify-email-expired",
     "language": "ar",
     "viewport": {
@@ -3492,10 +3740,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "bc93c8db222c09f73f6a0d15d58bd3771196b2320492db5e3f7fccfcfcbbf8a3"
+    "sha256": "bc93c8db222c09f73f6a0d15d58bd3771196b2320492db5e3f7fccfcfcbbf8a3",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/verify-email-verified.jpg",
+    "file": "screens/authentication/mobile/ar/verify-email-verified.jpg",
     "route": "#/verify-email-verified",
     "language": "ar",
     "viewport": {
@@ -3506,10 +3755,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "2e6ba40828640e01595c8d8621c657b2a64a60691015a7b320ed1256a8049e49"
+    "sha256": "2e6ba40828640e01595c8d8621c657b2a64a60691015a7b320ed1256a8049e49",
+    "section": "authentication"
   },
   {
-    "file": "screens/mobile/ar/business-information.jpg",
+    "file": "screens/onboarding/mobile/ar/business-information.jpg",
     "route": "#/business-information",
     "language": "ar",
     "viewport": {
@@ -3520,10 +3770,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "84f4ae7ff85971ff8aeb0c82c5a3372b320f37cf79f9f3490786e895dc26a6e4"
+    "sha256": "84f4ae7ff85971ff8aeb0c82c5a3372b320f37cf79f9f3490786e895dc26a6e4",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/ar/business-error.jpg",
+    "file": "screens/onboarding/mobile/ar/business-error.jpg",
     "route": "#/business-error",
     "language": "ar",
     "viewport": {
@@ -3534,10 +3785,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "1d0da8b45c0f85cef1ba05f9dcf7362a3fcf3e73a1a8e30feb561fc256281a0a"
+    "sha256": "1d0da8b45c0f85cef1ba05f9dcf7362a3fcf3e73a1a8e30feb561fc256281a0a",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/ar/business-setup.jpg",
+    "file": "screens/onboarding/mobile/ar/business-setup.jpg",
     "route": "#/business-setup",
     "language": "ar",
     "viewport": {
@@ -3548,10 +3800,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "1f0a3e45e48ba893d861a9189e16b36467e11d6cb1bf4303da4379428e21c110"
+    "sha256": "1f0a3e45e48ba893d861a9189e16b36467e11d6cb1bf4303da4379428e21c110",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/ar/get-started.jpg",
+    "file": "screens/onboarding/mobile/ar/get-started.jpg",
     "route": "#/get-started",
     "language": "ar",
     "viewport": {
@@ -3562,10 +3815,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "f555e6335610a85eddf7c07ad50aa7eabc0fb3908edbcdfb2e9ea720a8be9687"
+    "sha256": "f555e6335610a85eddf7c07ad50aa7eabc0fb3908edbcdfb2e9ea720a8be9687",
+    "section": "onboarding"
   },
   {
-    "file": "screens/mobile/ar/business.jpg",
+    "file": "screens/business/mobile/ar/business.jpg",
     "route": "#/business",
     "language": "ar",
     "viewport": {
@@ -3576,10 +3830,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "0deb9e08f136792a6242ef382f0d5fdd3761ef42d0aa01feef789e649ae3e8c4"
+    "sha256": "0deb9e08f136792a6242ef382f0d5fdd3761ef42d0aa01feef789e649ae3e8c4",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/business-edit.jpg",
+    "file": "screens/business/mobile/ar/business-edit.jpg",
     "route": "#/business-edit",
     "language": "ar",
     "viewport": {
@@ -3590,10 +3845,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "f924f9fc7a99ae9e5bdeb95c34bd8b1818c9f6b78f4476764a0a94f8d0fcbd35"
+    "sha256": "f924f9fc7a99ae9e5bdeb95c34bd8b1818c9f6b78f4476764a0a94f8d0fcbd35",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/business-add.jpg",
+    "file": "screens/business/mobile/ar/business-add.jpg",
     "route": "#/business-add",
     "language": "ar",
     "viewport": {
@@ -3604,10 +3860,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "d9a72264b49361cfc5326651309588e22d08d14912a40279ee5431f3a55f438d"
+    "sha256": "d9a72264b49361cfc5326651309588e22d08d14912a40279ee5431f3a55f438d",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/branches.jpg",
+    "file": "screens/business/mobile/ar/branches.jpg",
     "route": "#/branches",
     "language": "ar",
     "viewport": {
@@ -3618,10 +3875,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "2c128e72687602143cdd858da252d7a4a724308e761486370c926d02e8169556"
+    "sha256": "2c128e72687602143cdd858da252d7a4a724308e761486370c926d02e8169556",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/branch-add.jpg",
+    "file": "screens/business/mobile/ar/branch-add.jpg",
     "route": "#/branch-add",
     "language": "ar",
     "viewport": {
@@ -3632,10 +3890,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "006736c210f60cba69c447ce54eb0aa28f7d5a8f13981b61e8ee442435d2bfcb"
+    "sha256": "006736c210f60cba69c447ce54eb0aa28f7d5a8f13981b61e8ee442435d2bfcb",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/branch-edit.jpg",
+    "file": "screens/business/mobile/ar/branch-edit.jpg",
     "route": "#/branch-edit",
     "language": "ar",
     "viewport": {
@@ -3646,10 +3905,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "11c3137fbc7f63009d1b65d36041cf2413f165d353559afce34b33a856eefb69"
+    "sha256": "11c3137fbc7f63009d1b65d36041cf2413f165d353559afce34b33a856eefb69",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/branch-history.jpg",
+    "file": "screens/business/mobile/ar/branch-history.jpg",
     "route": "#/branch-history",
     "language": "ar",
     "viewport": {
@@ -3660,10 +3920,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "6c9357f8bd4765963aad2c25e0863cd959787259deca60b6ead08ea9d911f7d8"
+    "sha256": "6c9357f8bd4765963aad2c25e0863cd959787259deca60b6ead08ea9d911f7d8",
+    "section": "business"
   },
   {
-    "file": "screens/mobile/ar/settings.jpg",
+    "file": "screens/settings/mobile/ar/settings.jpg",
     "route": "#/settings",
     "language": "ar",
     "viewport": {
@@ -3674,10 +3935,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "f5dd4036648d263e20b1f84703564d4d296f5de4e1abbade185e78eb43d774c6"
+    "sha256": "f5dd4036648d263e20b1f84703564d4d296f5de4e1abbade185e78eb43d774c6",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-personal.jpg",
+    "file": "screens/settings/mobile/ar/settings-personal.jpg",
     "route": "#/settings-personal",
     "language": "ar",
     "viewport": {
@@ -3688,10 +3950,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "07575c292fdc9cefbd05c4b317c4f1efd61cb66de95c45e10903a671f0d1f1dd"
+    "sha256": "07575c292fdc9cefbd05c4b317c4f1efd61cb66de95c45e10903a671f0d1f1dd",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-account.jpg",
+    "file": "screens/settings/mobile/ar/settings-account.jpg",
     "route": "#/settings-account",
     "language": "ar",
     "viewport": {
@@ -3702,10 +3965,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "cef899be678cb54fffb241135dc25c9f71d4649692c97108f1285a73dddb7abf"
+    "sha256": "cef899be678cb54fffb241135dc25c9f71d4649692c97108f1285a73dddb7abf",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-profile.jpg",
+    "file": "screens/settings/mobile/ar/settings-profile.jpg",
     "route": "#/settings-profile",
     "language": "ar",
     "viewport": {
@@ -3716,10 +3980,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "4691ed4d4762e65a0acff34f46b2d5144338d0672e5ec3684afa378442aecace"
+    "sha256": "4691ed4d4762e65a0acff34f46b2d5144338d0672e5ec3684afa378442aecace",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-language.jpg",
+    "file": "screens/settings/mobile/ar/settings-language.jpg",
     "route": "#/settings-language",
     "language": "ar",
     "viewport": {
@@ -3730,10 +3995,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "f11e049c22a11a71ef74278473c1c5d68d715f889ea52c92bf163ae0ff01ad2d"
+    "sha256": "f11e049c22a11a71ef74278473c1c5d68d715f889ea52c92bf163ae0ff01ad2d",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-security.jpg",
+    "file": "screens/settings/mobile/ar/settings-security.jpg",
     "route": "#/settings-security",
     "language": "ar",
     "viewport": {
@@ -3744,10 +4010,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "c047f753812a539690701500ec1f842b00756cb48c536afcac190e63d1f0cd71"
+    "sha256": "c047f753812a539690701500ec1f842b00756cb48c536afcac190e63d1f0cd71",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-password.jpg",
+    "file": "screens/settings/mobile/ar/settings-password.jpg",
     "route": "#/settings-password",
     "language": "ar",
     "viewport": {
@@ -3758,10 +4025,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "32da59165e3bf6bbc7115a88b94999db45ae96069c2cf75fb7eb68b387cd8fea"
+    "sha256": "32da59165e3bf6bbc7115a88b94999db45ae96069c2cf75fb7eb68b387cd8fea",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-two-factor.jpg",
+    "file": "screens/settings/mobile/ar/settings-two-factor.jpg",
     "route": "#/settings-two-factor",
     "language": "ar",
     "viewport": {
@@ -3772,10 +4040,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "bc1dde1c5121d29888a8f02c12d50d30b2131a9f6ba8f4471ed1ecd8ad3a7309"
+    "sha256": "bc1dde1c5121d29888a8f02c12d50d30b2131a9f6ba8f4471ed1ecd8ad3a7309",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-email.jpg",
+    "file": "screens/settings/mobile/ar/settings-email.jpg",
     "route": "#/settings-email",
     "language": "ar",
     "viewport": {
@@ -3786,10 +4055,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "3e30bce86bdb0cb520465e29de39aa15210d68fe2bb2412387b576a8c9f7885e"
+    "sha256": "3e30bce86bdb0cb520465e29de39aa15210d68fe2bb2412387b576a8c9f7885e",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-devices.jpg",
+    "file": "screens/settings/mobile/ar/settings-devices.jpg",
     "route": "#/settings-devices",
     "language": "ar",
     "viewport": {
@@ -3800,10 +4070,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "84d0f45669e8bce637a1f5db3511bd7b05e96cf1a76d52bdb4aa024304c71250"
+    "sha256": "84d0f45669e8bce637a1f5db3511bd7b05e96cf1a76d52bdb4aa024304c71250",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-notifications.jpg",
+    "file": "screens/settings/mobile/ar/settings-notifications.jpg",
     "route": "#/settings-notifications",
     "language": "ar",
     "viewport": {
@@ -3814,10 +4085,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "2d5d65006c3e4ebc30e4a8829dc6f531b6dbbd83123aaa875a0daf6f964462f1"
+    "sha256": "2d5d65006c3e4ebc30e4a8829dc6f531b6dbbd83123aaa875a0daf6f964462f1",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-notifications-email.jpg",
+    "file": "screens/settings/mobile/ar/settings-notifications-email.jpg",
     "route": "#/settings-notifications-email",
     "language": "ar",
     "viewport": {
@@ -3828,10 +4100,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "8f5edebec9aed759c6a89e80993b22fcf00d8273a913ea9f24a6ea2cf4183285"
+    "sha256": "8f5edebec9aed759c6a89e80993b22fcf00d8273a913ea9f24a6ea2cf4183285",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/settings-notifications-inapp.jpg",
+    "file": "screens/settings/mobile/ar/settings-notifications-inapp.jpg",
     "route": "#/settings-notifications-inapp",
     "language": "ar",
     "viewport": {
@@ -3842,10 +4115,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "aae7f9276b44fa5aba2535ab7e8c915f61d069850aae237257b7005fdbbf76da"
+    "sha256": "aae7f9276b44fa5aba2535ab7e8c915f61d069850aae237257b7005fdbbf76da",
+    "section": "settings"
   },
   {
-    "file": "screens/mobile/ar/notifications.jpg",
+    "file": "screens/notifications/mobile/ar/notifications.jpg",
     "route": "#/notifications",
     "language": "ar",
     "viewport": {
@@ -3856,10 +4130,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "ea590aa522776a6459c5e416af6b72d335183fa7cadf20f651c37450849ff613"
+    "sha256": "ea590aa522776a6459c5e416af6b72d335183fa7cadf20f651c37450849ff613",
+    "section": "notifications"
   },
   {
-    "file": "screens/mobile/ar/subscription.jpg",
+    "file": "screens/subscription/mobile/ar/subscription.jpg",
     "route": "#/subscription",
     "language": "ar",
     "viewport": {
@@ -3870,10 +4145,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "b22825faab10dfd837dbbc46c1902f4abe5bb27554e92d04781a7ba29f0c5e4e"
+    "sha256": "b22825faab10dfd837dbbc46c1902f4abe5bb27554e92d04781a7ba29f0c5e4e",
+    "section": "subscription"
   },
   {
-    "file": "screens/mobile/ar/customer-feedback.jpg",
+    "file": "screens/customer-feedback/mobile/ar/customer-feedback.jpg",
     "route": "#/customer-feedback",
     "language": "ar",
     "viewport": {
@@ -3884,10 +4160,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "02302e3a7259ed6ae61c8768a414444cd3a265586aa18ec9a0e6211c6a77a253"
+    "sha256": "02302e3a7259ed6ae61c8768a414444cd3a265586aa18ec9a0e6211c6a77a253",
+    "section": "customer-feedback"
   },
   {
-    "file": "screens/mobile/ar/analytics-sentiment-empty.jpg",
+    "file": "screens/analytics/mobile/ar/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "ar",
     "state": "empty",
@@ -3899,10 +4176,11 @@
       "width": 390,
       "height": 260
     },
-    "sha256": "7a9bcf41a5c612733d37b0db4318ecff8520985fc0833083673561f28d6a2bff"
+    "sha256": "7a9bcf41a5c612733d37b0db4318ecff8520985fc0833083673561f28d6a2bff",
+    "section": "analytics"
   },
   {
-    "file": "screens/mobile/ar/reports-empty.jpg",
+    "file": "screens/reports/mobile/ar/reports-empty.jpg",
     "route": "#/reports",
     "language": "ar",
     "state": "empty",
@@ -3914,10 +4192,11 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "96caa08068bfbf7715c1059f1d53d28c4b9b0a560a3c1bf140fb92dbfad7001c"
+    "sha256": "96caa08068bfbf7715c1059f1d53d28c4b9b0a560a3c1bf140fb92dbfad7001c",
+    "section": "reports"
   },
   {
-    "file": "screens/mobile/ar/branches-empty.jpg",
+    "file": "screens/business/mobile/ar/branches-empty.jpg",
     "route": "#/branches",
     "language": "ar",
     "state": "empty",
@@ -3929,6 +4208,7 @@
       "width": 390,
       "height": 844
     },
-    "sha256": "345769dbe8eeed5d9657e059d73c022070dd20f10ba5eefd1a869fd4cef1bc08"
+    "sha256": "345769dbe8eeed5d9657e059d73c022070dd20f10ba5eefd1a869fd4cef1bc08",
+    "section": "business"
   }
 ]
