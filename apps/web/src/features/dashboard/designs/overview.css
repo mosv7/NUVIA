@@ -708,7 +708,7 @@
   overflow: clip;
   position: relative;
   flex-shrink: 0;
-  width: 430px;
+  width: min(430px, 100%);
 }
 .ds-overview .f60,
 .ds-overview.f60 {
