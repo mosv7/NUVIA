@@ -19,7 +19,7 @@ export default defineConfig({
         '*.{crt,pem}',
         '**/.git/**',
         '**/.local/**',
-        '**/.codex-remote-attachments/**',
+        '**/.*-remote-attachments/**',
         '**/atlas-credentials.env',
       ],
       allow: [

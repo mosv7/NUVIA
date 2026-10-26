@@ -158,7 +158,7 @@ GitHub Actions checks web formatting/lint/tests/build, API/browser behavior, the
 - [Full 51-feature product map](docs/product/feature-list.md), [requirements](docs/product/requirements.md) and [future AI pipeline](docs/architecture/ai-pipeline.md). Feature scope is broader than current delivery.
 - [Earlier architecture/API/database proposals](docs/archive/README.md) remain historical, separate from implemented contracts.
 
-No open-source license has been selected. Keep focused PRs, report actual validation and limitations, preserve private data, and use branch names without `codex/`.
+No open-source license has been selected. Keep focused PRs, report actual validation and limitations, preserve private data, and use descriptive branch names.
 
 ## Approved frontend update
 
