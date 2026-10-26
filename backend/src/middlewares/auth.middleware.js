@@ -1,44 +1,68 @@
-const { verifyToken } = require("../utils/jwt");
+const { verifyToken } = require('../utils/jwt');
+const { AUTH_COOKIE } = require('../utils/browserSession');
+const BusinessOwner = require('../models/businessOwner.model');
+const Business = require('../models/business.model');
 
-const authenticate = (req, res, next) => {
+const resolveIdentity = async (req) => {
+  const header = req.get('Authorization');
+  let token = req.cookies?.[AUTH_COOKIE];
+  if (header) {
+    if (!/^Bearer [^ ]+$/.test(header)) return null;
+    token = header.slice(7);
+  }
+  if (!token) return null;
+  let payload;
   try {
-    const authHeader = req.headers.authorization;
+    payload = verifyToken(token);
+  } catch {
+    return null;
+  }
+  if (payload.type !== 'owner' || !/^[a-f0-9]{24}$/i.test(payload.id)) return null;
+  const owner = await BusinessOwner.findById(payload.id).select('+tokenVersion');
+  if (
+    !owner ||
+    owner.status !== 'active' ||
+    (owner.tokenVersion || 0) !== (payload.tokenVersion || 0)
+  )
+    return null;
+  // Derive scope from the current owner relationship rather than stale token claims.
+  const business = await Business.findOne({ ownerId: owner._id }).select('_id');
+  return {
+    owner,
+    user: {
+      id: String(owner._id),
+      type: 'owner',
+      role: 'owner',
+      businessId: business ? String(business._id) : null,
+    },
+  };
+};
 
-    if (!authHeader) {
+const authenticate = async (req, res, next) => {
+  try {
+    const identity = await resolveIdentity(req);
+    if (!identity)
       return res.status(401).json({
-        message: "Authentication required",
+        error: { code: 'SESSION_EXPIRED', message: 'Sign in to continue' },
+        message: 'Sign in to continue',
       });
-    }
-
-    const parts = authHeader.split(" ");
-
-    if (parts.length !== 2 || parts[0] !== "Bearer") {
-      return res.status(401).json({
-        message: "Invalid authorization format",
-      });
-    }
-
-    // req.user = { id, type, role, businessId }
-    req.user = verifyToken(parts[1]);
-
+    req.user = identity.user;
+    req.account = identity.owner;
     next();
-  } catch (error) {
-    return res.status(401).json({
-      message: "Invalid or expired token",
+  } catch {
+    res.status(503).json({
+      error: { code: 'STORAGE_UNAVAILABLE', message: 'Service temporarily unavailable' },
+      message: 'Service temporarily unavailable',
     });
   }
 };
-
-// Usage: router.post("/branches", authenticate, authorize("owner", "manager"), ...)
-const authorize = (...allowedRoles) => (req, res, next) => {
-  if (!allowedRoles.includes(req.user.role)) {
-    return res.status(403).json({
-      message: "You do not have permission to do this",
-    });
-  }
-
-  next();
-};
-
-module.exports = authenticate;          // keeps your existing import working
-module.exports.authorize = authorize;   // const { authorize } = require(...)
+const authorize =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role))
+      return res.status(403).json({ message: 'You do not have permission to do this' });
+    next();
+  };
+module.exports = authenticate;
+module.exports.authorize = authorize;
+module.exports.resolveIdentity = resolveIdentity;

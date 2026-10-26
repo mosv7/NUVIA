@@ -421,17 +421,9 @@ export default function renderBusinessPages(model) {
               {field('City', 'city', { required: true })}
             </div>
             {field('Street address', 'address', { required: true })}
-            {!preview && (
-              <p role="status">
-                {L(
-                  'Only the branch name is supported by the current service. Location fields are not saved yet.',
-                  'الخدمة الحالية تدعم اسم الفرع فقط. حقول الموقع غير متاحة للحفظ بعد.',
-                )}
-              </p>
-            )}
             {actions(
               () => {
-                if (!validate(preview ? ['name', 'country', 'city', 'address'] : ['name'])) return;
+                if (!validate(['name', 'country', 'city', 'address'])) return;
                 if (!preview) {
                   saveConnectedBranch();
                   return;

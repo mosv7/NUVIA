@@ -4,6 +4,7 @@ import { I } from './WorkspacePrimitives.jsx';
 export default function renderSecurityPages(model) {
   const {
     L,
+    preview,
     account,
     actions,
     ar,
@@ -48,8 +49,12 @@ export default function renderSecurityPages(model) {
                 <strong>{L('Strengthen your account security', 'عزز أمان حسابك')}</strong>
                 <p>
                   {L(
-                    'Your email is verified. Add two-factor authentication for an extra layer of protection.',
-                    'بريدك مؤكد. أضف المصادقة الثنائية لمزيد من الحماية.',
+                    preview
+                      ? 'Your email is verified. Add two-factor authentication for an extra layer of protection.'
+                      : 'Email verification and two-factor authentication are under development.',
+                    preview
+                      ? 'بريدك مؤكد. أضف المصادقة الثنائية لمزيد من الحماية.'
+                      : 'تأكيد البريد والمصادقة الثنائية قيد التطوير.',
                   )}
                 </p>
               </div>
@@ -89,7 +94,9 @@ export default function renderSecurityPages(model) {
                   <p>{account.email}</p>
                 </div>
                 <div className="verification-actions">
-                  <span className="badge green">{L('Verified', 'مؤكد')}</span>
+                  <span className={'badge ' + (preview ? 'green' : 'neutral')}>
+                    {preview ? L('Verified', 'مؤكد') : L('Under development', 'قيد التطوير')}
+                  </span>
                   {linkAction(L('Manage email', 'إدارة البريد'), 'settings-email')}
                 </div>
               </div>

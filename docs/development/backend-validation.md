@@ -1,3 +1,5 @@
+> Historical implementation record: references to apps/api, its routes, worker and validation describe the removed backend. Current runtime is backend/; see README and docs/api/README.md. These results do not verify the replacement.
+
 # Backend foundation validation
 
 ## Monorepo validation — 2026-10-21

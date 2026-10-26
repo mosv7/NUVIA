@@ -1,3 +1,5 @@
+> Historical implementation record: references to apps/api, its routes, worker and validation describe the removed backend. Current runtime is backend/; see README and docs/api/README.md. These results do not verify the replacement.
+
 # Approved frontend integration
 
 The source in `apps/web` replaces the old frontend presentation while preserving the existing API, database, mail and AI-service sources. The original desktop Frontend was updated in place with the same modules; its standalone transport uses the public `/api/v1` prefix instead of the monorepo shared-package import.

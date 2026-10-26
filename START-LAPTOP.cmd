@@ -9,7 +9,9 @@ if errorlevel 1 (
 )
 call pnpm install --frozen-lockfile
 if errorlevel 1 goto failed
-echo Configure MongoDB in the root .env before starting. See README.md.
+call pnpm setup:local
+if errorlevel 1 goto failed
+echo Check JWT_SECRET and the intended MongoDB database in root .env. See README.md.
 call pnpm dev
 exit /b %errorlevel%
 :failed

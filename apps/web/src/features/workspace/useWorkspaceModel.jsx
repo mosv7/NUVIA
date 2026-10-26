@@ -16,10 +16,10 @@ export default function useWorkspaceModel({ language, setLanguage }) {
   const branchView = (b) => ({
     ...b,
     archived: !!b.archivedAt,
-    responses: 0,
-    country: '',
-    city: '',
-    address: '',
+    responses: b.responseCount || 0,
+    country: b.country || '',
+    city: b.city || '',
+    address: b.address || '',
   });
 
   const [page, setPage] = useState(currentPreviewRoute),
@@ -119,6 +119,20 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     document.documentElement.lang = lang;
     document.documentElement.dir = ar ? 'rtl' : 'ltr';
   }, [lang, ar]);
+  useEffect(() => {
+    if (page !== 'branch-edit') return;
+    const id = new URLSearchParams(location.hash.split('?')[1]).get('id');
+    const branch = branches.find((item) => String(item.id) === id);
+    if (branch) setDraft((current) => (String(current.id) === id ? current : { ...branch }));
+    else if (!id || branches.length) {
+      setToast(
+        language === 'ar'
+          ? 'اختر فرعًا من القائمة لتعديله.'
+          : 'Choose a branch from the list to edit.',
+      );
+      location.hash = '/branches';
+    }
+  }, [page, branches, language]);
   useEffect(() => {
     const shortcut = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -236,10 +250,14 @@ export default function useWorkspaceModel({ language, setLanguage }) {
         setError({ name: 'This field is required.' });
         return;
       }
-      if (page === 'branch-add')
-        await workspaceApi.createBranch(savedWorkspace.id, { name: draft.name }, signal);
-      else
-        await workspaceApi.updateBranch(savedWorkspace.id, draft.id, { name: draft.name }, signal);
+      const body = {
+        name: draft.name,
+        country: draft.country,
+        city: draft.city,
+        address: draft.address,
+      };
+      if (page === 'branch-add') await workspaceApi.createBranch(savedWorkspace.id, body, signal);
+      else await workspaceApi.updateBranch(savedWorkspace.id, draft.id, body, signal);
       if (!signal.aborted) await auth.refresh();
     }, 'branches');
   const archiveConnectedBranch = (branch) =>
@@ -307,7 +325,6 @@ export default function useWorkspaceModel({ language, setLanguage }) {
       ) : (
         <input
           type={options.type || 'text'}
-          disabled={!preview && ['country', 'city', 'address'].includes(key)}
           autoComplete={options.type === 'password' ? 'new-password' : 'off'}
           value={draft[key] || ''}
           onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
@@ -495,7 +512,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     },
     editBranch = (b) => {
       setDraft(b ? { ...b } : { name: '', country: 'Egypt', city: '', address: '' });
-      go(b ? 'branch-edit' : 'branch-add');
+      go(b ? 'branch-edit?id=' + encodeURIComponent(b.id) : 'branch-add');
     },
     editProfile = () => {
       setDraft({ ...account });

@@ -1,25 +1,39 @@
-# Account and workspace API
+# Product API
 
-Prefix `/api/v1`; UTF-8 JSON, UUID string IDs, UTC timestamps. GET `/auth/session` returns `{user,workspace,csrfToken}` with null identity when anonymous. Mutations require that cookie, `X-CSRF-Token` and exact Origin. No bearer token, credentials or MongoDB URI belongs in the frontend.
+The sole backend is `backend/`. Prefix **`/api`**; JSON, ObjectId resource IDs and UTC timestamps. The previous `/api/v1` account/workspace API has been removed; it is not a compatibility route.
 
-| Method   | Path                                 | Payload/result                                                          |
-| -------- | ------------------------------------ | ----------------------------------------------------------------------- |
-| GET      | `/auth/session`                      | Safe identity/workspace and CSRF context                                |
-| POST     | `/auth/register`                     | `{name,email,password,terms:true,locale}`; 201 unverified owner         |
-| POST     | `/auth/verify-email`                 | `{token}`; single-use confirmation                                      |
-| POST     | `/auth/resend-verification`          | `{email}`; generic 202                                                  |
-| POST     | `/auth/login`                        | `{email,password,remember?}`; rotated session and safe identity         |
-| POST     | `/auth/logout`                       | `{}`; 204 after session revocation                                      |
-| POST     | `/auth/forgot-password`              | `{email}`; identical 202 for known/unknown accounts                     |
-| POST     | `/auth/reset-password`               | `{token,password}`; change password and revoke old sessions             |
-| GET/PUT  | `/workspace`                         | Read/save `{businessName,industry,locale?,reportingTimezone?}`          |
-| PUT      | `/workspace/setup`                   | `{branchType,branchName?}`; transactionally finish primary-branch setup |
-| GET/POST | `/workspaces/:id/branches`           | Active branches or create `{name}`; GET supports `includeArchived=true` |
-| PATCH    | `/workspaces/:id/branches/:branchId` | Nonempty `{name?,archived?,isPrimary?:true}`                            |
-| GET      | `/health/live`, `/health/ready`      | Process health; database ping with 3000ms client deadline               |
+Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspace,csrfToken}` with null identity when anonymous; browser mutations send exact `Origin` and `X-CSRF-Token`. Bearer JWT authentication remains available for API clients. Do not store browser tokens/passwords in local storage. Registration signs in directly; email verification/resend is unavailable.
 
-Workspace DTO: `id`, `businessName`, `industry`, `locale`, `reportingTimezone`, `branchType`, `primaryBranchId`, `onboardingStep`, `branches`. Branch DTO: `id`, `name`, `archivedAt`, `isPrimary`. Information saving persists step `branches`; only a committed branch transaction marks `complete`.
+| Method           | Path                                                                       | Purpose                                                                |
+| ---------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| GET              | `/auth/session`, `/auth/me`                                                | Session context / authenticated profile                                |
+| POST             | `/auth/register`                                                           | `{name,email,password,passwordConfirmation,phone?,preferredLanguage?}` |
+| POST             | `/auth/login`, `/auth/logout`                                              | Sign in / revoke browser access                                        |
+| POST             | `/auth/forgot-password`                                                    | Generic recovery response for `{email}`                                |
+| POST             | `/auth/verify-reset-token`                                                 | Check `{token}`                                                        |
+| POST             | `/auth/reset-password`                                                     | `{token,password,passwordConfirmation}`                                |
+| GET              | `/onboarding/status`                                                       | Saved onboarding progress                                              |
+| PUT              | `/onboarding/business`                                                     | Save `{name,type}` business information                                |
+| PUT              | `/onboarding/setup`                                                        | Save `{hasMultipleBranches,primaryBranchName?}`                        |
+| POST             | `/onboarding/complete`                                                     | Complete setup                                                         |
+| GET/PUT          | `/business`                                                                | Read/edit owner business profile                                       |
+| GET              | `/branches/summary`, `/branches`, `/branches/:id`, `/branches/:id/history` | Branch reads and survey history                                        |
+| POST             | `/branches`, `/branches/:id/archive`                                       | Create/archive branch                                                  |
+| PUT              | `/branches/:id`                                                            | Update branch                                                          |
+| GET              | `/survey-templates`                                                        | Available survey templates                                             |
+| GET/POST         | `/surveys`                                                                 | List/create survey                                                     |
+| GET/PATCH/DELETE | `/surveys/:id`                                                             | Read/edit/delete survey                                                |
+| GET              | `/surveys/summary`, `/surveys/export`                                      | Survey management summary/CSV                                          |
+| PATCH            | `/surveys/:id/status`                                                      | Change status                                                          |
+| POST             | `/surveys/:id/duplicate`, `/surveys/:id/publish`                           | Duplicate / publish validated survey state                             |
+| POST             | `/surveys/:id/questions`                                                   | Add a validated survey question                                        |
+| PUT              | `/surveys/:id/questions/reorder`                                           | Reorder questions                                                      |
+| PATCH/DELETE     | `/surveys/:id/questions/:questionId`                                       | Edit/delete question                                                   |
+| POST             | `/surveys/:id/questions/:questionId/duplicate`                             | Duplicate question                                                     |
+| GET              | `/health/live`, `/health/ready`                                            | Process / database readiness                                           |
 
-Validation rejects unknown fields, operator-shaped inputs and invalid IDs. All branch access is owner/workspace-scoped; foreign resources return 404. Errors use `{error:{code,message,details},request_id}` without internal errors or secrets. Statuses: 400 invalid token/JSON, 401 authentication, 403 verification/CSRF, 404 unavailable/foreign resource, 409 uniqueness/state conflict, 413 body size, 422 validation, 429 rate limiting, 503 storage unavailable.
+Request validation and business errors follow the backend route/service contracts in `backend/src`. Business/branch/survey resources are scoped through the authenticated owner's business. Role checks are present; a team membership management product is not implemented. Browser adapters translate backend fields into the existing screen model. Public DTO declarations/constants live in `packages/shared-types`.
 
-The public DTO declarations and prefix live in `packages/shared-types`. No survey, analysis or team-role endpoints are implemented. See [backend setup](../development/backend.md) for configuration and invariants.
+Publishing persists survey status; **public response collection, complete frontend survey integration, analytics and AI are not delivered by these endpoints**. Survey management CSV is not a feedback/analysis export. The FastAPI scaffold keeps its separate `/api/v1/health/live` path and cannot analyze feedback.
+
+Reset tokens are single-use. Development file mail writes private `{text}` messages directly to root `.local/mail` without a worker. SMTP requires explicit configuration and testing. Old UUID account/workspace data is not automatically migrated into the ObjectId backend. Read [backend operations](../development/backend.md) before choosing a database.

@@ -1,19 +1,21 @@
-const express = require("express");
+const express = require('express');
 
-const authController = require("../controllers/auth.controller");
-const authenticate = require("../middlewares/auth.middleware");
-const rateLimit = require("express-rate-limit");
-const passwordResetController = require("../controllers/passwordReset.controller");
+const authController = require('../controllers/auth.controller');
+const authenticate = require('../middlewares/auth.middleware');
+const rateLimit = require('express-rate-limit');
+const passwordResetController = require('../controllers/passwordReset.controller');
 const {
   registerValidation,
   loginValidation,
   forgotPasswordValidation,
   verifyResetTokenValidation,
   resetPasswordValidation,
-} = require("../validations/auth.validation");
-const validate = require("../middlewares/validation.middleware");
+} = require('../validations/auth.validation');
+const validate = require('../middlewares/validation.middleware');
 
 const router = express.Router();
+router.get('/session', authController.getSession);
+router.post('/logout', authenticate, authController.logout);
 
 // limit abuse of the email-sending / token endpoints
 const resetLimiter = rateLimit({
@@ -21,37 +23,43 @@ const resetLimiter = rateLimit({
   limit: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: "Too many attempts, please try again later" },
+  message: { message: 'Too many attempts, please try again later' },
 });
 
-router.post("/register", registerValidation, validate, authController.register);
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 50,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+router.post('/register', loginLimiter, registerValidation, validate, authController.register);
 
-router.post("/login", loginValidation, validate, authController.login);
+router.post('/login', loginLimiter, loginValidation, validate, authController.login);
 
 router.post(
-  "/forgot-password",
+  '/forgot-password',
   resetLimiter,
   forgotPasswordValidation,
   validate,
-  passwordResetController.forgotPassword
+  passwordResetController.forgotPassword,
 );
 
 router.post(
-  "/verify-reset-token",
+  '/verify-reset-token',
   resetLimiter,
   verifyResetTokenValidation,
   validate,
-  passwordResetController.verifyResetToken
+  passwordResetController.verifyResetToken,
 );
 
 router.post(
-  "/reset-password",
+  '/reset-password',
   resetLimiter,
   resetPasswordValidation,
   validate,
-  passwordResetController.resetPassword
+  passwordResetController.resetPassword,
 );
 
-router.get("/me", authenticate, authController.getMe);
+router.get('/me', authenticate, authController.getMe);
 
 module.exports = router;

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { deliverPendingMail } from '../../apps/api/src/modules/mail/worker.mjs';
 async function waitFor(callback, ms = 10000) {
   const deadline = Date.now() + ms;
   while (Date.now() < deadline) {
@@ -26,15 +25,14 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     const path = new URL(response.url()).pathname;
     if (
       response.status() === 503 &&
-      path === '/api/v1/workspace' &&
+      path === '/api/onboarding/business' &&
       response.request().method() === 'PUT'
     )
       expectedSaveFailures++;
-    else if (response.status() === 401 && path === '/api/v1/auth/login') expectedLoginFailures++;
+    else if (response.status() === 401 && path === '/api/auth/login') expectedLoginFailures++;
     else failures.push(`${response.status()} ${path}`);
   });
   const mailLink = async (kind) => {
-    await deliverPendingMail(deps);
     const files = await readdir(deps.config.mailDirectory);
     for (const file of files.reverse()) {
       const mail = JSON.parse(await readFile(join(deps.config.mailDirectory, file), 'utf8'));
@@ -53,21 +51,14 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByLabel('Confirm password').fill('Synthetic123');
     await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create account', exact: true }).click();
-    await page.getByRole('heading', { name: 'Check your inbox' }).waitFor();
-    await page.goto(await mailLink('verify-email'));
-    await page.getByText('Email verified. You can log in now.').waitFor();
-    await page.screenshot({ path: join(output, 'verification-en-desktop.png'), fullPage: true });
-    assert.ok(!page.url().includes('token='));
-    await page.getByRole('link', { name: 'Back to log in' }).click();
+    await page.getByRole('heading', { name: 'Business information' }).waitFor();
     const login = async (password) => {
       await page.getByLabel('Work email').fill('browser@example.test');
       await page.getByLabel('Password', { exact: true }).fill(password);
       await page.getByRole('button', { name: 'Log in', exact: true }).click();
     };
-    await login('Synthetic123');
-    await page.getByRole('heading', { name: 'Business information' }).waitFor();
     let failOnce = true;
-    await page.route('**/api/v1/workspace', (route) => {
+    await page.route('**/api/onboarding/business', (route) => {
       if (route.request().method() === 'PUT' && failOnce) {
         failOnce = false;
         return route.fulfill({
@@ -87,6 +78,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByRole('heading', { name: 'Business setup' }).waitFor();
     await page.reload();
     await page.getByRole('heading', { name: 'Business setup' }).waitFor();
+    await page.getByRole('radio', { name: /Multiple branches/ }).check();
     await page.getByLabel(/Primary branch name/).fill('Main Branch');
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await page.getByRole('heading', { name: 'Welcome to NUVIA' }).waitFor();
@@ -137,6 +129,40 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
       await page.goto(`${origin}/#/feedbacks`);
       await page.getByRole('heading', { name: 'Your first response starts here' }).waitFor();
     }
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${origin}/#/branches`);
+    await page.getByRole('button', { name: 'Add branch', exact: true }).click();
+    await page.getByLabel(/Branch name/).fill('Browser Second');
+    await page.getByLabel(/Country/).fill('Egypt');
+    await page.getByLabel(/City/).fill('Cairo');
+    await page.getByLabel(/Street address/).fill('Synthetic browser street');
+    await page.getByRole('button', { name: 'Save branch', exact: true }).click();
+    await page.getByRole('button', { name: 'Actions Browser Second', exact: true }).click();
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
+    await waitFor(() => page.url().includes('#/branch-edit?id='));
+    await page.reload();
+    await waitFor(
+      async () => (await page.getByLabel(/Branch name/).inputValue()) === 'Browser Second',
+    );
+    assert.equal(await page.getByLabel(/City/).inputValue(), 'Cairo');
+    await page.screenshot({ path: join(output, 'branch-edit-en-desktop.png'), fullPage: true });
+    await page.getByLabel(/Branch name/).fill('Browser Renamed');
+    await page.getByRole('button', { name: 'Save branch', exact: true }).click();
+    await page.getByRole('button', { name: 'Actions Browser Renamed', exact: true }).click();
+    await page.getByRole('button', { name: 'Archive branch', exact: true }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Archive branch', exact: true })
+      .click();
+    await page.getByRole('button', { name: 'Actions Browser Renamed', exact: true }).waitFor();
+    await page.goto(`${origin}/#/assistant`);
+    await page.getByRole('button', { name: 'Branch', exact: true }).click();
+    assert.ok(await page.getByRole('option', { name: 'Main Branch', exact: true }).isVisible());
+    assert.equal(await page.getByRole('option', { name: 'Cairo', exact: true }).count(), 0);
+    await page.keyboard.press('Escape');
+    await page.goto(`${origin}/#/surveys`);
+    await page.getByRole('heading', { name: 'This feature is under development' }).waitFor();
+    await page.goto(`${origin}/#/feedbacks`);
     await page.getByRole('button', { name: 'Open Ask NUVIA' }).click();
     assert.equal(await page.getByRole('link', { name: 'View supporting feedback' }).count(), 0);
     await page.goto(`${origin}/preview/#/feedbacks`);
@@ -167,7 +193,17 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.reload();
     await page.getByRole('heading', { name: 'لا توجد ردود بعد' }).waitFor();
     assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
-    await page.screenshot({ path: join(output, 'overview-ar-mobile.png'), fullPage: true });
+    await waitFor(async () =>
+      page.locator('.product-navigation').evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.left >= innerWidth || rect.right <= 0;
+      }),
+    );
+    await page.screenshot({
+      path: join(output, 'overview-ar-mobile.png'),
+      fullPage: true,
+      animations: 'disabled',
+    });
     assert.ok(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       'Mobile page must not overflow horizontally',

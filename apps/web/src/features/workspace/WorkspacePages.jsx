@@ -65,6 +65,48 @@ export default function WorkspacePages({ language, setLanguage }) {
     renderSecurityPages(model) ??
     renderWorkspaceStates(model);
   content = applyWorkspaceOverrides(model, content);
+  const developing =
+    !auth.preview &&
+    (page.startsWith('survey') ||
+      page.startsWith('analytics') ||
+      [
+        'reports',
+        'report-details',
+        'action-board',
+        'evidence',
+        'notifications',
+        'branch-history',
+        'settings-security',
+        'settings-password',
+        'settings-two-factor',
+        'settings-devices',
+        'settings-email',
+      ].includes(page));
+  if (developing)
+    return (
+      <ReferenceFrame
+        page={page}
+        title={businessPage ? 'Business' : settingsPage ? 'Settings' : 'Overview'}
+        language={lang}
+        setLanguage={setLang}
+      >
+        <section className="card coming">
+          <h1>{L('This feature is under development', 'هذه الميزة قيد التطوير')}</h1>
+          <p>
+            {L(
+              'This screen is not connected to an available product workflow yet.',
+              'هذه الشاشة لم تتصل بتدفق متاح في المنتج بعد.',
+            )}
+          </p>
+          <a className="text-link" href={'/preview/#/' + page}>
+            {L('Open design preview', 'فتح معاينة التصميم')}
+          </a>
+          <button className="button primary" onClick={() => go('overview')}>
+            {L('Back to overview', 'العودة للنظرة العامة')}
+          </button>
+        </section>
+      </ReferenceFrame>
+    );
   if (!auth.preview && ['branch-history'].includes(page))
     content = (
       <section className="card">

@@ -2,11 +2,11 @@
 
 ## Current implementation and development
 
-- [Start here (Arabic)](getting-started-ar.md) and [root README](../README.md): install, configure and try the delivered account/setup flow.
+- [Start here (Arabic)](getting-started-ar.md) and [root README](../README.md): install and configure the sole `backend/` product API and connected account/setup flow. The former `apps/api` runtime was removed; remaining frontend features are under development.
 - [Current architecture](architecture/architecture.md), [database overview](architecture/database.md), [Mongoose model catalog](architecture/mongodb-models.md) and [public API](api/README.md).
-- [Monorepo developer guide](development/monorepo.md), [module boundaries](development/module-boundaries.md), [backend operations](development/backend.md), [frontend guide](development/frontend.md) and [validation evidence](development/backend-validation.md).
+- [Monorepo developer guide](development/monorepo.md), [module boundaries](development/module-boundaries.md), [backend operations](development/backend.md), [frontend guide](development/frontend.md) and [historical validation evidence](development/backend-validation.md).
 - [Local infrastructure](../infra/README.md), [public contracts](../packages/shared-types/README.md), [web app](../apps/web/README.md) and [health-only AI scaffold](../apps/ai-service/README.md).
-- [Screen galleries](ui/frontend/README.md) and synthetic implementation screenshots in `ui/backend-accounts/`.
+- [Screen galleries](ui/frontend/README.md) and historical synthetic screenshots in `ui/backend-accounts/` from the removed backend (not acceptance evidence for its replacement).
 - [Technical decisions](decisions/) and [repository guidelines](../AGENTS.md).
 
 ## Product scope and future work

@@ -1,5 +1,6 @@
 import Field from '../../components/ui/Field.jsx';
 import { asset } from '../../lib/assets.js';
+import { industryNames } from './business-types.js';
 export default function BusinessInformationPage({
   copy,
   values,
@@ -36,6 +37,7 @@ export default function BusinessInformationPage({
         />
         <Field
           name="industry"
+          suggestions={industryNames}
           label={`${copy.industry} *`}
           placeholder={copy.industryPlaceholder}
           value={values.industry}

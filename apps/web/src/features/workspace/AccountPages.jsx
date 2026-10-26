@@ -80,7 +80,9 @@ export default function renderAccountPages(model) {
               <div className="card-bottom">
                 <span className="verified">
                   <I name="check" size={16} />
-                  {L('Email verified', 'البريد مؤكد')}
+                  {preview
+                    ? L('Email verified', 'البريد مؤكد')
+                    : L('Email verification is under development', 'تأكيد البريد قيد التطوير')}
                 </span>
                 {btn('Edit account details', editProfile)}
               </div>
@@ -208,7 +210,10 @@ export default function renderAccountPages(model) {
           <section className="card">
             <h2>{t('Email address')}</h2>
             <p>
-              {account.email} <span className="badge green">{L('Verified', 'مؤكد')}</span>
+              {account.email}{' '}
+              <span className={'badge ' + (preview ? 'green' : 'neutral')}>
+                {preview ? L('Verified', 'مؤكد') : L('Under development', 'قيد التطوير')}
+              </span>
             </p>
             {pending ? (
               <>

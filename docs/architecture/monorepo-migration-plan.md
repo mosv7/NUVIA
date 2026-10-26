@@ -1,3 +1,5 @@
+> Historical implementation record: references to apps/api, its routes, worker and validation describe the removed backend. Current runtime is backend/; see README and docs/api/README.md. These results do not verify the replacement.
+
 # Monorepo restructuring plan
 
 Date: 2026-10-21. User-requested structure: `apps/web`, `apps/api`, `apps/ai-service`, shared packages, infrastructure and current documentation. The user explicitly chose to retain JavaScript/JSX and `.mjs`; TypeScript conversion is separate.

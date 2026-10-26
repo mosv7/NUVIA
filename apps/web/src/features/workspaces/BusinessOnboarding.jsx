@@ -202,7 +202,10 @@ export default function BusinessOnboarding({ page, language, setLanguage, values
               copy={c}
               values={values}
               onEdit={() => go('business-information')}
-              onStart={auth.preview ? undefined : () => go('dashboard')}
+              onStart={
+                auth.preview ? undefined : () => save(auth.finishOnboarding, {}, 'dashboard')
+              }
+              busy={busy}
             />
           )}
         </div>

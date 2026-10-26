@@ -188,7 +188,7 @@
     z-index: 79;
     background: #10213d66;
   }
-  .ds-overview .product-navigation {
+  .product-page .ds-overview .product-navigation {
     position: fixed;
     inset-block: 0;
     inset-inline-start: 0;
@@ -203,7 +203,7 @@
   .product-page[data-menu-open='true'] .product-navigation {
     transform: none;
   }
-  .ds-overview .product-workspace {
+  .product-page .ds-overview .product-workspace {
     margin: 0;
     width: 100%;
     min-height: 100dvh;

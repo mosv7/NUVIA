@@ -35,7 +35,6 @@ export default function AppRouter() {
   const submission = useRef(null),
     resetToken = useRef(null);
   const requestGeneration = useRef(0);
-  const [verificationEmail, setVerificationEmail] = useState('');
   const [business, setBusiness] = useState({
     businessName: '',
     industry: '',
@@ -140,20 +139,18 @@ export default function AppRouter() {
     try {
       if (!preview) {
         if (isSignup) {
-          await authApi.register(
+          const session = await auth.register(
             {
               name: values.name,
               email: values.email,
               password: values.password,
+              passwordConfirmation: values.confirm,
               terms: values.terms,
               locale: language,
             },
             controller.signal,
           );
-          if (isCurrentRequest()) {
-            setVerificationEmail(values.email);
-            location.hash = '/verify-email';
-          }
+          if (isCurrentRequest() && session) location.hash = '/' + afterLogin(session.workspace);
         } else if (isLogin) {
           const session = await auth.login(
             { email: values.email, password: values.password, remember: values.remember },
@@ -184,10 +181,7 @@ export default function AppRouter() {
     } catch (error) {
       if (!isCurrentRequest() || error.name === 'AbortError') return;
       if (error.code === 'EMAIL_USED') setErrors({ email: 'emailUsed' });
-      else if (error.code === 'EMAIL_VERIFICATION_REQUIRED') {
-        setVerificationEmail(values.email);
-        location.hash = '/verify-email';
-      } else
+      else
         setNotice(
           {
             INVALID_CREDENTIALS: 'loginFailed',
@@ -365,13 +359,28 @@ export default function AppRouter() {
       />
     );
   }
+  if (!preview && page.startsWith('verify-email'))
+    return (
+      <main className="session-state">
+        <h1>
+          {language === 'ar'
+            ? 'تأكيد البريد قيد التطوير'
+            : 'Email verification is under development'}
+        </h1>
+        <p>
+          {language === 'ar'
+            ? 'تأكيد البريد غير متاح في الخدمة الحالية.'
+            : 'The current service does not support email verification yet.'}
+        </p>
+        <a href="#/login">{t.login}</a>
+      </main>
+    );
   if (page === 'verify-email' || (preview && page.startsWith('verify-email-')))
     return (
       <VerificationPage
         key={page}
         language={language}
         setLanguage={setLanguage}
-        initialEmail={verificationEmail}
         previewStatus={
           page.endsWith('-expired')
             ? 'invalid'

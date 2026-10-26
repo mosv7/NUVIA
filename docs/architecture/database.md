@@ -1,13 +1,7 @@
-# Current database design
+# Database ownership
 
-The implemented database is MongoDB through connection-scoped Mongoose models, not PostgreSQL. Use Atlas or a local replica set because account/mail/workspace changes use transactions.
+MongoDB is owned by the sole `backend/` Express/Mongoose service. Use Atlas or a local replica set for multi-document transactions. Root operations require a private URI and explicit `MONGODB_DATABASE` (legacy `MONGODB_DB_NAME` fallback).
 
-The [model catalog](mongodb-models.md) is the maintained field/index map. Executable schemas live in `apps/api/src/shared/database/models/`: User, Session, AuthToken, Workspace, Branch, MailOutbox and SchemaVersion. Account/business IDs remain UUID strings; auth-token IDs remain ObjectIds. Dates are BSON dates and application timestamps remain explicit.
+The [model catalog](mongodb-models.md) describes the current ObjectId business-owner/business/branch/survey/question/option/password-reset models. This replaces the removed `apps/api` runtime, **not its stored data**. Old UUID accounts/workspaces and collections have no automatic migration. Preserve existing databases and verify the selected name before writes.
 
-Services enforce owner isolation, primary-branch/archive invariants, token expiry and revocation. Unique indexes prevent duplicate owner workspaces, emails, token/session digests and active normalized branch names. TTL indexes expire sessions/tokens/outbox records eventually; request authorization must still check expiry before TTL cleanup.
-
-Setup checks version 1 and adds declared indexes without dropping existing/custom indexes. Mongoose validates Node writes, not external Python/native writes. No survey/response/analytics/embedding collections or team roles are implemented yet.
-
-The optional compose database is separate from host MongoDB or Atlas; switching a URI does not transfer accounts. Configuration is private and root-relative. Integration tests use isolated database names and synthetic data.
-
-The [original PostgreSQL proposal](../archive/database-proposal.md) remains historical design evidence, not the current schema. See [backend operations](../development/backend.md) for setup and guarantees.
+`pnpm db:check` reads connectivity/replica capability; `pnpm db:setup` adds declared indexes without dropping indexes, deleting records or rewriting IDs. Integration tests use isolated replica sets and synthetic identities. Compose uses a separate local volume and never imports Atlas accounts. Production secrets and `.local` stay outside Git. See [operations](../development/backend.md).

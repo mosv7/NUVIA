@@ -9,6 +9,7 @@ export default function Field({
   onChange,
   error,
   hint,
+  suggestions,
   showLabel,
   hideLabel,
 }) {
@@ -38,7 +39,15 @@ export default function Field({
           }
           aria-invalid={!!error}
           aria-describedby={error || hint ? `${name}-help` : undefined}
+          list={suggestions ? `${name}-suggestions` : undefined}
         />
+        {suggestions && (
+          <datalist id={`${name}-suggestions`}>
+            {suggestions.map((suggestion) => (
+              <option key={suggestion} value={suggestion} />
+            ))}
+          </datalist>
+        )}
         {password && (
           <button
             type="button"

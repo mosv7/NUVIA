@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { asset } from '../../lib/assets.js';
-export default function GetStartedPage({ copy, values, onEdit, onStart }) {
+export default function GetStartedPage({ copy, values, onEdit, onStart, busy = false }) {
   const [complete, setComplete] = useState(false),
     icon = (name) => asset(`business-setup/get-started/${name}.svg`);
   return (
@@ -37,7 +37,11 @@ export default function GetStartedPage({ copy, values, onEdit, onStart }) {
           </li>
         ))}
       </ul>
-      <button className="primary" onClick={() => (onStart ? onStart() : setComplete(true))}>
+      <button
+        className="primary"
+        disabled={busy}
+        onClick={() => (onStart ? onStart() : setComplete(true))}
+      >
         {copy.getStarted}
       </button>
       <p className="setup-reassurance">{copy.reassurance}</p>

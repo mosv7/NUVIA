@@ -72,17 +72,17 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     env:
-      MAIL_ENCRYPTION_KEY: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      JWT_SECRET: ci-only-container-secret-with-at-least-thirty-two-characters
     steps:
       - uses: actions/checkout@v4
       - run: docker compose --profile ai config --quiet
       - run: docker compose --profile ai up --build -d
       - name: Check same-origin API, web and scaffold health
         run: |
-          curl --fail --retry 40 --retry-delay 2 --retry-all-errors http://127.0.0.1:5173/api/v1/health/ready
+          curl --fail --retry 40 --retry-delay 2 --retry-all-errors http://127.0.0.1:5173/api/health/ready
           curl --fail http://127.0.0.1:5173/
           curl --fail --retry 20 --retry-delay 2 --retry-all-errors http://127.0.0.1:8000/api/v1/health/live
-      - run: docker compose --profile ai logs --no-color --tail 100 api mongo-init mail ai
+      - run: docker compose --profile ai logs --no-color --tail 100 api mongo-init ai
         if: failure()
       - run: docker compose --profile ai down --volumes
         if: always()
