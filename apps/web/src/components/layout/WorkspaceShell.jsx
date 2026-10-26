@@ -131,7 +131,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-name="Navigation item"
             aria-current={ui.activeDestination === 'Overview' ? 'page' : undefined}
             type="button"
-            onClick={() => ui.action('Overview')}
+            onClick={() => ui.action('dashboard')}
           >
             <div className="f17" data-node-id="127:276" data-name="layout-dashboard">
               <NavigationIcon src={imgLayoutDashboard} destination="Overview" />
@@ -152,7 +152,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-name="Navigation item"
             aria-current={ui.activeDestination === 'Feedbacks' ? 'page' : undefined}
             type="button"
-            onClick={() => ui.action('Feedbacks 12')}
+            onClick={() => ui.action('feedbacks')}
           >
             <div className="f17" data-node-id="127:280" data-name="message-square">
               <NavigationIcon src={imgMessageSquare} destination="Feedbacks" />
@@ -184,7 +184,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:285"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Analytics')}
+            onClick={() => ui.action('analytics')}
           >
             <div
               className="f17"
@@ -210,7 +210,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:289"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Reports')}
+            onClick={() => ui.action('reports')}
           >
             <div className="f17" data-node-id="127:290" data-name="file-chart-column" dir="ltr">
               <NavigationIcon src={imgFileChartColumn} destination="Reports" />
@@ -231,7 +231,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:293"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Surveys')}
+            onClick={() => ui.action('surveys')}
           >
             <div className="f17" data-node-id="127:294" data-name="clipboard-list">
               <NavigationIcon src={imgClipboardList} destination="Surveys" />
@@ -252,7 +252,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:297"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Business')}
+            onClick={() => ui.action('business')}
           >
             <div className="f17" data-node-id="127:298" data-name="users">
               <NavigationIcon src={imgUsers} destination="Business" />
@@ -274,7 +274,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:302"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('NUVIA Assistant')}
+            onClick={() => ui.action('assistant')}
           >
             <div className="f17" data-node-id="127:303" data-name="sparkles">
               <NavigationIcon src={imgSparkles} destination="NUVIA Assistant" />
@@ -298,7 +298,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:308"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Subscription')}
+            onClick={() => ui.action('subscription')}
           >
             <div className="f17" data-node-id="127:309" data-name="credit-card">
               <NavigationIcon src={imgCreditCard} destination="Subscription" />
@@ -319,7 +319,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             data-node-id="127:312"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Settings')}
+            onClick={() => ui.action('settings')}
           >
             <div className="f17" data-node-id="127:313" data-name="settings">
               <NavigationIcon src={imgSettings} destination="Settings" />
@@ -376,7 +376,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
                 fontVariationSettings: '"opsz" 14',
               }}
               type="button"
-              onClick={() => ui.action('Manage subscription →')}
+              onClick={() => ui.action('subscription')}
             >
               {<DashboardArrowText text={tr('Manage subscription →')} />}
             </button>
@@ -387,7 +387,7 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
           data-node-id="127:324"
           data-name="Help"
           type="button"
-          onClick={() => ui.action('Help center')}
+          onClick={() => ui.action('help-center')}
         >
           <div className="f35" data-node-id="127:325" data-name="circle-help">
             <img alt="" className="f5" src={imgCircleHelp} />

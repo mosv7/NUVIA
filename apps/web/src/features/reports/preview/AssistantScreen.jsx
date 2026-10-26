@@ -34,7 +34,7 @@ export default function AssistantScreen() {
   const ask = (q) => {
     if (!q.trim()) return;
     if (!preview) {
-      action('Ask NUVIA');
+      action('ask-nuvia');
       return;
     }
     setFresh(false);

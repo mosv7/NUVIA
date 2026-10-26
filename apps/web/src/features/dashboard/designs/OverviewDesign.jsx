@@ -132,7 +132,7 @@ export default function OverviewDesign({ empty = false }) {
             data-name="Navigation item"
             aria-current="page"
             type="button"
-            onClick={() => ui.action('Overview')}
+            onClick={() => ui.action('dashboard')}
           >
             <div className="f17" data-node-id="127:276" data-name="layout-dashboard">
               <NavigationIcon src={imgLayoutDashboard} destination="Overview" />
@@ -152,7 +152,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:279"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Feedbacks 12')}
+            onClick={() => ui.action('feedbacks')}
           >
             <div className="f17" data-node-id="127:280" data-name="message-square">
               <img
@@ -191,7 +191,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:285"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Analytics')}
+            onClick={() => ui.action('analytics')}
           >
             <div
               className="f17"
@@ -216,7 +216,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:289"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Reports')}
+            onClick={() => ui.action('reports')}
           >
             <div className="f17" data-node-id="127:290" data-name="file-chart-column" dir="ltr">
               <NavigationIcon src={imgFileChartColumn} destination="Reports" />
@@ -236,7 +236,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:293"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Surveys')}
+            onClick={() => ui.action('surveys')}
           >
             <div className="f17" data-node-id="127:294" data-name="clipboard-list">
               <NavigationIcon src={imgClipboardList} destination="Surveys" />
@@ -256,7 +256,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:297"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Segments')}
+            onClick={() => ui.action('business')}
           >
             <div className="f17" data-node-id="127:298" data-name="users">
               <NavigationIcon src={imgUsers} destination="Business" />
@@ -277,7 +277,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:302"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('NUVIA Assistant')}
+            onClick={() => ui.action('assistant')}
           >
             <div className="f17" data-node-id="127:303" data-name="sparkles">
               <NavigationIcon src={imgSparkles} destination="NUVIA Assistant" />
@@ -300,7 +300,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:308"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Subscription')}
+            onClick={() => ui.action('subscription')}
           >
             <div className="f17" data-node-id="127:309" data-name="credit-card">
               <NavigationIcon src={imgCreditCard} destination="Subscription" />
@@ -320,7 +320,7 @@ export default function OverviewDesign({ empty = false }) {
             data-node-id="127:312"
             data-name="Navigation item"
             type="button"
-            onClick={() => ui.action('Settings')}
+            onClick={() => ui.action('settings')}
           >
             <div className="f17" data-node-id="127:313" data-name="settings">
               <NavigationIcon src={imgSettings} destination="Settings" />
@@ -377,7 +377,7 @@ export default function OverviewDesign({ empty = false }) {
                 fontVariationSettings: '"opsz" 14',
               }}
               type="button"
-              onClick={() => ui.action('Manage subscription →')}
+              onClick={() => ui.action('subscription')}
             >
               {<DashboardArrowText text={tr('Manage subscription →')} />}
             </button>
@@ -388,7 +388,7 @@ export default function OverviewDesign({ empty = false }) {
           data-node-id="127:324"
           data-name="Help"
           type="button"
-          onClick={() => ui.action('Help center')}
+          onClick={() => ui.action('help-center')}
         >
           <div className="f35" data-node-id="127:325" data-name="circle-help">
             <img alt="" className="f5" src={imgCircleHelp} />
@@ -553,7 +553,7 @@ export default function OverviewDesign({ empty = false }) {
                     type="button"
                     aria-label={tr('Export report')}
                     title={tr('Export report')}
-                    onClick={() => ui.action('Export report')}
+                    onClick={() => ui.action('export-report')}
                   >
                     <div className="f35" data-node-id="127:377" data-name="download">
                       <ControlIcon name="export" />
@@ -575,7 +575,7 @@ export default function OverviewDesign({ empty = false }) {
                     type="button"
                     aria-label={tr('Upload file')}
                     title={tr('Upload file')}
-                    onClick={() => ui.action('Upload file')}
+                    onClick={() => ui.action('upload-file')}
                   >
                     <div className="f35" data-node-id="127:381" data-name="plus">
                       <img alt="" className="f5" src={imgPlus} />
@@ -846,7 +846,7 @@ export default function OverviewDesign({ empty = false }) {
                         fontVariationSettings: '"opsz" 14',
                       }}
                       type="button"
-                      onClick={() => ui.action('Analytics →')}
+                      onClick={() => ui.action('analytics')}
                     >
                       {<DashboardArrowText text={tr('Analytics →')} />}
                     </button>

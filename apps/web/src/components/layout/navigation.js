@@ -1,5 +1,22 @@
 import { useEffect, useState } from 'react';
-const destinations = {
+export const ACTION_ROUTES = {
+  business: '#/business',
+  settings: '#/settings',
+  subscription: '#/subscription',
+  surveys: '#/survey-all',
+  'create-survey': '#/survey-create',
+  feedbacks: '#/feedbacks',
+  'action-board': '#/action-board',
+  analytics: '#/analytics-sentiment',
+  'compare-branches': '#/analytics-comparison',
+  reports: '#/reports',
+  'generate-ai-report': '#/reports?generate=1',
+  evidence: '#/evidence',
+  assistant: '#/nuvia-assistant',
+  dashboard: '#/dashboard',
+  'view-evidence': '#/feedback-details?id=1248',
+};
+const legacyLabels = {
   Business: 'business',
   Segments: 'business',
   Settings: 'settings',
@@ -7,16 +24,16 @@ const destinations = {
   'Manage business': 'business',
   'Manage subscription': 'subscription',
   'View profile': 'settings',
-  Surveys: 'survey-all',
-  'Create Survey': 'survey-create',
-  'Create survey': 'survey-create',
+  Surveys: 'surveys',
+  'Create Survey': 'create-survey',
+  'Create survey': 'create-survey',
   'View All Responses': 'feedbacks',
   'View all responses': 'feedbacks',
   'Action board': 'action-board',
-  Analytics: 'analytics-sentiment',
-  'Compare branches': 'analytics-comparison',
+  Analytics: 'analytics',
+  'Compare branches': 'compare-branches',
   Reports: 'reports',
-  'Generate AI Report': 'reports?generate=1',
+  'Generate AI Report': 'generate-ai-report',
   'All responses': 'feedbacks',
   'All feedbacks': 'feedbacks',
   Feedbacks: 'feedbacks',
@@ -24,25 +41,39 @@ const destinations = {
   'Explore all 1,250 reviews': 'feedbacks',
   'View Related Responses': 'feedbacks',
   'View evidence': 'evidence',
-  'NUVIA Assistant': 'nuvia-assistant',
+  'NUVIA Assistant': 'assistant',
   Overview: 'dashboard',
-  'View results': 'analytics-sentiment',
+  'View results': 'analytics',
+  'Export report': 'export-report',
+  'Upload file': 'upload-file',
+  'Help center': 'help-center',
+  'Share a survey': 'share-survey',
+  'Ask NUVIA': 'ask-nuvia',
+  'Add business': 'add-business',
+  'View evidence ↗': 'view-evidence',
 };
-const normalize = (label) =>
-  String(label)
+const normalize = (value) =>
+  String(value ?? '')
     .replace(/[→←↑↓↗↖]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-export function routeForAction(label, tr = (text) => text) {
+// Compatibility for imported reference markup only; application dispatch uses stable IDs.
+export function actionIdFromLabel(label, tr = (text) => text) {
   const value = normalize(label);
-  const key = Object.keys(destinations).find(
+  const key = Object.keys(legacyLabels).find(
     (key) =>
       normalize(key) === value ||
       normalize(tr(key)) === value ||
       normalize(tr(key + ' →')) === value ||
       normalize(tr(key + ' ↗')) === value,
   );
-  return key ? '#/' + destinations[key] : null;
+  return key ? legacyLabels[key] : null;
+}
+export function routeForAction(id) {
+  return Object.hasOwn(ACTION_ROUTES, id) ? ACTION_ROUTES[id] : null;
+}
+export function routeForLabel(label, tr) {
+  return routeForAction(actionIdFromLabel(label, tr));
 }
 
 // Each browser-history entry owns its filters and scroll position.

@@ -1,3 +1,6 @@
+import ErrorBoundary from './components/ui/ErrorBoundary.jsx';
+import { PageLoading } from './components/ui/PageState.jsx';
+import './styles/page-state.css';
 import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@fontsource/manrope/400.css';
@@ -18,9 +21,11 @@ import './styles/app.css';
 import './styles/site-chrome.css';
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Suspense fallback={null}>
-      <App />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<PageLoading />}>
+        <App />
+      </Suspense>
+    </ErrorBoundary>
   </React.StrictMode>,
 );
 

@@ -1,3 +1,4 @@
+const jsxA11y = require('eslint-plugin-jsx-a11y');
 const js = require('@eslint/js');
 const globals = require('globals');
 const reactHooks = require('eslint-plugin-react-hooks');
@@ -27,7 +28,7 @@ module.exports = [
       parserOptions: { ecmaFeatures: { jsx: true } },
       globals: { ...globals.browser },
     },
-    plugins: { 'react-hooks': reactHooks, react },
+    plugins: { 'react-hooks': reactHooks, react, 'jsx-a11y': jsxA11y },
     rules: {
       ...js.configs.recommended.rules,
       'react/jsx-uses-react': 'error',
@@ -43,6 +44,12 @@ module.exports = [
       ],
       'no-restricted-globals': ['error', 'localStorage', 'sessionStorage'],
       'react-hooks/rules-of-hooks': 'error',
+      'jsx-a11y/alt-text': 'error',
+      'jsx-a11y/aria-props': 'error',
+      'jsx-a11y/aria-proptypes': 'error',
+      'jsx-a11y/aria-unsupported-elements': 'error',
+      'jsx-a11y/role-has-required-aria-props': 'error',
+      'jsx-a11y/tabindex-no-positive': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
   },

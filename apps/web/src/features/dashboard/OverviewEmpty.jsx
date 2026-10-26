@@ -65,7 +65,7 @@ export default function OverviewEmpty() {
               : `Once response collection and analysis are available for ${workspace?.businessName || ''}, your metrics will appear here.`}
         </p>
       </div>
-      <button className="first-survey-create" onClick={() => action('Create Survey')}>
+      <button className="first-survey-create" onClick={() => action('create-survey')}>
         <img src={asset('button-plus')} alt="" width="16" height="16" />
         {ar ? 'أنشئ استبيانك الأول' : 'Create Your First Survey'}
       </button>

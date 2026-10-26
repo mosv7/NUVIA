@@ -1464,9 +1464,7 @@
   color: var(--blue);
 }
 #root .workspace-extension .mobile-toggle,
-#root .workspace-extension .mobile-only {
-  display: none;
-}
+#root .workspace-extension .mobile-only,
 #root .workspace-extension .mobile-backdrop {
   display: none;
 }
@@ -1489,9 +1487,7 @@
   transform: translateX(50%);
 }
 @media (min-width: 1600px) {
-  #root .workspace-extension .workspace main {
-    padding-inline: 45px;
-  }
+  #root .workspace-extension .workspace main,
   #root .workspace-extension .topbar {
     padding-inline: 45px;
   }
@@ -1528,9 +1524,7 @@
   #root .workspace-extension .branch-row .tile {
     display: none;
   }
-  #root .workspace-extension .topbar {
-    padding-inline: 25px;
-  }
+  #root .workspace-extension .topbar,
   #root .workspace-extension .workspace main {
     padding-inline: 25px;
   }
@@ -1567,9 +1561,7 @@
   #root .workspace-extension .breadcrumb {
     gap: 10px;
   }
-  #root .workspace-extension .breadcrumb > span:first-child {
-    display: none;
-  }
+  #root .workspace-extension .breadcrumb > span:first-child,
   #root .workspace-extension .breadcrumb > span:nth-child(2) {
     display: none;
   }
@@ -1769,9 +1761,7 @@
   #root .workspace-extension .identity-card h2 {
     font-size: 19px;
   }
-  #root .workspace-extension .two-col {
-    gap: 18px;
-  }
+  #root .workspace-extension .two-col,
   #root .workspace-extension .edit-layout {
     gap: 18px;
   }
@@ -2252,9 +2242,7 @@
 #root .workspace-extension .sidebar {
   scrollbar-width: thin;
 }
-#root .workspace-extension .sidebar .main-nav {
-  flex-shrink: 0;
-}
+#root .workspace-extension .sidebar .main-nav,
 #root .workspace-extension .bottom-nav {
   flex-shrink: 0;
 }
@@ -2553,10 +2541,7 @@
   gap: 20px;
   min-width: 0;
 }
-#root .workspace-extension .new-preview-content .edit-layout {
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 24px;
-}
+#root .workspace-extension .new-preview-content .edit-layout,
 #root .workspace-extension .new-preview-content .business-profile-grid {
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: 24px;

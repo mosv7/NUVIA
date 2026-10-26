@@ -77,7 +77,7 @@ function NoResponses({ empty, onClear }) {
   const [shared, setShared] = useState(false);
   const share = async () => {
     if (!preview) {
-      action('Share a survey');
+      action('share-survey');
       return;
     }
     try {

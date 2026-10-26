@@ -25,15 +25,8 @@ export function NewDailyInsight() {
             (evidence.closest('[data-action-key]')?.dataset.actionKey || 'wait');
           return;
         }
-        const label =
-          e.target.closest('[data-name="Action"]')?.textContent ||
-          e.target.closest('p')?.textContent ||
-          '';
-        if (ui.navigateLabel(label)) return;
-        if (/View.*feedback|View.*Responses/i.test(label)) location.hash = '/feedbacks';
-        else if (/View evidence/i.test(label)) ui.action('View evidence ↗');
-        else if (/Create Survey/i.test(label)) location.hash = '/survey-create';
-        else if (/Action board|Generate AI Report|↗/.test(label)) ui.action(label);
+        const id = e.target.closest('[data-product-action]')?.dataset.productAction;
+        if (id) ui.action(id);
       }}
     >
       <div className="v140" data-node-id="325:6113" data-name="AI daily insight">
@@ -98,6 +91,7 @@ export function NewDailyInsight() {
             <p
               className="v151"
               data-node-id="325:6128"
+              data-product-action="feedbacks"
               style={{ fontVariationSettings: '"opsz" 14' }}
             >
               <DashboardArrowText text={ui.tr('View 104 feedback ↗')} />
@@ -121,15 +115,8 @@ export function NewAspectInsights() {
             (evidence.closest('[data-action-key]')?.dataset.actionKey || 'wait');
           return;
         }
-        const label =
-          e.target.closest('[data-name="Action"]')?.textContent ||
-          e.target.closest('p')?.textContent ||
-          '';
-        if (ui.navigateLabel(label)) return;
-        if (/View.*feedback|View.*Responses/i.test(label)) location.hash = '/feedbacks';
-        else if (/View evidence/i.test(label)) ui.action('View evidence ↗');
-        else if (/Create Survey/i.test(label)) location.hash = '/survey-create';
-        else if (/Action board|Generate AI Report|↗/.test(label)) ui.action(label);
+        const id = e.target.closest('[data-product-action]')?.dataset.productAction;
+        if (id) ui.action(id);
       }}
     >
       <div className="v169" data-node-id="325:6161" data-name="Evidence and actions">
@@ -385,15 +372,8 @@ export function NewRecommendations() {
             (evidence.closest('[data-action-key]')?.dataset.actionKey || 'wait');
           return;
         }
-        const label =
-          e.target.closest('[data-name="Action"]')?.textContent ||
-          e.target.closest('p')?.textContent ||
-          '';
-        if (ui.navigateLabel(label)) return;
-        if (/View.*feedback|View.*Responses/i.test(label)) location.hash = '/feedbacks';
-        else if (/View evidence/i.test(label)) ui.action('View evidence ↗');
-        else if (/Create Survey/i.test(label)) location.hash = '/survey-create';
-        else if (/Action board|Generate AI Report|↗/.test(label)) ui.action(label);
+        const id = e.target.closest('[data-product-action]')?.dataset.productAction;
+        if (id) ui.action(id);
       }}
     >
       <div className="v193" data-node-id="325:6218" data-name="Prioritized actions">
@@ -576,15 +556,8 @@ export function NewQuickActions() {
             (evidence.closest('[data-action-key]')?.dataset.actionKey || 'wait');
           return;
         }
-        const label =
-          e.target.closest('[data-name="Action"]')?.textContent ||
-          e.target.closest('p')?.textContent ||
-          '';
-        if (ui.navigateLabel(label)) return;
-        if (/View.*feedback|View.*Responses/i.test(label)) location.hash = '/feedbacks';
-        else if (/View evidence/i.test(label)) ui.action('View evidence ↗');
-        else if (/Create Survey/i.test(label)) location.hash = '/survey-create';
-        else if (/Action board|Generate AI Report|↗/.test(label)) ui.action(label);
+        const id = e.target.closest('[data-product-action]')?.dataset.productAction;
+        if (id) ui.action(id);
       }}
     >
       <div className="v214" data-node-id="325:6271" data-name="Quick actions">
@@ -605,7 +578,13 @@ export function NewQuickActions() {
           </p>
         </div>
         <div className="v217" data-node-id="325:6275" data-name="Actions">
-          <button type="button" className="v218" data-node-id="325:6276" data-name="Action">
+          <button
+            type="button"
+            className="v218"
+            data-node-id="325:6276"
+            data-product-action="feedbacks"
+            data-name="Action"
+          >
             <div className="v13" data-node-id="325:6277" data-name="list-filter">
               <img alt="" className="v5" src={imgListFilter} />
             </div>
@@ -617,7 +596,13 @@ export function NewQuickActions() {
               {ui.tr('View All Responses')}
             </p>
           </button>
-          <button type="button" className="v218" data-node-id="325:6280" data-name="Action">
+          <button
+            type="button"
+            className="v218"
+            data-node-id="325:6280"
+            data-product-action="generate-ai-report"
+            data-name="Action"
+          >
             <div className="v13" data-node-id="325:6281" data-name="sparkles">
               <img alt="" className="v5" src={imgSparkles1} />
             </div>
@@ -629,7 +614,13 @@ export function NewQuickActions() {
               {ui.tr('Generate AI Report')}
             </p>
           </button>
-          <button type="button" className="v219" data-node-id="325:6284" data-name="Action">
+          <button
+            type="button"
+            className="v219"
+            data-node-id="325:6284"
+            data-product-action="create-survey"
+            data-name="Action"
+          >
             <div className="v13" data-node-id="325:6285" data-name="plus">
               <img alt="" className="v5" src={imgPlus1} />
             </div>
@@ -652,7 +643,7 @@ export function NewBranchAttention() {
     <div
       className="overview-new overview-branch-attention"
       onClick={(e) => {
-        if (e.target.closest('[data-name="Comparison footer"]')) ui.action('Compare branches →');
+        if (e.target.closest('[data-name="Comparison footer"]')) ui.action('compare-branches');
       }}
     >
       <div className="v152" data-node-id="325:6129" data-name="Branches needing attention">

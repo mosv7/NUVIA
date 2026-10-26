@@ -43,6 +43,7 @@
     "prettier": "3.9.10",
     "vite": "7.3.7",
     "playwright": "1.62.1",
-    "mongodb-memory-server-core": "11.3.0"
+    "mongodb-memory-server-core": "11.3.0",
+    "eslint-plugin-jsx-a11y": "6.10.2"
   }
 }

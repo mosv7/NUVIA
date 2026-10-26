@@ -3,7 +3,7 @@ import ConnectedAssistantLauncher from '../../components/ui/ConnectedAssistantLa
 import PreviewWorkspaceContext from '../../features/insights/PreviewWorkspaceContext.jsx';
 import { useRouteState } from '../../components/layout/navigation.js';
 import GlobalSearch from '../../components/layout/GlobalSearch.jsx';
-import { routeForAction } from '../../components/layout/navigation.js';
+import { routeForAction, actionIdFromLabel } from '../../components/layout/navigation.js';
 import HeaderMenus from '../../components/layout/HeaderMenus.jsx';
 import { createContext, useContext, useEffect, useState } from 'react';
 import arabic from '../../lib/i18n/product-ar.json';
@@ -66,59 +66,23 @@ export function ProductProvider({
     if (text === 'Bloom & Co.' && previewWorkspace?.biz) return previewWorkspace.biz.name;
     return language === 'ar' ? formatNumber(arabic[text] ?? text) : (englishCopy[text] ?? text);
   };
-  const navigateLabel = (label) => {
-    const route = routeForAction(label, tr);
+  const navigateAction = (id) => {
+    const route = routeForAction(id);
     if (!route) return false;
     onNavigate?.();
     location.hash = route.slice(1);
     return true;
   };
-  const action = (label) => {
-    if (
-      !preview &&
-      !routeForAction(label, tr) &&
-      !['Overview', 'Feedbacks', 'All feedbacks', 'NUVIA Assistant'].includes(label)
-    ) {
+  const navigateLabel = (label) => navigateAction(actionIdFromLabel(label, tr));
+  const action = (id) => {
+    if (navigateAction(id)) return;
+    if (!preview) {
       setNotice(
         language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
       );
       return;
     }
-    if (navigateLabel(label)) return;
-    if (label === 'NUVIA Assistant') {
-      onNavigate?.();
-      location.hash = '/nuvia-assistant';
-      return;
-    }
-    if (label === 'Analytics') {
-      onNavigate?.();
-      location.hash = '/analytics-sentiment';
-      return;
-    }
-    if (label === 'Reports') {
-      onNavigate?.();
-      location.hash = '/reports';
-      return;
-    }
-
-    const feedbackLabels = [
-      'Feedbacks',
-      'Feedbacks 12',
-      'All responses →',
-      'Explore all 1,250 reviews →',
-      'All feedbacks',
-    ];
-    if (label === 'Overview' || feedbackLabels.includes(label)) {
-      onNavigate?.();
-      location.hash = label === 'Overview' ? '/dashboard' : '/feedbacks';
-      return;
-    }
-    if (label === 'View evidence ↗') {
-      onNavigate?.();
-      location.hash = '/feedback-details?id=1248';
-      return;
-    }
-    if (label === 'Export report') {
+    if (id === 'export-report') {
       const r = dashboard?.report,
         f = dashboard?.filters;
       const rows = r
@@ -200,6 +164,7 @@ export function ProductProvider({
         workspaceQuery,
         setWorkspaceQuery,
         action,
+        navigateAction,
         navigateLabel,
         isMobile,
         menuOpen,
