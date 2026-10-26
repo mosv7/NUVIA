@@ -155,6 +155,15 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
       .getByRole('button', { name: 'Archive branch', exact: true })
       .click();
     await page.getByRole('button', { name: 'Actions Browser Renamed', exact: true }).waitFor();
+    await waitFor(() => page.getByRole('button', { name: 'Add branch', exact: true }).isEnabled());
+    assert.equal(
+      await page
+        .locator('.branch-row')
+        .filter({ hasText: 'Browser Renamed' })
+        .locator('.badge')
+        .textContent(),
+      'Archived',
+    );
     await page.goto(`${origin}/#/assistant`);
     await page.getByRole('button', { name: 'Branch', exact: true }).click();
     assert.ok(await page.getByRole('option', { name: 'Main Branch', exact: true }).isVisible());
