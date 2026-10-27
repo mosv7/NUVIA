@@ -13,7 +13,7 @@ export default function SecurityActionPage({ page, challenge, language, setLangu
   const arabic = language === 'ar';
   const L = (english, translated) => (arabic ? translated : english);
   const rawToken = new URLSearchParams(location.hash.split('?')[1]).get('token');
-  const token = useRef(rawToken);
+  const [token, setToken] = useState(rawToken);
   const request = useRef(null);
   const [code, setCode] = useState('');
   const [state, setState] = useState('ready');
@@ -21,13 +21,13 @@ export default function SecurityActionPage({ page, challenge, language, setLangu
     if (!twoFactor && rawToken) {
       request.current?.abort();
       request.current = null;
-      token.current = rawToken;
+      setToken(rawToken);
       setState('ready');
       history.replaceState(null, '', `${location.pathname}${location.search}#/confirm-email`);
     }
   }, [rawToken, twoFactor]);
   useEffect(() => () => request.current?.abort(), []);
-  const available = twoFactor ? Boolean(challenge) : /^[a-f0-9]{64}$/.test(token.current || '');
+  const available = twoFactor ? Boolean(challenge) : /^[a-f0-9]{64}$/.test(token || '');
   const submit = async (event) => {
     event.preventDefault();
     if (!available || state === 'busy' || state === 'done') return;
@@ -44,9 +44,9 @@ export default function SecurityActionPage({ page, challenge, language, setLangu
         if (!controller.signal.aborted && session)
           location.hash = '/' + afterLogin(session.workspace);
       } else {
-        await authApi.confirmEmail(token.current, controller.signal);
+        await authApi.confirmEmail(token, controller.signal);
         if (!controller.signal.aborted) {
-          token.current = null;
+          setToken(null);
           setState('done');
           await auth.refresh().catch(() => {});
         }

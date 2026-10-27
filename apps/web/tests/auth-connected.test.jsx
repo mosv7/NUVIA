@@ -11,6 +11,20 @@ function open(route) {
   history.replaceState(null, '', `/#/${route}`);
   render(<App />);
 }
+it('accepts a fresh email link after opening the confirmation screen without a token', async () => {
+  vi.spyOn(authApi, 'confirmEmail').mockResolvedValue({});
+  open('confirm-email');
+  expect(
+    await screen.findByRole('button', { name: 'Confirm new email', exact: true }),
+  ).toBeDisabled();
+  await act(async () => {
+    location.hash = '/confirm-email?token=' + 'c'.repeat(64);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  });
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: 'Confirm new email', exact: true })).toBeEnabled(),
+  );
+});
 it('resets confirmation state when another email link opens on the same screen', async () => {
   const confirm = vi
     .spyOn(authApi, 'confirmEmail')
