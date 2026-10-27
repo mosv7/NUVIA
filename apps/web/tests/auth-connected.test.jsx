@@ -11,6 +11,44 @@ function open(route) {
   history.replaceState(null, '', `/#/${route}`);
   render(<App />);
 }
+it('resets confirmation state when another email link opens on the same screen', async () => {
+  const confirm = vi
+    .spyOn(authApi, 'confirmEmail')
+    .mockResolvedValue({ data: { email: 'new@example.test' } });
+  open('confirm-email?token=' + 'a'.repeat(64));
+  fireEvent.click(await screen.findByRole('button', { name: 'Confirm new email', exact: true }));
+  expect(
+    await screen.findByText('Email changed. Sign in with your new email address.'),
+  ).toBeVisible();
+  await act(async () => {
+    location.hash = '/confirm-email?token=' + 'b'.repeat(64);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  });
+  const button = screen.getByRole('button', { name: 'Confirm new email', exact: true });
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+  await waitFor(() =>
+    expect(confirm).toHaveBeenLastCalledWith('b'.repeat(64), expect.any(AbortSignal)),
+  );
+});
+it('keeps a two-factor challenge separate from an authenticated session', async () => {
+  vi.spyOn(authApi, 'login').mockResolvedValue({
+    data: { requiresTwoFactor: true, twoFactorToken: 'private-challenge' },
+  });
+  open('login');
+  fireEvent.change(screen.getByLabelText('Work email'), {
+    target: { value: 'owner@example.test' },
+  });
+  fireEvent.change(screen.getByLabelText('Password', { exact: true }), {
+    target: { value: 'Synthetic123' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Log in', exact: true }));
+  expect(await screen.findByRole('heading', { name: 'Verify your sign-in' })).toBeVisible();
+  expect(screen.getByLabelText('Authenticator or recovery code')).toBeVisible();
+  expect(location.hash).toBe('#/login-2fa');
+  expect(screen.queryByRole('heading', { name: 'Business information' })).not.toBeInTheDocument();
+  expect(JSON.stringify({ ...localStorage })).not.toContain('private-challenge');
+});
 it('redirects anonymous private navigation to login without displaying sample analytics', async () => {
   open('dashboard');
   expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();

@@ -115,6 +115,8 @@ test('manual questions, templates, publishing, and foreign resource ownership', 
   }
   const created = await owner.mutate('post', '/api/surveys', { name: 'Manual survey' }).expect(201);
   const id = created.body.data.id;
+  const shortCode = (await require('../src/models/survey.model').findById(id)).shortCode;
+  await request(app).get(`/api/public/surveys/${shortCode}`).expect(404);
   await owner.mutate('post', `/api/surveys/${id}/publish`, {}).expect(422);
   const added = await owner
     .mutate('post', `/api/surveys/${id}/questions`, {
@@ -125,6 +127,15 @@ test('manual questions, templates, publishing, and foreign resource ownership', 
     .expect(201);
   assert.equal(added.body.data.questionTextEn, 'Any comments?');
   await owner.mutate('post', `/api/surveys/${id}/publish`, {}).expect(200);
+  const publicSurvey = await request(app).get(`/api/public/surveys/${shortCode}`).expect(200);
+  assert.equal(publicSurvey.body.data.state, 'open');
+  assert.equal(publicSurvey.body.data.questions[0].questionTextEn, 'Any comments?');
+  assert.equal(publicSurvey.body.data.businessId, undefined);
+  await request(app).get(`/api/public/surveys/${shortCode}?branch=foreign-branch`).expect(404);
+  await owner.mutate('patch', `/api/surveys/${id}/status`, { status: 'paused' }).expect(200);
+  const paused = await request(app).get(`/api/public/surveys/${shortCode}`).expect(200);
+  assert.equal(paused.body.data.state, 'paused');
+  assert.equal(paused.body.data.questions, undefined);
   await other.agent.get(`/api/surveys/${id}`).expect(404);
   await other.mutate('patch', `/api/surveys/${id}`, { name: 'Foreign edit' }).expect(404);
   await other.mutate('post', `/api/surveys/${id}/questions`, { type: 'rating' }).expect(404);

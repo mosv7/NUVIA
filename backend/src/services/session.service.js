@@ -1,6 +1,6 @@
-const Session = require("../models/session.model");
-const { SESSION_DAYS } = require("../utils/jwt");
-const { fail } = require("../utils/errors");
+const Session = require('../models/session.model');
+const { SESSION_DAYS } = require('../utils/jwt');
+const { fail } = require('../utils/errors');
 
 const createSession = (ownerId, meta = {}) =>
   Session.create({
@@ -14,8 +14,13 @@ const createSession = (ownerId, meta = {}) =>
 // Used by the auth middleware on every request. Returns false when the device was signed out.
 // "Last active" is only written once a minute so a busy page doesn't write on every call.
 const touchSession = async (sid, ownerId) => {
-  const session = await Session.findOne({ _id: sid, ownerId, revokedAt: { $exists: false } })
-    .select("lastActiveAt")
+  const session = await Session.findOne({
+    _id: sid,
+    ownerId,
+    revokedAt: { $exists: false },
+    expiresAt: { $gt: new Date() },
+  })
+    .select('lastActiveAt')
     .lean();
   if (!session) return false;
 
@@ -37,26 +42,50 @@ const toDTO = (s, currentSid) => ({
 });
 
 const listSessions = async (ownerId, currentSid) => {
-  const sessions = await Session.find({ ownerId, revokedAt: { $exists: false } }).sort({ lastActiveAt: -1 }).lean();
+  const sessions = await Session.find({
+    ownerId,
+    revokedAt: { $exists: false },
+    expiresAt: { $gt: new Date() },
+  })
+    .sort({ lastActiveAt: -1 })
+    .lean();
   return sessions.map((s) => toDTO(s, currentSid));
 };
 
-const countActive = (ownerId) => Session.countDocuments({ ownerId, revokedAt: { $exists: false } });
+const countActive = (ownerId) =>
+  Session.countDocuments({
+    ownerId,
+    revokedAt: { $exists: false },
+    expiresAt: { $gt: new Date() },
+  });
 
 const revokeSession = async (ownerId, sessionId, currentSid) => {
-  if (String(sessionId) === String(currentSid)) throw fail("Use sign out to end this session", 400);
+  if (String(sessionId) === String(currentSid)) throw fail('Use sign out to end this session', 400);
   const result = await Session.updateOne(
-    { _id: sessionId, ownerId, revokedAt: { $exists: false } },
-    { $set: { revokedAt: new Date() } }
+    { _id: sessionId, ownerId, revokedAt: { $exists: false }, expiresAt: { $gt: new Date() } },
+    { $set: { revokedAt: new Date() } },
   );
-  if (result.matchedCount === 0) throw fail("Session not found", 404);
+  if (result.matchedCount === 0) throw fail('Session not found', 404);
 };
 
 // keepSid: leave one session alive (e.g. the device that just changed the password).
-const revokeAll = (ownerId, keepSid) =>
+const revokeAll = (ownerId, keepSid, session) =>
   Session.updateMany(
-    { ownerId, revokedAt: { $exists: false }, ...(keepSid && { _id: { $ne: keepSid } }) },
-    { $set: { revokedAt: new Date() } }
+    {
+      ownerId,
+      revokedAt: { $exists: false },
+      expiresAt: { $gt: new Date() },
+      ...(keepSid && { _id: { $ne: keepSid } }),
+    },
+    { $set: { revokedAt: new Date() } },
+    { session },
   );
 
-module.exports = { createSession, touchSession, listSessions, countActive, revokeSession, revokeAll };
+module.exports = {
+  createSession,
+  touchSession,
+  listSessions,
+  countActive,
+  revokeSession,
+  revokeAll,
+};

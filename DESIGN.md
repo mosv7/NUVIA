@@ -45,3 +45,7 @@ Existing headers use 76px desktop / 72px mobile geometry and responsive product 
 - Account feedback routes reuse `FeedbackShell` and `FeedbackList` with the reviewed empty layout: heading, five filters, zero-response table, illustration, actions and getting-started steps. Sample responses open `/preview/#/feedbacks`; survey sharing reports its unavailable state while the connected frontend flow remains under development. Backend publishing state alone does not establish public response collection. Keep the approved empty Overview copy in previews, with availability-aware copy in account routes.
 - Preserve visible focus, keyboard-operable menus, password visibility controls, native form semantics and reduced-motion behavior. No additional decorative motion is introduced.
 - Verify changes through frontend tests and the account browser scenario at desktop and 393px mobile widths in both languages. Reference screenshots remain previews, not proof of real backend/AI behavior.
+
+## Security continuation routes
+
+`#/login-2fa` and `#/confirm-email` reuse AuthPage/Field, existing type/colors/art and EN/AR copy. Challenges stay only in memory; refreshing a login challenge requires password sign-in again. Email-change tokens leave the URL before an explicit confirmation; invalid/used links report failure without claiming success. Busy states prevent duplicate submission, navigation aborts pending work and late replies do not navigate. Broader settings screens remain under development. Browser evidence covers desktop/narrow EN/AR and replay/error cases.

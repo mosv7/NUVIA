@@ -12,6 +12,9 @@ export const authApi = {
       signal,
     }),
   login: (body, signal) => apiRequest('/auth/login', { method: 'POST', body, signal }),
+  loginTwoFactor: (body, signal) => apiRequest('/auth/login/2fa', { method: 'POST', body, signal }),
+  confirmEmail: (token, signal) =>
+    apiRequest('/auth/confirm-email', { method: 'POST', body: { token }, signal }),
   logout: () => apiRequest('/auth/logout', { method: 'POST', body: {} }),
   verify: (token, signal) =>
     apiRequest('/auth/verify-email', { method: 'POST', body: { token }, signal }),

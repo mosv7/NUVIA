@@ -19,3 +19,7 @@ Process environment overrides root `.env` during development; production reads p
 The backend uses ObjectId models for business owners, businesses, branches, surveys, questions, options and password resets. The removed API's UUID account/workspace collections are **not migrated or automatically compatible**. No records, IDs or databases should be deleted as part of this switch. See [models](mongodb-models.md).
 
 `pnpm dev` owns web/backend only. Root scripts own additive index setup and read-only connectivity checks. Compose owns a separate local replica-set volume, never an Atlas import. Root `.local/` remains ignored private runtime space. See [API](../api/README.md), [backend operations](../development/backend.md) and [module boundaries](../development/module-boundaries.md).
+
+## Settings and device sessions
+
+Owner settings and encrypted authenticator material remain in BusinessOwner; Session stores owner-scoped expiring/revocable device records; EmailChange holds hashed one-use confirmation tokens with TTL. JWT authentication resolves the active owner/current business, checks credential version and requires an unexpired device session. Browser cookies/CSRF remain canonical. Settings APIs and public survey reads are backend capabilities; full settings/survey UI and response submission are still under development. Browser second-factor sign-in and explicit email-change confirmation reuse the existing auth shell.

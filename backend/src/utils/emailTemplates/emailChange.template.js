@@ -1,5 +1,9 @@
-const escapeHtml = (value = "") =>
-  String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const escapeHtml = (value = '') =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 
 const wrap = (title, bodyHtml) => `<!DOCTYPE html>
 <html><body style="margin:0;padding:0;background:#f4f6fb;font-family:Arial,Helvetica,sans-serif;">
@@ -14,32 +18,32 @@ const wrap = (title, bodyHtml) => `<!DOCTYPE html>
 
 // Sent to the NEW address: click to confirm.
 const confirmEmailMessage = ({ name, confirmUrl, expiresInHours }) => {
-  const subject = "Confirm your new Nuvia email address";
+  const subject = 'Confirm your new Nuvia email address';
   const text = [
-    `Hi ${name || "there"},`,
-    "",
-    "Confirm this email address to use it for signing in to Nuvia:",
+    `Hi ${name || 'there'},`,
+    '',
+    'Confirm this email address to use it for signing in to Nuvia:',
     confirmUrl,
-    "",
+    '',
     `The link expires in ${expiresInHours} hours. Until you confirm, your current address stays active.`,
     "If you didn't ask for this, ignore this email.",
-  ].join("\n");
+  ].join('\n');
   const html = wrap(
-    "Confirm your new email",
-    `<tr><td style="font-size:14px;line-height:22px;color:#475569;padding-bottom:24px;">Hi ${escapeHtml(name || "there")}, confirm this address to use it for signing in. The link expires in ${expiresInHours} hours. Until then your current address stays active.</td></tr>
+    'Confirm your new email',
+    `<tr><td style="font-size:14px;line-height:22px;color:#475569;padding-bottom:24px;">Hi ${escapeHtml(name || 'there')}, confirm this address to use it for signing in. The link expires in ${expiresInHours} hours. Until then your current address stays active.</td></tr>
      <tr><td style="padding-bottom:24px;"><a href="${confirmUrl}" style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;">Confirm email</a></td></tr>
-     <tr><td style="font-size:12px;line-height:18px;color:#94a3b8;">If you didn't ask for this, you can ignore this email.</td></tr>`
+     <tr><td style="font-size:12px;line-height:18px;color:#94a3b8;">If you didn't ask for this, you can ignore this email.</td></tr>`,
   );
   return { subject, html, text };
 };
 
 // Sent to the OLD address after the change went through (security notice).
 const emailChangedNotice = ({ name, newEmail }) => {
-  const subject = "Your Nuvia email address was changed";
-  const text = `Hi ${name || "there"},\n\nThe sign-in email on your Nuvia account was changed to ${newEmail}.\nIf this wasn't you, reset your password right away and contact support.`;
+  const subject = 'Your Nuvia email address was changed';
+  const text = `Hi ${name || 'there'},\n\nThe sign-in email on your Nuvia account was changed to ${newEmail}.\nIf this wasn't you, reset your password right away and contact support.`;
   const html = wrap(
-    "Your email address was changed",
-    `<tr><td style="font-size:14px;line-height:22px;color:#475569;">Hi ${escapeHtml(name || "there")}, the sign-in email on your Nuvia account was changed to <b>${escapeHtml(newEmail)}</b>. If this wasn't you, reset your password right away and contact support.</td></tr>`
+    'Your email address was changed',
+    `<tr><td style="font-size:14px;line-height:22px;color:#475569;">Hi ${escapeHtml(name || 'there')}, the sign-in email on your Nuvia account was changed to <b>${escapeHtml(newEmail)}</b>. If this wasn't you, reset your password right away and contact support.</td></tr>`,
   );
   return { subject, html, text };
 };

@@ -62,6 +62,8 @@ export const routes = [
   'feedbacks-empty',
   'feedback-details',
   'login',
+  'login-2fa',
+  'confirm-email',
   'signup',
   'verify-email',
   'verify-email-expired',

@@ -6,10 +6,10 @@
 // <FRONTEND_URL>/s so links still work in development.
 const getBaseUrl = () => {
   const explicit = process.env.SURVEY_LINK_BASE_URL;
-  if (explicit) return explicit.replace(/\/+$/, "");
+  if (explicit) return explicit.replace(/\/+$/, '');
 
-  const frontend = (process.env.FRONTEND_URL || "http://localhost:5173").split(",")[0].trim();
-  return `${frontend.replace(/\/+$/, "")}/s`;
+  const frontend = (process.env.FRONTEND_URL || 'http://localhost:5173').split(',')[0].trim();
+  return `${frontend.replace(/\/+$/, '')}/s`;
 };
 
 const buildSurveyLink = (shortCode) => `${getBaseUrl()}/${shortCode}`;

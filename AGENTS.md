@@ -6,7 +6,7 @@ NUVIA is an Arabic/English customer-feedback product under development. `backend
 
 - Web: React/Vite, JavaScript/JSX in `apps/web`.
 - API: Node.js/Express/Mongoose, CommonJS `.js` in `backend` (`@nuvia/api`).
-- Implemented backend areas: owner auth/browser sessions/recovery, business/onboarding, branches, survey/questions/templates and survey publishing state. Complete frontend survey integration, public response collection and live analytics are still under development.
+- Implemented backend areas: owner auth/browser sessions/recovery, business/onboarding, branches, survey/questions/templates and survey publishing state. Settings/security APIs and public survey reads are implemented; browser second-factor sign-in/email-change confirmation reuse the auth shell. Complete settings/survey frontend integration, public response collection and live analytics are still under development.
 - AI: independent FastAPI health-only scaffold in `apps/ai-service`, reporting `analysis_available: false`. No NLP, inference, RAG, model weights or Node analysis integration.
 - Email verification/resend is unavailable; registration signs in directly. Team administration, Google OAuth and billing remain future work.
 

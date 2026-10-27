@@ -16,6 +16,7 @@ export default function AuthPage({
   errors,
   notice,
   busy,
+  disabled = false,
   setLanguage,
   language,
   title,
@@ -136,7 +137,7 @@ export default function AuthPage({
                 {t[notice]}
               </p>
             )}
-            <button disabled={busy} className="primary" type="submit">
+            <button disabled={busy || disabled} className="primary" type="submit">
               {busy
                 ? t.loading
                 : isLogin
