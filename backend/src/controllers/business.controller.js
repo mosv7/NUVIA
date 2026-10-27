@@ -1,5 +1,5 @@
-const businessService = require('../services/business.service');
-const { handleError } = require('../utils/errors');
+const businessService = require("../services/business.service");
+const { handleError } = require("../utils/errors");
 
 const getProfile = async (req, res) => {
   try {
@@ -13,7 +13,7 @@ const updateProfile = async (req, res) => {
   try {
     const { name, type } = req.body;
     const data = await businessService.updateProfile(req.user, { name, type });
-    res.json({ message: 'Business profile saved', data });
+    res.json({ message: "Business profile saved", data });
   } catch (error) {
     handleError(res, error);
   }

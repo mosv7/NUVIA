@@ -1,6 +1,7 @@
-const onboardingService = require('../services/onboarding.service');
-const { setAuthCookie } = require('../utils/browserSession');
-const { handleError } = require('../utils/errors');
+const onboardingService = require("../services/onboarding.service");
+
+const handleError = (res, error) =>
+  res.status(error.statusCode || 400).json({ message: error.message });
 
 const getStatus = async (req, res) => {
   try {
@@ -15,10 +16,9 @@ const saveBusiness = async (req, res) => {
   try {
     const { name, type } = req.body;
     const data = await onboardingService.saveBusiness(req.user.id, { name, type });
-    setAuthCookie(res, data.token);
 
     return res.status(200).json({
-      message: 'Business information saved',
+      message: "Business information saved",
       data,
     });
   } catch (error) {
@@ -35,7 +35,7 @@ const saveSetup = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: 'Business setup saved',
+      message: "Business setup saved",
       data,
     });
   } catch (error) {
@@ -48,7 +48,7 @@ const complete = async (req, res) => {
     const data = await onboardingService.complete(req.user.id);
 
     return res.status(200).json({
-      message: 'Onboarding completed',
+      message: "Onboarding completed",
       data,
     });
   } catch (error) {

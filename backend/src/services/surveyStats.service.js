@@ -12,16 +12,16 @@ const getResponseCounts = async (surveyIds) => {
 
 // True when customers already answered this survey. Used to protect data in live surveys
 // (a question with answers cannot be deleted or change type).
-const hasResponses = async (_surveyId) => false;
+const hasResponses = async (surveyId) => false; // eslint-disable-line no-unused-vars
 
 // Cards on top of "Manage surveys". null = not enough data to compare (shown as "-").
-const getMonthlyStats = async (_businessId) => ({
+const getMonthlyStats = async (businessId) => ({ // eslint-disable-line no-unused-vars
   responsesThisMonth: { value: 0, changePercent: null },
   completionRate: { value: 0, changePoints: null },
 });
 
 // "Know which branch the feedback is for" + the two numbers at the bottom of Share.
-const getShareStats = async (_surveyId) => ({
+const getShareStats = async (surveyId) => ({ // eslint-disable-line no-unused-vars
   qrScans: 0,
   linkVisits: 0,
   total: 0,
@@ -37,7 +37,7 @@ const getBranchResponseCounts = async (branchIds) => {
 };
 
 // Cards on top of the Branches page. `byArchivedBranches` is what "Archived responses" shows.
-const getResponseTotals = async (_businessId) => ({
+const getResponseTotals = async (businessId) => ({ // eslint-disable-line no-unused-vars
   total: 0,
   byActiveBranches: 0,
   byArchivedBranches: 0,
@@ -45,7 +45,7 @@ const getResponseTotals = async (_businessId) => ({
 
 // "Archived branch details" page: historical numbers for one branch.
 // Scores are out of 10, sentiment is a percentage. null = no data yet.
-const getBranchHistory = async (_branchId) => ({
+const getBranchHistory = async (branchId) => ({ // eslint-disable-line no-unused-vars
   earlierResponses: 0,
   positiveSentiment: null,
   speedScore: null,

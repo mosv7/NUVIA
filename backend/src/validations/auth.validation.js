@@ -1,90 +1,90 @@
-const { body } = require('express-validator');
+const { body } = require("express-validator");
 
 // Shared rule: at least 8 characters, with a letter and a number
 const passwordRule = (field) =>
   body(field)
     .notEmpty()
-    .withMessage('Password is required')
+    .withMessage("Password is required")
     .isLength({ min: 8, max: 64 })
-    .withMessage('Password must be between 8 and 64 characters')
+    .withMessage("Password must be between 8 and 64 characters")
     .matches(/[A-Za-z]/)
-    .withMessage('Password must include at least one letter')
+    .withMessage("Password must include at least one letter")
     .matches(/\d/)
-    .withMessage('Password must include at least one number');
+    .withMessage("Password must include at least one number");
 
 const confirmationRule = () =>
-  body('passwordConfirmation')
+  body("passwordConfirmation")
     .notEmpty()
-    .withMessage('Password confirmation is required')
+    .withMessage("Password confirmation is required")
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error('Passwords do not match');
+        throw new Error("Passwords do not match");
       }
       return true;
     });
 
 const registerValidation = [
-  body('name')
+  body("name")
     .trim()
     .notEmpty()
-    .withMessage('Name is required')
+    .withMessage("Name is required")
     .isLength({ min: 2, max: 150 })
-    .withMessage('Name must be between 2 and 150 characters'),
+    .withMessage("Name must be between 2 and 150 characters"),
 
-  body('email')
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Please provide a valid email')
+    .withMessage("Please provide a valid email")
     .normalizeEmail(),
 
-  passwordRule('password'),
+  passwordRule("password"),
 
   confirmationRule(),
 
-  body('phone')
+  body("phone")
     .optional()
     .trim()
     .isLength({ max: 30 })
-    .withMessage('Phone must be at most 30 characters'),
+    .withMessage("Phone must be at most 30 characters"),
 
-  body('preferredLanguage')
+  body("preferredLanguage")
     .optional()
     .trim()
     .isLength({ min: 2, max: 10 })
-    .withMessage('Preferred language must be between 2 and 10 characters'),
+    .withMessage("Preferred language must be between 2 and 10 characters"),
 ];
 
 const loginValidation = [
-  body('email')
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Please provide a valid email')
+    .withMessage("Please provide a valid email")
     .normalizeEmail(),
 
-  body('password').notEmpty().withMessage('Password is required'),
+  body("password").notEmpty().withMessage("Password is required"),
 ];
 
 const forgotPasswordValidation = [
-  body('email')
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Please provide a valid email')
+    .withMessage("Please provide a valid email")
     .normalizeEmail(),
 ];
 
 const verifyResetTokenValidation = [
-  body('token').trim().notEmpty().withMessage('Token is required'),
+  body("token").trim().notEmpty().withMessage("Token is required"),
 ];
 
 const resetPasswordValidation = [
-  body('token').trim().notEmpty().withMessage('Token is required'),
-  passwordRule('password'),
+  body("token").trim().notEmpty().withMessage("Token is required"),
+  passwordRule("password"),
   confirmationRule(),
 ];
 
