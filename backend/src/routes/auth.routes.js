@@ -60,6 +60,23 @@ router.post(
   passwordResetController.resetPassword,
 );
 
+const settingsController = require('../controllers/settings.controller');
+const settingsValidation = require('../validations/settings.validation');
+router.post(
+  '/login/2fa',
+  loginLimiter,
+  settingsValidation.loginTwoFactor,
+  validate,
+  settingsController.loginTwoFactor,
+);
+router.post(
+  '/confirm-email',
+  resetLimiter,
+  settingsValidation.confirmEmail,
+  validate,
+  settingsController.confirmEmail,
+);
+
 router.get('/me', authenticate, authController.getMe);
 
 module.exports = router;

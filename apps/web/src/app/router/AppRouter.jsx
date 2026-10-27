@@ -2,6 +2,7 @@ import { validateAuth } from '../../validation/auth.js';
 import { safeLocalStorage } from '../../lib/storage.js';
 import { installRouteHistory } from '../../components/layout/navigation.js';
 import { currentRoute } from './routes.js';
+import SecurityActionPage from '../../features/auth/SecurityActionPage.jsx';
 import AuthPage from '../../features/auth/AuthPage.jsx';
 import { lazy, useEffect, useRef, useState } from 'react';
 import Field from '../../components/ui/Field.jsx';
@@ -35,6 +36,7 @@ export default function AppRouter() {
   const submission = useRef(null),
     resetToken = useRef(null);
   const requestGeneration = useRef(0);
+  const [challenge, setChallenge] = useState(null);
   const [business, setBusiness] = useState({
     businessName: '',
     industry: '',
@@ -70,6 +72,7 @@ export default function AppRouter() {
       cancel();
       requestGeneration.current += 1;
       setBusy(false);
+      if (currentRoute() !== 'login-2fa') setChallenge(null);
       setPage(currentRoute());
       setErrors({});
       setNotice('');
@@ -156,7 +159,11 @@ export default function AppRouter() {
             { email: values.email, password: values.password, remember: values.remember },
             controller.signal,
           );
-          if (isCurrentRequest() && session) location.hash = '/' + afterLogin(session.workspace);
+          if (isCurrentRequest() && session?.requiresTwoFactor) {
+            setChallenge(session.twoFactorToken);
+            location.hash = '/login-2fa';
+          } else if (isCurrentRequest() && session)
+            location.hash = '/' + afterLogin(session.workspace);
         } else if (isForgot) {
           await authApi.forgot(values.email, controller.signal);
           if (isCurrentRequest()) setNotice('resetAccepted');
@@ -230,6 +237,16 @@ export default function AppRouter() {
       </main>
     );
   }
+  if (!preview && ['login-2fa', 'confirm-email'].includes(page))
+    return (
+      <SecurityActionPage
+        key={page}
+        page={page}
+        challenge={challenge}
+        language={language}
+        setLanguage={setLanguage}
+      />
+    );
   const previewProduct =
     preview &&
     ([

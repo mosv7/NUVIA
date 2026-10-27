@@ -54,13 +54,15 @@ export function AuthProvider({ children, preview = false }) {
     const controller = new AbortController();
     active.current = controller;
     if (signal) signal.addEventListener('abort', () => controller.abort(), { once: true });
+    let result;
     try {
-      await operation(body, controller.signal);
+      result = await operation(body, controller.signal);
     } catch (error) {
       if (id === generation.current) setView((old) => ({ ...old, status: 'ready' }));
       throw error;
     }
     if (id !== generation.current || controller.signal.aborted) return null;
+    if (result?.data?.requiresTwoFactor) return result.data;
     resetApiSession();
     return refresh();
   };
@@ -85,6 +87,7 @@ export function AuthProvider({ children, preview = false }) {
         preview,
         refresh,
         login: (body, signal) => authenticate(authApi.login, body, signal),
+        loginTwoFactor: (body, signal) => authenticate(authApi.loginTwoFactor, body, signal),
         register: (body, signal) => authenticate(authApi.register, body, signal),
         logout,
         cancel,

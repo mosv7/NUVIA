@@ -1,4 +1,5 @@
 const authService = require('../services/auth.service');
+const { clientMeta } = require('../utils/device');
 const BusinessOwner = require('../models/businessOwner.model');
 const { resolveIdentity } = require('../middlewares/auth.middleware');
 const { setAuthCookie, clearAuthCookie, ensureCsrfToken } = require('../utils/browserSession');
@@ -14,9 +15,10 @@ const register = async (req, res) => {
       password,
       phone,
       preferredLanguage,
+      meta: clientMeta(req),
     });
 
-    setAuthCookie(res, result.token);
+    if (result.token) setAuthCookie(res, result.token);
     return res.status(201).json({
       message: 'Business owner registered successfully',
       data: result,
@@ -31,9 +33,9 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const result = await authService.login({ email, password });
+    const result = await authService.login({ email, password, meta: clientMeta(req) });
 
-    setAuthCookie(res, result.token);
+    if (result.token) setAuthCookie(res, result.token);
     return res.status(200).json({
       message: 'Login successful',
       data: result,
@@ -89,6 +91,7 @@ module.exports = {
   logout: async (req, res) => {
     try {
       await BusinessOwner.updateOne({ _id: req.user.id }, { $inc: { tokenVersion: 1 } });
+      await require('../services/session.service').revokeAll(req.user.id);
       clearAuthCookie(res);
       res.status(204).end();
     } catch (error) {

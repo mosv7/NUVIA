@@ -14,7 +14,7 @@ const getStatus = async (req, res) => {
 const saveBusiness = async (req, res) => {
   try {
     const { name, type } = req.body;
-    const data = await onboardingService.saveBusiness(req.user.id, { name, type });
+    const data = await onboardingService.saveBusiness(req.user.id, { name, type }, req.user.sid);
     setAuthCookie(res, data.token);
 
     return res.status(200).json({

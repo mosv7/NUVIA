@@ -59,11 +59,16 @@ const resetPassword = async ({ token, password }) => {
       { session },
     );
     if (!reset) throw new Error('Reset link is invalid or has expired');
+    const owner = await BusinessOwner.findOne({ email: reset.email }).session(session);
     await BusinessOwner.updateOne(
       { email: reset.email, status: 'active' },
       { $set: { passwordHash }, $inc: { tokenVersion: 1 } },
       { session },
     );
+    if (owner) {
+      await require('./session.service').revokeAll(owner._id, null, session);
+      await require('../models/emailChange.model').deleteOne({ ownerId: owner._id }, { session });
+    }
     await PasswordReset.deleteMany({ email: reset.email }, { session });
   });
 };

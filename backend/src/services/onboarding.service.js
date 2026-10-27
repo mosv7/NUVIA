@@ -72,7 +72,7 @@ const getStatus = async (ownerId) => {
 
 // Step 1. Create the business, or update it if the user comes back to edit.
 // Returns a NEW token because the old one has businessId = null.
-const saveBusiness = async (ownerId, { name, type }) => {
+const saveBusiness = async (ownerId, { name, type }, sid) => {
   const owner = await BusinessOwner.findById(ownerId).select('+tokenVersion');
   if (!owner) throw fail('User not found', 404);
 
@@ -100,6 +100,7 @@ const saveBusiness = async (ownerId, { name, type }) => {
     role: 'owner',
     businessId: business._id,
     tokenVersion: owner.tokenVersion || 0,
+    sid,
   });
 
   return { token, ...buildState(business, branch) };

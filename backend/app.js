@@ -45,6 +45,8 @@ app.use('/api/surveys', surveyRoutes);
 app.use('/api/survey-templates', surveyTemplateRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/settings', require('./src/routes/settings.routes'));
+app.use('/api/public', require('./src/routes/publicSurvey.routes'));
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
   const status =

@@ -2,7 +2,8 @@ const bcrypt = require('bcrypt');
 
 const BusinessOwner = require('../models/businessOwner.model');
 const Business = require('../models/business.model');
-const { generateToken } = require('../utils/jwt');
+const { generateToken, generateTwoFactorToken } = require('../utils/jwt');
+const { createSession } = require('./session.service');
 const Branch = require('../models/branch.model');
 const { fail } = require('../utils/errors');
 
@@ -19,10 +20,14 @@ const toUser = (account, businessId) => ({
 
 // businessId: the Business the account belongs to
 // (owners: the business they own, may be null until they create it; members: their business)
-const buildAuthResponse = (account, type, businessId) => {
+const buildAuthResponse = async (account, type, businessId, meta) => {
+  const session = await createSession(account._id, meta);
   const user = toUser(account, businessId);
 
-  return { user, token: generateToken({ ...user, tokenVersion: account.tokenVersion || 0 }) };
+  return {
+    user,
+    token: generateToken({ ...user, tokenVersion: account.tokenVersion || 0, sid: session._id }),
+  };
 };
 
 const findBusinessIdByOwner = async (ownerId) => {
@@ -32,7 +37,7 @@ const findBusinessIdByOwner = async (ownerId) => {
 
 // Business owners sign up on their own. They create their business afterwards.
 // Team members are NOT created here: the owner invites them.
-const register = async ({ name, email, password, phone, preferredLanguage }) => {
+const register = async ({ name, email, password, phone, preferredLanguage, meta }) => {
   const existingOwner = await BusinessOwner.findOne({ email });
 
   if (existingOwner) {
@@ -49,10 +54,10 @@ const register = async ({ name, email, password, phone, preferredLanguage }) => 
     preferredLanguage: preferredLanguage || 'en',
   });
 
-  return buildAuthResponse(owner, 'owner', null);
+  return buildAuthResponse(owner, 'owner', null, meta);
 };
 
-const login = async ({ email, password }) => {
+const login = async ({ email, password, meta }) => {
   // 1) business owner
   const owner = await BusinessOwner.findOne({ email }).select('+passwordHash +tokenVersion');
 
@@ -61,12 +66,22 @@ const login = async ({ email, password }) => {
       throw new Error('Account is not active');
     }
 
-    const businessId = await findBusinessIdByOwner(owner._id);
-    return buildAuthResponse(owner, 'owner', businessId);
+    if (owner.twoFactor.enabled)
+      return {
+        requiresTwoFactor: true,
+        twoFactorToken: generateTwoFactorToken(owner._id, owner.tokenVersion || 0),
+      };
+    return completeLogin(owner, meta);
   }
   const error = fail('Invalid email or password', 401);
   error.code = 'INVALID_CREDENTIALS';
   throw error;
+};
+
+const completeLogin = async (owner, meta) => {
+  const businessId = await findBusinessIdByOwner(owner._id);
+  await BusinessOwner.updateOne({ _id: owner._id }, { lastLogin: new Date() });
+  return buildAuthResponse(owner, 'owner', businessId, meta);
 };
 
 const getMe = async (userId) => {
@@ -107,4 +122,4 @@ const getWorkspace = async (owner) => {
     })),
   };
 };
-module.exports = { register, login, getMe, getWorkspace, toUser };
+module.exports = { register, login, completeLogin, getMe, getWorkspace, toUser };

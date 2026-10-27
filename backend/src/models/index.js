@@ -1,6 +1,8 @@
 // Loads every model so they are all registered with mongoose.
 // Usage: const { Business, Branch } = require("./models");
 module.exports = {
+  Session: require('./session.model'),
+  EmailChange: require('./emailChange.model'),
   Branch: require('./branch.model.js'),
   Business: require('./business.model.js'),
   BusinessOwner: require('./businessOwner.model.js'),

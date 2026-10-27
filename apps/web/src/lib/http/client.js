@@ -25,7 +25,7 @@ async function request(path, options = {}) {
       data?.error?.code ||
       data?.code ||
       (response.status === 401
-        ? path === '/auth/login'
+        ? ['/auth/login', '/auth/login/2fa'].includes(path)
           ? 'INVALID_CREDENTIALS'
           : 'AUTH_REQUIRED'
         : response.status === 429

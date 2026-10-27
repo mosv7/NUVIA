@@ -2,6 +2,7 @@ const { verifyToken } = require('../utils/jwt');
 const { AUTH_COOKIE } = require('../utils/browserSession');
 const BusinessOwner = require('../models/businessOwner.model');
 const Business = require('../models/business.model');
+const { touchSession } = require('../services/session.service');
 
 const resolveIdentity = async (req) => {
   const header = req.get('Authorization');
@@ -17,7 +18,13 @@ const resolveIdentity = async (req) => {
   } catch {
     return null;
   }
-  if (payload.type !== 'owner' || !/^[a-f0-9]{24}$/i.test(payload.id)) return null;
+  if (
+    payload.purpose ||
+    payload.type !== 'owner' ||
+    !/^[a-f0-9]{24}$/i.test(payload.id) ||
+    !/^[a-f0-9]{24}$/i.test(payload.sid)
+  )
+    return null;
   const owner = await BusinessOwner.findById(payload.id).select('+tokenVersion');
   if (
     !owner ||
@@ -25,12 +32,14 @@ const resolveIdentity = async (req) => {
     (owner.tokenVersion || 0) !== (payload.tokenVersion || 0)
   )
     return null;
+  if (!(await touchSession(payload.sid, payload.id))) return null;
   // Derive scope from the current owner relationship rather than stale token claims.
   const business = await Business.findOne({ ownerId: owner._id }).select('_id');
   return {
     owner,
     user: {
       id: String(owner._id),
+      sid: String(payload.sid),
       type: 'owner',
       role: 'owner',
       businessId: business ? String(business._id) : null,
