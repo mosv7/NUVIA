@@ -23,6 +23,7 @@ class Settings:
     threshold: float = 0.7
     baseline: bool = False
     summary_provider: str = "disabled"
+    summary_output_tokens: int = 2048
     gemini_model: str = ""
     groq_model: str = ""
     ollama_model: str = ""
@@ -55,6 +56,7 @@ class Settings:
         device = values.get("AI_DEVICE", "cpu")
         baseline = str(values.get("AI_BASELINE_MODE") or "false").strip().lower()
         summary_provider = values.get("AI_SUMMARY_PROVIDER") or "disabled"
+        summary_output_tokens = int(values.get("AI_SUMMARY_OUTPUT_TOKENS") or 2048)
         if (
             not 1 <= timeout <= 600
             or not 256 <= max_tokens <= 8192
@@ -63,6 +65,7 @@ class Settings:
             or device not in ("cpu", "cuda")
             or baseline not in ("true", "false")
             or summary_provider not in ("disabled", "gemini", "groq", "ollama")
+            or not 64 <= summary_output_tokens <= 8192
         ):
             raise ValueError("Invalid AI limits")
         model_root = Path(values.get("AI_MODEL_ROOT") or root_directory() / ".local/models")
@@ -78,6 +81,7 @@ class Settings:
             threshold=threshold,
             baseline=baseline == "true",
             summary_provider=summary_provider,
+            summary_output_tokens=summary_output_tokens,
             gemini_model=values.get("AI_GEMINI_MODEL") or "",
             groq_model=values.get("AI_GROQ_MODEL") or "",
             ollama_model=values.get("AI_OLLAMA_MODEL") or "",

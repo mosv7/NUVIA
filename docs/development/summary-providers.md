@@ -14,6 +14,7 @@ reads process environment only. Process variables override the development file.
 
 ```dotenv
 AI_SUMMARY_PROVIDER=disabled
+AI_SUMMARY_OUTPUT_TOKENS=2048
 AI_GEMINI_API_KEY=
 AI_GEMINI_MODEL=
 AI_GROQ_API_KEY=
@@ -31,6 +32,16 @@ set the reachable Ollama URL explicitly. Compose forwards these settings without
 mounting weights for remote-only summaries. Mount local weights explicitly only
 for ABSA/Qwen/local generation as described in the AI README.
 
+The owner supplied all three keys and authorized candidate selection. Account
+model-list requests returned 200. The configured candidates are
+`gemini-3.5-flash-lite`, `openai/gpt-oss-120b` and `gemma4:31b` on
+`https://ollama.com`. Flash-Lite targets low-cost extraction; GPT-OSS 120B is a
+larger Groq production candidate; Gemma 4 is a multilingual Ollama candidate.
+These are candidates, not a measured quality ranking. See official
+[Gemini model](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite),
+[Groq model](https://console.groq.com/docs/model/openai/gpt-oss-120b), and
+[Ollama model](https://ollama.com/library/gemma4:31b).
+
 Runtime dependency installation: `uv sync --project apps/ai-service --locked`.
 If using `AI_PYTHON_EXECUTABLE`, install the declared `httpx` dependency in that
 interpreter too. Keys stay in the Python service, never browser configuration or
@@ -40,11 +51,18 @@ transport. Public inputs and outputs are unchanged: `/api/ai/summaries` receives
 Quotes preserve source language; this does not enable abstractive paraphrasing.
 
 Gemini uses its native generateContent endpoint/JSON mode; Groq uses JSON object
-chat completions plus local schema validation; local Ollama uses `/api/chat`
+chat completions (strict JSON Schema for GPT-OSS, low reasoning effort) plus
+local schema validation; local Ollama uses `/api/chat`
 with a JSON schema and streaming disabled. See official
 [Gemini REST](https://ai.google.dev/api/generate-content),
 [Groq JSON mode](https://console.groq.com/docs/structured-outputs), and
 [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs).
+Ollama Cloud currently lacks native structured outputs, so its request omits
+`format` and explicitly asks for plain JSON; the same strict local schema/source
+validators still apply. Gemma 4 thinking is disabled for this extraction task.
+The summary-only prompt further requires verbatim, case/punctuation-preserving
+quotes and no Markdown. Adapter profile `summary-http-v4` includes that prompt
+and protocol choice, invalidating acceptance from earlier adapter profiles.
 
 One HTTP attempt: no retry, redirect following or fallback to Qwen/another
 provider. TLS verification remains enabled. A whole-operation deadline uses
@@ -52,13 +70,15 @@ provider. TLS verification remains enabled. A whole-operation deadline uses
 citations and source membership are revalidated in Python and Node. Provider
 truncation is an invalid result. Remote inputs use the existing 64 KiB / text
 count / character bounds, not a claim of tokenizer-equivalent input counts.
-`AI_MAX_OUTPUT_TOKENS` bounds requested generation. Busy/rate-limit returns 429,
+`AI_SUMMARY_OUTPUT_TOKENS` bounds external summary generation independently of
+local `AI_MAX_OUTPUT_TOKENS`; changing it does not change the ABSA fingerprint.
+Busy/rate-limit returns 429,
 invalid output 502, unavailable/credentials 503 and timeout 504 through existing
 safe errors. Upstream bodies/exceptions are not returned.
 
 ## Compare first
 
-No live comparison has been completed. Adding keys/models alone sends no data
+Adding keys/models alone sends no data
 and does not approve a production provider. Default is disabled; global
 `AI_BASELINE_MODE=true` cannot bypass summary acceptance.
 
@@ -84,10 +104,13 @@ candidates use the current strict extractive prompt. Both share the same input,
 output schema and source validation. This compares the configured systems, not
 a claim of identical model tokenization or prompts.
 
-Each invocation creates a new private `.local/summary-comparison/<run>/` folder:
+Each new run creates a private `.local/summary-comparison/<run>/` folder:
 
 - `results.json`: original dataset, provider/model/profile mapping, success/error
-  codes, validated outputs, latency and provider-reported token counts. Qwen
+  codes, validated outputs and provider-reported token counts. It also includes
+  attempt counts, safe HTTP status/retry hints, active request latency and
+  separate waiting time. Rate-limit failures are infrastructure
+  events, never silent successful outputs or negative quality scores. Qwen
   usage is null when unavailable, never zero or an invented estimate. Monetary
   cost is not estimated; provider usage may exclude reasoning tokens.
 - `blind-review.json`: same sources and randomized candidates, without provider
@@ -121,7 +144,87 @@ both `en` and `ar` for production review. Choose representative positive,
 negative, neutral/mixed, Egyptian, negation and hostile-text cases. Merely
 changing the smoke flag is not a representative quality assessment.
 
+## Limits, checkpoints and resume
+
+The product endpoint still makes one HTTP attempt. Only the explicit comparison
+CLI retries transient 408/429/500/502/503/504 or transport timeouts. It never
+retries bad credentials, invalid requests, schema/quotation failures or changes
+the chosen model. Every attempt is recorded. Exponential backoff with jitter
+honors numeric/date `Retry-After`, Gemini `google.rpc.RetryInfo` and Groq
+request/token reset headers; server delays are never shortened to fit a budget.
+Known remaining-zero reset headers also delay the next request after success.
+See [Gemini retries](https://ai.google.dev/gemini-api/docs/troubleshooting),
+[Groq rate headers](https://console.groq.com/docs/rate-limits), and
+[Ollama errors](https://docs.ollama.com/api/errors).
+
+The existing root .env now contains comparison-only settings:
+
+```dotenv
+AI_COMPARE_MAX_ATTEMPTS=4
+AI_COMPARE_MAX_WAIT_SECONDS=120
+AI_COMPARE_RUN_BUDGET_SECONDS=900
+AI_COMPARE_GEMINI_RPM=4
+AI_COMPARE_GEMINI_TPM=6000
+AI_COMPARE_GROQ_RPM=4
+AI_COMPARE_GROQ_TPM=6000
+AI_COMPARE_OLLAMA_RPM=4
+AI_COMPARE_OLLAMA_TPM=6000
+```
+
+Pacing is independent per provider; TPM uses a conservative byte-based estimate,
+not a model tokenizer or a promise about your account tier. Exact limits depend
+on the account/model and are enforced by the provider. After four transient
+failures for a case, the provider pauses for the remainder of that invocation.
+A delay above 120 seconds is saved immediately while other providers continue.
+A daily quota may therefore leave pending cases until a later explicit resume;
+changing client code cannot increase the account quota.
+
+Each row is checkpointed atomically, including successes, attempts and provider
+cooldowns. Waits yield progress in chunks no longer than 30 seconds. The invocation
+budget bounds in-flight evaluation too. Cancellation preserves completed rows;
+an interrupted in-flight call is recorded as uncertain and may be attempted
+again after cooldown on explicit resume.
+
+```sh
+pnpm ai:compare --run --resume ABSOLUTE_RUN_DIRECTORY
+```
+
+Resume uses the saved dataset/provider list unless explicitly supplied again.
+It validates the exact dataset, models, prompts and profiles, reuses successful
+or terminal rows, preserves cooldown deadlines and gives pending rows a new
+bounded attempt budget. A second process cannot run the same output directory.
+A completed resume makes no model/provider requests. Missing/stale **ungraded**
+review sheets are rebuilt from validated results after an interrupted pair
+publication. Any existing human ratings are preserved; pending comparisons with
+ratings or mismatched graded review files are refused.
+
+Exit code 3 means the checkpoint is safely pending quota/time budget, not lost.
+Fill ratings only after the run completes. Review digests cover the final results;
+all results and evidence stay under ignored .local storage.
+
+## Measured setup smoke — 2026-10-28
+
+The final adapter-v4 run completed all 24 candidate/case pairs on the six
+synthetic cases. Exact schema/source validation passed Gemini 6/6, Ollama 6/6,
+Groq 5/6 and local Qwen 5/6. Both invalid outputs were retained, with no retry to
+improve their scores. All calls used one attempt; actual 429 was not triggered
+in this paced run. Simulated provider tests cover 429/reset hints, transient
+errors, long quotas, budgets and resume for all three services.
+
+This measures plumbing and extractive validity, not coverage, semantic quality
+or a production winner. The earlier development run and protocol diagnostics
+are preserved separately. Final private evidence is under
+`.local/summary-comparison/selected-models-final-20261028T181204/`.
+An explicit completed resume returned 0 and left the checkpoint hash unchanged;
+no provider/model inference was repeated. No human acceptance was written and
+`AI_SUMMARY_PROVIDER` remains disabled. Python93, Ruff, backend20, Compose
+configuration3, lint and formatting passed locally.
+
 ## Approve, then select through config
+
+Only a completed comparison can be promoted; pending quota/budget cases block
+promotion. `complete` means all calls reached terminal outcomes, not that every
+model passed quality or schema validation.
 
 After reviewing all paired outputs for Qwen and the proposed candidate:
 

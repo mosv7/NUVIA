@@ -10,11 +10,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
+from app.evaluation.comparison_runner import output_lock, run_rows, validate_saved_rows
 from app.schemas.ai import SummaryRequest
 from app.services.ai import AiService
 from app.services.interfaces import validate_result
 from app.services.summary_providers import PROVIDERS, SummaryProvider, summary_config
-from app.services.worker import ExecutionError
 
 CRITERIA = ("faithfulness", "coverage", "conciseness")
 
@@ -39,7 +39,21 @@ def validate_dataset(dataset):
             raise ValueError("Case exceeds the product HTTP byte limit")
 
 
-async def compare(settings, dataset, providers, output, *, run=False, evaluator=None):
+async def compare(
+    settings,
+    dataset,
+    providers,
+    output,
+    *,
+    run=False,
+    evaluator=None,
+    resume=False,
+    policy=None,
+    sleep=asyncio.sleep,
+    clock=time.time,
+    jitter=random.random,
+    progress=None,
+):
     validate_dataset(dataset)
     if (
         not providers
@@ -47,125 +61,182 @@ async def compare(settings, dataset, providers, output, *, run=False, evaluator=
         or any(p not in ("qwen", *PROVIDERS) for p in providers)
     ):
         raise ValueError("Choose distinct supported providers")
+    if resume and not run:
+        raise ValueError("Resume requires explicit execution")
     output = Path(output)
-    output.mkdir(parents=True, exist_ok=False)
-    rows = []
-    snapshot = {
-        "version": 1,
-        "executed": run,
-        "dataset": dataset,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "providers": providers,
-        "rows": rows,
-        "configuration": {},
-    }
-    for provider in providers:
-        if provider == "qwen":
-            snapshot["configuration"][provider] = {
-                "configured": (Path(settings.model_root) / "generation/manifest.json").exists(),
-                "role": "comparison_baseline_only",
-            }
-        else:
-            try:
-                config = summary_config(replace(settings, summary_provider=provider))
-                snapshot["configuration"][provider] = {
-                    "configured": True,
-                    "model": config.model,
-                    "profile": config.profile,
-                }
-            except ValueError:
-                snapshot["configuration"][provider] = {"configured": False}
-    local = None
-
-    async def evaluate(provider, request):
-        nonlocal local
-        if provider == "qwen":
-            if local is None:
-                local = AiService(replace(settings, summary_provider="qwen"), comparison=True)
-            response = await local.execute("summaries", request)
-            return (
-                response["result"],
-                {"input_tokens": None, "output_tokens": None},
-                response["provenance"]["profile"],
-            )
-        adapter = SummaryProvider(replace(settings, summary_provider=provider))
-        result, usage = await adapter.generate(request)
-        return result, usage, adapter.config.profile
-
-    candidates = []
-    try:
-        if run:
-            if evaluator is None and "qwen" in providers:
+    output.mkdir(parents=True, exist_ok=resume)
+    local, snapshot = None, None
+    with output_lock(output):
+        try:
+            configuration = {}
+            for provider in providers:
+                if provider == "qwen":
+                    configuration[provider] = {
+                        "configured": (
+                            Path(settings.model_root) / "generation/manifest.json"
+                        ).exists(),
+                        "role": "comparison_baseline_only",
+                    }
+                else:
+                    try:
+                        config = summary_config(replace(settings, summary_provider=provider))
+                        configuration[provider] = {
+                            "configured": True,
+                            "model": config.model,
+                            "profile": config.profile,
+                        }
+                    except ValueError:
+                        configuration[provider] = {"configured": False}
+            if run and evaluator is None and "qwen" in providers:
                 local = AiService(replace(settings, summary_provider="qwen"), comparison=True)
                 caps = await asyncio.to_thread(local.capabilities)
                 status = caps["capabilities"]["summaries"]
-                snapshot["configuration"]["qwen"].update(
+                configuration["qwen"].update(
                     configured=status["ready"], profile=status["profile"], models=status["models"]
                 )
-            for case in dataset["cases"]:
-                shuffled = list(providers)
-                random.SystemRandom().shuffle(shuffled)
-                for provider in shuffled:
-                    candidate_id = str(uuid4())
-                    row = {
-                        "candidate_id": candidate_id,
-                        "case_id": case["id"],
-                        "provider": provider,
-                        "profile": snapshot["configuration"][provider].get("profile"),
-                    }
-                    started = time.perf_counter()
-                    request = SummaryRequest.model_validate(case["request"])
-                    try:
-                        result, usage, profile = await (evaluator or evaluate)(provider, request)
-                        result = validate_result("summaries", result, request)
-                        row.update(status="ok", result=result, usage=usage, profile=profile)
-                    except ExecutionError as error:
-                        safe_codes = {
-                            "model_busy",
-                            "model_timeout",
-                            "invalid_model_output",
-                            "capability_unavailable",
-                            "input_too_large",
-                            "provider_unavailable",
-                        }
-                        row["status"] = (
-                            str(error) if str(error) in safe_codes else "provider_unavailable"
-                        )
-                    except ValueError:
-                        row["status"] = "configuration_or_output_invalid"
-                    row["latency_ms"] = round((time.perf_counter() - started) * 1000, 2)
-                    rows.append(row)
-                    candidates.append(
-                        {
-                            "candidate_id": candidate_id,
-                            "case_id": case["id"],
-                            "request": case["request"],
-                            "result": row.get("result"),
-                            "status": row["status"],
-                            "ratings": {k: None for k in CRITERIA},
-                        }
+            signature = digest(
+                {"dataset": dataset, "providers": providers, "configuration": configuration}
+            )
+            if resume:
+                saved = json.loads((output / "results.json").read_text(encoding="utf-8"))
+                review_path = output / "blind-review.json"
+                review = (
+                    json.loads(review_path.read_text(encoding="utf-8"))
+                    if review_path.exists()
+                    else {}
+                )
+                if (
+                    saved.get("version") != 2
+                    or saved.get("executed") is not True
+                    or saved.get("run_signature") != signature
+                ):
+                    raise ValueError("Resume dataset/profile/review mismatch")
+                validate_saved_rows(saved, dataset, providers, configuration)
+                graded = any(
+                    value is not None
+                    for row in review.get("candidates", [])
+                    for value in row["ratings"].values()
+                )
+                matching_review = review.get("results_digest") == digest(saved)
+                if saved.get("state") == "complete" and matching_review:
+                    return saved
+                if graded:
+                    raise ValueError(
+                        "Finish comparison before reviewing; preserve existing ratings"
                     )
-    finally:
-        if local is not None:
-            local.close()
-    save_json(output / "results.json", snapshot)
-    if run:
-        save_json(
-            output / "blind-review.json",
-            {
-                "results_digest": digest(snapshot),
-                "instructions": (
-                    "Rate each criterion 1-5. Review evidence first. "
-                    "Do not open results.json until ratings are complete."
-                ),
-                "candidates": candidates,
-            },
-        )
-    return snapshot
+                # Recover a missing/stale ungraded sheet after a partial pair publication.
+                snapshot = saved
+            else:
+                rows = []
+                if run:
+                    for case in dataset["cases"]:
+                        shuffled = list(providers)
+                        random.SystemRandom().shuffle(shuffled)
+                        for provider in shuffled:
+                            rows.append(
+                                {
+                                    "candidate_id": str(uuid4()),
+                                    "case_id": case["id"],
+                                    "provider": provider,
+                                    "profile": configuration[provider].get("profile"),
+                                    "status": "pending",
+                                    "attempts": [],
+                                }
+                            )
+                snapshot = {
+                    "version": 2,
+                    "executed": run,
+                    "dataset": dataset,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "providers": providers,
+                    "configuration": configuration,
+                    "run_signature": signature,
+                    "rows": rows,
+                    "provider_next_at": {},
+                }
+
+            def checkpoint():
+                snapshot["state"] = (
+                    (
+                        "pending"
+                        if any(r["status"] == "pending" for r in snapshot["rows"])
+                        else "complete"
+                    )
+                    if run
+                    else "dry_run"
+                )
+                save_json(output / "results.json", snapshot)
+                if run:
+                    originals = {c["id"]: c["request"] for c in dataset["cases"]}
+                    save_json(
+                        output / "blind-review.json",
+                        {
+                            "results_digest": digest(snapshot),
+                            "instructions": (
+                                "Score 1-5 after comparison completes; keep identities hidden."
+                            ),
+                            "candidates": [
+                                {
+                                    "candidate_id": row["candidate_id"],
+                                    "case_id": row["case_id"],
+                                    "request": originals[row["case_id"]],
+                                    "result": row.get("result"),
+                                    "status": row["status"],
+                                    "ratings": {k: None for k in CRITERIA},
+                                }
+                                for row in snapshot["rows"]
+                            ],
+                        },
+                    )
+
+            async def evaluate(provider, request):
+                if provider == "qwen":
+                    response = await local.execute("summaries", request)
+                    return (
+                        response["result"],
+                        {"input_tokens": None, "output_tokens": None},
+                        response["provenance"]["profile"],
+                    )
+                adapter = SummaryProvider(replace(settings, summary_provider=provider))
+                result, usage = await adapter.generate(request)
+                if adapter.cooldown:
+                    cooldowns = snapshot["provider_next_at"]
+                    cooldowns[provider] = max(
+                        cooldowns.get(provider, 0), clock() + adapter.cooldown
+                    )
+                return result, usage, adapter.config.profile
+
+            checkpoint()
+            if run:
+                await run_rows(
+                    snapshot,
+                    settings,
+                    evaluator or evaluate,
+                    checkpoint,
+                    policy=policy,
+                    sleep=sleep,
+                    clock=clock,
+                    jitter=jitter,
+                    progress=progress,
+                )
+            return snapshot
+        finally:
+            if snapshot is not None:
+                checkpoint()
+            if local is not None:
+                local.close()
 
 
 def save_json(path, value):
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    temporary = path.with_name(path.name + "." + uuid4().hex + ".tmp")
+    try:
+        temporary.write_text(
+            json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + "\n",
+            encoding="utf-8",
+        )
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def promote(settings, result, review, provider):
@@ -173,6 +244,7 @@ def promote(settings, result, review, provider):
     validate_dataset(result["dataset"])
     if (
         provider not in PROVIDERS
+        or result.get("state", "complete") != "complete"
         or result.get("executed") is not True
         or result["dataset"]["production_candidate"] is not True
         or review.get("results_digest") != digest(result)

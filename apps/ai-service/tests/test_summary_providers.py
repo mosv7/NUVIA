@@ -158,7 +158,7 @@ def test_configuration_fingerprints_exclude_keys_but_track_model_and_limits(monk
     config = summary_config(settings())
     assert config.profile == summary_config(replace(settings(), groq_api_key="different")).profile
     assert config.profile != summary_config(replace(settings(), groq_model="another")).profile
-    assert config.profile != summary_config(replace(settings(), output_tokens=1024)).profile
+    assert config.profile != summary_config(replace(settings(), summary_output_tokens=1024)).profile
     assert "private" not in repr(settings())
     assert "private" not in repr(config)
     monkeypatch.setenv("NODE_ENV", "production")

@@ -6,9 +6,15 @@ from dataclasses import replace
 import pytest
 from test_summary_providers import BODY, RESULT, settings
 
-from app.evaluation.summaries import compare, digest, promote
+from app.evaluation.comparison_runner import ComparisonPolicy
+from app.evaluation.summaries import compare as compare_with_policy
+from app.evaluation.summaries import digest, promote
 from app.services.ai import AiService
 from app.services.summary_providers import summary_config
+
+
+def compare(*args, **kwargs):
+    return compare_with_policy(*args, policy=ComparisonPolicy(rpm={}, tpm={}), **kwargs)
 
 
 def dataset():
