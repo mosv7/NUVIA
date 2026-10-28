@@ -1,0 +1,1218 @@
+{
+  "requests": {
+    "analyze": {
+      "$defs": {
+        "Evidence": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": ["id", "text"],
+          "title": "Evidence",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "texts": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Texts",
+          "type": "array"
+        }
+      },
+      "required": ["texts"],
+      "title": "AnalyzeRequest",
+      "type": "object"
+    },
+    "summaries": {
+      "$defs": {
+        "Evidence": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": ["id", "text"],
+          "title": "Evidence",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "texts": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Texts",
+          "type": "array"
+        },
+        "locale": {
+          "enum": ["ar", "en"],
+          "title": "Locale",
+          "type": "string"
+        }
+      },
+      "required": ["texts", "locale"],
+      "title": "SummaryRequest",
+      "type": "object"
+    },
+    "reports": {
+      "$defs": {
+        "Evidence": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": ["id", "text"],
+          "title": "Evidence",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "texts": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Texts",
+          "type": "array"
+        },
+        "locale": {
+          "enum": ["ar", "en"],
+          "title": "Locale",
+          "type": "string"
+        },
+        "objective": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Objective"
+        }
+      },
+      "required": ["texts", "locale"],
+      "title": "ReportRequest",
+      "type": "object"
+    },
+    "survey-suggestions": {
+      "additionalProperties": false,
+      "properties": {
+        "industry": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Industry",
+          "type": "string"
+        },
+        "objective": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Objective",
+          "type": "string"
+        },
+        "locale": {
+          "enum": ["ar", "en"],
+          "title": "Locale",
+          "type": "string"
+        },
+        "count": {
+          "default": 5,
+          "maximum": 10,
+          "minimum": 5,
+          "title": "Count",
+          "type": "integer"
+        }
+      },
+      "required": ["industry", "objective", "locale"],
+      "title": "SurveyRequest",
+      "type": "object"
+    },
+    "answers": {
+      "$defs": {
+        "Evidence": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": ["id", "text"],
+          "title": "Evidence",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "texts": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Texts",
+          "type": "array"
+        },
+        "locale": {
+          "enum": ["ar", "en"],
+          "title": "Locale",
+          "type": "string"
+        },
+        "question": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": ["texts", "locale", "question"],
+      "title": "AnswerRequest",
+      "type": "object"
+    }
+  },
+  "responses": {
+    "summaries": {
+      "$defs": {
+        "Citation": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "quote": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": ["id", "quote"],
+          "title": "Citation",
+          "type": "object"
+        },
+        "Claim": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "citations": {
+              "items": {
+                "$ref": "#/$defs/Citation"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "title": "Citations",
+              "type": "array"
+            }
+          },
+          "required": ["text", "citations"],
+          "title": "Claim",
+          "type": "object"
+        },
+        "Provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "models": {
+              "items": {
+                "pattern": "^[A-Za-z0-9_.-]{1,100}$",
+                "type": "string"
+              },
+              "maxItems": 3,
+              "minItems": 1,
+              "title": "Models",
+              "type": "array"
+            },
+            "profile": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Profile",
+              "type": "string"
+            },
+            "prompt_version": {
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
+              "title": "Prompt Version",
+              "type": "string"
+            },
+            "method_version": {
+              "const": "aspects-v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "scores": {
+              "const": "uncalibrated",
+              "title": "Scores",
+              "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
+            }
+          },
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
+          "title": "Provenance",
+          "type": "object"
+        },
+        "Summary": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/$defs/Claim"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "title": "Items",
+              "type": "array"
+            }
+          },
+          "required": ["items"],
+          "title": "Summary",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "operation": {
+          "const": "summaries",
+          "title": "Operation",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[a-f0-9-]{36}$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "result": {
+          "$ref": "#/$defs/Summary"
+        }
+      },
+      "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+      "title": "summaries_response",
+      "type": "object"
+    },
+    "reports": {
+      "$defs": {
+        "Citation": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "quote": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": ["id", "quote"],
+          "title": "Citation",
+          "type": "object"
+        },
+        "Claim": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "citations": {
+              "items": {
+                "$ref": "#/$defs/Citation"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "title": "Citations",
+              "type": "array"
+            }
+          },
+          "required": ["text", "citations"],
+          "title": "Claim",
+          "type": "object"
+        },
+        "Provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "models": {
+              "items": {
+                "pattern": "^[A-Za-z0-9_.-]{1,100}$",
+                "type": "string"
+              },
+              "maxItems": 3,
+              "minItems": 1,
+              "title": "Models",
+              "type": "array"
+            },
+            "profile": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Profile",
+              "type": "string"
+            },
+            "prompt_version": {
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
+              "title": "Prompt Version",
+              "type": "string"
+            },
+            "method_version": {
+              "const": "aspects-v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "scores": {
+              "const": "uncalibrated",
+              "title": "Scores",
+              "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
+            }
+          },
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
+          "title": "Provenance",
+          "type": "object"
+        },
+        "Recommendation": {
+          "additionalProperties": false,
+          "properties": {
+            "suggestion": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Suggestion",
+              "type": "string"
+            },
+            "citations": {
+              "items": {
+                "$ref": "#/$defs/Citation"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "title": "Citations",
+              "type": "array"
+            }
+          },
+          "required": ["suggestion", "citations"],
+          "title": "Recommendation",
+          "type": "object"
+        },
+        "Report": {
+          "additionalProperties": false,
+          "properties": {
+            "strengths": {
+              "items": {
+                "$ref": "#/$defs/Claim"
+              },
+              "maxItems": 10,
+              "title": "Strengths",
+              "type": "array"
+            },
+            "problems": {
+              "items": {
+                "$ref": "#/$defs/Claim"
+              },
+              "maxItems": 10,
+              "title": "Problems",
+              "type": "array"
+            },
+            "suggested_actions": {
+              "items": {
+                "$ref": "#/$defs/Recommendation"
+              },
+              "maxItems": 10,
+              "title": "Suggested Actions",
+              "type": "array"
+            }
+          },
+          "required": ["strengths", "problems", "suggested_actions"],
+          "title": "Report",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "operation": {
+          "const": "reports",
+          "title": "Operation",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[a-f0-9-]{36}$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "result": {
+          "$ref": "#/$defs/Report"
+        }
+      },
+      "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+      "title": "reports_response",
+      "type": "object"
+    },
+    "answers": {
+      "$defs": {
+        "Answer": {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": ["answered", "insufficient_evidence"],
+              "title": "Status",
+              "type": "string"
+            },
+            "items": {
+              "items": {
+                "$ref": "#/$defs/Claim"
+              },
+              "maxItems": 10,
+              "title": "Items",
+              "type": "array"
+            }
+          },
+          "required": ["status", "items"],
+          "title": "Answer",
+          "type": "object"
+        },
+        "Citation": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "quote": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": ["id", "quote"],
+          "title": "Citation",
+          "type": "object"
+        },
+        "Claim": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "citations": {
+              "items": {
+                "$ref": "#/$defs/Citation"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "title": "Citations",
+              "type": "array"
+            }
+          },
+          "required": ["text", "citations"],
+          "title": "Claim",
+          "type": "object"
+        },
+        "Provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "models": {
+              "items": {
+                "pattern": "^[A-Za-z0-9_.-]{1,100}$",
+                "type": "string"
+              },
+              "maxItems": 3,
+              "minItems": 1,
+              "title": "Models",
+              "type": "array"
+            },
+            "profile": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Profile",
+              "type": "string"
+            },
+            "prompt_version": {
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
+              "title": "Prompt Version",
+              "type": "string"
+            },
+            "method_version": {
+              "const": "aspects-v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "scores": {
+              "const": "uncalibrated",
+              "title": "Scores",
+              "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
+            }
+          },
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
+          "title": "Provenance",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "operation": {
+          "const": "answers",
+          "title": "Operation",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[a-f0-9-]{36}$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "result": {
+          "$ref": "#/$defs/Answer"
+        }
+      },
+      "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+      "title": "answers_response",
+      "type": "object"
+    },
+    "survey-suggestions": {
+      "$defs": {
+        "Provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "models": {
+              "items": {
+                "pattern": "^[A-Za-z0-9_.-]{1,100}$",
+                "type": "string"
+              },
+              "maxItems": 3,
+              "minItems": 1,
+              "title": "Models",
+              "type": "array"
+            },
+            "profile": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Profile",
+              "type": "string"
+            },
+            "prompt_version": {
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
+              "title": "Prompt Version",
+              "type": "string"
+            },
+            "method_version": {
+              "const": "aspects-v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "scores": {
+              "const": "uncalibrated",
+              "title": "Scores",
+              "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
+            }
+          },
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
+          "title": "Provenance",
+          "type": "object"
+        },
+        "Question": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 1000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "type": {
+              "enum": ["text", "rating"],
+              "title": "Type",
+              "type": "string"
+            }
+          },
+          "required": ["text", "type"],
+          "title": "Question",
+          "type": "object"
+        },
+        "Survey": {
+          "additionalProperties": false,
+          "properties": {
+            "questions": {
+              "items": {
+                "$ref": "#/$defs/Question"
+              },
+              "maxItems": 10,
+              "minItems": 5,
+              "title": "Questions",
+              "type": "array"
+            }
+          },
+          "required": ["questions"],
+          "title": "Survey",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "operation": {
+          "const": "survey-suggestions",
+          "title": "Operation",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[a-f0-9-]{36}$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "result": {
+          "$ref": "#/$defs/Survey"
+        }
+      },
+      "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+      "title": "survey_suggestions_response",
+      "type": "object"
+    },
+    "analyze": {
+      "$defs": {
+        "Analyses": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/$defs/Analysis"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "title": "Items",
+              "type": "array"
+            }
+          },
+          "required": ["items"],
+          "title": "Analyses",
+          "type": "object"
+        },
+        "Analysis": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sentiment": {
+              "anyOf": [
+                {
+                  "enum": ["positive", "negative", "neutral", "mixed"],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sentiment"
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "const": "insufficient_evidence",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Reason"
+            },
+            "method": {
+              "const": "aspect_derived",
+              "title": "Method",
+              "type": "string"
+            },
+            "coverage": {
+              "const": "partial_aspects",
+              "title": "Coverage",
+              "type": "string"
+            },
+            "mentions": {
+              "items": {
+                "$ref": "#/$defs/Mention"
+              },
+              "maxItems": 100,
+              "title": "Mentions",
+              "type": "array"
+            },
+            "contributing_ids": {
+              "items": {
+                "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                "type": "string"
+              },
+              "title": "Contributing Ids",
+              "type": "array"
+            },
+            "excluded_count": {
+              "minimum": 0,
+              "title": "Excluded Count",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "sentiment",
+            "reason",
+            "method",
+            "coverage",
+            "mentions",
+            "contributing_ids",
+            "excluded_count"
+          ],
+          "title": "Analysis",
+          "type": "object"
+        },
+        "Mention": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "start": {
+              "minimum": 0,
+              "title": "Start",
+              "type": "integer"
+            },
+            "end": {
+              "exclusiveMinimum": 0,
+              "title": "End",
+              "type": "integer"
+            },
+            "sentiment": {
+              "enum": ["positive", "negative", "neutral"],
+              "title": "Sentiment",
+              "type": "string"
+            },
+            "score": {
+              "maximum": 1,
+              "minimum": 0,
+              "title": "Score",
+              "type": "number"
+            },
+            "extraction_score": {
+              "maximum": 1,
+              "minimum": 0,
+              "title": "Extraction Score",
+              "type": "number"
+            },
+            "accepted": {
+              "title": "Accepted",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "start",
+            "end",
+            "sentiment",
+            "score",
+            "extraction_score",
+            "accepted"
+          ],
+          "title": "Mention",
+          "type": "object"
+        },
+        "Provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "models": {
+              "items": {
+                "pattern": "^[A-Za-z0-9_.-]{1,100}$",
+                "type": "string"
+              },
+              "maxItems": 3,
+              "minItems": 1,
+              "title": "Models",
+              "type": "array"
+            },
+            "profile": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Profile",
+              "type": "string"
+            },
+            "prompt_version": {
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
+              "title": "Prompt Version",
+              "type": "string"
+            },
+            "method_version": {
+              "const": "aspects-v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "scores": {
+              "const": "uncalibrated",
+              "title": "Scores",
+              "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
+            }
+          },
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
+          "title": "Provenance",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "operation": {
+          "const": "analyze",
+          "title": "Operation",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[a-f0-9-]{36}$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "result": {
+          "$ref": "#/$defs/Analyses"
+        }
+      },
+      "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+      "title": "analyze_response",
+      "type": "object"
+    }
+  },
+  "capabilities": {
+    "$defs": {
+      "Capability": {
+        "additionalProperties": false,
+        "properties": {
+          "ready": {
+            "title": "Ready",
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "package_unavailable",
+                  "inference_dependencies_missing",
+                  "unverified_input_format",
+                  "unassessed",
+                  "service_not_configured"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "models": {
+            "items": {
+              "pattern": "^[A-Za-z0-9_.-]{1,100}$",
+              "type": "string"
+            },
+            "maxItems": 3,
+            "title": "Models",
+            "type": "array"
+          },
+          "profile": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Profile",
+            "type": "string"
+          },
+          "quality_status": {
+            "enum": ["accepted", "baseline", "unavailable"],
+            "title": "Quality Status",
+            "type": "string"
+          },
+          "quality_accepted": {
+            "title": "Quality Accepted",
+            "type": "boolean"
+          },
+          "warnings": {
+            "items": {
+              "enum": ["experimental_baseline", "quality_not_accepted"],
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ready",
+          "reason",
+          "models",
+          "profile",
+          "quality_status",
+          "quality_accepted",
+          "warnings"
+        ],
+        "title": "Capability",
+        "type": "object"
+      },
+      "CapabilityMap": {
+        "additionalProperties": false,
+        "properties": {
+          "analyze": {
+            "$ref": "#/$defs/Capability"
+          },
+          "summaries": {
+            "$ref": "#/$defs/Capability"
+          },
+          "reports": {
+            "$ref": "#/$defs/Capability"
+          },
+          "survey-suggestions": {
+            "$ref": "#/$defs/Capability"
+          },
+          "answers": {
+            "$ref": "#/$defs/Capability"
+          }
+        },
+        "required": ["analyze", "summaries", "reports", "survey-suggestions", "answers"],
+        "title": "CapabilityMap",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": "1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "capabilities": {
+        "$ref": "#/$defs/CapabilityMap"
+      }
+    },
+    "required": ["schema_version", "capabilities"],
+    "title": "Capabilities",
+    "type": "object"
+  }
+}

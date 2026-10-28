@@ -7,7 +7,7 @@ NUVIA is an Arabic/English customer-feedback product under development. `backend
 - Web: React/Vite, JavaScript/JSX in `apps/web`.
 - API: Node.js/Express/Mongoose, CommonJS `.js` in `backend` (`@nuvia/api`).
 - Implemented backend areas: owner auth/browser sessions/recovery, business/onboarding, branches, survey/questions/templates and survey publishing state. Settings/security APIs and public survey reads are implemented; browser second-factor sign-in/email-change confirmation reuse the auth shell. Complete settings/survey frontend integration, public response collection and live analytics are still under development.
-- AI: independent FastAPI health-only scaffold in `apps/ai-service`, reporting `analysis_available: false`. No NLP, inference, RAG, model weights or Node analysis integration.
+- AI: optional internal FastAPI in `apps/ai-service`, called only by protected Node `/api/ai` routes. Model-independent contracts and local Qwen/DeBERTa adapters exist. Owner-authorized `AI_BASELINE_MODE=true` enables all five configured operations with explicit baseline/quality-unaccepted metadata; default strict mode retains assessment gates. Never turn baseline permission into a passing assessment or bypass hashes/auth/source/schema validation. No MongoDB writes, RAG or connected AI UI. See `docs/api/ai.md` and `docs/development/local-ai-validation.md`; liveness alone is not acceptance.
 - Email verification/resend is unavailable; registration signs in directly. Team administration, Google OAuth and billing remain future work.
 
 Read [README](README.md), [architecture](docs/architecture/architecture.md), [module boundaries](docs/development/module-boundaries.md), [DESIGN.md](DESIGN.md) and [API](docs/api/README.md) before product changes. The feature map is full planned scope, not authorization to implement later features. Archived proposals and older validation/plans are historical evidence.
@@ -19,7 +19,7 @@ Read [README](README.md), [architecture](docs/architecture/architecture.md), [mo
 - `backend/app.js`, `server.js`: API composition, root configuration, database/startup. `backend/src/routes`, `controllers`, `services`, `middlewares`, `validations`: HTTP/business/security behavior. `backend/src/models`: executable MongoDB schemas/indexes.
 - `backend/tests`, `apps/web/tests`: package checks; root `tests/e2e` owns cross-app tests; root `scripts` owns setup/database/dev orchestration.
 - `packages/shared-types`: public DTO declarations/constants only, never schemas/secrets/Node-only imports.
-- `apps/ai-service`: separate Python dependencies and health/scope checks. Future AI models are not MongoDB models.
+- `apps/ai-service`: separate Python dependencies, local model adapters, contracts and tests. Optional inference dependencies/weights are not required for account development. AI models are not MongoDB models; artifacts and assessments stay in ignored local storage.
 - `infra`/`compose.yaml`: optional local containers/replica set/nginx, not production/CD.
 - `.local`: ignored credentials, private mail, logs, binaries and data; never assume it exists in another checkout.
 

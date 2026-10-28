@@ -75,6 +75,11 @@ jobs:
       JWT_SECRET: ci-only-container-secret-with-at-least-thirty-two-characters
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check optional AI model configuration without private weights
+        run: node --test tests/infra/ai-compose.test.mjs
       - run: docker compose --profile ai config --quiet
       - run: docker compose --profile ai up --build -d
       - name: Check same-origin API, web and scaffold health

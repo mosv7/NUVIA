@@ -19,7 +19,17 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buffer) => {
+      if (/^\/api\/ai(?:\/|\?|$)/iu.test(req.originalUrl) && buffer.length > 65536) {
+        const error = new Error('AI request too large');
+        error.type = 'entity.too.large';
+        throw error;
+      }
+    },
+  }),
+);
 app.use(cookieParser());
 app.use('/api', requireBrowserCsrf);
 app.get('/api/health/live', (req, res) => res.json({ status: 'ok' }));
@@ -45,6 +55,7 @@ app.use('/api/surveys', surveyRoutes);
 app.use('/api/survey-templates', surveyTemplateRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/ai', require('./src/routes/ai.routes'));
 app.use('/api/settings', require('./src/routes/settings.routes'));
 app.use('/api/public', require('./src/routes/publicSurvey.routes'));
 app.use((error, req, res, next) => {

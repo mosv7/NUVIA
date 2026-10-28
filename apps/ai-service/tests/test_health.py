@@ -10,16 +10,18 @@ async def request(method, path, **kwargs):
         return await client.request(method, path, **kwargs)
 
 
-def test_health_identifies_the_scaffold_without_claiming_analysis():
+def test_health_identifies_liveness_without_claiming_analysis_readiness():
     response = asyncio.run(request("GET", "/api/v1/health/live"))
     assert response.status_code == 200
     assert response.json() == {
         "status": "live",
         "service": "nuvia-ai-service",
-        "analysis_available": False,
+        "analysis_available": None,
+        "baseline_enabled": app.state.settings.baseline,
+        "capabilities_url": "/api/v1/capabilities",
     }
 
 
-def test_no_analysis_endpoint_is_exposed_by_the_scaffold():
+def test_analysis_is_never_exposed_without_internal_authentication():
     response = asyncio.run(request("POST", "/api/v1/analyze", json={"text": "sample"}))
-    assert response.status_code == 404
+    assert response.status_code in (401, 503)
