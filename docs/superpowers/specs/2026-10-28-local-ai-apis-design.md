@@ -344,3 +344,22 @@ without changing public APIs, while retaining the prior explicit review-first
 format for other packages. This resolves the input-order question; the separate
 quality gate still applies. A frozen eight-case assessment passed 6/8, so analysis
 remains unaccepted at the unchanged threshold.
+
+## Superseding owner direction: baseline mode
+
+The owner explicitly requested running the supplied models as baselines for all
+five implemented AI operations. Add server-only `AI_BASELINE_MODE` (default false)
+to bypass the quality-assessment eligibility gate only. Local true enables all
+configured operations while retaining package/hash/dependency/input-format,
+authentication, source/schema and resource controls. Never write passing
+acceptance flags to fulfill this request.
+
+Expose baseline/accepted/unavailable quality status, a separate quality_accepted
+boolean and experimental warnings on capabilities and successful provenance.
+Default strict mode remains available. Baseline compact prompts may simplify the
+small model's internal output while preserving the public schemas; report quote
+citations are resolved against current inputs by code. Baseline JSON-fence
+unwrapping does not allow prose, foreign evidence or invalid public outputs.
+Configure/start the local service using the existing CUDA interpreter without
+changing database/JWT configuration or unrelated processes. This is API-only
+baseline operation, not acceptance of full product/production quality.

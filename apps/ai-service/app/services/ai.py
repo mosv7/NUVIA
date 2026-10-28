@@ -11,7 +11,13 @@ from pathlib import Path
 
 from app.models.artifacts import POLARITY_FORMATS, read_manifest
 from app.schemas.ai import OPERATIONS, REQUESTS, RESULTS
-from app.services.interfaces import PROMPT_VERSION, RULES, validate_result
+from app.services.interfaces import (
+    BASELINE_PROMPT_VERSION,
+    PROMPT_VERSION,
+    RULES,
+    baseline_prompt,
+    validate_result,
+)
 from app.services.worker import ExecutionError, Supervisor
 
 
@@ -24,7 +30,7 @@ def profile_fingerprint(manifests, settings):
 
     profile = {
         "models": {k: v["fingerprint"] for k, v in manifests.items()},
-        "prompt": PROMPT_VERSION,
+        "prompt": BASELINE_PROMPT_VERSION if settings.baseline else PROMPT_VERSION,
         "schema": "1",
         "device": settings.device,
         "threshold": settings.threshold,
@@ -35,7 +41,13 @@ def profile_fingerprint(manifests, settings):
             name: [REQUESTS[name].model_json_schema(), RESULTS[name].model_json_schema()]
             for name in OPERATIONS
         },
-        "instructions": RULES,
+        "instructions": {
+            operation: baseline_prompt(operation)
+            for operation in OPERATIONS
+            if operation != "analyze"
+        }
+        if settings.baseline
+        else RULES,
     }
     return hashlib.sha256(json.dumps(profile, sort_keys=True).encode()).hexdigest()
 
@@ -76,6 +88,8 @@ class AiService:
             )
         except (OSError, ValueError):
             acceptance = {}
+        if not isinstance(acceptance, dict):
+            acceptance = {}
         capabilities = {}
         dependencies = all(importlib.util.find_spec(n) for n in ("torch", "transformers"))
         for operation in OPERATIONS:
@@ -94,17 +108,29 @@ class AiService:
                 reason = "unverified_input_format"
             profile = profile_fingerprint(models, self.settings)
             record = acceptance.get(operation, {})
-            if not reason and (
-                record.get("profile") != profile
-                or record.get("passed") is not True
-                or record.get("reviewed") is not True
-            ):
+            accepted = (
+                not reason
+                and isinstance(record, dict)
+                and (
+                    record.get("profile") == profile
+                    and record.get("passed") is True
+                    and record.get("reviewed") is True
+                )
+            )
+            if not reason and not accepted and not self.settings.baseline:
                 reason = "unassessed"
+            quality = "unavailable" if reason else "accepted" if accepted else "baseline"
+            warnings = (
+                ["experimental_baseline", "quality_not_accepted"] if quality == "baseline" else []
+            )
             capabilities[operation] = {
                 "ready": reason is None,
                 "reason": reason,
                 "models": [m["alias"] for m in models.values()],
                 "profile": profile,
+                "quality_status": quality,
+                "quality_accepted": bool(accepted),
+                "warnings": warnings,
             }
         return {"schema_version": "1", "capabilities": capabilities}
 
@@ -139,9 +165,14 @@ class AiService:
             "provenance": {
                 "models": capability["models"],
                 "profile": capability["profile"],
-                "prompt_version": PROMPT_VERSION,
+                "prompt_version": BASELINE_PROMPT_VERSION
+                if self.settings.baseline
+                else PROMPT_VERSION,
                 "method_version": "aspects-v1",
                 "scores": "uncalibrated",
+                "quality_status": capability["quality_status"],
+                "quality_accepted": capability["quality_accepted"],
+                "warnings": capability["warnings"],
             },
             "result": result,
         }

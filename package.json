@@ -12,7 +12,7 @@
     "dev:network": "pnpm --filter @nuvia/web dev:network",
     "dev:api": "pnpm --filter @nuvia/api dev",
     "dev:backend": "pnpm run dev:api",
-    "dev:ai": "uv run --directory apps/ai-service uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "dev:ai": "node scripts/dev-ai.mjs",
     "setup:local": "node scripts/setup-local.mjs",
     "start:backend": "pnpm --filter @nuvia/api start",
     "db:check": "node scripts/db-check.mjs",

@@ -128,3 +128,55 @@ smoke cases, not a general accuracy estimate. Private evidence:
 `unassessed`, rather than `unverified_input_format`, when these packages and the
 optional dependencies are configured. Generation remains unaccepted. Follow-up
 Python suite: 27 tests passed; Ruff check/format passed.
+
+## Owner-authorized baseline operation
+
+The owner subsequently requested enabling the supplied models as baselines for
+**all five existing operations**. This explicitly supersedes the earlier strict
+eligibility decision; it does not turn failed assessments into passes.
+`AI_BASELINE_MODE=true` is configured privately in this checkout. Default false
+keeps the original quality gate for other installations.
+
+Every capability/result now distinguishes ready-to-execute from quality acceptance:
+`quality_status: baseline`, `quality_accepted: false`, with
+`experimental_baseline` and `quality_not_accepted` warnings. Artifact hashes,
+dependencies, known polarity order, authentication, request/output/evidence
+validation, resource bounds and the 0.7 mention threshold remain enforced.
+
+Baseline generation uses compact prompts (`baseline-extractive-v2`). One entire
+Markdown JSON fence may be removed before normal parsing/validation; surrounding
+prose remains rejected. The small model produced malformed nested report JSON,
+so baseline reports use three strict internal strings (strength quote, problem
+quote, suggestion). Code resolves quotes to exact current-request sources and
+constructs the unchanged public report/citations before full validation. The
+compact baseline can supply at most one strength and one problem per report;
+unsupported sections stay empty, and invented quotations remain rejected.
+
+An owned loopback service was started using this machine's existing CUDA Python
+interpreter: Qwen on GPU, DeBERTa on CPU, with no unrelated process terminated.
+`pnpm dev:ai` honors optional private `AI_PYTHON_EXECUTABLE`; empty uses uv.
+Private AI URL/token/device/baseline settings were configured while preserving
+unrelated environment/database/JWT values. No private paths/tokens are committed.
+
+Actual authenticated HTTP smoke on synthetic inputs:
+
+| Operation          | HTTP status | Seconds |
+| ------------------ | ----------- | ------- |
+| Analyze (Arabic)   | 200         | 12.902  |
+| Summary            | 200         | 6.973   |
+| Report             | 200         | 1.490   |
+| Survey suggestions | 200         | 5.769   |
+| Evidence answer    | 200         | 3.350   |
+
+All capabilities reported ready in baseline mode and none reported quality
+acceptance. Private evidence: `.local/ai-assessment/baseline-http.json`.
+This is one structural/runtime smoke input per operation, not a claim that the
+models now pass the earlier semantic assessments or work for every input.
+Liveness exposes analysis_available=null and points to authenticated capabilities
+instead of incorrectly claiming analysis is always unavailable.
+
+Baseline verification: Python32, backend20, web185 plus dev-server test, lint,
+format, build, frozen pnpm install and proxy lifecycle passed. Independent review
+confirmed that baseline does not bypass validation and found no material issue.
+Public settings/body/token contracts retain their existing protection. No UI,
+collection, persistence, clustering or RAG feature was added by this opt-in.

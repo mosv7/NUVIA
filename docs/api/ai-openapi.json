@@ -484,11 +484,36 @@
             "type": "string",
             "pattern": "^[a-f0-9]{64}$",
             "title": "Profile"
+          },
+          "quality_status": {
+            "type": "string",
+            "enum": ["accepted", "baseline", "unavailable"],
+            "title": "Quality Status"
+          },
+          "quality_accepted": {
+            "type": "boolean",
+            "title": "Quality Accepted"
+          },
+          "warnings": {
+            "items": {
+              "type": "string",
+              "enum": ["experimental_baseline", "quality_not_accepted"]
+            },
+            "type": "array",
+            "title": "Warnings"
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["ready", "reason", "models", "profile"],
+        "required": [
+          "ready",
+          "reason",
+          "models",
+          "profile",
+          "quality_status",
+          "quality_accepted",
+          "warnings"
+        ],
         "title": "Capability"
       },
       "CapabilityMap": {
@@ -603,10 +628,19 @@
             "default": "nuvia-ai-service"
           },
           "analysis_available": {
+            "type": "null",
+            "title": "Analysis Available"
+          },
+          "baseline_enabled": {
             "type": "boolean",
-            "const": false,
-            "title": "Analysis Available",
+            "title": "Baseline Enabled",
             "default": false
+          },
+          "capabilities_url": {
+            "type": "string",
+            "const": "/api/v1/capabilities",
+            "title": "Capabilities Url",
+            "default": "/api/v1/capabilities"
           }
         },
         "type": "object",
@@ -690,7 +724,7 @@
           },
           "prompt_version": {
             "type": "string",
-            "const": "extractive-v1",
+            "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
             "title": "Prompt Version"
           },
           "method_version": {
@@ -702,11 +736,37 @@
             "type": "string",
             "const": "uncalibrated",
             "title": "Scores"
+          },
+          "quality_status": {
+            "type": "string",
+            "enum": ["accepted", "baseline"],
+            "title": "Quality Status"
+          },
+          "quality_accepted": {
+            "type": "boolean",
+            "title": "Quality Accepted"
+          },
+          "warnings": {
+            "items": {
+              "type": "string",
+              "enum": ["experimental_baseline", "quality_not_accepted"]
+            },
+            "type": "array",
+            "title": "Warnings"
           }
         },
         "additionalProperties": false,
         "type": "object",
-        "required": ["models", "profile", "prompt_version", "method_version", "scores"],
+        "required": [
+          "models",
+          "profile",
+          "prompt_version",
+          "method_version",
+          "scores",
+          "quality_status",
+          "quality_accepted",
+          "warnings"
+        ],
         "title": "Provenance"
       },
       "Question": {

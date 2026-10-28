@@ -21,6 +21,7 @@ class Settings:
     max_tokens: int = 4096
     output_tokens: int = 768
     threshold: float = 0.7
+    baseline: bool = False
 
     @classmethod
     def load(cls):
@@ -37,12 +38,14 @@ class Settings:
         output_tokens = int(values.get("AI_MAX_OUTPUT_TOKENS", 768))
         threshold = float(values.get("AI_SENTIMENT_THRESHOLD", 0.7))
         device = values.get("AI_DEVICE", "cpu")
+        baseline = str(values.get("AI_BASELINE_MODE") or "false").strip().lower()
         if (
             not 1 <= timeout <= 600
             or not 256 <= max_tokens <= 8192
             or not 64 <= output_tokens <= 2048
             or not 0.5 <= threshold <= 1
             or device not in ("cpu", "cuda")
+            or baseline not in ("true", "false")
         ):
             raise ValueError("Invalid AI limits")
         model_root = Path(values.get("AI_MODEL_ROOT") or root_directory() / ".local/models")
@@ -56,4 +59,5 @@ class Settings:
             max_tokens=max_tokens,
             output_tokens=output_tokens,
             threshold=threshold,
+            baseline=baseline == "true",
         )

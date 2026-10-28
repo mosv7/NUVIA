@@ -284,7 +284,7 @@
               "type": "string"
             },
             "prompt_version": {
-              "const": "extractive-v1",
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
               "title": "Prompt Version",
               "type": "string"
             },
@@ -297,9 +297,35 @@
               "const": "uncalibrated",
               "title": "Scores",
               "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
             }
           },
-          "required": ["models", "profile", "prompt_version", "method_version", "scores"],
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
           "title": "Provenance",
           "type": "object"
         },
@@ -412,7 +438,7 @@
               "type": "string"
             },
             "prompt_version": {
-              "const": "extractive-v1",
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
               "title": "Prompt Version",
               "type": "string"
             },
@@ -425,9 +451,35 @@
               "const": "uncalibrated",
               "title": "Scores",
               "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
             }
           },
-          "required": ["models", "profile", "prompt_version", "method_version", "scores"],
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
           "title": "Provenance",
           "type": "object"
         },
@@ -599,7 +651,7 @@
               "type": "string"
             },
             "prompt_version": {
-              "const": "extractive-v1",
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
               "title": "Prompt Version",
               "type": "string"
             },
@@ -612,9 +664,35 @@
               "const": "uncalibrated",
               "title": "Scores",
               "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
             }
           },
-          "required": ["models", "profile", "prompt_version", "method_version", "scores"],
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
           "title": "Provenance",
           "type": "object"
         }
@@ -668,7 +746,7 @@
               "type": "string"
             },
             "prompt_version": {
-              "const": "extractive-v1",
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
               "title": "Prompt Version",
               "type": "string"
             },
@@ -681,9 +759,35 @@
               "const": "uncalibrated",
               "title": "Scores",
               "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
             }
           },
-          "required": ["models", "profile", "prompt_version", "method_version", "scores"],
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
           "title": "Provenance",
           "type": "object"
         },
@@ -926,7 +1030,7 @@
               "type": "string"
             },
             "prompt_version": {
-              "const": "extractive-v1",
+              "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
               "title": "Prompt Version",
               "type": "string"
             },
@@ -939,9 +1043,35 @@
               "const": "uncalibrated",
               "title": "Scores",
               "type": "string"
+            },
+            "quality_status": {
+              "enum": ["accepted", "baseline"],
+              "title": "Quality Status",
+              "type": "string"
+            },
+            "quality_accepted": {
+              "title": "Quality Accepted",
+              "type": "boolean"
+            },
+            "warnings": {
+              "items": {
+                "enum": ["experimental_baseline", "quality_not_accepted"],
+                "type": "string"
+              },
+              "title": "Warnings",
+              "type": "array"
             }
           },
-          "required": ["models", "profile", "prompt_version", "method_version", "scores"],
+          "required": [
+            "models",
+            "profile",
+            "prompt_version",
+            "method_version",
+            "scores",
+            "quality_status",
+            "quality_accepted",
+            "warnings"
+          ],
           "title": "Provenance",
           "type": "object"
         }
@@ -1015,9 +1145,34 @@
             "pattern": "^[a-f0-9]{64}$",
             "title": "Profile",
             "type": "string"
+          },
+          "quality_status": {
+            "enum": ["accepted", "baseline", "unavailable"],
+            "title": "Quality Status",
+            "type": "string"
+          },
+          "quality_accepted": {
+            "title": "Quality Accepted",
+            "type": "boolean"
+          },
+          "warnings": {
+            "items": {
+              "enum": ["experimental_baseline", "quality_not_accepted"],
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
           }
         },
-        "required": ["ready", "reason", "models", "profile"],
+        "required": [
+          "ready",
+          "reason",
+          "models",
+          "profile",
+          "quality_status",
+          "quality_accepted",
+          "warnings"
+        ],
         "title": "Capability",
         "type": "object"
       },

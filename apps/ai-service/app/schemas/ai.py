@@ -159,6 +159,9 @@ class Capability(Strict):
     )
     models: Annotated[list[Alias], Field(max_length=3)]
     profile: Digest
+    quality_status: Literal["accepted", "baseline", "unavailable"]
+    quality_accepted: bool
+    warnings: list[Literal["experimental_baseline", "quality_not_accepted"]]
 
 
 CapabilityMap = create_model(
@@ -174,9 +177,12 @@ class Capabilities(Strict):
 class Provenance(Strict):
     models: Annotated[list[Alias], Field(min_length=1, max_length=3)]
     profile: Digest
-    prompt_version: Literal["extractive-v1"]
+    prompt_version: Literal["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"]
     method_version: Literal["aspects-v1"]
     scores: Literal["uncalibrated"]
+    quality_status: Literal["accepted", "baseline"]
+    quality_accepted: bool
+    warnings: list[Literal["experimental_baseline", "quality_not_accepted"]]
 
 
 RESPONSES = {

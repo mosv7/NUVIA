@@ -100,3 +100,9 @@ AI/root READMEs/architecture, .env.example, .dockerignore, compose/nginx as affe
   Qwen ignore rule retained to protect the supplied artifacts.
 
 - Delivery completed: PR #14 against main; independent review clean. No merge performed.
+
+- Follow-up owner direction: enable all five existing operations as explicit
+  baselines. Implemented server-only opt-in, required quality/warning metadata,
+  compact baseline prompts/report normalization, preserved validation and default
+  strict gate. Actual loopback smoke returned200 for all five; Python32 and
+  independent review passed. Private AI runtime configured; no acceptance passed.

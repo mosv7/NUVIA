@@ -80,6 +80,7 @@ services:
       AI_MODEL_ROOT: /models
       AI_DEVICE: cpu
       AI_TASK_TIMEOUT_SECONDS: 180
+      AI_BASELINE_MODE: ${AI_BASELINE_MODE:-false}
     volumes:
       - type: bind
         source: ${AI_MODELS_DIRECTORY:-./.local/models}

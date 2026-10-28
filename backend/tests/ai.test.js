@@ -22,7 +22,15 @@ const capabilities = {
   capabilities: Object.fromEntries(
     ['analyze', 'summaries', 'reports', 'survey-suggestions', 'answers'].map((operation) => [
       operation,
-      { ready: false, reason: 'unassessed', models: ['fixture'], profile: 'a'.repeat(64) },
+      {
+        ready: false,
+        reason: 'unassessed',
+        models: ['fixture'],
+        profile: 'a'.repeat(64),
+        quality_status: 'unavailable',
+        quality_accepted: false,
+        warnings: [],
+      },
     ]),
   ),
 };
@@ -158,6 +166,9 @@ test('successful analysis preserves Unicode offsets and rejects invented mixed o
       prompt_version: 'extractive-v1',
       method_version: 'aspects-v1',
       scores: 'uncalibrated',
+      quality_status: 'baseline',
+      quality_accepted: false,
+      warnings: ['experimental_baseline', 'quality_not_accepted'],
     },
     result: {
       items: [
@@ -196,6 +207,9 @@ test('successful analysis preserves Unicode offsets and rejects invented mixed o
     },
   };
   assert.equal(validateOutput('analyze', result, payload), true);
+  result.provenance.quality_accepted = true;
+  assert.equal(validateOutput('analyze', result, payload), false);
+  result.provenance.quality_accepted = false;
   result.result.items[0].sentiment = 'neutral';
   assert.equal(validateOutput('analyze', result, payload), false);
   result.result.items[0].sentiment = 'mixed';

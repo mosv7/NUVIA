@@ -1,6 +1,6 @@
 # AI integration API
 
-Public prefix **`/api/ai`** belongs only to `backend/`. Python's `/api/v1/*` is private service transport. Routes are implemented, while supplied models remain unaccepted and report honest unavailable status. UI integration, saved analytics, training, public response collection and RAG are outside this delivery.
+Public prefix **`/api/ai`** belongs only to `backend/`. Python's `/api/v1/*` is private service transport. All five configured operations can now run in explicit baseline mode; supplied models remain quality-unaccepted. UI integration, saved analytics, training, public response collection and RAG are outside this delivery.
 
 ## Authentication and inputs
 
@@ -23,7 +23,20 @@ Limits: 30 POSTs per 15 minutes per authenticated owner across operations; 120 c
 
 Node wraps success in `{data: ...}`. Capabilities contain `schema_version:"1"` and an exact operation map. Entries contain `ready`, `reason`, safe model aliases and an acceptance `profile` (SHA-256). Reasons: `service_not_configured`, `package_unavailable`, `inference_dependencies_missing`, `unverified_input_format`, `unassessed`. Accepted entries have null reason. Unconfigured Node transport returns empty aliases and zero profiles. Process liveness is not acceptance.
 
+Entries also contain `quality_status:"accepted"|"baseline"|"unavailable"`,
+`quality_accepted` and `warnings`. `AI_BASELINE_MODE=true` enables model- and
+dependency-valid operations without assessment acceptance: ready=true, reason=null,
+quality_status=baseline, quality_accepted=false, with `experimental_baseline` and
+`quality_not_accepted` warnings. Missing/unverified/tampered packages stay blocked.
+Baseline is server configuration for all five operations, never a request field.
+
 Inference data contains `schema_version`, `operation`, `request_id`, `provenance`, `result`. Provenance includes aliases, acceptance profile, prompt/method versions and `scores:"uncalibrated"`, never local paths/secrets.
+
+Provenance repeats the quality status/acceptance/warnings on every successful
+result. Node rejects contradictory flags. Baseline compact prompts are versioned
+as `baseline-extractive-v1`; strict-mode assessment keeps `extractive-v1`.
+Liveness returns analysis_available=null, baseline_enabled and capabilities_url;
+it does not hash/load models or compute readiness.
 
 - Analysis: `{items:[{id,sentiment,reason,method:"aspect_derived",coverage:"partial_aspects",mentions,contributing_ids,excluded_count}]}`. Mentions contain `{id,text,start,end,sentiment,score,extraction_score,accepted}`. Mention sentiment is positive/negative/neutral. Overall sentiment adds mixed or null.
 - Summaries: `{items:[{text,citations:[{id,quote}]}]}`.

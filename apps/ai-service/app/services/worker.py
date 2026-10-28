@@ -45,7 +45,13 @@ def model_worker(connection, manifests, settings):
     try:
         from app.models.transformers_adapter import TransformersRuntime
         from app.schemas.ai import REQUESTS
-        from app.services.interfaces import prompt, validate_result
+        from app.services.interfaces import (
+            baseline_prompt,
+            normalize_baseline_report,
+            parse_generation,
+            prompt,
+            validate_result,
+        )
 
         runtime = TransformersRuntime(manifests, settings)
         while True:
@@ -56,8 +62,18 @@ def model_worker(connection, manifests, settings):
                 result = (
                     runtime.analyze(request.model_dump())
                     if operation == "analyze"
-                    else json.loads(runtime.generate(prompt(operation), request.model_dump()))
+                    else parse_generation(
+                        runtime.generate(
+                            baseline_prompt(operation)
+                            if settings.get("baseline")
+                            else prompt(operation),
+                            request.model_dump(),
+                        ),
+                        baseline=settings.get("baseline", False),
+                    )
                 )
+                if settings.get("baseline") and operation == "reports":
+                    result = normalize_baseline_report(result, request)
                 result = validate_result(operation, result, request)
                 response = {"result": result}
             except (ValueError, KeyError, TypeError, IndexError) as error:

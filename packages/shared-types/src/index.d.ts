@@ -57,6 +57,9 @@ export interface AiCapability {
   reason: string | null;
   models: string[];
   profile: string;
+  quality_status: 'accepted' | 'baseline' | 'unavailable';
+  quality_accepted: boolean;
+  warnings: ('experimental_baseline' | 'quality_not_accepted')[];
 }
 export interface AiCapabilities {
   schema_version: '1';

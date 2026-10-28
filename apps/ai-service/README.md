@@ -2,7 +2,7 @@
 
 Authenticated FastAPI operations provide model-independent contracts for aspect/sentiment analysis, extractive summaries/reports, survey suggestions and evidence-only answers. Node in `backend/` is the public authorization boundary. Python never accesses MongoDB. See [API integration](../../docs/api/ai.md).
 
-**Supplied capabilities remain unavailable pending acceptance.** Qwen loads on CUDA but failed complete capability checks. The owner confirmed aspect-first sentiment inputs; that order is configured locally. The follow-up DeBERTa assessment passed 6/8 cases but failed both mixed cases at the unchanged threshold, so analysis remains unaccepted for quality reasons. A working API contract does not mean accepted model quality. See [measured validation](../../docs/development/local-ai-validation.md).
+**Explicit baseline mode now enables all five configured APIs.** The owner requested `AI_BASELINE_MODE=true` for analysis, summaries, reports, survey suggestions and evidence answers. This is configured locally; results/capabilities expose `quality_status:"baseline"`, `quality_accepted:false` and warnings. The mode changes eligibility, not assessed model quality. With the flag absent/false, unassessed capabilities still remain unavailable. See [measured validation](../../docs/development/local-ai-validation.md).
 
 ## Setup
 
@@ -18,7 +18,19 @@ Preparation refuses existing destinations; skip it in this already-prepared chec
 
 Add private `AI_SERVICE_TOKEN` (random hex, >=32 characters), `AI_SERVICE_URL` and model settings from `.env.example` to the existing root `.env`, preserving all other secrets/database settings. Python development reads AI keys only; process environment wins. Production uses environment only. `pnpm dev` remains web/backend; run Python separately. Ordinary product development does not need Python or inference dependencies.
 
+Set `AI_BASELINE_MODE=true` to opt in for all configured operations. The flag is
+server-side only; callers cannot change it. Hash/dependency/input-format checks,
+authentication, body/token/resource limits, exact evidence validation and Node
+output validation remain mandatory. Invalid output returns 502 rather than a
+successful fabricated response. The 0.7 mention threshold is unchanged.
+
 CPU is the portable default. `AI_DEVICE=cuda` moves generation only to CUDA; both DeBERTa models remain on CPU to avoid competing for a 4 GB GPU. CUDA needs a compatible PyTorch build/driver; installing the platform's default locked wheel does not establish GPU support. The pre-existing CUDA evaluation environment was used for diagnostics, not made a portable dependency.
+
+`pnpm dev:ai` now honors optional private `AI_PYTHON_EXECUTABLE` so an existing
+compatible CUDA environment can run the same service; empty uses `uv`. This
+checkout selects its existing CUDA interpreter and device in private `.env`.
+Auto-reload is opt-in with `pnpm dev:ai -- --reload`; ordinary startup runs one
+server/worker owner. No path to a private environment is committed.
 
 ## Replacement and acceptance
 
@@ -40,6 +52,12 @@ aspect must have the expected accepted polarity as well as the expected overall
 sentiment; valid JSON alone does not pass this assessment.
 
 Committed synthetic Arabic/English smoke fixtures declare checks before inference. Scripts record outputs/timings; they never auto-enable a capability. All fixtures for an operation must pass structural, semantic, language, injection and abstention review. Then, and only then, record that operation in private `acceptance.json` as `{"profile":"<exact current profile>","passed":true,"reviewed":true}`, retaining the assessment evidence. Copying flags without assessment is unsupported. Smoke examples are not a broad benchmark or calibrated accuracy result.
+
+Baseline operation does **not** write passing acceptance records. It uses compact
+capability-specific prompts (`baseline-extractive-v1`) and allows a single whole
+JSON Markdown fence to be unwrapped before the same schema/source validators.
+Surrounding prose is rejected. `smoke_models --baseline` reproduces this mode;
+without it, the original assessment prompts remain selected.
 
 ## Checks and operation
 

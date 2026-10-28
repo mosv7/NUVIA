@@ -19,7 +19,11 @@ from app.services.worker import ExecutionError, Supervisor
 async def run(args):
     root = Path(args.model_root).resolve()
     settings = Settings(
-        model_root=str(root), device=args.device, timeout=args.timeout, output_tokens=768
+        model_root=str(root),
+        device=args.device,
+        timeout=args.timeout,
+        output_tokens=768,
+        baseline=args.baseline,
     )
     # Fixtures are committed before any inference output is observed.
     fixture_path = Path(__file__).resolve().parents[1] / "tests/fixtures/ai-smoke.json"
@@ -129,5 +133,10 @@ if __name__ == "__main__":
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--output", required=True)
+    parser.add_argument(
+        "--baseline",
+        action="store_true",
+        help="Use experimental compact prompts without claiming quality acceptance",
+    )
     parser.add_argument("--operations", nargs="+", choices=list(REQUESTS), default=list(REQUESTS))
     asyncio.run(run(parser.parse_args()))

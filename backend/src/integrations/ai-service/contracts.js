@@ -11,6 +11,16 @@ const responses = Object.fromEntries(
 const capabilitySchema = ajv.compile(schemas.capabilities);
 const operations = Object.keys(requests);
 
+function validQuality(value, available = true) {
+  const expected =
+    value.quality_status === 'baseline' ? ['experimental_baseline', 'quality_not_accepted'] : [];
+  return (
+    value.quality_accepted === (value.quality_status === 'accepted') &&
+    (value.quality_status !== 'unavailable') === available &&
+    JSON.stringify(value.warnings) === JSON.stringify(expected)
+  );
+}
+
 function validateInput(operation, payload) {
   if (!requests[operation]?.(payload)) return false;
   const nonblank = (value) => {
@@ -27,10 +37,13 @@ function validateOutput(operation, response, payload) {
   if (operation === 'capabilities') {
     return (
       capabilitySchema(response) &&
-      Object.values(response.capabilities).every((c) => c.ready === (c.reason === null))
+      Object.values(response.capabilities).every(
+        (c) => c.ready === (c.reason === null) && validQuality(c, c.ready),
+      )
     );
   }
   if (!responses[operation]?.(response)) return false;
+  if (!validQuality(response.provenance)) return false;
   const result = response.result;
   if (operation === 'survey-suggestions') {
     const labels = result.questions.map((q) => q.text.trim().replace(/\s+/gu, ' ').toLowerCase());
