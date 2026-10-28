@@ -5,6 +5,7 @@ description = "Authenticated local AI APIs with replaceable model adapters and a
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.156.3",
+    "httpx>=0.28.1",
     "python-dotenv>=1.2.1",
     "uvicorn>=0.54.0",
 ]

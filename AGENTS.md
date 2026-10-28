@@ -12,6 +12,11 @@ NUVIA is an Arabic/English customer-feedback product under development. `backend
 
 Read [README](README.md), [architecture](docs/architecture/architecture.md), [module boundaries](docs/development/module-boundaries.md), [DESIGN.md](DESIGN.md) and [API](docs/api/README.md) before product changes. The feature map is full planned scope, not authorization to implement later features. Archived proposals and older validation/plans are historical evidence.
 
+Summary routing is separately configured for Gemini/Groq/Ollama after reviewed
+comparison; Qwen summaries are comparison-only. ABSA remains local DeBERTa.
+See `docs/development/summary-providers.md`; do not enable summaries from global
+baseline mode or send keys to local workers.
+
 ## Ownership
 
 - `apps/web/src/app`: composition, hash router/access policy and providers. Account markup belongs in `features/auth`.

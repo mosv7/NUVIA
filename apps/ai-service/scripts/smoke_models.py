@@ -6,7 +6,6 @@ import hashlib
 import json
 import platform
 import time
-from dataclasses import asdict
 from pathlib import Path
 
 from app.core.settings import Settings
@@ -38,9 +37,7 @@ async def run(args):
         k: {"path": str(root / k / "manifest.json"), "fingerprint": m["fingerprint"]}
         for k, m in manifests.items()
     }
-    worker = Supervisor(
-        specs, {k: v for k, v in asdict(settings).items() if k not in ("model_root", "token")}
-    )
+    worker = Supervisor(specs, settings.local_runtime())
     records = []
     cases = list(fixtures["generation"])
     confirmed = manifests["polarity"]["input_format"] in POLARITY_FORMATS
@@ -106,7 +103,7 @@ async def run(args):
         "hardware": torch.cuda.get_device_name()
         if settings.device == "cuda"
         else platform.processor(),
-        "settings": {k: v for k, v in asdict(settings).items() if k not in ("token", "model_root")},
+        "settings": settings.local_runtime(),
         "profiles": {
             op: profile_fingerprint(
                 {

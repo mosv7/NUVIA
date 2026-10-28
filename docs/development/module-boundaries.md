@@ -16,3 +16,9 @@
 The former `apps/api` is removed. Do not recreate a parallel backend or duplicate session logic in the browser. Models and ObjectId references in `backend/` are not a migration contract for old UUID account/workspace data. Preserve owner predicates and transaction sessions in multi-document operations.
 
 Existing product routes show account-backed data; sample analytics, feedback and assistant responses stay under `/preview/`. Backend survey endpoints do not authorize expanding unfinished frontend, collection or AI scope. Before new flows, define authorization, request/response and loading/error/empty behavior.
+
+Summary-only Gemini/Groq/Ollama adapters also belong in `apps/ai-service`.
+Private server configuration chooses the provider; Node remains the sole public
+authorization boundary. The offline comparison CLI can use local Qwen summaries;
+product summary routes cannot. ABSA stays on the local DeBERTa pipeline. Provider
+keys never enter local worker settings, responses or assessment reports.

@@ -1,6 +1,6 @@
 # AI integration API
 
-Public prefix **`/api/ai`** belongs only to `backend/`. Python's `/api/v1/*` is private service transport. All five configured operations can now run in explicit baseline mode; supplied models remain quality-unaccepted. UI integration, saved analytics, training, public response collection and RAG are outside this delivery.
+Public prefix **`/api/ai`** belongs only to `backend/`. Python's `/api/v1/*` is private service transport. Analysis, reports, surveys and evidence answers support explicit local baseline mode; supplied local models remain quality-unaccepted. Summaries separately select Gemini/Groq/Ollama after reviewed comparison, default disabled. Qwen summaries are comparison-only. UI integration, saved analytics, training, public response collection and RAG are outside this delivery.
 
 ## Authentication and inputs
 
@@ -17,7 +17,7 @@ Reuse owner cookies or explicit Bearer sessions, including persisted-device/toke
 
 Locale: `ar` or `en`. Count: integer 5-10, defaults to 5. Lists: 1-10 texts. Text: 1-2,000 Unicode code points. Industry/objective/question: 1-1,000 characters. IDs: unique `[A-Za-z0-9_-]`, 1-64 characters. Unknown fields, duplicate IDs and blank strings are rejected. JSON limit: **64 KiB of UTF-8 including metadata/escaping**. Character-valid inputs can still exceed the byte limit. Excess model tokens are rejected without truncating evidence.
 
-Limits: 30 POSTs per 15 minutes per authenticated owner across operations; 120 capability reads per owner. Python runs one model operation at a time, with busy rejection rather than a queue. Default deadlines: Python 180s, Node 190s, Vite/nginx 200s; adjust together.
+Limits: 30 POSTs per 15 minutes per authenticated owner across operations; 120 capability reads per owner. Python runs one local model operation and at most one external summary at a time, with busy rejection rather than a queue. Default deadlines: Python 180s, Node 190s, Vite/nginx 200s; adjust together.
 
 ## Results
 
@@ -28,13 +28,19 @@ Entries also contain `quality_status:"accepted"|"baseline"|"unavailable"`,
 dependency-valid operations without assessment acceptance: ready=true, reason=null,
 quality_status=baseline, quality_accepted=false, with `experimental_baseline` and
 `quality_not_accepted` warnings. Missing/unverified/tampered packages stay blocked.
-Baseline is server configuration for all five operations, never a request field.
+Baseline is server configuration for local operations, never a request field.
+It cannot enable production summaries. `AI_SUMMARY_PROVIDER` selects only the
+summary operation; missing credentials/model yields `service_not_configured`,
+and a missing/mismatched reviewed profile yields `unassessed`. Accepted provider
+summaries use `extractive-v1` and a safe provider/model alias; actual configured
+model IDs and comparison token usage stay in private evaluation artifacts.
+See [setup, comparison and promotion](../development/summary-providers.md).
 
 Inference data contains `schema_version`, `operation`, `request_id`, `provenance`, `result`. Provenance includes aliases, acceptance profile, prompt/method versions and `scores:"uncalibrated"`, never local paths/secrets.
 
 Provenance repeats the quality status/acceptance/warnings on every successful
 result. Node rejects contradictory flags. Baseline compact prompts are versioned
-as `baseline-extractive-v1`; strict-mode assessment keeps `extractive-v1`.
+as `baseline-extractive-v2`; strict-mode assessment keeps `extractive-v1`.
 Liveness returns analysis_available=null, baseline_enabled and capabilities_url;
 it does not hash/load models or compute readiness.
 
