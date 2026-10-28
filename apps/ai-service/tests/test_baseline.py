@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import json
+from dataclasses import replace
 
 from httpx import ASGITransport, AsyncClient
 
@@ -31,7 +32,9 @@ def packages(root):
 def test_baseline_enables_all_five_without_claiming_acceptance(tmp_path, monkeypatch):
     packages(tmp_path)
     monkeypatch.setattr("app.services.ai.importlib.util.find_spec", lambda _: object())
-    service = AiService(Settings(model_root=str(tmp_path), baseline=True))
+    service = AiService(
+        Settings(model_root=str(tmp_path), baseline=True, summary_provider="qwen"), comparison=True
+    )
     statuses = service.capabilities()["capabilities"]
     assert set(statuses) == set(OPERATIONS)
     for status in statuses.values():
@@ -56,7 +59,7 @@ def test_baseline_cannot_override_missing_or_unknown_packages(tmp_path, monkeypa
         "capabilities"
     ]
     assert statuses["analyze"]["reason"] == "unverified_input_format"
-    assert statuses["summaries"]["reason"] == "package_unavailable"
+    assert statuses["summaries"]["reason"] == "service_not_configured"
     assert all(not item["ready"] for item in statuses.values())
 
 
@@ -83,6 +86,10 @@ def test_baseline_results_are_marked_and_invalid_model_output_stays_rejected(tmp
 
     async def run():
         app = create_app(Settings(token="s" * 32, model_root=str(tmp_path), baseline=True))
+        # Local summaries are a CLI comparison baseline, never a production config option.
+        app.state.ai = AiService(
+            replace(app.state.settings, summary_provider="qwen"), comparison=True
+        )
         app.state.ai.worker = FixtureModel()
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             health = (await client.get("/api/v1/health/live")).json()

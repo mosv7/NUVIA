@@ -1,6 +1,11 @@
 # Local AI API validation — 2026-10-28
 
 Baseline: main `fdff2ab`; implementation branch `feat/local-ai-apis`.
+
+The later [summary-provider routing](summary-providers.md) supersedes this
+report's local-summary production eligibility: Qwen summaries are now comparison
+only, with Gemini/Groq/Ollama awaiting actual comparison and reviewed acceptance.
+The historical measurements below are preserved; none measure the new adapters.
 This delivery adds callable contracts/adapters, not accepted model quality or an
 AI product UI. No customer database, data migration or production deployment was
 used for validation.

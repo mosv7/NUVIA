@@ -2,7 +2,7 @@
 
 Authenticated FastAPI operations provide model-independent contracts for aspect/sentiment analysis, extractive summaries/reports, survey suggestions and evidence-only answers. Node in `backend/` is the public authorization boundary. Python never accesses MongoDB. See [API integration](../../docs/api/ai.md).
 
-**Explicit baseline mode now enables all five configured APIs.** The owner requested `AI_BASELINE_MODE=true` for analysis, summaries, reports, survey suggestions and evidence answers. This is configured locally; results/capabilities expose `quality_status:"baseline"`, `quality_accepted:false` and warnings. The mode changes eligibility, not assessed model quality. With the flag absent/false, unassessed capabilities still remain unavailable. See [measured validation](../../docs/development/local-ai-validation.md).
+**Local baseline mode enables analysis, reports, survey suggestions and evidence answers.** Results/capabilities expose `quality_status:"baseline"`, `quality_accepted:false` and warnings. The mode changes eligibility, not assessed model quality. Summaries now select Gemini/Groq/Ollama independently, with reviewed acceptance required even in baseline mode. Qwen summaries are comparison-only. See [summary setup/comparison](../../docs/development/summary-providers.md) and [measured local validation](../../docs/development/local-ai-validation.md).
 
 ## Setup
 
@@ -18,7 +18,7 @@ Preparation refuses existing destinations; skip it in this already-prepared chec
 
 Add private `AI_SERVICE_TOKEN` (random hex, >=32 characters), `AI_SERVICE_URL` and model settings from `.env.example` to the existing root `.env`, preserving all other secrets/database settings. Python development reads AI keys only; process environment wins. Production uses environment only. `pnpm dev` remains web/backend; run Python separately. Ordinary product development does not need Python or inference dependencies.
 
-Set `AI_BASELINE_MODE=true` to opt in for all configured operations. The flag is
+Set `AI_BASELINE_MODE=true` to opt in for configured local operations. The flag is
 server-side only; callers cannot change it. Hash/dependency/input-format checks,
 authentication, body/token/resource limits, exact evidence validation and Node
 output validation remain mandatory. Invalid output returns 502 rather than a
@@ -54,7 +54,7 @@ sentiment; valid JSON alone does not pass this assessment.
 Committed synthetic Arabic/English smoke fixtures declare checks before inference. Scripts record outputs/timings; they never auto-enable a capability. All fixtures for an operation must pass structural, semantic, language, injection and abstention review. Then, and only then, record that operation in private `acceptance.json` as `{"profile":"<exact current profile>","passed":true,"reviewed":true}`, retaining the assessment evidence. Copying flags without assessment is unsupported. Smoke examples are not a broad benchmark or calibrated accuracy result.
 
 Baseline operation does **not** write passing acceptance records. It uses compact
-capability-specific prompts (`baseline-extractive-v1`) and allows a single whole
+capability-specific prompts (`baseline-extractive-v2`) and allows a single whole
 JSON Markdown fence to be unwrapped before the same schema/source validators.
 Surrounding prose is rejected. `smoke_models --baseline` reproduces this mode;
 without it, the original assessment prompts remain selected.

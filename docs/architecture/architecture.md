@@ -10,9 +10,16 @@
 - Browser requests use same-origin `/api` through Vite/nginx. Cookie sessions require exact Origin and CSRF for mutations; bearer authentication remains for API clients. Credentials never belong in browser storage.
 - Registration signs in directly. Verification/resend is unavailable. Password reset uses single-use tokens and development file mail or explicitly configured SMTP; there is no separate mail worker.
 - Surveys/questions/templates have backend endpoints, including survey publishing state. Public response collection, live analytics and frontend completion remain under development.
-- Node `/api/ai` authorizes the current owner/business and calls authenticated FastAPI `/api/v1` operations. Python owns local inference only, with no MongoDB access or public browser path. A supervised serial child reuses models and enforces timeout/cancellation. Capability contracts are independent of model aliases. Default strict mode gates readiness on assessment; explicit owner-authorized baseline mode enables all configured operations with baseline warnings and quality_accepted=false. Package/hash/dependency/input-format and output/source validation remain mandatory. No UI, stored analytics or RAG is implied. See [AI contract](../api/ai.md) and [measured validation](../development/local-ai-validation.md).
+- Node `/api/ai` authorizes the current owner/business and calls authenticated FastAPI `/api/v1` operations. Python owns inference and provider adapters, with no MongoDB access or public browser path. A supervised serial child reuses models and enforces timeout/cancellation. Capability contracts are independent of model aliases. Default strict mode gates readiness on assessment; explicit owner-authorized baseline mode enables configured local operations with baseline warnings and quality_accepted=false. Package/hash/dependency/input-format and output/source validation remain mandatory. No UI, stored analytics or RAG is implied. See [AI contract](../api/ai.md) and [measured validation](../development/local-ai-validation.md).
 
 ## Configuration and data
+
+Summary generation has operation-specific routing inside Python:
+`AI_SUMMARY_PROVIDER=disabled|gemini|groq|ollama`. The default is disabled and a
+reviewed provider/model profile is required regardless of baseline mode. Qwen
+summaries are comparison-only; `/analyze` remains local DeBERTa. Local baseline
+reports, surveys and answers are unchanged. See
+[summary providers](../development/summary-providers.md).
 
 Process environment overrides root `.env` during development; production reads process environment. Require a private MongoDB URI, explicit database selection and a strong `JWT_SECRET`. Legacy private credential files from the removed API are not loaded automatically. Startup/operations must not silently switch databases.
 
