@@ -20,6 +20,6 @@ def test_health_identifies_the_scaffold_without_claiming_analysis():
     }
 
 
-def test_no_analysis_endpoint_is_exposed_by_the_scaffold():
+def test_analysis_is_never_exposed_without_internal_authentication():
     response = asyncio.run(request("POST", "/api/v1/analyze", json={"text": "sample"}))
-    assert response.status_code == 404
+    assert response.status_code in (401, 503)

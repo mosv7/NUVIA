@@ -5,7 +5,16 @@ description = "Health-only scaffold for NUVIA's future FastAPI analysis service"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.156.3",
+    "python-dotenv>=1.2.1",
     "uvicorn>=0.54.0",
+]
+
+[project.optional-dependencies]
+inference = [
+    "safetensors>=0.6.2",
+    "sentencepiece>=0.2.1",
+    "torch>=2.6,<3",
+    "transformers==4.57.1",
 ]
 
 [dependency-groups]
