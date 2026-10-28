@@ -9,7 +9,7 @@ from dataclasses import asdict
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
-from app.models.artifacts import read_manifest
+from app.models.artifacts import POLARITY_FORMATS, read_manifest
 from app.schemas.ai import OPERATIONS, REQUESTS, RESULTS
 from app.services.interfaces import PROMPT_VERSION, RULES, validate_result
 from app.services.worker import ExecutionError, Supervisor
@@ -89,7 +89,7 @@ class AiService:
             if (
                 not reason
                 and operation == "analyze"
-                and (models["polarity"]["input_format"] != "review_aspect_pair_v1")
+                and (models["polarity"]["input_format"] not in POLARITY_FORMATS)
             ):
                 reason = "unverified_input_format"
             profile = profile_fingerprint(models, self.settings)

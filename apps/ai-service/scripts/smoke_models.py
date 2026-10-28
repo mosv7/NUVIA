@@ -10,7 +10,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from app.core.settings import Settings
-from app.models.artifacts import read_manifest
+from app.models.artifacts import POLARITY_FORMATS, read_manifest
 from app.schemas.ai import REQUESTS
 from app.services.ai import profile_fingerprint
 from app.services.worker import ExecutionError, Supervisor
@@ -25,6 +25,8 @@ async def run(args):
     fixture_path = Path(__file__).resolve().parents[1] / "tests/fixtures/ai-smoke.json"
     fixture_bytes = fixture_path.read_bytes()
     fixtures = json.loads(fixture_bytes)
+    analysis_bytes = (fixture_path.parent / "analysis-aspect-first-v1.json").read_bytes()
+    analysis_fixture = json.loads(analysis_bytes)
     manifests = {
         k: read_manifest(root / k / "manifest.json") for k in ("generation", "aspect", "polarity")
     }
@@ -37,14 +39,16 @@ async def run(args):
     )
     records = []
     cases = list(fixtures["generation"])
-    confirmed = manifests["polarity"]["input_format"] == "review_aspect_pair_v1"
+    confirmed = manifests["polarity"]["input_format"] in POLARITY_FORMATS
     if confirmed:
-        for index, case in enumerate(fixtures["analysis_diagnostics"]):
+        for index, case in enumerate(analysis_fixture["cases"]):
             cases.append(
                 {
                     "operation": "analyze",
                     "payload": {"texts": [{"id": f"a{index}", "text": case["text"]}]},
-                    "expected_sentiment": "mixed",
+                    "expected_sentiment": case["expected_sentiment"],
+                    "expected_aspects": case["aspects"],
+                    "locale": case["locale"],
                 }
             )
     try:
@@ -61,7 +65,16 @@ async def run(args):
                     "status"
                 )
                 if case["operation"] == "analyze":
-                    status_ok = output["items"][0]["sentiment"] == case["expected_sentiment"]
+                    item = output["items"][0]
+                    status_ok = item["sentiment"] == case["expected_sentiment"] and all(
+                        any(
+                            m["text"].strip().casefold() == expected["text"].casefold()
+                            and m["sentiment"] == expected["sentiment"]
+                            and m["accepted"]
+                            for m in item["mentions"]
+                        )
+                        for expected in case["expected_aspects"]
+                    )
                 record = {"valid": True, "expected_status_passed": status_ok, "output": output}
             except ExecutionError as error:
                 record = {"valid": False, "error": str(error)}
@@ -79,6 +92,8 @@ async def run(args):
 
     report = {
         "fixture_sha256": hashlib.sha256(fixture_bytes).hexdigest(),
+        "analysis_fixture_sha256": hashlib.sha256(analysis_bytes).hexdigest(),
+        "analysis_criteria": analysis_fixture["criteria"],
         "criteria": fixtures["criteria"],
         "platform": platform.platform(),
         "torch": torch.__version__,

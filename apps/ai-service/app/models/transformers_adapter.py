@@ -2,7 +2,7 @@
 
 import json
 
-from app.models.artifacts import read_manifest, tokenizer_compat_options
+from app.models.artifacts import POLARITY_FORMATS, read_manifest, tokenizer_compat_options
 from app.pipelines.aspects import analysis_result, extract_spans
 
 
@@ -111,8 +111,16 @@ class TransformersRuntime:
             raise ValueError("invalid_model_output")
         return tokenizer.decode(generated, skip_special_tokens=True)
 
+    def encode_polarity(self, tokenizer, text, aspect):
+        input_format = self.manifests["polarity"]["input_format"]
+        if input_format == "aspect_review_pair_v1":
+            return self.encode(tokenizer, aspect, pair=text)
+        if input_format == "review_aspect_pair_v1":
+            return self.encode(tokenizer, text, pair=aspect)
+        raise ValueError("unverified_input_format")
+
     def analyze(self, payload):
-        if self.manifests["polarity"]["input_format"] != "review_aspect_pair_v1":
+        if self.manifests["polarity"]["input_format"] not in POLARITY_FORMATS:
             raise ValueError("unverified_input_format")
         tokenizer, model, _ = self.load("aspect")
         polarity_tokenizer, polarity_model, _ = self.load("polarity")
@@ -131,7 +139,7 @@ class TransformersRuntime:
                 raise ValueError("input_too_large")
             mentions = []
             for index, span in enumerate(spans):
-                encoded = self.encode(polarity_tokenizer, text, pair=span["text"])
+                encoded = self.encode_polarity(polarity_tokenizer, text, span["text"])
                 with self.torch.inference_mode():
                     probabilities = polarity_model(**encoded).logits[0].softmax(-1)
                 score, label = probabilities.max(-1)

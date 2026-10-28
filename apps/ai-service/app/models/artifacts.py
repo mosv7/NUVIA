@@ -7,6 +7,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+POLARITY_FORMATS = frozenset({"review_aspect_pair_v1", "aspect_review_pair_v1"})
+
 
 class ModelManifest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
@@ -17,7 +19,7 @@ class ModelManifest(BaseModel):
         dict[str, Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]],
         Field(min_length=1, max_length=1000),
     ]
-    input_format: Literal["review_aspect_pair_v1"] | None
+    input_format: Literal["review_aspect_pair_v1", "aspect_review_pair_v1"] | None
 
 
 def tokenizer_compat_options(directory):
