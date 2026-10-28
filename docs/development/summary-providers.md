@@ -65,21 +65,21 @@ and does not approve a production provider. Default is disabled; global
 From repository root, inspect configuration without requests/inference:
 
 ```sh
-uv run --directory apps/ai-service python -m scripts.compare_summaries compare
+pnpm ai:compare
 ```
 
 Explicitly run all four candidates on the bundled synthetic six-case fixture:
 
 ```sh
-uv run --directory apps/ai-service python -m scripts.compare_summaries compare --run
+pnpm ai:compare --run
 ```
 
 Use `--providers qwen,gemini,groq,ollama` to select candidates; use `--dataset`
 with an absolute path for your representative EN/AR/Egyptian dataset. Inputs
 are sent to selected configured providers only with `--run`. Local Qwen requires
 its prepared package and optional inference dependencies; use your compatible
-inference Python interpreter to execute the module if the default uv environment
-has no weights/dependencies. The existing baseline prompt is used for Qwen; API
+inference Python interpreter via `AI_PYTHON_EXECUTABLE`; the launcher honors this
+same setting as `dev:ai`. Empty uses uv. The existing baseline prompt is used for Qwen; API
 candidates use the current strict extractive prompt. Both share the same input,
 output schema and source validation. This compares the configured systems, not
 a claim of identical model tokenization or prompts.
@@ -126,7 +126,7 @@ changing the smoke flag is not a representative quality assessment.
 After reviewing all paired outputs for Qwen and the proposed candidate:
 
 ```sh
-uv run --directory apps/ai-service python -m scripts.compare_summaries promote --provider gemini --results ABSOLUTE_RUN_PATH/results.json --review ABSOLUTE_RUN_PATH/blind-review.json
+pnpm ai:compare promote --provider gemini --results ABSOLUTE_RUN_PATH/results.json --review ABSOLUTE_RUN_PATH/blind-review.json
 ```
 
 Promotion requires matching run/review digests, complete paired cases, unchanged
