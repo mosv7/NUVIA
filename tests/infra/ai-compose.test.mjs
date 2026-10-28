@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 
-function composeConfig(overrides = []) {
+function composeConfig(overrides = [], createHostPathOverride) {
   const temporary = mkdtempSync(resolve(tmpdir(), 'nuvia-ai-compose-'));
   const envFile = resolve(temporary, 'empty.env');
   writeFileSync(envFile, '');
@@ -23,6 +23,28 @@ function composeConfig(overrides = []) {
       resolve(root, 'compose.yaml'),
     ];
     for (const file of overrides) args.push('-f', resolve(root, file));
+    if (createHostPathOverride !== undefined) {
+      const control = resolve(temporary, 'controlled-model-mount.json');
+      writeFileSync(
+        control,
+        JSON.stringify({
+          services: {
+            ai: {
+              volumes: [
+                {
+                  type: 'bind',
+                  source: resolve(temporary, 'models-not-created'),
+                  target: '/models',
+                  read_only: true,
+                  bind: { create_host_path: createHostPathOverride },
+                },
+              ],
+            },
+          },
+        }),
+      );
+      args.push('-f', control);
+    }
     args.push('--profile', 'ai', 'config', '--format', 'json');
     const result = spawnSync('docker', args, {
       cwd: temporary,
@@ -59,6 +81,13 @@ test('explicit model override remains read-only and does not create a missing ho
   const mount = config.services.ai.volumes.find((v) => v.target === '/models');
   assert.equal(mount.type, 'bind');
   assert.equal(mount.read_only, true);
-  assert.equal(mount.bind.create_host_path, false);
+  // Older compose-go JSON serializers omit false booleans; both represent disabled.
+  assert.equal(mount.bind?.create_host_path ?? false, false);
   assert.equal(config.services.ai.environment.AI_MODEL_ROOT, '/models');
+});
+
+test('configuration checks distinguish enabled host creation from an omitted false value', () => {
+  const config = composeConfig(['compose.ai-models.yaml'], true);
+  const mount = config.services.ai.volumes.find((v) => v.target === '/models');
+  assert.equal(mount.bind.create_host_path, true);
 });
