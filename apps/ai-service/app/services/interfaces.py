@@ -23,6 +23,12 @@ def prompt(operation):
     return RULES + f"Operation: {operation}. Schema: " + str(RESULTS[operation].model_json_schema())
 
 
+def locale_matches(text, locale):
+    arabic = len(re.findall(r"[\u0621-\u064a]", text))
+    latin = len(re.findall(r"[A-Za-z]", text))
+    return arabic > latin if locale == "ar" else latin > arabic
+
+
 def validate_result(operation, raw, request):
     result = RESULTS[operation].model_validate(raw).model_dump()
     if operation == "survey-suggestions":
@@ -32,6 +38,8 @@ def validate_result(operation, raw, request):
             raise ValueError("Invalid questions")
         for q in questions:
             q["text"] = " ".join(q["text"].split())
+            if not locale_matches(q["text"], request.locale):
+                raise ValueError("Invalid question language")
         return result
     originals = {e.id: e.text for e in request.texts}
     if operation == "analyze":
@@ -73,6 +81,8 @@ def validate_result(operation, raw, request):
             if "text" in item and not any(item["text"] in c["quote"] for c in item["citations"]):
                 raise ValueError("Non-extractive factual claim")
             if "suggestion" in item:
+                if not locale_matches(item["suggestion"], request.locale):
+                    raise ValueError("Invalid recommendation language")
                 # Suggestions are qualitative, not invented analytical measurements.
                 if re.search(r"\d|[%٪]", item["suggestion"]):
                     raise ValueError("Unsupported numeric recommendation")

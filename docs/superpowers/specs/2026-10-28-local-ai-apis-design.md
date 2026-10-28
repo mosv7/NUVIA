@@ -2,7 +2,7 @@
 
 Date: 2026-10-28
 Status: revised against main `fdff2ab3d90f85b77309af10ac4dbee6c83ded52`;
-proposed design for user review; implementation has not started.
+approved by the user on 2026-10-28; implementation on `feat/local-ai-apis`.
 
 ## Intent and agreed scope
 

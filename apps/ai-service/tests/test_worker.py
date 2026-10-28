@@ -51,6 +51,18 @@ def test_worker_reuses_one_child_and_recovers_from_timeout_and_crash():
     asyncio.run(run())
 
 
+def test_arabic_body_is_not_expanded_past_the_internal_pipe_limit():
+    async def run():
+        worker = Supervisor({}, {}, target=fake_worker)
+        try:
+            payload = {"texts": [{"id": f"a{i}", "text": "س" * 2000} for i in range(6)]}
+            assert await worker.execute("ok", payload, timeout=10)
+        finally:
+            worker.close()
+
+    asyncio.run(run())
+
+
 def test_cancel_and_busy_reject_without_an_orphan():
     async def run():
         worker = Supervisor({}, {}, target=fake_worker)

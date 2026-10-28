@@ -34,7 +34,7 @@ Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspac
 
 Request validation and business errors follow the backend route/service contracts in `backend/src`. Business/branch/survey resources are scoped through the authenticated owner's business. Role checks are present; a team membership management product is not implemented. Browser adapters translate backend fields into the existing screen model. Public DTO declarations/constants live in `packages/shared-types`.
 
-Publishing persists survey status; **public response collection, complete frontend survey integration, analytics and AI are not delivered by these endpoints**. Survey management CSV is not a feedback/analysis export. The FastAPI scaffold keeps its separate `/api/v1/health/live` path and cannot analyze feedback.
+Publishing persists survey status; **public response collection, complete frontend survey integration and live analytics are not delivered by these endpoints**. Survey management CSV is not a feedback/analysis export. [AI integration APIs](ai.md) now exist under `/api/ai`, with separate authenticated FastAPI transport; supplied capabilities remain unavailable pending acceptance, and no connected AI UI is delivered.
 
 Reset tokens are single-use. Development file mail writes private `{text}` messages directly to root `.local/mail` without a worker. SMTP requires explicit configuration and testing. Old UUID account/workspace data is not automatically migrated into the ObjectId backend. Read [backend operations](../development/backend.md) before choosing a database.
 

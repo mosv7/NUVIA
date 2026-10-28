@@ -86,3 +86,15 @@ AI/root READMEs/architecture, .env.example, .dockerignore, compose/nginx as affe
 - Setup: approved design, main remote confirmed at fdff2ab, task branch created.
 - Execution: inline within the current checkout; explicit implementation authorization
   covers continuing the approved design without another plan approval round.
+- Tasks 1-3 implemented and verified: Python contracts/adapters/supervisor, protected
+  Node transport/routes, canonical schemas, isolated owner/CSRF/device tests.
+- Actual smoke: Qwen loaded on CUDA; eight of eleven outputs rejected, so no
+  generation capability enabled. DeBERTa diagnostics load/predict; input convention
+  unconfirmed, so analysis remains unavailable. See local-ai-validation.md.
+- Review fixes: UTF-8 IPC headroom, asynchronous serialized artifact hashing,
+  explicit OpenAPI auth and correct uv working-directory examples verified.
+- Verification: Python23, backend20, web185 plus dev-server, EN/AR mobile browser
+  lifecycle/security, lint/build/proxy/format all passed. Frozen pnpm and uv installs
+  passed. Compose quiet validation passed with synthetic JWT; Docker daemon absent.
+- Delivery: no main merge or direct push; task branch/PR only. Existing local
+  Qwen ignore rule retained to protect the supplied artifacts.

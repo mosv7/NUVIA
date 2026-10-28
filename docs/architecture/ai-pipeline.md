@@ -1,6 +1,6 @@
 # AI pipeline
 
-Status: proposed scientific and engineering plan. No models have been trained, selected, benchmarked, or deployed.
+Status: proposed full scientific pipeline. Local model adapters and protected transient AI contracts now exist; supplied models are not accepted for product inference. See [implemented API](../api/ai.md) and [actual diagnostic evidence](../development/local-ai-validation.md). Clustering, stored analytics, retrieval and the broader scientific acceptance plan below remain future work.
 
 ## Goals and scope
 

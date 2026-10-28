@@ -3,16 +3,19 @@ import hmac
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.security import APIKeyHeader
 
 from app.schemas.ai import OPERATIONS, REQUESTS, RESPONSES, Capabilities
 from app.services.worker import ExecutionError
 
+private_header = APIKeyHeader(name="X-AI-Service-Token", auto_error=False)
 
-async def authenticate(request: Request):
+
+async def authenticate(request: Request, supplied: str | None = Depends(private_header)):
     expected = request.app.state.settings.token
     if len(expected) < 32:
         raise HTTPException(503, detail="service_not_configured")
-    supplied = request.headers.get("X-AI-Service-Token", "")
+    supplied = supplied or ""
     if not hmac.compare_digest(expected.encode(), supplied.encode()):
         raise HTTPException(401, detail="unauthorized")
 

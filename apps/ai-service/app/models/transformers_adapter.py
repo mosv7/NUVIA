@@ -2,7 +2,7 @@
 
 import json
 
-from app.models.artifacts import read_manifest
+from app.models.artifacts import read_manifest, tokenizer_compat_options
 from app.pipelines.aspects import analysis_result, extract_spans
 
 
@@ -36,8 +36,19 @@ class TransformersRuntime:
             # Keep DeBERTa on CPU so Qwen does not compete for the 4 GB device.
             device = self.settings["device"] if name == "generation" else "cpu"
             tokenizer = AutoTokenizer.from_pretrained(
-                manifest["directory"], local_files_only=True, trust_remote_code=False, use_fast=True
+                manifest["directory"],
+                local_files_only=True,
+                trust_remote_code=False,
+                use_fast=True,
+                **tokenizer_compat_options(manifest["directory"]),
             )
+            from pathlib import Path
+
+            from tokenizers import Tokenizer
+
+            serialized = Tokenizer.from_file(str(Path(manifest["directory"]) / "tokenizer.json"))
+            if serialized.get_vocab() != tokenizer.backend_tokenizer.get_vocab():
+                raise ValueError("Tokenizer compatibility changed vocabulary IDs")
             model = (
                 classes[name]
                 .from_pretrained(

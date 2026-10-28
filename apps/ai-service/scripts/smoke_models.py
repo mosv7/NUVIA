@@ -36,8 +36,21 @@ async def run(args):
         specs, {k: v for k, v in asdict(settings).items() if k not in ("model_root", "token")}
     )
     records = []
+    cases = list(fixtures["generation"])
+    confirmed = manifests["polarity"]["input_format"] == "review_aspect_pair_v1"
+    if confirmed:
+        for index, case in enumerate(fixtures["analysis_diagnostics"]):
+            cases.append(
+                {
+                    "operation": "analyze",
+                    "payload": {"texts": [{"id": f"a{index}", "text": case["text"]}]},
+                    "expected_sentiment": "mixed",
+                }
+            )
     try:
-        for case in fixtures["generation"]:
+        for case in cases:
+            if case["operation"] not in args.operations:
+                continue
             started = time.monotonic()
             request = REQUESTS[case["operation"]].model_validate(case["payload"])
             try:
@@ -47,13 +60,15 @@ async def run(args):
                 status_ok = case.get("expected_status", output.get("status")) == output.get(
                     "status"
                 )
+                if case["operation"] == "analyze":
+                    status_ok = output["items"][0]["sentiment"] == case["expected_sentiment"]
                 record = {"valid": True, "expected_status_passed": status_ok, "output": output}
             except ExecutionError as error:
                 record = {"valid": False, "error": str(error)}
             records.append({**case, **record, "seconds": round(time.monotonic() - started, 3)})
             print(
                 case["operation"],
-                case["payload"]["locale"],
+                case["payload"].get("locale", "analysis"),
                 record.get("error", "schema_valid"),
                 flush=True,
             )
@@ -85,7 +100,7 @@ async def run(args):
         },
         "artifacts": {k: m["fingerprint"] for k, m in manifests.items()},
         "records": records,
-        "analysis_reason": "unverified_input_format",
+        "analysis_reason": None if confirmed else "unverified_input_format",
     }
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -99,4 +114,5 @@ if __name__ == "__main__":
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--operations", nargs="+", choices=list(REQUESTS), default=list(REQUESTS))
     asyncio.run(run(parser.parse_args()))

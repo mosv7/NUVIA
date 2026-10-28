@@ -1,6 +1,6 @@
 # NUVIA
 
-Arabic/English customer-feedback product under development. React/Vite lives in `apps/web`; **`backend/` is the only Node/Express/Mongoose product backend**. The former `apps/api` implementation has been removed. FastAPI in `apps/ai-service` remains an independent health-only scaffold (`analysis_available: false`).
+Arabic/English customer-feedback product under development. React/Vite lives in `apps/web`; **`backend/` is the only Node/Express/Mongoose product backend**. The former `apps/api` implementation has been removed. Optional FastAPI in `apps/ai-service` now provides authenticated local-model contracts through Node's `/api/ai`; supplied capabilities remain unavailable pending model-quality/input-format acceptance. See [AI setup and contracts](docs/api/ai.md).
 
 The backend provides owner registration/login, browser cookie sessions, password recovery, business/onboarding, branches, survey management/questions and templates. Settings APIs persist profile/avatar/language/notification preferences, manage devices, change passwords/emails and enroll TOTP with one-use recovery codes. The browser handles second-factor sign-in and explicit email-change confirmation; full settings-screen integration remains under development. Public survey GET exposes published questions/branch availability only, not response submission. Survey publishing here changes backend survey state; it does not establish public response collection, live analytics, AI inference or complete frontend survey integration. Team administration, Google OAuth and billing remain future work. Connected account pages show saved data and honest empty/unavailable states; illustrative data belongs under `/preview/`.
 
@@ -41,7 +41,7 @@ pnpm test:e2e:accounts
 
 Backend tests live in `backend/tests`, web tests in `apps/web/tests`, and cross-app browser tests in `tests/e2e`. Integration checks use isolated replica sets/synthetic accounts, never a configured customer database. Browser checks need Edge, `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, or installed Playwright Chromium. Actual run results and limits belong in the PR; source code or health checks do not prove full product acceptance.
 
-For Python: `uv sync --project apps/ai-service --locked`, `pnpm dev:ai`, `pnpm test:ai`. Only `/api/v1/health/live` exists there; no analysis integration is implemented.
+For Python: `uv sync --project apps/ai-service --locked`, `pnpm dev:ai`, `pnpm test:ai`. Add `--extra inference` to install optional model dependencies. Authenticated internal operations live under `/api/v1`; public callers use `/api/ai`. Model readiness is capability-specific, not inferred from liveness. See [actual model validation](docs/development/local-ai-validation.md).
 
 Optional `docker compose up --build -d` runs web/backend with a **separate local MongoDB volume** and file mailbox. Configure `JWT_SECRET` first. Add the scaffold with `--profile ai`. Stop with `docker compose --profile ai down`; adding `--volumes` deletes the compose database. This is local development infrastructure, not production deployment or Atlas migration. Never print resolved compose secrets; use `docker compose config --quiet`.
 

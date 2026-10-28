@@ -43,3 +43,10 @@ def test_unknown_fields_duplicates_and_blank_text_are_rejected():
     ]:
         with pytest.raises(ValueError):
             AnalyzeRequest.model_validate(value)
+
+
+def test_survey_objective_must_not_be_whitespace():
+    from app.schemas.ai import SurveyRequest
+
+    with pytest.raises(ValueError):
+        SurveyRequest(industry="restaurant", objective="   ", locale="en")

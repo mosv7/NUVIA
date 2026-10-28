@@ -1,7 +1,7 @@
 [project]
 name = "nuvia-ai-service"
 version = "0.1.0"
-description = "Health-only scaffold for NUVIA's future FastAPI analysis service"
+description = "Authenticated local AI APIs with replaceable model adapters and assessment gates"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.156.3",

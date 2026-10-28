@@ -15,6 +15,12 @@ OPERATIONS = ("analyze", "summaries", "reports", "survey-suggestions", "answers"
 class Strict(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, allow_inf_nan=False)
 
+    @model_validator(mode="after")
+    def reject_blank_strings(self):
+        if any(isinstance(value, str) and not value.strip() for value in self.__dict__.values()):
+            raise ValueError("Blank string")
+        return self
+
 
 class Evidence(Strict):
     id: Identifier
@@ -147,6 +153,7 @@ class Capability(Strict):
             "inference_dependencies_missing",
             "unverified_input_format",
             "unassessed",
+            "service_not_configured",
         ]
         | None
     )

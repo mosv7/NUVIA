@@ -6,6 +6,35 @@ from app.core.settings import Settings
 from app.main import create_app
 
 
+def test_openapi_exposes_the_required_private_header_for_generated_clients():
+    app = create_app(Settings())
+    schemes = app.openapi().get("components", {}).get("securitySchemes", {})
+    assert any(value.get("name") == "X-AI-Service-Token" for value in schemes.values())
+
+
+def test_first_model_hashing_does_not_block_other_requests(tmp_path, monkeypatch):
+    import time
+
+    from app.services.ai import AiService
+
+    service = AiService(Settings(model_root=str(tmp_path)))
+
+    def slow_readiness():
+        time.sleep(0.2)
+        return {"capabilities": {"analyze": {"ready": False}}}
+
+    monkeypatch.setattr(service, "capabilities", slow_readiness)
+
+    async def run():
+        task = asyncio.create_task(service.execute("analyze", None))
+        await asyncio.sleep(0.01)
+        responsive = not task.done()
+        await asyncio.gather(task, return_exceptions=True)
+        assert responsive
+
+    asyncio.run(run())
+
+
 def test_internal_auth_body_limit_and_safe_unavailable(tmp_path):
     async def run():
         app = create_app(Settings(token="s" * 32, model_root=str(tmp_path)))

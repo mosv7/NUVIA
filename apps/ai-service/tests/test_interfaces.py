@@ -61,3 +61,17 @@ def test_abstention_cannot_include_claims_and_survey_duplicates_are_normalized()
             },
             survey,
         )
+
+
+def test_generated_questions_must_use_requested_language():
+    request = REQUESTS["survey-suggestions"](industry="مطعم", objective="الخدمة", locale="ar")
+    with pytest.raises(ValueError):
+        validate_result(
+            "survey-suggestions",
+            {
+                "questions": [
+                    {"text": f"How was the food choice {i}?", "type": "text"} for i in range(5)
+                ]
+            },
+            request,
+        )

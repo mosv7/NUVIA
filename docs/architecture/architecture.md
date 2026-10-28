@@ -1,6 +1,6 @@
 # Current architecture
 
-`backend/` is the single public Node/Express/Mongoose API. `apps/api/` has been removed. `apps/web/` is the React/Vite browser client, `packages/shared-types/` contains public contracts only, and `apps/ai-service/` is an independent FastAPI health-only scaffold.
+`backend/` is the single public Node/Express/Mongoose API. `apps/api/` has been removed. `apps/web/` is the React/Vite browser client, `packages/shared-types/` contains public contracts only, and `apps/ai-service/` is an optional internal FastAPI model service.
 
 ## Runtime ownership
 
@@ -10,7 +10,7 @@
 - Browser requests use same-origin `/api` through Vite/nginx. Cookie sessions require exact Origin and CSRF for mutations; bearer authentication remains for API clients. Credentials never belong in browser storage.
 - Registration signs in directly. Verification/resend is unavailable. Password reset uses single-use tokens and development file mail or explicitly configured SMTP; there is no separate mail worker.
 - Surveys/questions/templates have backend endpoints, including survey publishing state. Public response collection, live analytics and frontend completion remain under development.
-- FastAPI reports `analysis_available: false`; no browser-to-MongoDB, browser-to-AI or Node-to-AI analysis flow is implemented.
+- Node `/api/ai` authorizes the current owner/business and calls authenticated FastAPI `/api/v1` operations. Python owns local inference only, with no MongoDB access or public browser path. A supervised serial child reuses models and enforces timeout/cancellation. Capability contracts are independent of model aliases; manifests and assessment profiles gate readiness. Supplied model capabilities remain unaccepted; no UI, stored analytics or RAG is implied. See [AI contract](../api/ai.md) and [measured validation](../development/local-ai-validation.md).
 
 ## Configuration and data
 

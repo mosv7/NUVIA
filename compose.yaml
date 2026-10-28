@@ -35,6 +35,9 @@ services:
       APP_ORIGIN: http://127.0.0.1:5173
       MAIL_MODE: file
       JWT_SECRET: ${JWT_SECRET:?Run pnpm setup:local and configure JWT_SECRET first}
+      AI_SERVICE_URL: ${AI_CONTAINER_SERVICE_URL:-http://ai:8000}
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+      AI_REQUEST_TIMEOUT_MS: 190000
     volumes:
       - ./.local/mail:/workspace/.local/mail
     depends_on:
@@ -69,6 +72,21 @@ services:
     build:
       context: .
       dockerfile: infra/docker/ai.Dockerfile
+      args:
+        AI_INFERENCE: ${AI_INFERENCE:-false}
+    environment:
+      NODE_ENV: production
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+      AI_MODEL_ROOT: /models
+      AI_DEVICE: cpu
+      AI_TASK_TIMEOUT_SECONDS: 180
+    volumes:
+      - type: bind
+        source: ${AI_MODELS_DIRECTORY:-./.local/models}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
     ports:
       - 127.0.0.1:8000:8000
 

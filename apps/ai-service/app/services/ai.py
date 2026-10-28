@@ -1,18 +1,27 @@
 """Readiness is tied to artifacts, policy and an explicit local assessment."""
 
+import asyncio
 import hashlib
 import importlib.util
 import json
+import threading
 from dataclasses import asdict
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 from app.models.artifacts import read_manifest
-from app.schemas.ai import OPERATIONS
-from app.services.interfaces import PROMPT_VERSION, validate_result
+from app.schemas.ai import OPERATIONS, REQUESTS, RESULTS
+from app.services.interfaces import PROMPT_VERSION, RULES, validate_result
 from app.services.worker import ExecutionError, Supervisor
 
 
 def profile_fingerprint(manifests, settings):
+    def installed(name):
+        try:
+            return version(name)
+        except PackageNotFoundError:
+            return "missing"
+
     profile = {
         "models": {k: v["fingerprint"] for k, v in manifests.items()},
         "prompt": PROMPT_VERSION,
@@ -21,7 +30,12 @@ def profile_fingerprint(manifests, settings):
         "threshold": settings.threshold,
         "max_tokens": settings.max_tokens,
         "output_tokens": settings.output_tokens,
-        "transformers": "4.57.1",
+        "libraries": {name: installed(name) for name in ("torch", "transformers", "tokenizers")},
+        "contracts": {
+            name: [REQUESTS[name].model_json_schema(), RESULTS[name].model_json_schema()]
+            for name in OPERATIONS
+        },
+        "instructions": RULES,
     }
     return hashlib.sha256(json.dumps(profile, sort_keys=True).encode()).hexdigest()
 
@@ -33,8 +47,13 @@ class AiService:
         self.reasons = {}
         self.worker = None
         self.initialized = False
+        self.init_lock = threading.Lock()
 
     def initialize(self):
+        with self.init_lock:
+            self._initialize()
+
+    def _initialize(self):
         if self.initialized:
             return
         for name in ("generation", "aspect", "polarity"):
@@ -90,7 +109,8 @@ class AiService:
         return {"schema_version": "1", "capabilities": capabilities}
 
     async def execute(self, operation, request):
-        capability = self.capabilities()["capabilities"][operation]
+        capabilities = await asyncio.to_thread(self.capabilities)
+        capability = capabilities["capabilities"][operation]
         if not capability["ready"]:
             raise ExecutionError("capability_unavailable")
         if self.worker is None:

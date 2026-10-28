@@ -7,7 +7,7 @@ import os
 import threading
 import time
 
-BODY_LIMIT = 65536
+BODY_LIMIT = 131072  # Separate IPC envelope headroom; HTTP remains 64 KiB.
 OUTPUT_LIMIT = 262144
 
 
@@ -65,7 +65,7 @@ def model_worker(connection, manifests, settings):
                     "input_too_large" if str(error) == "input_too_large" else "invalid_model_output"
                 )
                 response = {"error": code}
-            encoded = json.dumps(response, allow_nan=False).encode()
+            encoded = json.dumps(response, allow_nan=False, ensure_ascii=False).encode()
             if len(encoded) > OUTPUT_LIMIT:
                 encoded = b'{"error":"invalid_model_output"}'
             connection.send_bytes(encoded)
@@ -105,7 +105,9 @@ class Supervisor:
             raise ExecutionError("model_busy")
         sending = None
         try:
-            message = json.dumps({"operation": operation, "payload": payload}).encode()
+            message = json.dumps(
+                {"operation": operation, "payload": payload}, ensure_ascii=False, allow_nan=False
+            ).encode()
             if len(message) > BODY_LIMIT:
                 raise ExecutionError("input_too_large")
             if self.process is None or not self.process.is_alive():
