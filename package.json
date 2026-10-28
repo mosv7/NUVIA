@@ -31,7 +31,8 @@
     "test:watch": "pnpm --filter @nuvia/web test:watch",
     "previews": "pnpm --filter @nuvia/web previews",
     "screenshots": "pnpm --filter @nuvia/web screenshots",
-    "test:proxy": "node tests/e2e/web-api-proxy.mjs"
+    "test:proxy": "node tests/e2e/web-api-proxy.mjs",
+    "test:infra:config": "node --test tests/infra/ai-compose.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

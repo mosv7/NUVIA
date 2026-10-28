@@ -1,0 +1,11 @@
+# Explicit opt-in for supplied local model artifacts. The base AI profile needs no weights.
+# Prepare the host model directory first; missing paths must fail rather than be created.
+services:
+  ai:
+    volumes:
+      - type: bind
+        source: ${AI_MODELS_DIRECTORY:-./.local/models}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false

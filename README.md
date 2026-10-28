@@ -45,4 +45,9 @@ For Python: `uv sync --project apps/ai-service --locked`, `pnpm dev:ai`, `pnpm t
 
 Optional `docker compose up --build -d` runs web/backend with a **separate local MongoDB volume** and file mailbox. Configure `JWT_SECRET` first. Add the scaffold with `--profile ai`. Stop with `docker compose --profile ai down`; adding `--volumes` deletes the compose database. This is local development infrastructure, not production deployment or Atlas migration. Never print resolved compose secrets; use `docker compose config --quiet`.
 
+The base AI profile needs no local weights. Mount prepared models explicitly
+with `-f compose.yaml -f compose.ai-models.yaml --profile ai`, after configuring
+the private token and `AI_INFERENCE=true`. The model override is read-only and
+refuses missing host directories; see [infrastructure](infra/README.md).
+
 Read [architecture](docs/architecture/architecture.md), [module boundaries](docs/development/module-boundaries.md), [API](docs/api/README.md), [backend operations](docs/development/backend.md), [design context](DESIGN.md), and [repository guidelines](AGENTS.md). The [feature map](docs/product/feature-list.md) describes the full planned product; older validation reports and archived proposals are historical evidence. No open-source license has been selected.
