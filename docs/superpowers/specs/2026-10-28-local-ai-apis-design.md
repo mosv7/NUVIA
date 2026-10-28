@@ -337,3 +337,10 @@ An independent builder check found no material remaining integration ambiguity;
 its minor shared-error DTO request-ID omission is included above. Document-only
 validation: targeted Prettier check and Git whitespace check. No runtime code or
 model artifacts were modified, and no inference acceptance claim is made.
+
+Follow-up owner clarification on 2026-10-28: the supplied polarity model takes
+the aspect first, then review text. Support and configure `aspect_review_pair_v1`
+without changing public APIs, while retaining the prior explicit review-first
+format for other packages. This resolves the input-order question; the separate
+quality gate still applies. A frozen eight-case assessment passed 6/8, so analysis
+remains unaccepted at the unchanged threshold.

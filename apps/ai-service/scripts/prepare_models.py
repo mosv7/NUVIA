@@ -25,7 +25,9 @@ def manifest(directory, alias, adapter, input_format=None):
     (directory / "manifest.json").write_text(json.dumps(result, indent=2) + "\n")
 
 
-def prepare(qwen_source, bert_zip, destination):
+def prepare(qwen_source, bert_zip, destination, *, polarity_input_format=None):
+    if polarity_input_format not in (None, "aspect_review_pair_v1", "review_aspect_pair_v1"):
+        raise ValueError("Unsupported polarity input format")
     destination = Path(destination).resolve()
     destination.mkdir(parents=True, exist_ok=True)
     generation = destination / "generation"
@@ -62,7 +64,12 @@ def prepare(qwen_source, bert_zip, destination):
             with archive.open(entry) as source, target.open("xb") as output:
                 shutil.copyfileobj(source, output)
     for original, adapter in mapping.items():
-        manifest(destination / adapter, original, adapter)
+        manifest(
+            destination / adapter,
+            original,
+            adapter,
+            polarity_input_format if adapter == "polarity" else None,
+        )
 
 
 if __name__ == "__main__":
@@ -70,6 +77,14 @@ if __name__ == "__main__":
     parser.add_argument("--qwen-source", required=True)
     parser.add_argument("--bert-zip", required=True)
     parser.add_argument("--destination", required=True)
+    parser.add_argument(
+        "--polarity-input-format", choices=("aspect_review_pair_v1", "review_aspect_pair_v1")
+    )
     args = parser.parse_args()
-    prepare(args.qwen_source, args.bert_zip, args.destination)
+    prepare(
+        args.qwen_source,
+        args.bert_zip,
+        args.destination,
+        polarity_input_format=args.polarity_input_format,
+    )
     print("Local model packages prepared; capabilities require assessment before activation.")

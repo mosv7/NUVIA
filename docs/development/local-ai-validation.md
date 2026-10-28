@@ -7,7 +7,7 @@ used for validation.
 
 ## Actual supplied models
 
-Prepared ignored local packages under `.local/models` using the supplied Qwen
+Initial delivery prepared ignored local packages under `.local/models` using the supplied Qwen
 directory and `D:/bert models/drive-download-20261027T231609Z-1-001.zip`.
 No new weights were downloaded; `training_args.bin` was not loaded.
 
@@ -50,7 +50,7 @@ list metadata to the pinned tokenizer loader, while verifying vocabulary IDs are
 unchanged. Diagnostics extracted food/service spans in one English and one
 Arabic example. Both hypothetical pair orders predicted positive food/negative
 service; **this cannot establish which order was used in training**. The API
-therefore reports `unverified_input_format`, not accepted analysis. Private
+at that point reported `unverified_input_format`, not accepted analysis. Private
 diagnostics: `.local/ai-assessment/deberta-diagnostics.json`. This is not a
 sentiment/ABSA benchmark or calibrated accuracy claim.
 
@@ -88,10 +88,43 @@ without starting an unaccepted worker.
 
 ## To activate later
 
-Establish DeBERTa training input format from its training/evaluation source, then
-run the declared assessment. For Qwen use an improved compatible model or improve
+The owner subsequently confirmed aspect-first input; see the follow-up below.
+DeBERTa still needs a successful quality assessment before activation. For Qwen use an improved compatible model or improve
 interfaces with a separate frozen evaluation set; do not weaken source/tenant
 validators to make smoke results appear successful. Keep failed and unassessed
 capabilities unavailable. See [setup/replacement](../../apps/ai-service/README.md)
 and [public API](../api/ai.md). Existing analytics/response collection/RAG work is
 outside this API-only delivery.
+
+## Follow-up: owner-confirmed aspect-first order
+
+On 2026-10-28 the owner specified the aspect comes first. The adapter now explicitly
+supports `aspect_review_pair_v1` (aspect, review) alongside the prior
+`review_aspect_pair_v1` (review, aspect). The local polarity manifest is configured
+to aspect-first based on that confirmation; unspecified conventions still fail
+closed. This is owner-provided metadata, not recovered training source.
+
+Changing that metadata changes the polarity fingerprint to
+`dde54adc4b72a4be6a353566d49a4ff43ea11529f12dcddc2df9a2309e9e2f12`.
+No weight/tokenizer contents were modified. A separate eight-case assessment was
+committed before inference, with SHA-256
+`b17e2c4777a4da1d5152d88987df36b432ea2e63498a437afe8ba1bde5cccca7`.
+It requires expected overall sentiment plus expected accepted aspect polarities,
+with the original 0.7 threshold unchanged.
+
+Actual run used the application's locked optional inference environment:
+PyTorch `2.14.1+cpu`, Transformers `4.57.1`, 4 threads. All eight outputs passed
+schema/source validation. **Six of eight passed the declared semantic checks**:
+positive, negative and neutral passed in English and Arabic, while both mixed
+cases failed. English `room` was correctly positive but its score 0.688 was below
+threshold. Arabic `المكان` was misclassified negative at 0.633 and excluded.
+Both reviews therefore retained only an accepted negative mention and returned
+partial-aspect negative overall sentiment. No threshold was lowered to make the
+cases pass, and no capability acceptance record was written.
+
+Total runtime was 19.158 seconds including first load. This is eight synthetic
+smoke cases, not a general accuracy estimate. Private evidence:
+`.local/ai-assessment/aspect-first-assessment.json`. Current analysis reason is
+`unassessed`, rather than `unverified_input_format`, when these packages and the
+optional dependencies are configured. Generation remains unaccepted. Follow-up
+Python suite: 27 tests passed; Ruff check/format passed.
