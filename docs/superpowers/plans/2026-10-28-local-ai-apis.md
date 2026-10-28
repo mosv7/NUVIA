@@ -38,10 +38,10 @@ tests/test_analysis.py, tests/test_artifacts.py.
 Interfaces: strict operation requests/results; load_manifest(path) validates local
 hashes; extract_spans(text, labels, offsets, scores); derive_sentiment(mentions).
 
-- [ ] Write tests for mixed/neutral/unknown, Arabic offsets and unsafe artifacts.
-- [ ] Run pytest; observe missing behavior fail.
-- [ ] Implement contracts, preparation and model adapter with verified input format gate.
-- [ ] Run focused tests and frozen Python baseline suite; commit task.
+- [x] Write tests for mixed/neutral/unknown, Arabic offsets and unsafe artifacts.
+- [x] Run pytest; observe missing behavior fail.
+- [x] Implement contracts, preparation and model adapter with verified input format gate.
+- [x] Run focused tests and frozen Python baseline suite; commit task.
 
 ## Task 2: Shared worker, generation interfaces and internal API
 
@@ -51,9 +51,9 @@ api/v1/ai.py, core/http.py, main.py, tests/test_ai_api.py, tests/test_worker.py.
 Interfaces: Supervisor.execute(operation, payload), close(); AiService.capabilities()
 and execute(operation,payload); versioned validated results with provenance.
 
-- [ ] Write tests for auth, limits, evidence validation, busy/reuse/cancel/crash.
-- [ ] Observe RED; implement supervised execution and capability-specific schemas.
-- [ ] Run full Python suite/Ruff; commit task.
+- [x] Write tests for auth, limits, evidence validation, busy/reuse/cancel/crash.
+- [x] Observe RED; implement supervised execution and capability-specific schemas.
+- [x] Run full Python suite/Ruff; commit task.
 
 ## Task 3: Protected public Node integration
 
@@ -64,22 +64,22 @@ backend/app.js, packages/shared-types/src/index.d.ts.
 Interfaces: client.request(operation,payload,{signal,requestId}); strict input/output
 validators; owner-scoped routes returning {data} and safe coded errors.
 
-- [ ] Write integration tests using isolated replica sets and a real local fake HTTP upstream.
-- [ ] Observe RED; implement auth reuse, limits, response validation and cancellation.
-- [ ] Test browser/Bearer/revocation, foreign scope, bad upstream/body and unavailable.
-- [ ] Run relevant backend suite, proxy, lint/build; commit task.
+- [x] Write integration tests using isolated replica sets and a real local fake HTTP upstream.
+- [x] Observe RED; implement auth reuse, limits, response validation and cancellation.
+- [x] Test browser/Bearer/revocation, foreign scope, bad upstream/body and unavailable.
+- [x] Run relevant backend suite, proxy, lint/build; commit task.
 
 ## Task 4: Actual artifacts, smoke assessment and integration documentation
 
 Files: scripts/smoke_models.py, synthetic smoke fixtures, docs/api/ai.md,
 AI/root READMEs/architecture, .env.example, .dockerignore, compose/nginx as affected.
 
-- [ ] Freeze smoke fixtures/criteria before inference; prepare supplied local artifacts.
-- [ ] Run actual models; record hashes, hardware, timing and failures without claiming broad quality.
-- [ ] Bind per-capability acceptance to artifact hashes; leave failing capabilities unavailable.
-- [ ] Document requests, setup, replacement, all errors and actual limitations; export OpenAPI.
-- [ ] Run frozen installs, Python/backend suites, format/lint/build/proxy and focused browser checks.
-- [ ] Independent whole-branch review, fix material regressions, commit/push task branch and PR.
+- [x] Freeze smoke fixtures/criteria before inference; prepare supplied local artifacts.
+- [x] Run actual models; record hashes, hardware, timing and failures without claiming broad quality.
+- [x] Bind per-capability acceptance to artifact hashes; leave failing capabilities unavailable.
+- [x] Document requests, setup, replacement, all errors and actual limitations; export OpenAPI.
+- [x] Run frozen installs, Python/backend suites, format/lint/build/proxy and focused browser checks.
+- [x] Independent whole-branch review, fix material regressions, commit/push task branch and PR.
 
 ## Execution ledger
 
@@ -98,3 +98,5 @@ AI/root READMEs/architecture, .env.example, .dockerignore, compose/nginx as affe
   passed. Compose quiet validation passed with synthetic JWT; Docker daemon absent.
 - Delivery: no main merge or direct push; task branch/PR only. Existing local
   Qwen ignore rule retained to protect the supplied artifacts.
+
+- Delivery completed: PR #14 against main; independent review clean. No merge performed.
