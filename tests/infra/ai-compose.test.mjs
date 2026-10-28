@@ -81,13 +81,18 @@ test('explicit model override remains read-only and does not create a missing ho
   const mount = config.services.ai.volumes.find((v) => v.target === '/models');
   assert.equal(mount.type, 'bind');
   assert.equal(mount.read_only, true);
-  // Older compose-go JSON serializers omit false booleans; both represent disabled.
-  assert.equal(mount.bind?.create_host_path ?? false, false);
+  // Compare with the same CLI's explicit false representation: versions differ
+  // in which default-valued booleans they omit from serialized configuration.
+  const disabled = composeConfig(['compose.ai-models.yaml'], false);
+  const disabledMount = disabled.services.ai.volumes.find((v) => v.target === '/models');
+  assert.deepEqual(mount.bind, disabledMount.bind);
   assert.equal(config.services.ai.environment.AI_MODEL_ROOT, '/models');
 });
 
-test('configuration checks distinguish enabled host creation from an omitted false value', () => {
-  const config = composeConfig(['compose.ai-models.yaml'], true);
-  const mount = config.services.ai.volumes.find((v) => v.target === '/models');
-  assert.equal(mount.bind.create_host_path, true);
+test('configuration checks distinguish enabled host creation from disabled host creation', () => {
+  const enabled = composeConfig(['compose.ai-models.yaml'], true);
+  const disabled = composeConfig(['compose.ai-models.yaml'], false);
+  const enabledMount = enabled.services.ai.volumes.find((v) => v.target === '/models');
+  const disabledMount = disabled.services.ai.volumes.find((v) => v.target === '/models');
+  assert.notDeepEqual(enabledMount.bind, disabledMount.bind);
 });
