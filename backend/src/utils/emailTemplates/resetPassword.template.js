@@ -1,26 +1,26 @@
-const escapeHtml = (value = '') =>
+const escapeHtml = (value = "") =>
   String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
 const resetPasswordEmail = ({ name, resetUrl, expiresInMinutes }) => {
-  const safeName = escapeHtml(name || 'there');
+  const safeName = escapeHtml(name || "there");
 
-  const subject = 'Reset your Nuvia password';
+  const subject = "Reset your Nuvia password";
 
   const text = [
-    `Hi ${name || 'there'},`,
-    '',
-    'We received a request to reset your Nuvia password.',
+    `Hi ${name || "there"},`,
+    "",
+    "We received a request to reset your Nuvia password.",
     `Open this link to choose a new one (valid for ${expiresInMinutes} minutes):`,
     resetUrl,
-    '',
+    "",
     "If you didn't request this, you can safely ignore this email.",
-    '',
-    'Nuvia',
-  ].join('\n');
+    "",
+    "Nuvia",
+  ].join("\n");
 
   const html = `<!DOCTYPE html>
 <html>

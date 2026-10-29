@@ -1,5 +1,5 @@
-const branchService = require('../services/branch.service');
-const { handleError } = require('../utils/errors');
+const branchService = require("../services/branch.service");
+const { handleError } = require("../utils/errors");
 
 const list = async (req, res) => {
   try {
@@ -37,7 +37,7 @@ const create = async (req, res) => {
   try {
     const { name, country, city, address } = req.body;
     const branch = await branchService.create(req.user, { name, country, city, address });
-    res.status(201).json({ message: 'Branch added', data: branch });
+    res.status(201).json({ message: "Branch added", data: branch });
   } catch (error) {
     handleError(res, error);
   }
@@ -46,13 +46,8 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { name, country, city, address } = req.body;
-    const branch = await branchService.update(req.user, req.params.id, {
-      name,
-      country,
-      city,
-      address,
-    });
-    res.json({ message: 'Branch saved', data: branch });
+    const branch = await branchService.update(req.user, req.params.id, { name, country, city, address });
+    res.json({ message: "Branch saved", data: branch });
   } catch (error) {
     handleError(res, error);
   }
@@ -60,10 +55,7 @@ const update = async (req, res) => {
 
 const archive = async (req, res) => {
   try {
-    res.json({
-      message: 'Branch archived',
-      data: await branchService.archive(req.user, req.params.id),
-    });
+    res.json({ message: "Branch archived", data: await branchService.archive(req.user, req.params.id) });
   } catch (error) {
     handleError(res, error);
   }

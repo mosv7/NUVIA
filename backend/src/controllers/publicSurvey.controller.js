@@ -1,5 +1,5 @@
-const publicSurveyService = require('../services/publicSurvey.service');
-const { handleError } = require('../utils/errors');
+const publicSurveyService = require("../services/publicSurvey.service");
+const { handleError } = require("../utils/errors");
 
 const getSurvey = async (req, res) => {
   try {

@@ -1,22 +1,14 @@
-const mongoose = require('mongoose');
-const { USER_STATUS, DATE_FORMAT, TIME_FORMAT, FEEDBACK_DELIVERY } = require('./enums');
+const mongoose = require("mongoose");
+const { USER_STATUS, DATE_FORMAT, TIME_FORMAT, FEEDBACK_DELIVERY } = require("./enums");
 
 const businessOwnerSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 150 },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-      maxlength: 255,
-    },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true, maxlength: 255 },
     passwordHash: { type: String, required: true, select: false },
     phone: { type: String, trim: true, maxlength: 30 },
     preferredLanguage: { type: String, required: true, trim: true, maxlength: 10 }, // Arabic or English
     lastLogin: { type: Date },
-    tokenVersion: { type: Number, default: 0, select: false },
 
     // ----- account settings -----
     jobTitle: { type: String, trim: true, maxlength: 100 },
@@ -30,11 +22,11 @@ const businessOwnerSchema = new mongoose.Schema(
     passwordChangedAt: { type: Date },
 
     language: {
-      displayLanguage: { type: String, default: 'en-GB' },
-      region: { type: String, default: 'EG' },
-      timeZone: { type: String, default: 'Africa/Cairo' },
-      dateFormat: { type: String, enum: DATE_FORMAT, default: 'DD/MM/YYYY' },
-      timeFormat: { type: String, enum: TIME_FORMAT, default: '12h' },
+      displayLanguage: { type: String, default: "en-GB" },
+      region: { type: String, default: "EG" },
+      timeZone: { type: String, default: "Africa/Cairo" },
+      dateFormat: { type: String, enum: DATE_FORMAT, default: "DD/MM/YYYY" },
+      timeFormat: { type: String, enum: TIME_FORMAT, default: "12h" },
     },
 
     notifications: {
@@ -49,7 +41,7 @@ const businessOwnerSchema = new mongoose.Schema(
         productNews: { type: Boolean, default: true },
         // Security notices are always sent; this is kept so the UI can show the switch as locked on.
         accountSecurity: { type: Boolean, default: true },
-        feedbackDelivery: { type: String, enum: FEEDBACK_DELIVERY, default: 'daily_09:00' },
+        feedbackDelivery: { type: String, enum: FEEDBACK_DELIVERY, default: "daily_09:00" },
       },
       inApp: {
         newFeedback: { type: Boolean, default: true },
@@ -63,14 +55,14 @@ const businessOwnerSchema = new mongoose.Schema(
     twoFactor: {
       enabled: { type: Boolean, default: false },
       enabledAt: { type: Date },
-      lastUsedStep: { type: Number }, // blocks reusing the same code
-      secretEnc: { type: String, select: false }, // encrypted TOTP secret
+      lastUsedStep: { type: Number },              // blocks reusing the same code
+      secretEnc: { type: String, select: false },  // encrypted TOTP secret
       pendingSecretEnc: { type: String, select: false }, // set during setup, moved to secretEnc on enable
       recoveryCodeHashes: { type: [String], select: false },
     },
-    status: { type: String, enum: USER_STATUS, required: true, default: 'active' },
+    status: { type: String, enum: USER_STATUS, required: true, default: "active" },
   },
-  { timestamps: { createdAt: true, updatedAt: false } },
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
-module.exports = mongoose.model('BusinessOwner', businessOwnerSchema);
+module.exports = mongoose.model("BusinessOwner", businessOwnerSchema);

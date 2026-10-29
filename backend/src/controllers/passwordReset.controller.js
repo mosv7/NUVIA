@@ -1,15 +1,15 @@
-const service = require('../services/passwordReset.service');
+const service = require("../services/passwordReset.service");
 
 const forgotPassword = async (req, res) => {
   try {
     await service.requestReset({ email: req.body.email });
   } catch (error) {
     // log it, but never tell the client (prevents email enumeration)
-    console.error('forgot-password error:', error.message);
+    console.error("forgot-password error:", error.message);
   }
 
   return res.status(200).json({
-    message: 'If an account exists for this email, a reset link has been sent.',
+    message: "If an account exists for this email, a reset link has been sent.",
   });
 };
 
@@ -28,7 +28,7 @@ const resetPassword = async (req, res) => {
       token: req.body.token,
       password: req.body.password,
     });
-    return res.status(200).json({ message: 'Password has been reset successfully' });
+    return res.status(200).json({ message: "Password has been reset successfully" });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }

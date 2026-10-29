@@ -17,12 +17,12 @@ const handleError = (res, error) => {
     return res.status(error.statusCode).json(body);
   }
 
-  if (error.name === 'ValidationError' || error.name === 'CastError') {
+  if (error.name === "ValidationError" || error.name === "CastError") {
     return res.status(400).json({ message: error.message });
   }
 
   console.error(error);
-  return res.status(500).json({ message: 'Something went wrong, please try again' });
+  return res.status(500).json({ message: "Something went wrong, please try again" });
 };
 
 module.exports = { fail, handleError };

@@ -1,5 +1,5 @@
-const surveyService = require('../services/survey.service');
-const { handleError } = require('../utils/errors');
+const surveyService = require("../services/survey.service");
+const { handleError } = require("../utils/errors");
 
 const getSummary = async (req, res) => {
   try {
@@ -21,8 +21,8 @@ const exportCsv = async (req, res) => {
   try {
     const csv = await surveyService.exportCsv(req.user, req.query);
     res.set({
-      'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': 'attachment; filename="surveys.csv"',
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": 'attachment; filename="surveys.csv"',
     });
     res.send(csv);
   } catch (error) {
@@ -37,7 +37,7 @@ const listTemplates = (req, res) => {
 const create = async (req, res) => {
   try {
     const survey = await surveyService.create(req.user, req.body);
-    res.status(201).json({ message: 'Survey created', data: survey });
+    res.status(201).json({ message: "Survey created", data: survey });
   } catch (error) {
     handleError(res, error);
   }
@@ -53,10 +53,7 @@ const getById = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    res.json({
-      message: 'Survey saved',
-      data: await surveyService.update(req.user, req.params.id, req.body),
-    });
+    res.json({ message: "Survey saved", data: await surveyService.update(req.user, req.params.id, req.body) });
   } catch (error) {
     handleError(res, error);
   }
@@ -65,7 +62,7 @@ const update = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     const data = await surveyService.updateStatus(req.user, req.params.id, req.body.status);
-    res.json({ message: 'Survey status updated', data });
+    res.json({ message: "Survey status updated", data });
   } catch (error) {
     handleError(res, error);
   }
@@ -74,7 +71,7 @@ const updateStatus = async (req, res) => {
 const duplicate = async (req, res) => {
   try {
     const survey = await surveyService.duplicate(req.user, req.params.id);
-    res.status(201).json({ message: 'Survey duplicated', data: survey });
+    res.status(201).json({ message: "Survey duplicated", data: survey });
   } catch (error) {
     handleError(res, error);
   }
@@ -83,7 +80,7 @@ const duplicate = async (req, res) => {
 const remove = async (req, res) => {
   try {
     await surveyService.remove(req.user, req.params.id);
-    res.json({ message: 'Survey deleted' });
+    res.json({ message: "Survey deleted" });
   } catch (error) {
     handleError(res, error);
   }
@@ -91,25 +88,11 @@ const remove = async (req, res) => {
 
 const publish = async (req, res) => {
   try {
-    res.json({
-      message: 'Survey is live',
-      data: await surveyService.publish(req.user, req.params.id),
-    });
+    res.json({ message: "Survey is live", data: await surveyService.publish(req.user, req.params.id) });
   } catch (error) {
     handleError(res, error);
   }
 };
 
-module.exports = {
-  getSummary,
-  list,
-  exportCsv,
-  listTemplates,
-  create,
-  getById,
-  update,
-  updateStatus,
-  duplicate,
-  remove,
-  publish,
-};
+
+module.exports = { getSummary, list, exportCsv, listTemplates, create, getById, update, updateStatus, duplicate, remove, publish };

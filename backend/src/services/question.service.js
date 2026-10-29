@@ -1,14 +1,9 @@
-const Question = require('../models/questions.model');
-const QuestionOption = require('../models/questionOptions.model');
-const { fail } = require('../utils/errors');
-const { isChoiceType, normalizeSettings } = require('../utils/questionRules');
-const surveyStats = require('./surveyStats.service');
-const {
-  requireBusinessId,
-  getOwnedSurvey,
-  assertEditable,
-  touchSurvey,
-} = require('./surveyAccess');
+const Question = require("../models/questions.model");
+const QuestionOption = require("../models/questionOptions.model");
+const { fail } = require("../utils/errors");
+const { isChoiceType, normalizeSettings } = require("../utils/questionRules");
+const surveyStats = require("./surveyStats.service");
+const { requireBusinessId, getOwnedSurvey, assertEditable, touchSurvey } = require("./surveyAccess");
 
 const MAX_QUESTIONS = 50;
 
@@ -17,7 +12,7 @@ const MAX_QUESTIONS = 50;
 const toOptionDTO = (o) => ({
   id: o._id,
   order: o.order,
-  label: { en: o.label?.en || '', ar: o.label?.ar || '' },
+  label: { en: o.label?.en || "", ar: o.label?.ar || "" },
 });
 
 const toQuestionDTO = (q, options = []) => ({
@@ -25,8 +20,8 @@ const toQuestionDTO = (q, options = []) => ({
   order: q.order,
   type: q.type,
   isRequired: q.isRequired,
-  questionTextEn: q.questionTextEn || '',
-  questionTextAr: q.questionTextAr || '',
+  questionTextEn: q.questionTextEn || "",
+  questionTextAr: q.questionTextAr || "",
   settings: q.settings || {},
   options: options.map(toOptionDTO),
 });
@@ -59,8 +54,8 @@ const loadQuestion = async (questionId) => {
 /* ---------- options ---------- */
 
 const cleanLabel = (label = {}) => ({
-  en: typeof label.en === 'string' ? label.en.trim() : '',
-  ar: typeof label.ar === 'string' ? label.ar.trim() : '',
+  en: typeof label.en === "string" ? label.en.trim() : "",
+  ar: typeof label.ar === "string" ? label.ar.trim() : "",
 });
 
 // Makes the stored options equal to `incoming`, in that order.
@@ -68,7 +63,7 @@ const cleanLabel = (label = {}) => ({
 //   { label }      -> new option
 //   missing        -> deleted
 const syncOptions = async (questionId, incoming) => {
-  const existing = await QuestionOption.find({ questionId }).select('_id').lean();
+  const existing = await QuestionOption.find({ questionId }).select("_id").lean();
   const existingIds = new Set(existing.map((o) => String(o._id)));
   const keep = new Set();
   const ops = [];
@@ -78,12 +73,7 @@ const syncOptions = async (questionId, incoming) => {
 
     if (opt.id && existingIds.has(String(opt.id))) {
       keep.add(String(opt.id));
-      ops.push({
-        updateOne: {
-          filter: { _id: opt.id, questionId },
-          update: { $set: { label, order: index } },
-        },
-      });
+      ops.push({ updateOne: { filter: { _id: opt.id, questionId }, update: { $set: { label, order: index } } } });
     } else {
       ops.push({ insertOne: { document: { questionId, label, order: index } } });
     }
@@ -106,11 +96,11 @@ const createQuestionsFromSpecs = async (surveyId, specs) => {
       surveyId: surveyId,
       type: spec.type,
       isRequired: spec.isRequired === true,
-      questionTextEn: spec.questionTextEn || '',
-      questionTextAr: spec.questionTextAr || '',
+      questionTextEn: spec.questionTextEn || "",
+      questionTextAr: spec.questionTextAr || "",
       settings: normalizeSettings(spec.type, spec.settings),
       order: index,
-    })),
+    }))
   );
 
   const optionDocs = [];
@@ -132,13 +122,9 @@ const addQuestion = async (user, surveyId, body) => {
   assertEditable(survey);
 
   const count = await Question.countDocuments({ surveyId: survey._id });
-  if (count >= MAX_QUESTIONS)
-    throw fail(`A survey can have at most ${MAX_QUESTIONS} questions`, 409);
+  if (count >= MAX_QUESTIONS) throw fail(`A survey can have at most ${MAX_QUESTIONS} questions`, 409);
 
-  const last = await Question.findOne({ surveyId: survey._id })
-    .sort({ order: -1 })
-    .select('order')
-    .lean();
+  const last = await Question.findOne({ surveyId: survey._id }).sort({ order: -1 }).select("order").lean();
 
   const question = await Question.create({
     surveyId: survey._id,
@@ -164,7 +150,7 @@ const updateQuestion = async (user, surveyId, questionId, body) => {
   assertEditable(survey);
 
   const question = await Question.findOne({ _id: questionId, surveyId: survey._id });
-  if (!question) throw fail('Question not found', 404);
+  if (!question) throw fail("Question not found", 404);
 
   if (body.type !== undefined && body.type !== question.type) {
     if (await surveyStats.hasResponses(survey._id)) {
@@ -180,7 +166,7 @@ const updateQuestion = async (user, surveyId, questionId, body) => {
   if (body.questionTextEn !== undefined) question.questionTextEn = body.questionTextEn;
   if (body.questionTextAr !== undefined) question.questionTextAr = body.questionTextAr;
   if (body.isRequired !== undefined) question.isRequired = body.isRequired;
-  question.markModified('settings');
+  question.markModified("settings");
   await question.save();
 
   if (isChoiceType(question.type) && Array.isArray(body.options)) {
@@ -197,7 +183,7 @@ const deleteQuestion = async (user, surveyId, questionId) => {
   assertEditable(survey);
 
   const question = await Question.findOne({ _id: questionId, surveyId: survey._id });
-  if (!question) throw fail('Question not found', 404);
+  if (!question) throw fail("Question not found", 404);
 
   if (await surveyStats.hasResponses(survey._id)) {
     throw fail("This survey already has responses, so its questions can't be deleted", 409);
@@ -215,15 +201,14 @@ const duplicateQuestion = async (user, surveyId, questionId) => {
   assertEditable(survey);
 
   const original = await Question.findOne({ _id: questionId, surveyId: survey._id }).lean();
-  if (!original) throw fail('Question not found', 404);
+  if (!original) throw fail("Question not found", 404);
 
   const count = await Question.countDocuments({ surveyId: survey._id });
-  if (count >= MAX_QUESTIONS)
-    throw fail(`A survey can have at most ${MAX_QUESTIONS} questions`, 409);
+  if (count >= MAX_QUESTIONS) throw fail(`A survey can have at most ${MAX_QUESTIONS} questions`, 409);
 
   await Question.updateMany(
     { surveyId: survey._id, order: { $gt: original.order } },
-    { $inc: { order: 1 } },
+    { $inc: { order: 1 } }
   );
 
   const copy = await Question.create({
@@ -236,12 +221,10 @@ const duplicateQuestion = async (user, surveyId, questionId) => {
     order: original.order + 1,
   });
 
-  const options = await QuestionOption.find({ questionId: original._id })
-    .sort({ order: 1, _id: 1 })
-    .lean();
+  const options = await QuestionOption.find({ questionId: original._id }).sort({ order: 1, _id: 1 }).lean();
   if (options.length) {
     await QuestionOption.insertMany(
-      options.map((o, order) => ({ questionId: copy._id, label: o.label, order })),
+      options.map((o, order) => ({ questionId: copy._id, label: o.label, order }))
     );
   }
 
@@ -255,7 +238,7 @@ const reorderQuestions = async (user, surveyId, orderedIds) => {
   const survey = await getOwnedSurvey(businessId, surveyId);
   assertEditable(survey);
 
-  const existing = await Question.find({ surveyId: survey._id }).select('_id').lean();
+  const existing = await Question.find({ surveyId: survey._id }).select("_id").lean();
   const existingIds = new Set(existing.map((q) => String(q._id)));
   const incoming = orderedIds.map(String);
 
@@ -264,13 +247,10 @@ const reorderQuestions = async (user, surveyId, orderedIds) => {
     new Set(incoming).size === incoming.length &&
     incoming.every((id) => existingIds.has(id));
 
-  if (!sameSet)
-    throw fail('orderedIds must contain every question of this survey exactly once', 400);
+  if (!sameSet) throw fail("orderedIds must contain every question of this survey exactly once", 400);
 
   await Question.bulkWrite(
-    incoming.map((id, index) => ({
-      updateOne: { filter: { _id: id }, update: { $set: { order: index } } },
-    })),
+    incoming.map((id, index) => ({ updateOne: { filter: { _id: id }, update: { $set: { order: index } } } }))
   );
 
   await touchSurvey(survey._id);

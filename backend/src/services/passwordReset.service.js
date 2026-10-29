@@ -1,20 +1,19 @@
-const crypto = require('crypto');
-const bcrypt = require('bcrypt');
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
-const BusinessOwner = require('../models/businessOwner.model');
-const PasswordReset = require('../models/passwordReset.model');
-const { sendMail } = require('../utils/mailer');
-const { resetPasswordEmail } = require('../utils/emailTemplates/resetPassword.template');
-const { appOrigin } = require('../utils/browserSession');
-const mongoose = require('mongoose');
+const BusinessOwner = require("../models/businessOwner.model");
+const PasswordReset = require("../models/passwordReset.model");
+const sessions = require("./session.service");
+const { sendMail } = require("../utils/mailer");
+const { resetPasswordEmail } = require("../utils/emailTemplates/resetPassword.template");
 
 const TTL_MINUTES = Number(process.env.RESET_TOKEN_TTL_MINUTES) || 30;
 
-const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
+const hashToken = (token) => crypto.createHash("sha256").update(token).digest("hex");
 
 // Always resolves without revealing whether the email exists.
 const requestReset = async ({ email }) => {
-  const owner = await BusinessOwner.findOne({ email, status: 'active' });
+  const owner = await BusinessOwner.findOne({ email, status: "active" });
 
   const account = owner;
   if (!account) return;
@@ -22,7 +21,7 @@ const requestReset = async ({ email }) => {
   // one live token per email
   await PasswordReset.deleteMany({ email });
 
-  const token = crypto.randomBytes(32).toString('hex');
+  const token = crypto.randomBytes(32).toString("hex");
 
   await PasswordReset.create({
     email,
@@ -30,7 +29,7 @@ const requestReset = async ({ email }) => {
     expiresAt: new Date(Date.now() + TTL_MINUTES * 60 * 1000),
   });
 
-  const resetUrl = `${appOrigin()}/#/reset?token=${token}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
   const { subject, html, text } = resetPasswordEmail({
     name: account.name,
     resetUrl,
@@ -48,29 +47,24 @@ const findValidReset = (token) =>
 
 const verifyToken = async ({ token }) => {
   const reset = await findValidReset(token);
-  if (!reset) throw new Error('Reset link is invalid or has expired');
+  if (!reset) throw new Error("Reset link is invalid or has expired");
 };
 
 const resetPassword = async ({ token, password }) => {
+  const reset = await findValidReset(token);
+  if (!reset) throw new Error("Reset link is invalid or has expired");
+
   const passwordHash = await bcrypt.hash(password, 10);
-  await mongoose.connection.transaction(async (session) => {
-    const reset = await PasswordReset.findOneAndDelete(
-      { tokenHash: hashToken(token), expiresAt: { $gt: new Date() } },
-      { session },
-    );
-    if (!reset) throw new Error('Reset link is invalid or has expired');
-    const owner = await BusinessOwner.findOne({ email: reset.email }).session(session);
-    await BusinessOwner.updateOne(
-      { email: reset.email, status: 'active' },
-      { $set: { passwordHash }, $inc: { tokenVersion: 1 } },
-      { session },
-    );
-    if (owner) {
-      await require('./session.service').revokeAll(owner._id, null, session);
-      await require('../models/emailChange.model').deleteOne({ ownerId: owner._id }, { session });
-    }
-    await PasswordReset.deleteMany({ email: reset.email }, { session });
-  });
+
+  // Same email can exist as an owner and as a member in several businesses:
+  // the reset applies to every active account with this email.
+  const owners = await BusinessOwner.find({ email: reset.email, status: "active" }).select("_id");
+  await BusinessOwner.updateMany({ email: reset.email, status: "active" }, { passwordHash, passwordChangedAt: new Date() });
+  // A reset usually means the old password may be known to someone else: sign everyone out.
+  await Promise.all(owners.map((o) => sessions.revokeAll(o._id)));
+
+  // single use
+  await PasswordReset.deleteMany({ email: reset.email });
 };
 
 module.exports = { requestReset, verifyToken, resetPassword };

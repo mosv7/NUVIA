@@ -1,10 +1,9 @@
-const crypto = require('crypto');
-const mongoose = require('mongoose');
+const crypto = require("crypto");
 
-const BusinessOwner = require('../models/businessOwner.model');
-const Business = require('../models/business.model');
-const Branch = require('../models/branch.model');
-const { generateToken } = require('../utils/jwt');
+const BusinessOwner = require("../models/businessOwner.model");
+const Business = require("../models/business.model");
+const Branch = require("../models/branch.model");
+const { generateToken } = require("../utils/jwt");
 
 const fail = (message, statusCode = 400) => {
   const error = new Error(message);
@@ -16,27 +15,27 @@ const slugify = (text) =>
   text
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
     .slice(0, 150);
 
 // Unique slug: "juniper-coffee", or "juniper-coffee-a1b2c3" on collision.
 // Arabic-only names slugify to "", so fall back to "business".
 const generateUniqueSlug = async (name) => {
-  const base = slugify(name) || 'business';
+  const base = slugify(name) || "business";
 
   if (!(await Business.exists({ slug: base }))) return base;
 
   for (let i = 0; i < 5; i++) {
-    const candidate = `${base}-${crypto.randomBytes(3).toString('hex')}`;
+    const candidate = `${base}-${crypto.randomBytes(3).toString("hex")}`;
     if (!(await Business.exists({ slug: candidate }))) return candidate;
   }
 
-  throw fail('Could not generate a unique business link, please try again', 500);
+  throw fail("Could not generate a unique business link, please try again", 500);
 };
 
-const findPrimaryBranch = (businessId, session = null) =>
-  Branch.findOne({ businessId, status: 'active' }).sort({ createdAt: 1, _id: 1 }).session(session);
+const findPrimaryBranch = (businessId) =>
+  Branch.findOne({ businessId }).sort({ createdAt: 1, _id: 1 });
 
 // The step is DERIVED from the data, nothing is stored:
 //   no business             -> 1 (business information)
@@ -72,9 +71,9 @@ const getStatus = async (ownerId) => {
 
 // Step 1. Create the business, or update it if the user comes back to edit.
 // Returns a NEW token because the old one has businessId = null.
-const saveBusiness = async (ownerId, { name, type }, sid) => {
-  const owner = await BusinessOwner.findById(ownerId).select('+tokenVersion');
-  if (!owner) throw fail('User not found', 404);
+const saveBusiness = async (ownerId, { name, type }) => {
+  const owner = await BusinessOwner.findById(ownerId);
+  if (!owner) throw fail("User not found", 404);
 
   let business = await Business.findOne({ ownerId });
 
@@ -87,7 +86,7 @@ const saveBusiness = async (ownerId, { name, type }, sid) => {
       ownerId,
       name,
       type,
-      reportLanguage: owner.preferredLanguage || 'en',
+      reportLanguage: owner.preferredLanguage || "en",
       slug: await generateUniqueSlug(name),
     });
   }
@@ -96,11 +95,9 @@ const saveBusiness = async (ownerId, { name, type }, sid) => {
 
   const token = generateToken({
     id: owner._id,
-    type: 'owner',
-    role: 'owner',
+    type: "owner",
+    role: "owner",
     businessId: business._id,
-    tokenVersion: owner.tokenVersion || 0,
-    sid,
   });
 
   return { token, ...buildState(business, branch) };
@@ -110,27 +107,28 @@ const saveBusiness = async (ownerId, { name, type }, sid) => {
 // Single branch  -> one branch named after the business.
 // Multiple       -> one branch named primaryBranchName (more can be added later).
 const saveSetup = async (ownerId, { hasMultipleBranches, primaryBranchName }) => {
+  const business = await Business.findOne({ ownerId });
+  if (!business) throw fail("Complete business information first", 409);
+
+  const branchName = hasMultipleBranches ? primaryBranchName : business.name;
+
   try {
-    return await mongoose.connection.transaction(async (session) => {
-      const business = await Business.findOne({ ownerId }).session(session);
-      if (!business) throw fail('Complete business information first', 409);
-      const branchName = hasMultipleBranches ? primaryBranchName : business.name;
-      let branch = await findPrimaryBranch(business._id, session);
-      if (branch) {
-        branch.name = branchName;
-        await branch.save({ session });
-      } else {
-        [branch] = await Branch.create([{ businessId: business._id, name: branchName }], {
-          session,
-        });
-      }
-      business.hasMultipleBranches = hasMultipleBranches;
-      await business.save({ session });
-      return buildState(business, branch);
-    });
+    let branch = await findPrimaryBranch(business._id);
+
+    if (branch) {
+      branch.name = branchName;
+      await branch.save();
+    } else {
+      branch = await Branch.create({ businessId: business._id, name: branchName });
+    }
+
+    business.hasMultipleBranches = hasMultipleBranches;
+    await business.save();
+
+    return buildState(business, branch);
   } catch (error) {
     if (error.code === 11000) {
-      throw fail('A branch with this name already exists', 409);
+      throw fail("A branch with this name already exists", 409);
     }
     throw error;
   }
@@ -139,10 +137,10 @@ const saveSetup = async (ownerId, { hasMultipleBranches, primaryBranchName }) =>
 // Step 3. "Get Started"
 const complete = async (ownerId) => {
   const business = await Business.findOne({ ownerId });
-  if (!business) throw fail('Complete business information first', 409);
+  if (!business) throw fail("Complete business information first", 409);
 
   const branch = await findPrimaryBranch(business._id);
-  if (!branch) throw fail('Complete business setup first', 409);
+  if (!branch) throw fail("Complete business setup first", 409);
 
   business.onboardingCompleted = true;
   await business.save();
