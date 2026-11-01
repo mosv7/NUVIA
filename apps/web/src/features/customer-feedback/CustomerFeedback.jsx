@@ -1,464 +1,641 @@
-import { useState, useEffect, useRef } from 'react';
-
+import { useEffect, useRef, useState } from 'react';
 import '@fontsource/dm-sans/400.css';
 import '@fontsource/dm-sans/500.css';
 import '@fontsource/dm-sans/600.css';
-import '@fontsource/dm-sans/700.css';
-import '@fontsource/manrope/400.css';
-import '@fontsource/manrope/500.css';
 import '@fontsource/manrope/600.css';
+import '@fontsource/manrope/700.css';
 import '@fontsource/noto-sans-arabic/400.css';
-import '@fontsource/noto-sans-arabic/500.css';
-import '@fontsource/noto-sans-arabic/600.css';
 import './customer-feedback.css';
-function Icon({ name, size = 20 }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {name === 'star' ? (
-        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z" />
-      ) : name === 'check' ? (
-        <path d="m5 12 4 4L19 6" />
-      ) : name === 'globe' ? (
-        <>
-          <circle cx="12" cy="12" r="9" />
-          <ellipse cx="12" cy="12" rx="4" ry="9" />
-          <path d="M3 12h18M5 7h14M5 17h14" />
-        </>
-      ) : name === 'delivery' ? (
-        <>
-          <path d="M3 6h11v12H3zM14 10h4l3 4v4h-7" />
-          <circle cx="7" cy="18" r="2" />
-          <circle cx="18" cy="18" r="2" />
-        </>
-      ) : name === 'store' ? (
-        <>
-          <path d="m3 10 2-6h14l2 6M4 10v11h16V10M9 21v-7h6v7M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0" />
-        </>
-      ) : name === 'lock' ? (
-        <>
-          <rect x="5" y="10" width="14" height="11" rx="3" />
-          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-        </>
-      ) : name === 'send' ? (
-        <>
-          <path d="m21 3-7 18-4-7-7-4 18-7ZM10 14 21 3" />
-        </>
-      ) : (
-        <>
-          <path d="M4 5h16v13H8l-4 3V5Z" />
-          <path d="M8 10h8M8 14h5" />
-        </>
-      )}
-    </svg>
-  );
-}
+
+const frames = ['808-922', '808-965', '808-1025', '808-1082', '808-1152', '808-1213', '808-1323'];
+const sampleComment =
+  'Loved the coffee and quiet workspace. More plug sockets near the window would make it even better.';
+const longComment =
+  'Loved the coffee and quiet workspace. The team was welcoming and the Wi-Fi worked well throughout my visit. I stayed for a few hours to finish a project and enjoyed the calm atmosphere. More plug sockets near the window would make it even better. I would also love a few more comfortable chairs and a larger selection of snacks for longer work sessions.';
+const screenNames = [
+  'intro',
+  'branch',
+  'visit',
+  'rating',
+  'highlights',
+  'recommendation',
+  'comment',
+  'required',
+  'invalid',
+  'incomplete',
+  'sending',
+  'thank-you',
+];
+const titles = [
+  'Which branch did you visit?',
+  'What brought you in today?',
+  'How was your overall experience?',
+  'What stood out to you?',
+  'Would you recommend us to a friend?',
+  'Anything we could do better?',
+];
+const arabicTitles = [
+  'أي فرع زرت؟',
+  'ما سبب زيارتك اليوم؟',
+  'كيف كانت تجربتك بشكل عام؟',
+  'ما الذي أعجبك؟',
+  'هل ترشحنا لصديق؟',
+  'هل هناك شيء يمكننا تحسينه؟',
+];
+const hints = [
+  'Choose the location for your feedback.',
+  'Choose the main reason for your visit.',
+  'Think about your most recent visit.',
+  'Select what you enjoyed, or nothing in particular.',
+  'Choose a number from 0 to 10.',
+  'A little detail helps us make your next visit better.',
+];
+const arabicHints = [
+  'اختر الفرع الذي تود تقييمه.',
+  'اختر السبب الرئيسي لزيارتك.',
+  'فكّر في زيارتك الأخيرة.',
+  'اختر ما أعجبك أو لا شيء بالتحديد.',
+  'اختر رقمًا من ٠ إلى ١٠.',
+  'التفاصيل تساعدنا على تحسين زيارتك القادمة.',
+];
 export default function CustomerFeedback({ language } = {}) {
-  const [ar, setAr] = useState(
-      () => (language || new URLSearchParams(location.search).get('lang')) === 'ar',
-    ),
-    [score, setScore] = useState(0),
-    [service, setService] = useState(''),
-    [feedback, setFeedback] = useState(''),
-    [agree, setAgree] = useState(false),
-    [topics, setTopics] = useState([]),
-    [nps, setNps] = useState(null),
-    [errors, setErrors] = useState({}),
-    [state, setState] = useState('form');
-  const formRef = useRef(),
-    successRef = useRef();
+  const preview = location.pathname.includes('/preview');
+  const requested = preview ? new URLSearchParams(location.search).get('screen') : null;
+  const index = screenNames.indexOf(requested);
+  const initialStep =
+    index < 0
+      ? 0
+      : index < 7
+        ? index
+        : index === 7
+          ? 3
+          : index === 8
+            ? 6
+            : index === 9
+              ? 7
+              : index === 10
+                ? 8
+                : 9;
+  const [step, setStep] = useState(initialStep);
+  const [ar, setAr] = useState(language === 'ar');
+  const [answers, setAnswers] = useState(
+    index > 0
+      ? {
+          branch: 'El Zamalek',
+          visit: 'Work or study',
+          rating: index === 7 || index === 9 ? 0 : 4,
+          highlights: ['Coffee & food', 'Wi-Fi & workspace'],
+          recommendation: 9,
+          comment: index === 8 ? longComment : sampleComment,
+        }
+      : { branch: '', visit: '', rating: 0, highlights: [], recommendation: null, comment: '' },
+  );
+  const [error, setError] = useState(index === 7);
+  const [sendError, setSendError] = useState('');
+  const heading = useRef(null);
+  const timer = useRef(null);
   const t = (en, arabic) => (ar ? arabic : en);
-  const labels = ar
-    ? ['سيئة جدًا', 'سيئة', 'متوسطة', 'جيدة', 'ممتازة']
-    : ['Very poor', 'Poor', 'Okay', 'Good', 'Great'];
+  useEffect(() => () => clearTimeout(timer.current), []);
   useEffect(() => {
-    document.documentElement.lang = ar ? 'ar' : 'en';
-    document.documentElement.dir = ar ? 'rtl' : 'ltr';
-  }, [ar]);
-  useEffect(() => {
-    if (state === 'success') {
-      successRef.current?.focus();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [state]);
-  function submit(e) {
-    e.preventDefault();
-    const next = {};
-    if (!score) next.score = t('Choose a score to continue.', 'اختر تقييمًا للمتابعة.');
-    if (!service)
-      next.service = t('Choose one answer for Question 2.', 'اختر إجابة واحدة للسؤال ٢.');
-    if (feedback.trim().length < 10)
-      next.feedback = t('Please write at least 10 characters.', 'اكتب رأيك في ١٠ أحرف على الأقل.');
-    if (!agree)
-      next.agree = t(
-        'Please agree to share your answer with the business.',
-        'يرجى الموافقة على مشاركة إجابتك مع النشاط.',
-      );
-    setErrors(next);
-    if (Object.keys(next).length) {
-      requestAnimationFrame(() => formRef.current?.querySelector('[aria-invalid="true"]')?.focus());
+    if (heading.current) heading.current.focus({ preventScroll: true });
+  }, [step]);
+  const set = (key, value) => {
+    setAnswers((a) => ({ ...a, [key]: value }));
+    setError(false);
+  };
+  const missing = [
+    !answers.branch,
+    !answers.visit,
+    !answers.rating,
+    !answers.highlights.length,
+    answers.recommendation === null,
+  ];
+  const currentFrame =
+    step === 3 && error
+      ? '808-1452'
+      : step === 6 && answers.comment.length > 300
+        ? '808-1575'
+        : step === 7
+          ? '808-1670'
+          : step === 8
+            ? '808-1879'
+            : step === 9
+              ? '808-1984'
+              : frames[step];
+  const img = (name, frame = currentFrame, extra = '') => (
+    <img
+      className={'cf-icon ' + extra}
+      src={'/assets/customer-form/' + frame + '-img' + name + '.svg'}
+      alt=""
+    />
+  );
+  const move = (n) => {
+    setStep(n);
+    setError(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+  const next = () => {
+    if (step < 6 && missing[step - 1]) {
+      setError(true);
       return;
     }
-    setState('sending');
-    setTimeout(() => setState('success'), 600);
-  }
-  const reset = () => {
-    setScore(0);
-    setService('');
-    setFeedback('');
-    setAgree(false);
-    setTopics([]);
-    setNps(null);
-    setErrors({});
-    setState('form');
+    move(step + 1);
   };
+  // This project currently exposes the public survey as a design preview only.
+  // This preview does not submit responses to the public API.
+  const submit = () => {
+    if (answers.comment.length > 300) {
+      setError(true);
+      return;
+    }
+    if (missing.some(Boolean)) {
+      move(7);
+      return;
+    }
+    setSendError('');
+    move(8);
+    timer.current = setTimeout(() => move(9), 1400);
+  };
+  const summary = (
+    <div className="cf-summary">
+      <strong>{t('Customer experience survey', 'استبيان تجربة العملاء')}</strong>
+      <span>
+        {img('MapPin', step === 9 ? '808-1984' : '808-1879')}
+        {answers.branch}
+      </span>
+      <p>
+        {t(
+          step === 9
+            ? '6 answers received · Submitted anonymously'
+            : '6 answers ready · Your feedback is anonymous',
+          step === 9 ? 'تم استلام ٦ إجابات · بشكل مجهول' : '٦ إجابات جاهزة · رأيك مجهول الهوية',
+        )}
+      </p>
+    </div>
+  );
+  const footer = (
+    <>
+      <p className="cf-privacy">
+        {img('ShieldCheck')}
+        {t('Anonymous feedback · No sign-in needed', 'رأي مجهول الهوية · لا يلزم تسجيل الدخول')}
+      </p>
+      <p className="cf-credit">
+        {t('Powered by', 'بدعم من')}{' '}
+        <strong>
+          NU<span>V</span>IA
+        </strong>
+      </p>
+    </>
+  );
   return (
-    <div className="public-page">
-      <header className="public-header">
-        <img className="brand" src="/assets/brand/nuvia-logo.svg" alt="NUVIA" />
-        <button
-          className="language-control"
-          onClick={() => setAr(!ar)}
-          aria-label={t('Switch to Arabic', 'Switch to English')}
+    <div className="cf-page" dir={ar ? 'rtl' : 'ltr'} lang={ar ? 'ar' : 'en'}>
+      <section
+        className={'cf-shell cf-stage-' + step}
+        aria-label={t('Customer experience survey', 'استبيان تجربة العملاء')}
+      >
+        <header className="cf-header">
+          <div className="cf-mark">B</div>
+          <div className="cf-business">
+            <strong>Bloom & Co.</strong>
+            <span>{step === 0 ? 'Cafe &workspace' : 'Cafe &workspace'}</span>
+          </div>
+          <button
+            className="cf-language"
+            onClick={() => setAr(!ar)}
+            aria-label={t('Switch to Arabic', 'Switch to English')}
+          >
+            {img('Globe')}
+            <span>{ar ? 'AR' : 'EN'}</span>
+          </button>
+        </header>
+        <main
+          aria-live={step >= 8 ? 'polite' : undefined}
+          className={'cf-main ' + (step === 0 ? 'cf-welcome' : step >= 8 ? 'cf-completion' : '')}
         >
-          <Icon name="globe" />
-          <span>{ar ? 'English' : 'العربية'}</span>
-        </button>
-      </header>
-      <main>
-        {state === 'success' ? (
-          <section className="success-card" aria-labelledby="thank-you">
-            <span className="success-icon">
-              <Icon name="check" size={38} />
-            </span>
-            <span className="eyebrow">Bloom & Co.</span>
-            <h1 id="thank-you" ref={successRef} tabIndex={-1}>
-              {t('Thank you for your feedback', 'شكرًا لمشاركتنا رأيك')}
-            </h1>
-            <p>
-              {t(
-                'Your voice helps us create better experiences. We appreciate the time you took to share it.',
-                'رأيك يساعدنا في تقديم تجربة أفضل. نقدّر الوقت الذي خصصته لمشاركتنا تجربتك.',
-              )}
-            </p>
-            <div className="response-summary">
-              <span>
-                <Icon name="star" />
-                {score} / 5 · {labels[score - 1]}
-              </span>
-              <span>
-                <Icon name="check" />
-                {t('Single choice · Option ', 'اختيار واحد · اختيار ') +
-                  service.replace('option', '')}
-              </span>
-            </div>
-            <button className="secondary-button" onClick={reset}>
-              {t('Send another response', 'إرسال رأي آخر')}
-            </button>
-            <small>{t('From comments to clarity.', 'من الآراء إلى رؤية أوضح.')}</small>
-          </section>
-        ) : (
-          <>
-            <div className="survey-intro">
-              <div className="business-heading">
-                <span className="business-mark">B</span>
+          {step === 0 ? (
+            <>
+              <div className="cf-symbol">{img('Coffee')}</div>
+              <div className="cf-prompt">
+                <span className="cf-eyebrow">{t('A MOMENT TO LISTEN', 'لحظة للاستماع')}</span>
+                <h1 ref={heading} tabIndex={-1}>
+                  {t('Customer experience survey', 'استبيان تجربة العملاء')}
+                </h1>
+                <p>
+                  {t(
+                    'Your experience matters to us. Tell us about your latest visit and help make Bloom & Co. even better.',
+                    'تجربتك تهمنا. شاركنا تفاصيل زيارتك الأخيرة وساعدنا على تحسين Bloom & Co.',
+                  )}
+                </p>
+              </div>
+              <div className="cf-metadata">
+                <span>
+                  {img('ListChecks')}
+                  {t('6 questions', '٦ أسئلة')}
+                </span>
+                <span>
+                  {img('Clock3')}
+                  {t('About 2 minutes', 'حوالي دقيقتين')}
+                </span>
+              </div>
+              <div className="cf-expect">
+                <strong>
+                  {t(
+                    'A few honest answers. A better next visit.',
+                    'إجابات صادقة. زيارة قادمة أفضل.',
+                  )}
+                </strong>
+                <p>
+                  {t(
+                    'Choose your branch, share what you enjoyed, and let us know what we can improve.',
+                    'اختر فرعك، وشاركنا ما أعجبك وما يمكننا تحسينه.',
+                  )}
+                </p>
+              </div>
+            </>
+          ) : step <= 6 ? (
+            <>
+              <div className="cf-progress">
                 <div>
-                  <strong>Bloom & Co.</strong>
+                  <strong>{t(`Question ${step} of 6`, `السؤال ${step} من ٦`)}</strong>
                   <span>
-                    {t('Customer experience survey · Cairo', 'استبيان تجربة العملاء · القاهرة')}
+                    {step === 6
+                      ? t('Last question', 'السؤال الأخير')
+                      : t('About 2 minutes', 'حوالي دقيقتين')}
                   </span>
                 </div>
-                <span className="time-badge">{t('~ 2 min', 'دقيقتان تقريبًا')}</span>
+                <div
+                  className="cf-track"
+                  role="progressbar"
+                  aria-label={t('Survey progress', 'تقدم الاستبيان')}
+                  aria-valuemin={0}
+                  aria-valuemax={6}
+                  aria-valuenow={step}
+                >
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <i className={i < step ? 'done' : ''} key={i} />
+                  ))}
+                </div>
               </div>
-              <h1>{t('Share your feedback', 'شاركنا رأيك')}</h1>
-              <p>
+              <div className="cf-prompt">
+                <span className="cf-eyebrow">
+                  {step === 6 ? t('OPTIONAL', 'اختياري') : t('REQUIRED', 'مطلوب')}
+                </span>
+                <h1 ref={heading} tabIndex={-1}>
+                  {ar ? arabicTitles[step - 1] : titles[step - 1]}
+                </h1>
+                <p>{ar ? arabicHints[step - 1] : hints[step - 1]}</p>
+              </div>
+              {[1, 2, 4].includes(step) && (
+                <div className="cf-choices" role="group" aria-label={titles[step - 1]}>
+                  {(step === 1
+                    ? ['Cairo', 'El Zamalek', 'Alex']
+                    : step === 2
+                      ? ['Coffee & food', 'Work or study', 'Catching up', 'Takeaway']
+                      : [
+                          'Coffee & food',
+                          'Friendly service',
+                          'Wi-Fi & workspace',
+                          'Nothing in particular',
+                        ]
+                  ).map((label, i) => {
+                    const key = step === 1 ? 'branch' : step === 2 ? 'visit' : 'highlights';
+                    const checked =
+                      step === 4 ? answers.highlights.includes(label) : answers[key] === label;
+                    const localized =
+                      step === 1
+                        ? ['القاهرة', 'الزمالك', 'الإسكندرية']
+                        : step === 2
+                          ? ['قهوة وطعام', 'عمل أو دراسة', 'لقاء الأصدقاء', 'طلب خارجي']
+                          : [
+                              'القهوة والطعام',
+                              'الخدمة الودودة',
+                              'الواي فاي ومساحة العمل',
+                              'لا شيء بالتحديد',
+                            ];
+                    return (
+                      <label className={'cf-choice ' + (checked ? 'selected' : '')} key={label}>
+                        {step === 1 && img(checked ? 'MapPin1' : 'MapPin')}
+                        <span>{ar ? localized[i] : label}</span>
+                        <input
+                          type={step === 4 ? 'checkbox' : 'radio'}
+                          name={'answer-' + step}
+                          checked={checked}
+                          onChange={() => {
+                            if (step !== 4) set(key, label);
+                            else
+                              set(
+                                key,
+                                label === 'Nothing in particular'
+                                  ? checked
+                                    ? []
+                                    : [label]
+                                  : checked
+                                    ? answers.highlights.filter((x) => x !== label)
+                                    : [
+                                        ...answers.highlights.filter(
+                                          (x) => x !== 'Nothing in particular',
+                                        ),
+                                        label,
+                                      ],
+                              );
+                          }}
+                          aria-invalid={error}
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+              {step === 3 && (
+                <div className={'cf-rating ' + (error ? 'invalid' : '')}>
+                  <div
+                    className="cf-stars"
+                    role="group"
+                    aria-label={t('Overall experience', 'التجربة العامة')}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => set('rating', n)}
+                        aria-label={`${n} out of 5`}
+                        aria-pressed={answers.rating === n}
+                      >
+                        {img(
+                          error ? 'Star' : n <= answers.rating ? 'Star' : 'Star1',
+                          error ? '808-1452' : '808-1082',
+                        )}
+                        <span>{n}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="cf-range">
+                    <span>{t('Very poor', 'سيئة جدًا')}</span>
+                    <span>{t('Excellent', 'ممتازة')}</span>
+                  </div>
+                  {!!answers.rating && (
+                    <strong className="cf-score">
+                      {t(
+                        `${answers.rating} out of 5 · ${['Very poor', 'Poor', 'Okay', 'Good', 'Excellent'][answers.rating - 1]}`,
+                        `${answers.rating} من ٥`,
+                      )}
+                    </strong>
+                  )}
+                </div>
+              )}
+              {step === 5 && (
+                <div className="cf-recommendation">
+                  <div
+                    className="cf-numbers"
+                    role="group"
+                    aria-label={t('Recommendation score', 'درجة الترشيح')}
+                  >
+                    {Array.from({ length: 11 }, (_, n) => (
+                      <button
+                        key={n}
+                        className={answers.recommendation === n ? 'selected' : ''}
+                        onClick={() => set('recommendation', n)}
+                        aria-pressed={answers.recommendation === n}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="cf-range">
+                    <span>{t('0 · Not at all likely', '٠ · غير محتمل إطلاقًا')}</span>
+                    <span>{t('10 · Extremely likely', '١٠ · محتمل جدًا')}</span>
+                  </div>
+                  {answers.recommendation !== null && (
+                    <strong className="cf-score">
+                      {t(
+                        `Your score: ${answers.recommendation} out of 10`,
+                        `تقييمك: ${answers.recommendation} من ١٠`,
+                      )}
+                    </strong>
+                  )}
+                </div>
+              )}
+              {step === 6 && (
+                <div className="cf-comment">
+                  <textarea
+                    aria-label={titles[5]}
+                    aria-invalid={answers.comment.length > 300}
+                    aria-describedby="cf-comment-limit"
+                    value={answers.comment}
+                    placeholder={t('Share your thoughts…', 'شاركنا رأيك…')}
+                    onChange={(e) => set('comment', e.target.value)}
+                    className={answers.comment.length > 300 ? 'invalid' : ''}
+                  />
+                  <div className="cf-range" id="cf-comment-limit">
+                    <span>{t('Maximum 300 characters', '٣٠٠ حرف بحد أقصى')}</span>
+                    <span>{answers.comment.length}/300</span>
+                  </div>
+                  {answers.comment.length > 300 && (
+                    <p className="cf-error-text" role="alert">
+                      {t(
+                        `Please remove ${answers.comment.length - 300} characters to continue.`,
+                        `احذف ${answers.comment.length - 300} حرفًا للمتابعة.`,
+                      )}
+                    </p>
+                  )}
+                  <p className="cf-anonymous">
+                    {t(
+                      'Keep it anonymous. Please don’t include your name, phone number or email.',
+                      'حافظ على سرية هويتك. لا تضف اسمك أو رقم هاتفك أو بريدك الإلكتروني.',
+                    )}
+                  </p>
+                </div>
+              )}
+              {error && step !== 6 && (
+                <div className="cf-error" role="alert">
+                  {step === 3 && img('CircleAlert')}
+                  <div>
+                    <strong>
+                      {t(
+                        step === 3 ? 'Please choose a rating' : 'Please choose an answer',
+                        step === 3 ? 'يرجى اختيار تقييم' : 'يرجى اختيار إجابة',
+                      )}
+                    </strong>
+                    <p>
+                      {t(
+                        step === 3
+                          ? 'Select 1 to 5 stars, then tap Next.'
+                          : 'Choose an answer, then tap Next.',
+                        'اختر إجابتك، ثم اضغط التالي.',
+                      )}
+                    </p>
+                  </div>
+                </div>
+              )}
+              {step < 6 && (
+                <p className="cf-context">
+                  {img(step === 1 ? 'MapPin2' : 'MapPin')}
+                  {step === 1
+                    ? t('Feedback for your latest visit', 'رأيك عن زيارتك الأخيرة')
+                    : t(
+                        `${answers.branch} · Your latest visit`,
+                        `${answers.branch} · زيارتك الأخيرة`,
+                      )}
+                </p>
+              )}
+            </>
+          ) : step === 7 ? (
+            <>
+              <div className="cf-prompt">
+                <span className="cf-error-text">
+                  {t(
+                    `${5 - missing.filter(Boolean).length} of 5 required questions answered`,
+                    'بعض الأسئلة المطلوبة لم تتم الإجابة عنها',
+                  )}
+                </span>
+                <h1 ref={heading} tabIndex={-1}>
+                  {t('One more answer before you submit', 'إجابة أخرى قبل الإرسال')}
+                </h1>
+              </div>
+              <div className="cf-warning">
+                {img('TriangleAlert')}
+                <div>
+                  <strong>{t('Your survey hasn’t been sent', 'لم يتم إرسال الاستبيان')}</strong>
+                  <p>
+                    {t(
+                      `Answer question ${missing.indexOf(true) + 1}, then submit again.`,
+                      'أجب عن السؤال المطلوب، ثم أرسل مجددًا.',
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="cf-review">
+                {[
+                  'Branch',
+                  'Visit purpose',
+                  'Overall experience',
+                  'Highlights',
+                  'Recommendation',
+                  'Comment',
+                ].map((label, i) => (
+                  <button key={label} onClick={() => move(i + 1)}>
+                    {img(missing[i] ? 'CircleAlert' : 'CircleCheck')}
+                    <span>
+                      <strong>{label}</strong>
+                      <small className={missing[i] ? 'cf-error-text' : ''}>
+                        {missing[i]
+                          ? 'Required · Not answered'
+                          : [
+                              answers.branch,
+                              answers.visit,
+                              `${answers.rating} out of 5`,
+                              answers.highlights.join(', '),
+                              `${answers.recommendation} out of 10`,
+                              answers.comment
+                                ? `Added · ${answers.comment.length} characters`
+                                : 'Not added',
+                            ][i]}
+                      </small>
+                    </span>
+                    {img('ChevronRight')}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={'cf-symbol ' + (step === 9 ? 'cf-success' : 'cf-loading')}>
+                {img(step === 9 ? 'Check' : 'LoadingIndicator')}
+              </div>
+              <div className="cf-prompt">
+                {step === 9 && (
+                  <span className="cf-eyebrow">{t('FEEDBACK RECEIVED', 'تم استلام رأيك')}</span>
+                )}
+                <h1 ref={heading} tabIndex={-1}>
+                  {t(
+                    step === 9 ? 'Thank you for sharing your experience.' : 'Sending your feedback',
+                    step === 9 ? 'شكرًا لمشاركتنا تجربتك.' : 'جارٍ إرسال رأيك',
+                  )}
+                </h1>
+                <p>
+                  {t(
+                    step === 9
+                      ? 'Your feedback helps us make every visit a little better. We look forward to welcoming you back.'
+                      : 'Just a moment. We’re securely sending your answers to Bloom & Co.',
+                    step === 9
+                      ? 'رأيك يساعدنا على تحسين كل زيارة. نتطلع لاستقبالك مجددًا.'
+                      : 'لحظة من فضلك. جارٍ إرسال إجاباتك إلى Bloom & Co.',
+                  )}
+                </p>
+              </div>
+              {summary}
+              {step === 9 ? (
+                <p className="cf-return">
+                  {img('Coffee')}
+                  {t('To Bloom & Co. team', 'إلى فريق Bloom & Co.')}
+                </p>
+              ) : (
+                <p className="cf-anonymous">
+                  {t(
+                    'Please keep this page open until you see your confirmation.',
+                    'اترك الصفحة مفتوحة حتى يظهر تأكيد الإرسال.',
+                  )}
+                </p>
+              )}
+              {sendError && <p role="alert">{sendError}</p>}
+            </>
+          )}
+        </main>
+        <footer className="cf-footer">
+          {step === 0 ? (
+            <>
+              <button className="cf-primary" onClick={() => move(1)}>
+                {t('Start Survey', 'ابدأ الاستبيان')}
+              </button>
+              <p className="cf-support">{t('Works on any phone', 'يعمل على أي هاتف')}</p>
+            </>
+          ) : step <= 6 ? (
+            <>
+              {step === 6 && (
+                <p className="cf-support">
+                  {t(
+                    'Your answers will be sent to Bloom & Co.',
+                    'سيتم إرسال إجاباتك إلى Bloom & Co.',
+                  )}
+                </p>
+              )}
+              <div className="cf-actions">
+                <button onClick={() => move(step - 1)}>
+                  {step === 1 ? t('Back', 'رجوع') : t('Previous', 'السابق')}
+                </button>
+                <button className="cf-primary" onClick={step === 6 ? submit : next}>
+                  {step === 6 && img('Send')}
+                  {step === 6 ? t('Submit', 'إرسال') : t('Next', 'التالي')}
+                </button>
+              </div>
+            </>
+          ) : step === 7 ? (
+            <>
+              <button className="cf-primary" onClick={() => move(missing.indexOf(true) + 1)}>
+                {t('Answer missing question', 'أجب عن السؤال الناقص')}
+              </button>
+              <p className="cf-support">
                 {t(
-                  'Your feedback helps us make every experience better.',
-                  'رأيك يساعدنا على تحسين كل تجربة.',
+                  'Your other answers are kept in this survey.',
+                  'إجاباتك الأخرى محفوظة في هذا الاستبيان.',
                 )}
               </p>
+            </>
+          ) : step === 8 ? (
+            <button className="cf-primary" disabled>
+              {img('LoaderCircle', '808-1879', 'cf-spin')}
+              {t('Submitting…', 'جارٍ الإرسال…')}
+            </button>
+          ) : (
+            <div className="cf-done">
+              <strong>
+                {t('You’re all done. You can close this page.', 'انتهيت. يمكنك إغلاق الصفحة.')}
+              </strong>
+              <p>{t('No account or follow-up needed.', 'لا يلزم حساب أو متابعة.')}</p>
             </div>
-            <form
-              className="survey-card"
-              ref={formRef}
-              onSubmit={submit}
-              noValidate
-              aria-label={t('Share your feedback', 'شاركنا رأيك')}
-            >
-              <fieldset className="question">
-                <legend>
-                  <span className="question-number">01</span>
-                  {t('Question 1', 'سؤال ١')}
-                  <span className="required">*</span>
-                </legend>
-                <p className="helper">{t('Select your star rating.', 'اختر تقييمك بالنجوم.')}</p>
-                <div
-                  className="star-rating"
-                  role="radiogroup"
-                  aria-label={t('Star rating', 'تقييم بالنجوم')}
-                  aria-describedby="star-rating-label"
-                  style={{
-                    '--rating-color': score <= 2 ? '#dc6672' : score === 3 ? '#d3aa18' : '#269578',
-                  }}
-                >
-                  {labels.map((label, i) => (
-                    <button
-                      type="button"
-                      role="radio"
-                      aria-checked={score === i + 1}
-                      aria-invalid={!!errors.score}
-                      aria-label={i + 1 + ' · ' + label}
-                      className={i < score ? 'filled' : ''}
-                      key={i}
-                      onClick={() => {
-                        setScore(i + 1);
-                        setErrors((v) => ({ ...v, score: '' }));
-                      }}
-                      onKeyDown={(e) => {
-                        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-                          e.preventDefault();
-                          const direction = ['ArrowRight', 'ArrowDown'].includes(e.key) ? 1 : -1;
-                          const n = (i + direction + 5) % 5;
-                          setScore(n + 1);
-                          e.currentTarget.parentElement.children[n].focus();
-                        }
-                      }}
-                    >
-                      <Icon name="star" size={32} />
-                    </button>
-                  ))}
-                </div>
-                <p className="star-rating-label" id="star-rating-label" aria-live="polite">
-                  {score
-                    ? score + ' / 5 · ' + labels[score - 1]
-                    : t('Choose a rating', 'اختر تقييمًا')}
-                </p>
-                {errors.score && (
-                  <p id="score-error" className="error" role="alert">
-                    {errors.score}
-                  </p>
-                )}
-              </fieldset>
-              <fieldset className="question">
-                <legend>
-                  <span className="question-number">02</span>
-                  {t('Question 2', 'سؤال ٢')}
-                  <span className="required">*</span>
-                </legend>
-                <p className="helper">{t('Choose one answer.', 'اختر إجابة واحدة.')}</p>
-                <div
-                  className="single-options"
-                  role="radiogroup"
-                  aria-label={t('Single choice', 'اختيار واحد')}
-                >
-                  {[1, 2, 3].map((n) => (
-                    <label
-                      className={'single-option ' + (service === 'option' + n ? 'selected' : '')}
-                      key={n}
-                    >
-                      <input
-                        type="radio"
-                        name="single-choice"
-                        value={'option' + n}
-                        checked={service === 'option' + n}
-                        aria-invalid={!!errors.service}
-                        onChange={(e) => {
-                          setService(e.target.value);
-                          setErrors((v) => ({ ...v, service: '' }));
-                        }}
-                      />
-                      <span>{t('Option ', 'اختيار ') + n}</span>
-                    </label>
-                  ))}
-                </div>
-                {errors.service && (
-                  <p className="error" role="alert">
-                    {errors.service}
-                  </p>
-                )}
-              </fieldset>
-              <fieldset className="question">
-                <legend>
-                  <span className="question-number">03</span>
-                  {t('Question 3', 'سؤال ٣')}
-                </legend>
-                <p className="helper">
-                  {t(
-                    'Choose all that apply. This question is optional.',
-                    'يمكنك اختيار أكثر من إجابة. هذا السؤال اختياري.',
-                  )}
-                </p>
-                <div className="multiple-options">
-                  {[1, 2, 3, 4]
-                    .map((n) => ['option' + n, t('Option ', 'اختيار ') + n])
-                    .map(([id, label]) => (
-                      <label
-                        className={'multiple-option ' + (topics.includes(id) ? 'selected' : '')}
-                        key={id}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={topics.includes(id)}
-                          onChange={(e) =>
-                            setTopics((prev) =>
-                              e.target.checked ? [...prev, id] : prev.filter((v) => v !== id),
-                            )
-                          }
-                        />
-                        <span>{label}</span>
-                      </label>
-                    ))}
-                </div>
-              </fieldset>
-              <fieldset className="question">
-                <legend>
-                  <span className="question-number">04</span>
-                  {t('Question 4', 'سؤال ٤')}
-                </legend>
-                <p className="helper">
-                  {t(
-                    'Choose a score from 0 to 10. This question is optional.',
-                    'اختر تقييمًا من ٠ إلى ١٠. هذا السؤال اختياري.',
-                  )}
-                </p>
-                <div
-                  className="nps-options"
-                  style={{ '--nps-color': '#1e68ef' }}
-                  role="radiogroup"
-                  aria-label={t(
-                    'Likelihood to recommend, from zero to ten',
-                    'احتمالية الترشيح من صفر إلى عشرة',
-                  )}
-                >
-                  {Array.from({ length: 11 }, (_, n) => (
-                    <button
-                      type="button"
-                      role="radio"
-                      key={n}
-                      aria-label={t('Score ', 'تقييم ') + n}
-                      aria-checked={nps === n}
-                      className={nps === n ? 'selected' : ''}
-                      onClick={() => setNps(n)}
-                      onKeyDown={(e) => {
-                        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-                          e.preventDefault();
-                          let direction = ['ArrowRight', 'ArrowDown'].includes(e.key) ? 1 : -1;
-                          let next = (n + direction + 11) % 11;
-                          setNps(next);
-                          e.currentTarget.parentElement.children[next].focus();
-                        }
-                      }}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-                <div className="nps-labels">
-                  <span>{t('Not at all likely', 'غير محتمل إطلاقًا')}</span>
-                  <span>{t('Extremely likely', 'محتمل جدًا')}</span>
-                </div>
-              </fieldset>
-              <div className="question">
-                <label className="text-label" htmlFor="feedback">
-                  <span className="question-number">05</span>
-                  {t('Question 5', 'سؤال ٥')}
-                  <span className="required">*</span>
-                </label>
-                <p className="helper">
-                  {t('Write your answer in the space below.', 'اكتب إجابتك في المساحة التالية.')}
-                </p>
-                <textarea
-                  id="feedback"
-                  value={feedback}
-                  maxLength={1000}
-                  rows={4}
-                  aria-invalid={!!errors.feedback}
-                  aria-describedby={errors.feedback ? 'feedback-error' : 'feedback-hint'}
-                  placeholder={t('Your answer…', 'إجابتك…')}
-                  onChange={(e) => {
-                    setFeedback(e.target.value);
-                    if (e.target.value.trim().length >= 10)
-                      setErrors((v) => ({ ...v, feedback: '' }));
-                  }}
-                />
-                <div className="textarea-meta">
-                  <small id="feedback-hint">
-                    {t(
-                      'Please avoid sharing private or sensitive details.',
-                      'يرجى عدم مشاركة بيانات خاصة أو حساسة.',
-                    )}
-                  </small>
-                  <span>{feedback.length}/1000</span>
-                </div>
-                {errors.feedback && (
-                  <p id="feedback-error" className="error" role="alert">
-                    {errors.feedback}
-                  </p>
-                )}
-              </div>
-              <div className="consent-section">
-                <label className="consent">
-                  <input
-                    type="checkbox"
-                    checked={agree}
-                    aria-invalid={!!errors.agree}
-                    onChange={(e) => {
-                      setAgree(e.target.checked);
-                      setErrors((v) => ({ ...v, agree: '' }));
-                    }}
-                  />
-                  <span>
-                    {t(
-                      'I agree to share this answer with the business.',
-                      'أوافق على مشاركة هذه الإجابة مع النشاط التجاري.',
-                    )}
-                  </span>
-                </label>
-                {errors.agree && (
-                  <p className="error" role="alert">
-                    {errors.agree}
-                  </p>
-                )}
-                <button className="primary-button" type="submit" disabled={state === 'sending'}>
-                  {state === 'sending' ? (
-                    <>
-                      <span className="spinner" />
-                      {t('Sending…', 'جارٍ الإرسال…')}
-                    </>
-                  ) : (
-                    <>
-                      <Icon name="send" size={18} />
-                      {t('Send feedback', 'إرسال الرأي')}
-                    </>
-                  )}
-                </button>
-                <p className="privacy-note">
-                  <Icon name="lock" size={13} />
-                  {t(
-                    'Your feedback is shared privately with Bloom & Co.',
-                    'تتم مشاركة رأيك بشكل خاص مع Bloom & Co.',
-                  )}
-                </p>
-              </div>
-            </form>
-          </>
-        )}
-      </main>
-      <footer className="public-footer">
-        <span>
-          {t('Powered by', 'بدعم من')} <img src="/assets/brand/nuvia-logo.svg" alt="NUVIA" />
-        </span>
-        <span>{t('Every voice matters.', 'كل رأي له قيمة.')}</span>
-      </footer>
+          )}
+          {footer}
+        </footer>
+      </section>
     </div>
   );
 }
