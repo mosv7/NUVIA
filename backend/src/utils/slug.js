@@ -1,13 +1,13 @@
-const crypto = require("crypto");
+const crypto = require('crypto');
 
-const slugify = (text = "") =>
+const slugify = (text = '') =>
   String(text)
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .slice(0, 100);
 
-const randomSuffix = (bytes = 3) => crypto.randomBytes(bytes).toString("hex");
+const randomSuffix = (bytes = 3) => crypto.randomBytes(bytes).toString('hex');
 
 module.exports = { slugify, randomSuffix };

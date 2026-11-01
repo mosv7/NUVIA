@@ -36,6 +36,8 @@ data/private/
 data/raw/
 # Trained-model artifacts at the repository root; backend schemas are source.
 /models/
+# Local Qwen weights, tokenizer files and download cache.
+/apps/ai-service/app/models/qwen2.5-1.5b/
 exports/
 artifacts/
 *.sqlite

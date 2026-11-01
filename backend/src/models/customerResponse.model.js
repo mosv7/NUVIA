@@ -1,5 +1,12 @@
-const mongoose = require("mongoose");
-const { QUESTION_TYPE, LANGUAGE, CHANNEL_TYPE, ANALYSIS_STATUS, SENTIMENT_TYPE, POLARITY_TYPE } = require("./enums");
+const mongoose = require('mongoose');
+const {
+  QUESTION_TYPE,
+  LANGUAGE,
+  CHANNEL_TYPE,
+  ANALYSIS_STATUS,
+  SENTIMENT_TYPE,
+  POLARITY_TYPE,
+} = require('./enums');
 
 const labelSchema = new mongoose.Schema({ en: String, ar: String }, { _id: false });
 
@@ -7,17 +14,17 @@ const labelSchema = new mongoose.Schema({ en: String, ar: String }, { _id: false
 // does not change what the customer was actually asked.
 const answerSchema = new mongoose.Schema(
   {
-    questionId: { type: mongoose.Schema.Types.ObjectId, ref: "Question", required: true },
+    questionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
     type: { type: String, enum: QUESTION_TYPE, required: true },
-    questionTextEn: { type: String, default: "" },
-    questionTextAr: { type: String, default: "" },
+    questionTextEn: { type: String, default: '' },
+    questionTextAr: { type: String, default: '' },
     text: { type: String }, // short_text, long_text
     rating: { type: Number }, // rating (1..ratingMax)
     ratingMax: { type: Number },
     yesNo: { type: Boolean }, // yes_no
     choices: [{ _id: false, optionId: mongoose.Schema.Types.ObjectId, label: labelSchema }], // dropdown, multiple_choice
   },
-  { _id: false }
+  { _id: false },
 );
 
 // One aspect row shown on Feedback details. Built from the AI mentions (see utils/aiAdapter.js).
@@ -33,7 +40,7 @@ const aspectSchema = new mongoose.Schema(
     start: { type: Number }, // code-point offsets of `term` inside feedbackText
     end: { type: Number },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // Which model produced the result and how far it is trusted (copied from the AI response, never shown raw).
@@ -53,7 +60,7 @@ const provenanceSchema = new mongoose.Schema(
 // so the list screen can filter and sort on it without a join.
 const analysisSchema = new mongoose.Schema(
   {
-    status: { type: String, enum: ANALYSIS_STATUS, required: true, default: "pending" },
+    status: { type: String, enum: ANALYSIS_STATUS, required: true, default: 'pending' },
     attempts: { type: Number, default: 0 },
     requestedAt: { type: Date },
     startedAt: { type: Date },
@@ -72,28 +79,33 @@ const analysisSchema = new mongoose.Schema(
     aspects: { type: [aspectSchema], default: undefined },
     provenance: { type: provenanceSchema, default: undefined },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // "Feedback" in the UI: one submitted survey by one customer.
 const customerResponseSchema = new mongoose.Schema(
   {
-    businessId: { type: mongoose.Schema.Types.ObjectId, ref: "Business", required: true },
-    surveyId: { type: mongoose.Schema.Types.ObjectId, ref: "Survey", required: true },
-    branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch", required: true },
+    businessId: { type: mongoose.Schema.Types.ObjectId, ref: 'Business', required: true },
+    surveyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Survey', required: true },
+    branchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', required: true },
     number: { type: Number, required: true }, // per business: #1248. Sent to the AI as "FB-1248".
-    channel: { type: String, enum: CHANNEL_TYPE, required: true, default: "short_link" },
+    channel: { type: String, enum: CHANNEL_TYPE, required: true, default: 'short_link' },
 
+    formVersion: { type: String, required: true, immutable: true, match: /^[a-f0-9]{64}$/ },
+    formSnapshot: { type: mongoose.Schema.Types.Mixed, required: true, immutable: true },
     answers: { type: [answerSchema], default: [] },
     // The text sent to the AI: every written answer, in question order, joined by a blank line.
-    feedbackText: { type: String, default: "", maxlength: 10000 },
+    feedbackText: { type: String, default: '', maxlength: 10000 },
     // `language` is detected from feedbackText (what the AI is told); `declaredLanguage` is what the
     // customer's survey page was showing. They can differ: an English page with an Arabic answer.
     language: { type: String, enum: LANGUAGE, required: true },
     declaredLanguage: { type: String, enum: LANGUAGE },
 
     // Only filled when the survey is not anonymous.
-    respondent: { name: { type: String, trim: true, maxlength: 150 }, email: { type: String, trim: true, lowercase: true, maxlength: 255 } },
+    respondent: {
+      name: { type: String, trim: true, maxlength: 150 },
+      email: { type: String, trim: true, lowercase: true, maxlength: 255 },
+    },
 
     // Optional id the customer's browser makes once per form, so a double tap or a retry on bad
     // network does not create two responses.
@@ -102,20 +114,26 @@ const customerResponseSchema = new mongoose.Schema(
 
     analysis: { type: analysisSchema, default: () => ({}) },
   },
-  { timestamps: false }
+  { timestamps: false },
 );
 
 customerResponseSchema.index({ businessId: 1, number: 1 }, { unique: true });
 customerResponseSchema.index({ businessId: 1, submittedAt: -1, _id: -1 }); // list, newest first
 customerResponseSchema.index({ businessId: 1, branchId: 1, submittedAt: -1 });
 customerResponseSchema.index({ surveyId: 1, submittedAt: -1 });
+<<<<<<< HEAD
 customerResponseSchema.index({ businessId: 1, "analysis.overallSentiment": 1, submittedAt: -1 });
 customerResponseSchema.index({ businessId: 1, "analysis.aspects.name": 1 });
 customerResponseSchema.index({ "analysis.status": 1, "analysis.startedAt": 1 }); // recovery sweep
 customerResponseSchema.index({ "analysis.status": 1, "analysis.requestedAt": 1 }); // worker queue
+=======
+customerResponseSchema.index({ businessId: 1, 'analysis.overallSentiment': 1, submittedAt: -1 });
+customerResponseSchema.index({ businessId: 1, 'analysis.aspects.name': 1 });
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.startedAt': 1 }); // recovery sweep
+>>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
 customerResponseSchema.index(
   { surveyId: 1, submissionId: 1 },
-  { unique: true, partialFilterExpression: { submissionId: { $type: "string" } } }
+  { unique: true, partialFilterExpression: { submissionId: { $type: 'string' } } },
 );
 
-module.exports = mongoose.model("CustomerResponse", customerResponseSchema);
+module.exports = mongoose.model('CustomerResponse', customerResponseSchema);

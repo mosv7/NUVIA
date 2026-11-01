@@ -141,6 +141,7 @@ test('2FA challenges cannot authenticate, survive credential revocation or repla
   const setup = await owner.mutate('post', '/api/settings/security/2fa/setup', {}).expect(200);
   assert.ok(setup.body.data.qrSvg.includes('<svg'));
   const recoveryCode = 'abcde-12345';
+  const unusedCode = 'abcde-67890';
   await models.BusinessOwner.updateOne(
     { _id: owner.id },
     {
@@ -149,6 +150,7 @@ test('2FA challenges cannot authenticate, survive credential revocation or repla
         'twoFactor.secretEnc': encrypt('GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ'),
         'twoFactor.recoveryCodeHashes': [
           crypto.createHash('sha256').update(recoveryCode).digest('hex'),
+          crypto.createHash('sha256').update(unusedCode).digest('hex'),
         ],
       },
     },
@@ -175,11 +177,124 @@ test('2FA challenges cannot authenticate, survive credential revocation or repla
   await owner.mutate('post', '/api/settings/security/sessions/sign-out-all', {}).expect(204);
   await request(app)
     .post('/api/auth/login/2fa')
-    .send({ twoFactorToken: challenge.body.data.twoFactorToken, code: 'abcde-12345' })
+    .send({ twoFactorToken: challenge.body.data.twoFactorToken, code: unusedCode })
     .expect(401);
+  const persisted = await models.BusinessOwner.findById(owner.id).select(
+    '+twoFactor.recoveryCodeHashes',
+  );
+  assert.ok(
+    persisted.twoFactor.recoveryCodeHashes.includes(
+      crypto.createHash('sha256').update(unusedCode).digest('hex'),
+    ),
+  );
+});
+
+async function recoveryProofs(owner, email) {
+  const emailToken = crypto.randomBytes(32).toString('hex');
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const code = '12345-abcde';
+  const hash = (value) => crypto.createHash('sha256').update(value).digest('hex');
+  await models.EmailChange.create({
+    ownerId: owner.id,
+    newEmail: `attacker-${email}`,
+    tokenHash: hash(emailToken),
+    expiresAt: new Date(Date.now() + 60000),
+  });
+  await models.PasswordReset.create({
+    email,
+    tokenHash: hash(resetToken),
+    expiresAt: new Date(Date.now() + 60000),
+  });
+  await models.BusinessOwner.updateOne(
+    { _id: owner.id },
+    {
+      $set: {
+        'twoFactor.enabled': true,
+        'twoFactor.secretEnc': encrypt('GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ'),
+        'twoFactor.recoveryCodeHashes': [hash(code)],
+      },
+    },
+  );
+  const challenge = await request(app)
+    .post('/api/auth/login')
+    .send({ email, password })
+    .expect(200);
+  return { emailToken, resetToken, code, challenge: challenge.body.data.twoFactorToken };
+}
+
+test('concurrent recovery consumes one reset, cancels pending email proof and rejects an unused old 2FA proof', async () => {
+  const email = 'recovery-boundary@example.test';
+  const owner = await browser(email);
+  const proofs = await recoveryProofs(owner, email);
+  const changedPassword = 'RecoveredPassword123!';
+  const results = await Promise.all(
+    [1, 2].map(() =>
+      request(app).post('/api/auth/reset-password').send({
+        token: proofs.resetToken,
+        password: changedPassword,
+        passwordConfirmation: changedPassword,
+      }),
+    ),
+  );
+  assert.deepEqual(results.map((result) => result.status).sort(), [200, 400]);
+  await owner.agent.get('/api/auth/me').expect(401);
+  await request(app).get('/api/auth/me').set('Authorization', `Bearer ${owner.token}`).expect(401);
+  await request(app).post('/api/auth/confirm-email').send({ token: proofs.emailToken }).expect(400);
+  await request(app)
+    .post('/api/auth/login/2fa')
+    .send({ twoFactorToken: proofs.challenge, code: proofs.code })
+    .expect(401);
+  const fresh = await request(app)
+    .post('/api/auth/login')
+    .send({ email, password: changedPassword })
+    .expect(200);
+  await request(app)
+    .post('/api/auth/login/2fa')
+    .send({ twoFactorToken: fresh.body.data.twoFactorToken, code: proofs.code })
+    .expect(200);
+  assert.equal((await models.BusinessOwner.findById(owner.id)).email, email);
+});
+
+test('password changes preserve the renewed caller, revoke other devices and invalidate pending email/challenge proofs', async () => {
+  const email = 'change-boundary@example.test';
+  const owner = await browser(email);
+  const second = await request(app).post('/api/auth/login').send({ email, password }).expect(200);
+  const proofs = await recoveryProofs(owner, email);
+  const newPassword = 'ChangedPassword123!';
+  const changed = await owner
+    .mutate('post', '/api/settings/security/password', {
+      currentPassword: password,
+      newPassword,
+      confirmPassword: newPassword,
+    })
+    .expect(200);
+  await owner.agent.get('/api/auth/me').expect(200);
+  await request(app)
+    .get('/api/auth/me')
+    .set('Authorization', `Bearer ${changed.body.data.token}`)
+    .expect(200);
+  await request(app).get('/api/auth/me').set('Authorization', `Bearer ${owner.token}`).expect(401);
+  await request(app)
+    .get('/api/auth/me')
+    .set('Authorization', `Bearer ${second.body.data.token}`)
+    .expect(401);
+  await request(app).post('/api/auth/confirm-email').send({ token: proofs.emailToken }).expect(400);
+  await request(app)
+    .post('/api/auth/login/2fa')
+    .send({ twoFactorToken: proofs.challenge, code: proofs.code })
+    .expect(401);
+  const fresh = await request(app)
+    .post('/api/auth/login')
+    .send({ email, password: newPassword })
+    .expect(200);
+  await request(app)
+    .post('/api/auth/login/2fa')
+    .send({ twoFactorToken: fresh.body.data.twoFactorToken, code: proofs.code })
+    .expect(200);
 });
 test('email confirmation is one-use, invalidates old credentials and sends canonical file links', async () => {
   const owner = await browser('old-email@example.test');
+  const proofs = await recoveryProofs(owner, 'old-email@example.test');
   await owner
     .mutate('post', '/api/settings/security/email', {
       newEmail: 'new-email@example.test',
@@ -198,8 +313,20 @@ test('email confirmation is one-use, invalidates old credentials and sends canon
   assert.deepEqual(results.map((r) => r.status).sort(), [200, 400]);
   await request(app).get('/api/auth/me').set('Authorization', `Bearer ${owner.token}`).expect(401);
   await request(app)
+    .post('/api/auth/verify-reset-token')
+    .send({ token: proofs.resetToken })
+    .expect(400);
+  await request(app)
+    .post('/api/auth/login/2fa')
+    .send({ twoFactorToken: proofs.challenge, code: proofs.code })
+    .expect(401);
+  const fresh = await request(app)
     .post('/api/auth/login')
     .send({ email: 'new-email@example.test', password })
+    .expect(200);
+  await request(app)
+    .post('/api/auth/login/2fa')
+    .send({ twoFactorToken: fresh.body.data.twoFactorToken, code: proofs.code })
     .expect(200);
 });
 test('2FA enrollment commits once when enable requests overlap', async () => {

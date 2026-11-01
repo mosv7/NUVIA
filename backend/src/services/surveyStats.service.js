@@ -6,9 +6,9 @@
 //   - getMonthlyStats.completionRate        -> needs "started" vs "submitted" events
 //   - getBranchHistory.speedScore           -> needs a decision on which aspect means "speed"
 
-const CustomerResponse = require("../models/customerResponse.model");
-const Branch = require("../models/branch.model");
-const { oid } = require("./surveyAccess");
+const CustomerResponse = require('../models/customerResponse.model');
+const Branch = require('../models/branch.model');
+const { oid } = require('./surveyAccess');
 
 const countsBy = async (field, ids) => {
   const counts = new Map();
@@ -24,11 +24,12 @@ const countsBy = async (field, ids) => {
 };
 
 // Map of surveyId -> number of responses.
-const getResponseCounts = (surveyIds) => countsBy("surveyId", surveyIds);
+const getResponseCounts = (surveyIds) => countsBy('surveyId', surveyIds);
 
 // True when customers already answered this survey. Used to protect data in live surveys
 // (a question with answers cannot be deleted or change type).
-const hasResponses = async (surveyId) => Boolean(await CustomerResponse.exists({ surveyId }));
+const hasResponses = async (surveyId, session = null) =>
+  Boolean(await CustomerResponse.exists({ surveyId }).session(session));
 
 const monthStart = (offset = 0) => {
   const now = new Date();
@@ -39,13 +40,17 @@ const monthStart = (offset = 0) => {
 const getMonthlyStats = async (businessId) => {
   const [current, previous] = await Promise.all([
     CustomerResponse.countDocuments({ businessId, submittedAt: { $gte: monthStart(0) } }),
-    CustomerResponse.countDocuments({ businessId, submittedAt: { $gte: monthStart(-1), $lt: monthStart(0) } }),
+    CustomerResponse.countDocuments({
+      businessId,
+      submittedAt: { $gte: monthStart(-1), $lt: monthStart(0) },
+    }),
   ]);
 
   return {
     responsesThisMonth: {
       value: current,
-      changePercent: previous > 0 ? Math.round(((current - previous) / previous) * 1000) / 10 : null,
+      changePercent:
+        previous > 0 ? Math.round(((current - previous) / previous) * 1000) / 10 : null,
     },
     completionRate: { value: 0, changePoints: null }, // see note at the top
   };
@@ -61,14 +66,19 @@ const getShareStats = async (surveyId) => ({
 // ---- Business > Branches screens ----
 
 // Map of branchId -> number of responses collected at that branch.
-const getBranchResponseCounts = (branchIds) => countsBy("branchId", branchIds);
+const getBranchResponseCounts = (branchIds) => countsBy('branchId', branchIds);
 
 // Cards on top of the Branches page. `byArchivedBranches` is what "Archived responses" shows.
 const getResponseTotals = async (businessId) => {
-  const archived = await Branch.find({ businessId, status: "archived" }).select("_id").lean();
+  const archived = await Branch.find({ businessId, status: 'archived' }).select('_id').lean();
   const [total, byArchivedBranches] = await Promise.all([
     CustomerResponse.countDocuments({ businessId }),
-    archived.length ? CustomerResponse.countDocuments({ businessId, branchId: { $in: archived.map((b) => b._id) } }) : 0,
+    archived.length
+      ? CustomerResponse.countDocuments({
+          businessId,
+          branchId: { $in: archived.map((b) => b._id) },
+        })
+      : 0,
   ]);
   return { total, byActiveBranches: total - byArchivedBranches, byArchivedBranches };
 };
@@ -82,30 +92,48 @@ const getBranchHistory = async (branchId) => {
   const [earlierResponses, sentiment, aspects, weekly] = await Promise.all([
     CustomerResponse.countDocuments(match),
     CustomerResponse.aggregate([
-      { $match: { ...match, "analysis.overallSentiment": { $exists: true } } },
-      { $group: { _id: null, analysed: { $sum: 1 }, positive: { $sum: { $cond: [{ $eq: ["$analysis.overallSentiment", "positive"] }, 1, 0] } } } },
+      { $match: { ...match, 'analysis.overallSentiment': { $exists: true } } },
+      {
+        $group: {
+          _id: null,
+          analysed: { $sum: 1 },
+          positive: {
+            $sum: { $cond: [{ $eq: ['$analysis.overallSentiment', 'positive'] }, 1, 0] },
+          },
+        },
+      },
     ]),
     CustomerResponse.aggregate([
       { $match: match },
-      { $unwind: "$analysis.aspects" },
-      { $match: { "analysis.aspects.score": { $ne: null } } },
-      { $group: { _id: "$analysis.aspects.name", avg: { $avg: "$analysis.aspects.score" } } },
+      { $unwind: '$analysis.aspects' },
+      { $match: { 'analysis.aspects.score': { $ne: null } } },
+      { $group: { _id: '$analysis.aspects.name', avg: { $avg: '$analysis.aspects.score' } } },
       { $sort: { _id: 1 } },
     ]),
     CustomerResponse.aggregate([
       { $match: { ...match, submittedAt: { $gte: since } } },
-      { $group: { _id: { $dateTrunc: { date: "$submittedAt", unit: "week", startOfWeek: "monday" } }, responses: { $sum: 1 } } },
+      {
+        $group: {
+          _id: { $dateTrunc: { date: '$submittedAt', unit: 'week', startOfWeek: 'monday' } },
+          responses: { $sum: 1 },
+        },
+      },
       { $sort: { _id: 1 } },
     ]),
   ]);
 
   return {
     earlierResponses,
-    positiveSentiment: sentiment[0] ? Math.round((sentiment[0].positive / sentiment[0].analysed) * 100) : null,
+    positiveSentiment: sentiment[0]
+      ? Math.round((sentiment[0].positive / sentiment[0].analysed) * 100)
+      : null,
     speedScore: null,
     // -1..+1 from the AI mapped to 0..10
     aspectScores: aspects.map((a) => ({ aspect: a._id, score: Math.round((a.avg + 1) * 50) / 10 })),
-    weeklyResponses: weekly.map((w) => ({ weekStart: w._id.toISOString().slice(0, 10), responses: w.responses })),
+    weeklyResponses: weekly.map((w) => ({
+      weekStart: w._id.toISOString().slice(0, 10),
+      responses: w.responses,
+    })),
   };
 };
 
