@@ -29,3 +29,10 @@
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/* Headings receive programmatic focus for announcements, without a control outline. */
+:root #root :is(h1, h2, h3, h4, h5, h6)[tabindex='-1']:focus {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}

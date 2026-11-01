@@ -990,21 +990,6 @@
     "section": "subscription"
   },
   {
-    "file": "screens/customer-feedback/desktop/en/customer-feedback.jpg",
-    "route": "#/customer-feedback",
-    "language": "en",
-    "viewport": {
-      "width": 1440,
-      "height": 960
-    },
-    "image": {
-      "width": 1440,
-      "height": 1744
-    },
-    "sha256": "506200002f8968a66e0a835c96de9ee4b7b40bd5378cefe9a0000b7e7585fbcb",
-    "section": "customer-feedback"
-  },
-  {
     "file": "screens/analytics/desktop/en/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "en",
@@ -2041,21 +2026,6 @@
     },
     "sha256": "4d42e163755a091476e5765bea691f0548f11396287704a3476fb964eb35ae58",
     "section": "subscription"
-  },
-  {
-    "file": "screens/customer-feedback/mobile/en/customer-feedback.jpg",
-    "route": "#/customer-feedback",
-    "language": "en",
-    "viewport": {
-      "width": 390,
-      "height": 844
-    },
-    "image": {
-      "width": 390,
-      "height": 1710
-    },
-    "sha256": "719e474fb6bded712cc7ed32477d6fcf1d56bcf78be8da5247237bf6dbfdb7ed",
-    "section": "customer-feedback"
   },
   {
     "file": "screens/analytics/mobile/en/analytics-sentiment-empty.jpg",
@@ -3096,21 +3066,6 @@
     "section": "subscription"
   },
   {
-    "file": "screens/customer-feedback/desktop/ar/customer-feedback.jpg",
-    "route": "#/customer-feedback",
-    "language": "ar",
-    "viewport": {
-      "width": 1440,
-      "height": 960
-    },
-    "image": {
-      "width": 1440,
-      "height": 960
-    },
-    "sha256": "be903f4d5a5b7eeccf6c75b2e468f22e5375078785be1a47a766ba07ff3390e5",
-    "section": "customer-feedback"
-  },
-  {
     "file": "screens/analytics/desktop/ar/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "ar",
@@ -4149,21 +4104,6 @@
     "section": "subscription"
   },
   {
-    "file": "screens/customer-feedback/mobile/ar/customer-feedback.jpg",
-    "route": "#/customer-feedback",
-    "language": "ar",
-    "viewport": {
-      "width": 390,
-      "height": 844
-    },
-    "image": {
-      "width": 390,
-      "height": 844
-    },
-    "sha256": "02302e3a7259ed6ae61c8768a414444cd3a265586aa18ec9a0e6211c6a77a253",
-    "section": "customer-feedback"
-  },
-  {
     "file": "screens/analytics/mobile/ar/analytics-sentiment-empty.jpg",
     "route": "#/analytics-sentiment",
     "language": "ar",
@@ -4210,5 +4150,957 @@
     },
     "sha256": "345769dbe8eeed5d9657e059d73c022070dd20f10ba5eefd1a869fd4cef1bc08",
     "section": "business"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/branch.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "ecc1e18368c56de3cdd71579b76fa4363e76a9e1ce168e1cf7e94e29a4d5d741",
+    "section": "customer-feedback",
+    "screen": "branch",
+    "previewQuery": "capture=gallery&screen=branch"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/comment.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "5888e54679fb1be76bc7975e277e994081f2e35cb2e1e2e0a38a5e78da3472d7",
+    "section": "customer-feedback",
+    "screen": "comment",
+    "previewQuery": "capture=gallery&screen=comment"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/customer-feedback.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "cf0af5b44bcaa9f5b1edf93be5b6fdeb04d39df7ff174cfccf4e579b3fef8052",
+    "section": "customer-feedback",
+    "screen": "customer-feedback",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/highlights.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "cf0cd12049ffb15c2a65a2765bde33e21b552b9449b95cbef7dab7e1d9d31040",
+    "section": "customer-feedback",
+    "screen": "highlights",
+    "previewQuery": "capture=gallery&screen=highlights"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/incomplete.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "e5d40b444bc145110d19f4d37eca965345e6f72120e345ad49d0aa41acfd0083",
+    "section": "customer-feedback",
+    "screen": "incomplete",
+    "previewQuery": "capture=gallery&screen=incomplete"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/intro.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "cf0af5b44bcaa9f5b1edf93be5b6fdeb04d39df7ff174cfccf4e579b3fef8052",
+    "section": "customer-feedback",
+    "screen": "intro",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/invalid.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "11b1067c06dd583036fc80956c22723106f850969b70e4f5a812db5222aba518",
+    "section": "customer-feedback",
+    "screen": "invalid",
+    "previewQuery": "capture=gallery&screen=invalid"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/rating.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "8bf7dce274d272ad63f540b928560d6ef2f863ff1f942e8b64ebc9d740a8802d",
+    "section": "customer-feedback",
+    "screen": "rating",
+    "previewQuery": "capture=gallery&screen=rating"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/recommendation.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "fb4596c4bc8c9349c005317650932bf4cdb59c635030da2248a022f8e3cd5121",
+    "section": "customer-feedback",
+    "screen": "recommendation",
+    "previewQuery": "capture=gallery&screen=recommendation"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/required.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "554d634f74c5a28973ed863937f3e78a6c8b01bab497815b29712fd9c769735b",
+    "section": "customer-feedback",
+    "screen": "required",
+    "previewQuery": "capture=gallery&screen=required"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/sending.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "8b4ccbbd8d3fa6ffbe97c2f5833f34378685682f13bc85d08e19c3ae6ed2278c",
+    "section": "customer-feedback",
+    "screen": "sending",
+    "previewQuery": "capture=gallery&screen=sending"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/single-choice.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "9d899c4a060086851252369a988743220f64bd276cd52fb34535f996222d93e9",
+    "section": "customer-feedback",
+    "screen": "single-choice",
+    "previewQuery": "capture=gallery&screen=single-choice"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/thank-you.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "91a9fdc8c12c93baa8f3c00afe802f106fa2d788ed042f4dcb7b36708080cabc",
+    "section": "customer-feedback",
+    "screen": "thank-you",
+    "previewQuery": "capture=gallery&screen=thank-you"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/ar/visit.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "829f6b07a2704ff9b83faee02e35f63b7406b0c28a98d55401e49c392e9c55c8",
+    "section": "customer-feedback",
+    "screen": "visit",
+    "previewQuery": "capture=gallery&screen=visit"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/branch.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "fd92b826d5d32c963d3a700d6f16c8faf06d26766235372ff288ccfcfcda88da",
+    "section": "customer-feedback",
+    "screen": "branch",
+    "previewQuery": "capture=gallery&screen=branch"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/comment.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "a4b196f1e277c9aa192e297db4b11ad4fd203e3b8e28f35dff9fd6bcfe1b4354",
+    "section": "customer-feedback",
+    "screen": "comment",
+    "previewQuery": "capture=gallery&screen=comment"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/customer-feedback.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "0709fc643e024e7551107dc61e797a2671a5c405d1b4bddc8ebdc21435aae863",
+    "section": "customer-feedback",
+    "screen": "customer-feedback",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/highlights.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "20a9e87fd904cfa74131097e7d1a9e76fe7bf67917a7550f1ca4880dd23c0695",
+    "section": "customer-feedback",
+    "screen": "highlights",
+    "previewQuery": "capture=gallery&screen=highlights"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/incomplete.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "c846fee6da0fddfc8dd42937bbae7aab9196b5ed416e94a578a0ebb24352c144",
+    "section": "customer-feedback",
+    "screen": "incomplete",
+    "previewQuery": "capture=gallery&screen=incomplete"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/intro.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "0709fc643e024e7551107dc61e797a2671a5c405d1b4bddc8ebdc21435aae863",
+    "section": "customer-feedback",
+    "screen": "intro",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/invalid.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "b0ad2bb10f3b4feff784f32aedbdc6fef216179d773d645c8f9453480608cc23",
+    "section": "customer-feedback",
+    "screen": "invalid",
+    "previewQuery": "capture=gallery&screen=invalid"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/rating.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "4cb46746dffd72f09036764df859937cf5f09d023e52542fed600b9efbe38952",
+    "section": "customer-feedback",
+    "screen": "rating",
+    "previewQuery": "capture=gallery&screen=rating"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/recommendation.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "91769406ce68d016d112dd1b79e767b9d0f759594379f8c1e67c12c2e625b7d2",
+    "section": "customer-feedback",
+    "screen": "recommendation",
+    "previewQuery": "capture=gallery&screen=recommendation"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/required.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "b8e706647bb7c031cbb43fe4a618df3e33a77a2bdd1762bd0df41bd85f6b5952",
+    "section": "customer-feedback",
+    "screen": "required",
+    "previewQuery": "capture=gallery&screen=required"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/sending.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "86fbd2d4f6070f4e199e066a12248d50c61da9b382b44ecce0842dc1b1685dbb",
+    "section": "customer-feedback",
+    "screen": "sending",
+    "previewQuery": "capture=gallery&screen=sending"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/single-choice.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "ca2ce6dc200c9d8922ef23fd4673a3c64359c051b46a840ecb0aceba72063df7",
+    "section": "customer-feedback",
+    "screen": "single-choice",
+    "previewQuery": "capture=gallery&screen=single-choice"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/thank-you.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "4dec95691c344538d6bc9620800cf117c11b330b5b729da20aa01e092092d31a",
+    "section": "customer-feedback",
+    "screen": "thank-you",
+    "previewQuery": "capture=gallery&screen=thank-you"
+  },
+  {
+    "file": "screens/customer-feedback/desktop/en/visit.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "image": {
+      "width": 1366,
+      "height": 768
+    },
+    "sha256": "e62f81ce0a0560032f997f59eb1ae9e17e1afef431f67aba1dde5ee16c5e4f6c",
+    "section": "customer-feedback",
+    "screen": "visit",
+    "previewQuery": "capture=gallery&screen=visit"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/branch.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "051c7787f42d14ca68371d91686140014b9ad3b567e589f07f3ab23572190693",
+    "section": "customer-feedback",
+    "screen": "branch",
+    "previewQuery": "capture=gallery&screen=branch"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/comment.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "461ab010a9042d03b0c9ad87661b212187e1e8ead4c400b3489a25a299c173dd",
+    "section": "customer-feedback",
+    "screen": "comment",
+    "previewQuery": "capture=gallery&screen=comment"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/customer-feedback.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "9d65f04449d39a5093503194b4c2e0ac2842e489650e199931eaad9bd517b6da",
+    "section": "customer-feedback",
+    "screen": "customer-feedback",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/highlights.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 867
+    },
+    "sha256": "01327f70b86555e0b005362fbf0cd9ea3ba74e45a8051b9b0fdac3dbe8d2b345",
+    "section": "customer-feedback",
+    "screen": "highlights",
+    "previewQuery": "capture=gallery&screen=highlights"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/incomplete.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 1020
+    },
+    "sha256": "9d089df6b7d41c790bb43791b9d8bbd2b03662c8ef9a08e71a20242be660f298",
+    "section": "customer-feedback",
+    "screen": "incomplete",
+    "previewQuery": "capture=gallery&screen=incomplete"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/intro.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "9d65f04449d39a5093503194b4c2e0ac2842e489650e199931eaad9bd517b6da",
+    "section": "customer-feedback",
+    "screen": "intro",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/invalid.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 930
+    },
+    "sha256": "dace44d535782b76fc729bacdda4910ccae10001bbe268cbc7147f413d42ba18",
+    "section": "customer-feedback",
+    "screen": "invalid",
+    "previewQuery": "capture=gallery&screen=invalid"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/rating.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "478e0755dea610bf186b4894c60df5b11a05dea47a0a9b9c717be89d8717352b",
+    "section": "customer-feedback",
+    "screen": "rating",
+    "previewQuery": "capture=gallery&screen=rating"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/recommendation.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "4bb6d8bc89fbb2a5c888f60906f34cd93795db8b62de7f90a47f78457f78a3cb",
+    "section": "customer-feedback",
+    "screen": "recommendation",
+    "previewQuery": "capture=gallery&screen=recommendation"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/required.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "24e0889759ae47d685c5c4713ec13a3ee9194e2c78d373a8e6953bf43016750a",
+    "section": "customer-feedback",
+    "screen": "required",
+    "previewQuery": "capture=gallery&screen=required"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/sending.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "240a5e22606028d0fd475f7aaada7a6b86967914710662fd8dbd9235942d2185",
+    "section": "customer-feedback",
+    "screen": "sending",
+    "previewQuery": "capture=gallery&screen=sending"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/single-choice.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "b3c4d37d50c0e4c5d451a93a8871a57686f5b8bfa128de9c2f33b1c3eb31c544",
+    "section": "customer-feedback",
+    "screen": "single-choice",
+    "previewQuery": "capture=gallery&screen=single-choice"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/thank-you.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "a7eb0b5f31a5728fc76c7b6876e86691e340ed494107760d73bfe7150872e0e6",
+    "section": "customer-feedback",
+    "screen": "thank-you",
+    "previewQuery": "capture=gallery&screen=thank-you"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/ar/visit.jpg",
+    "route": "#/customer-feedback",
+    "language": "ar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 868
+    },
+    "sha256": "e21e8dd4e4414ca84485830c7836fcee6dc8cbe43439bfeca330411f0e63241c",
+    "section": "customer-feedback",
+    "screen": "visit",
+    "previewQuery": "capture=gallery&screen=visit"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/branch.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "a6618c1dc4b6222f84d63308da817b5e44129f47a0bb70d917ee0d222ec7ed57",
+    "section": "customer-feedback",
+    "screen": "branch",
+    "previewQuery": "capture=gallery&screen=branch"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/comment.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "f90e6e41eb60d73abc8b719a002c0bd400d16323ef83f894926f0a2e055be0b1",
+    "section": "customer-feedback",
+    "screen": "comment",
+    "previewQuery": "capture=gallery&screen=comment"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/customer-feedback.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "33af88aa17a5035872628b59ad90570031154d23a6664f636699fe05e7c1d73d",
+    "section": "customer-feedback",
+    "screen": "customer-feedback",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/highlights.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "e6c67096fecc28a9db7dc6e5c9085a0ff2681f6764eceef131de04be3c47358d",
+    "section": "customer-feedback",
+    "screen": "highlights",
+    "previewQuery": "capture=gallery&screen=highlights"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/incomplete.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 953
+    },
+    "sha256": "4063273e014c6dd2c0e746cf93fc8422c31ea4d6f60f97907e59bf52d8a10300",
+    "section": "customer-feedback",
+    "screen": "incomplete",
+    "previewQuery": "capture=gallery&screen=incomplete"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/intro.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "33af88aa17a5035872628b59ad90570031154d23a6664f636699fe05e7c1d73d",
+    "section": "customer-feedback",
+    "screen": "intro",
+    "previewQuery": "capture=gallery&screen=intro"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/invalid.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 908
+    },
+    "sha256": "3ae02a8335822753eeeee7de74d37556e961afd997200fb95c8d3591a5fa4bb6",
+    "section": "customer-feedback",
+    "screen": "invalid",
+    "previewQuery": "capture=gallery&screen=invalid"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/rating.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "a473e4e2ff5c099c7125d034f9361a5e539bba221c023a4f349abaef337a6c25",
+    "section": "customer-feedback",
+    "screen": "rating",
+    "previewQuery": "capture=gallery&screen=rating"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/recommendation.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "654a10cc36fd74cca2f59ad40c1f136654efd75fb960e04e95dd4bbfc366475c",
+    "section": "customer-feedback",
+    "screen": "recommendation",
+    "previewQuery": "capture=gallery&screen=recommendation"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/required.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "c8caf08960ca2ed4bf35db98210909eeb600bf09688896b38225969f9ae44be4",
+    "section": "customer-feedback",
+    "screen": "required",
+    "previewQuery": "capture=gallery&screen=required"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/sending.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "827d94f3d7c262cbaddf6ee54eae4bf375c4e8487773d8876c562af30a130e7c",
+    "section": "customer-feedback",
+    "screen": "sending",
+    "previewQuery": "capture=gallery&screen=sending"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/single-choice.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "26e50b6c8132ebf528287e9a82b7e43b339b7e519df11c7a97185cdba03f816c",
+    "section": "customer-feedback",
+    "screen": "single-choice",
+    "previewQuery": "capture=gallery&screen=single-choice"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/thank-you.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "ff2b0f5c50cdd08d637c8fd26d8ce6c6b932968c4dde49becda07720da79749e",
+    "section": "customer-feedback",
+    "screen": "thank-you",
+    "previewQuery": "capture=gallery&screen=thank-you"
+  },
+  {
+    "file": "screens/customer-feedback/mobile/en/visit.jpg",
+    "route": "#/customer-feedback",
+    "language": "en",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image": {
+      "width": 390,
+      "height": 844
+    },
+    "sha256": "902c6180d9f3a97f6af57c8bf3873d3d1820fb286d82abaf7b55cce937a6fde2",
+    "section": "customer-feedback",
+    "screen": "visit",
+    "previewQuery": "capture=gallery&screen=visit"
   }
 ]
