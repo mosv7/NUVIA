@@ -59,6 +59,20 @@ const arabicHints = [
   'اختر رقمًا من ٠ إلى ١٠.',
   'التفاصيل تساعدنا على تحسين زيارتك القادمة.',
 ];
+const arabicAnswers = {
+  Cairo: 'القاهرة',
+  'El Zamalek': 'الزمالك',
+  Alex: 'الإسكندرية',
+  'Coffee & food': 'قهوة وطعام',
+  'Work or study': 'عمل أو دراسة',
+  'Catching up': 'لقاء الأصدقاء',
+  Takeaway: 'طلب خارجي',
+  'Friendly service': 'الخدمة الودودة',
+  'Wi-Fi & workspace': 'الواي فاي ومساحة العمل',
+  'Nothing in particular': 'لا شيء بالتحديد',
+  Yes: 'أيوه',
+  No: 'لأ',
+};
 export default function CustomerFeedback({ language } = {}) {
   const preview = location.pathname.includes('/preview');
   const requested = preview ? new URLSearchParams(location.search).get('screen') : null;
@@ -108,6 +122,7 @@ export default function CustomerFeedback({ language } = {}) {
   const heading = useRef(null);
   const timer = useRef(null);
   const t = (en, arabic) => (ar ? arabic : en);
+  const answerLabel = (answer) => (ar ? arabicAnswers[answer] || answer : answer);
   useEffect(() => () => clearTimeout(timer.current), []);
   useEffect(() => {
     if (heading.current) heading.current.focus({ preventScroll: true });
@@ -178,7 +193,7 @@ export default function CustomerFeedback({ language } = {}) {
       <strong>{t('Customer experience survey', 'استبيان تجربة العملاء')}</strong>
       <span>
         {img('MapPin', step === 9 ? '808-1984' : '808-1879')}
-        {answers.branch}
+        {answerLabel(answers.branch)}
       </span>
       <p>
         {t(
@@ -321,7 +336,11 @@ export default function CustomerFeedback({ language } = {}) {
                 </p>
               </div>
               {[1, 2, 4].includes(step) && (
-                <div className="cf-choices" role="group" aria-label={titles[step - 1]}>
+                <div
+                  className="cf-choices"
+                  role="group"
+                  aria-label={t(titles[step - 1], arabicTitles[step - 1])}
+                >
                   {(step === 1
                     ? ['Cairo', 'El Zamalek', 'Alex']
                     : step === 2
@@ -418,7 +437,7 @@ export default function CustomerFeedback({ language } = {}) {
                       <button
                         key={n}
                         onClick={() => set('rating', n)}
-                        aria-label={`${n} out of 5`}
+                        aria-label={t(`${n} out of 5`, `${n} من ٥`)}
                         aria-pressed={answers.rating === n}
                         className={n <= answers.rating ? 'cf-star-selected' : ''}
                       >
@@ -430,9 +449,9 @@ export default function CustomerFeedback({ language } = {}) {
                       </button>
                     ))}
                   </div>
-                  <div className="cf-range">
-                    <span>{t('Very poor', 'سيئة جدًا')}</span>
-                    <span>{t('Excellent', 'ممتازة')}</span>
+                  <div className="cf-range" dir="ltr">
+                    <span dir={ar ? 'rtl' : 'ltr'}>{t('Very poor', 'سيئة جدًا')}</span>
+                    <span dir={ar ? 'rtl' : 'ltr'}>{t('Excellent', 'ممتازة')}</span>
                   </div>
                   {!!answers.rating && (
                     <strong className="cf-score">
@@ -462,9 +481,13 @@ export default function CustomerFeedback({ language } = {}) {
                       </button>
                     ))}
                   </div>
-                  <div className="cf-range">
-                    <span>{t('0 · Not at all likely', '٠ · غير محتمل إطلاقًا')}</span>
-                    <span>{t('10 · Extremely likely', '١٠ · محتمل جدًا')}</span>
+                  <div className="cf-range" dir="ltr">
+                    <span dir={ar ? 'rtl' : 'ltr'}>
+                      {t('0 · Not at all likely', '٠ · غير محتمل إطلاقًا')}
+                    </span>
+                    <span dir={ar ? 'rtl' : 'ltr'}>
+                      {t('10 · Extremely likely', '١٠ · محتمل جدًا')}
+                    </span>
                   </div>
                   {answers.recommendation !== null && (
                     <strong className="cf-score">
@@ -479,7 +502,7 @@ export default function CustomerFeedback({ language } = {}) {
               {step === 6 && (
                 <div className="cf-comment">
                   <textarea
-                    aria-label={titles[5]}
+                    aria-label={t(titles[5], arabicTitles[5])}
                     aria-invalid={answers.comment.length > 300}
                     aria-describedby="cf-comment-limit"
                     value={answers.comment}
@@ -537,7 +560,7 @@ export default function CustomerFeedback({ language } = {}) {
                     ? t('Feedback for your latest visit', 'رأيك عن زيارتك الأخيرة')
                     : t(
                         `${answers.branch} · Your latest visit`,
-                        `${answers.branch} · زيارتك الأخيرة`,
+                        `${answerLabel(answers.branch)} · زيارتك الأخيرة`,
                       )}
                 </p>
               )}
@@ -556,7 +579,9 @@ export default function CustomerFeedback({ language } = {}) {
                     missing.filter(Boolean).length === 1
                       ? 'One more answer before you submit'
                       : 'Complete your required answers before submitting',
-                    'إجابة أخرى قبل الإرسال',
+                    missing.filter(Boolean).length === 1
+                      ? 'إجابة أخرى قبل الإرسال'
+                      : 'أكمل الإجابات المطلوبة قبل الإرسال',
                   )}
                 </h1>
               </div>
@@ -574,13 +599,13 @@ export default function CustomerFeedback({ language } = {}) {
               </div>
               <div className="cf-review">
                 {[
-                  'Branch',
-                  'Visit purpose',
-                  'Overall experience',
-                  'Highlights',
-                  'Recommendation',
-                  'Comment',
-                  'First visit',
+                  t('Branch', 'الفرع'),
+                  t('Visit purpose', 'سبب الزيارة'),
+                  t('Overall experience', 'التجربة العامة'),
+                  t('Highlights', 'ما أعجبك'),
+                  t('Recommendation', 'الترشيح'),
+                  t('Comment', 'التعليق'),
+                  t('First visit', 'أول زيارة'),
                 ].map((label, i) => (
                   <button key={label} onClick={() => openReviewQuestion(i === 6 ? 10 : i + 1)}>
                     {img(
@@ -598,17 +623,23 @@ export default function CustomerFeedback({ language } = {}) {
                         }
                       >
                         {(i === 6 ? missing[5] : i === 5 ? false : missing[i])
-                          ? 'Required · Not answered'
+                          ? t('Required · Not answered', 'مطلوب · لم تتم الإجابة')
                           : [
-                              answers.branch,
-                              answers.visit,
-                              `${answers.rating} out of 5`,
-                              answers.highlights.join(', '),
-                              `${answers.recommendation} out of 10`,
+                              answerLabel(answers.branch),
+                              answerLabel(answers.visit),
+                              t(`${answers.rating} out of 5`, `${answers.rating} من ٥`),
+                              answers.highlights.map(answerLabel).join(ar ? '، ' : ', '),
+                              t(
+                                `${answers.recommendation} out of 10`,
+                                `${answers.recommendation} من ١٠`,
+                              ),
                               answers.comment
-                                ? `Added · ${answers.comment.length} characters`
-                                : 'Not added',
-                              answers.firstVisit,
+                                ? t(
+                                    `Added · ${answers.comment.length} characters`,
+                                    `تمت الإضافة · ${answers.comment.length} حرفًا`,
+                                  )
+                                : t('Not added', 'لم تتم الإضافة'),
+                              answerLabel(answers.firstVisit),
                             ][i]}
                       </small>
                     </span>
