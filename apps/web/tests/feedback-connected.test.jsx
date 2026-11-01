@@ -4,7 +4,7 @@ import { it, expect, vi } from 'vitest';
 import App from '../src/app/App.jsx';
 import { authApi } from '../src/features/auth/api.js';
 
-it.each(['feedbacks', 'feedbacks-empty', 'feedback-details'])(
+it.each(['feedbacks', 'feedbacks-empty'])(
   'keeps the reviewed empty feedback layout on the account route %s',
   async (route) => {
     vi.spyOn(authApi, 'session').mockResolvedValue({
@@ -63,3 +63,21 @@ it.each([
     expect(await screen.findByText(copy)).toBeVisible();
   },
 );
+
+it('rejects a missing owned detail id without showing a sample or the empty list', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue({
+    user: { id: 'owner' },
+    workspace: {
+      id: 'workspace',
+      businessName: 'Actual Cafe',
+      onboardingStep: 'complete',
+      branches: [],
+    },
+  });
+  history.replaceState(null, '', '/#/feedback-details');
+  render(<App />);
+  expect(await screen.findByRole('alert')).toHaveTextContent('This feedback could not be loaded.');
+  expect(
+    screen.queryByRole('heading', { name: 'Your first response starts here' }),
+  ).not.toBeInTheDocument();
+});

@@ -3,8 +3,10 @@ import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { OverviewBranchSelect, overviewDateLabel } from './OverviewControls.jsx';
 
-export default function WorkspaceScopeControls() {
-  const { tr, language, dashboard } = useProductView();
+export default function WorkspaceScopeControls({ dashboard: scope, branches } = {}) {
+  const { tr, language, dashboard: sharedDashboard, workspace } = useProductView();
+  const dashboard = scope || sharedDashboard;
+  const choices = branches || workspace?.branches || [];
   const image = (name) => asset('dashboard/overview/' + name + '.svg');
   return (
     <>
@@ -13,9 +15,14 @@ export default function WorkspaceScopeControls() {
           <ControlIcon name="branch" />
         </div>
         <p className="f63">
-          {tr(dashboard.filters.branch === 'all' ? 'All branches' : dashboard.filters.branch)}
+          {tr(
+            dashboard.filters.branch === 'all'
+              ? 'All branches'
+              : choices.find((branch) => branch.id === dashboard.filters.branch)?.name ||
+                  dashboard.filters.branch,
+          )}
         </p>
-        <OverviewBranchSelect />
+        <OverviewBranchSelect dashboard={dashboard} branches={branches} />
         <div className="f13" data-name="chevron-down">
           <img alt="" className="f5" src={image('chevron-down1')} />
         </div>

@@ -1,9 +1,20 @@
+import { assistantApi } from '../src/features/ai-analysis/api.js';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { it, expect, vi, beforeEach } from 'vitest';
 import App from '../src/app/App.jsx';
 import { authApi } from '../src/features/auth/api.js';
 import { resetApiSession } from '../src/lib/http/client.js';
 beforeEach(() => {
+  vi.spyOn(assistantApi, 'context').mockResolvedValue({
+    branches: [{ id: 'b', name: 'Saved Branch' }],
+    metrics: {
+      totalResponses: 0,
+      writtenResponses: 0,
+      analysisStatuses: {},
+      sentiments: {},
+      negativeAspects: [],
+    },
+  });
   resetApiSession();
   vi.spyOn(authApi, 'session').mockResolvedValue({ user: null, workspace: null });
 });
@@ -149,7 +160,9 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   fireEvent.click(screen.getByRole('button', { name: 'Open Ask NUVIA' }));
   expect(screen.getByRole('dialog', { name: 'Ask NUVIA' })).toBeVisible();
   expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
-  expect(screen.getAllByText(/AI Assistant is not available yet/).length).toBeGreaterThan(0);
+  expect(
+    screen.getByText('Ask about stored feedback and review original customer excerpts.'),
+  ).toBeVisible();
   expect(location.hash).toBe('#/dashboard');
   fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
   expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
@@ -223,10 +236,10 @@ it('opens the connected assistant workspace without sample conversations or metr
   expect(await screen.findByText('AI Assistant', { exact: true })).toBeVisible();
   expect(
     screen.getByText(
-      'AI Assistant is not available yet. Your conversations will appear here when the service is available.',
+      'Ask about stored feedback and review original customer excerpts. This conversation stays in this session only.',
     ),
   ).toBeVisible();
-  expect(screen.getByText('0 reviews')).toBeVisible();
+  expect(await screen.findByText('0 responses')).toBeVisible();
   expect(screen.getByText('Saved Branch', { exact: true })).toBeVisible();
   expect(screen.queryByText('1,250 reviews')).not.toBeInTheDocument();
   expect(screen.queryByText('Sample feedback scope')).not.toBeInTheDocument();

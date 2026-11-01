@@ -1,8 +1,15 @@
 # AI integration API
 
-Public prefix **`/api/ai`** belongs only to `backend/`. Python's `/api/v1/*` is private service transport. Analysis, reports, surveys and evidence answers support explicit local baseline mode; supplied local models remain quality-unaccepted. Summaries separately select Gemini/Groq/Ollama after reviewed comparison, default disabled. Qwen summaries are comparison-only. UI integration, saved analytics, training, public response collection and RAG are outside this delivery.
+Public prefix **`/api/ai`** belongs only to `backend/`. Python's `/api/v1/*` is private service transport. Analysis, reports, surveys and evidence answers support explicit local baseline mode; supplied local models remain quality-unaccepted. Summaries separately select Gemini/Groq/Ollama after reviewed comparison, default disabled. Qwen summaries are comparison-only. The connected assistant uses the owned retrieval API described below; these transient inference operations alone do not provide aggregate analytics or vector search.
 
 ## Authentication and inputs
+
+`AI_ASSISTANT_PROVIDER=groq` independently routes `answers` to Groq. Default
+`disabled` preserves the existing local answers behavior. Explicit Groq selection
+returns baseline provenance until a matching independently reviewed assistant
+profile exists; neither local/global baseline mode nor summary acceptance can
+enable/accept it. The extractive request/result and source validators remain
+unchanged. See [configuration and limits](../development/groq-assistant.md).
 
 Reuse owner cookies or explicit Bearer sessions, including persisted-device/token-version checks. Cookie POSTs require exact `Origin` and `X-CSRF-Token` from `/api/auth/session`. Require owner role and the current owned business (409 if absent). No email-verification gate or caller-selected business/owner/model path is introduced. Evidence IDs are local to the supplied request, not permissions to stored records. Results are transient.
 

@@ -7,8 +7,9 @@ import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import { defaultOverviewFilters, overviewPreset } from './overview-report.js';
 import './overview-controls.css';
 
-export function OverviewBranchSelect() {
-  const { tr, dashboard, workspace, preview } = useProductView();
+export function OverviewBranchSelect({ dashboard: scope, branches } = {}) {
+  const { tr, dashboard: sharedDashboard, workspace, preview } = useProductView();
+  const dashboard = scope || sharedDashboard;
   return (
     <ChoiceMenu
       control="branch"
@@ -17,7 +18,7 @@ export function OverviewBranchSelect() {
         { value: 'all', label: tr('All branches') },
         ...(preview
           ? ['Cairo', 'El Zamalek', 'Alex'].map((name) => ({ value: name, label: tr(name) }))
-          : (workspace?.branches || [])
+          : (branches || workspace?.branches || [])
               .filter((branch) => !branch.archivedAt)
               .map((branch) => ({ value: branch.id, label: branch.name }))),
       ]}

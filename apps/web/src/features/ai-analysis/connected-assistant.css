@@ -1,0 +1,111 @@
+.connected-conversation {
+  min-width: 0;
+  color: var(--dark);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.connected-conversation h3,
+.assistant-metrics h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.connected-conversation p,
+.connected-conversation blockquote {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.connected-conversation blockquote {
+  margin: 12px 0;
+  padding-inline-start: 12px;
+  border-inline-start: 2px solid var(--border);
+}
+.connected-conversation a,
+.connected-conversation button {
+  color: var(--primary);
+}
+.connected-conversation button {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.assistant-quality-notice,
+.assistant-coverage {
+  color: var(--muted);
+  font-size: 12px;
+}
+.assistant-metrics {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--dark);
+  font-size: 13px;
+}
+.assistant-metrics dl {
+  margin: 0;
+}
+.assistant-metrics dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+}
+.assistant-metrics dd {
+  margin: 0;
+  font-weight: 600;
+}
+.assistant-metrics details {
+  margin-top: 8px;
+}
+.assistant-metrics details p {
+  line-height: 1.6;
+  color: var(--muted);
+}
+.assistant-metrics summary {
+  cursor: pointer;
+}
+.nuvia-assistant .assistant-scope-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0;
+}
+.nuvia-assistant .assistant-scope-buttons > * {
+  min-width: 0;
+}
+.nuvia-assistant .assistant-scope-buttons .f62,
+.nuvia-assistant .assistant-scope-buttons .f64 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  background: white;
+  font-size: 12px;
+}
+.nuvia-assistant .assistant-scope-buttons img {
+  width: 16px;
+  height: 16px;
+}
+.nuvia-assistant .assistant-scope-buttons p {
+  margin: 0;
+}
+.nuvia-assistant .assistant-scope-buttons .f35 {
+  display: none;
+}
+.nuvia-assistant .assistant-scope-buttons .workspace-date-short-label {
+  display: none;
+}
+
+.assistant-reset {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--primary);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}

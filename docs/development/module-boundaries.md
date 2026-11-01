@@ -17,10 +17,16 @@ The former `apps/api` is removed. Do not recreate a parallel backend or duplicat
 
 Existing product routes show account-backed data; sample analytics, feedback and assistant responses stay under `/preview/`. Backend survey endpoints do not authorize expanding unfinished frontend, collection or AI scope. Before new flows, define authorization, request/response and loading/error/empty behavior.
 
-Summary-only Gemini/Groq/Ollama adapters also belong in `apps/ai-service`.
+Summary Gemini/Groq/Ollama adapters also belong in `apps/ai-service`.
 Private server configuration chooses the provider; Node remains the sole public
 authorization boundary. The offline comparison CLI can use local Qwen summaries;
 product summary routes cannot. ABSA stays on the local DeBERTa pipeline. Provider
 keys never enter local worker settings, responses or assessment reports.
+
+The independently configured Groq answers adapter also belongs in Python. Node
+`assistant.service` owns bounded retrieval, privacy redaction, source mapping and
+whole-scope metrics; Python receives transient excerpts only. Shared assistant
+UI state lives under `features/ai-analysis`; connected source details consume
+existing owned feedback reads. See [assistant operation](groq-assistant.md).
 
 `response.service` owns anonymous answer validation and transactional persistence, `publicSurvey.service` owns read availability/customer form shape, and survey/question/branch services coordinate mutations with the shared business transaction helper. Node response persistence and the analysis worker are the only CustomerResponse writers; Counter remains submission-owned. The UI must preserve the GET formVersion until submission and refresh on stale409. The Node analysis worker owns claim/lease/recovery and stored results; it reuses the existing internal AI transport and never treats baseline permission as quality acceptance. Feedback services only read owned stored records or atomically request retries. No Python writer is introduced.

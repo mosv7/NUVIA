@@ -34,7 +34,7 @@ Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspac
 
 Request validation and business errors follow the backend route/service contracts in `backend/src`. Business/branch/survey resources are scoped through the authenticated owner's business. Role checks are present; a team membership management product is not implemented. Browser adapters translate backend fields into the existing screen model. Public DTO declarations/constants live in `packages/shared-types`.
 
-Publishing persists survey status; **public response collection, complete frontend survey integration and live analytics are not delivered by these endpoints**. Survey management CSV is not a feedback/analysis export. [AI integration APIs](ai.md) now exist under `/api/ai`, with separate authenticated FastAPI transport; supplied capabilities remain unavailable pending acceptance, and no connected AI UI is delivered.
+Publishing persists survey status. Public response collection follows the versioned submission contract below; complete survey frontend integration and live analytics remain under development. Survey management CSV is separate from feedback export. [AI integration APIs](ai.md) exist under `/api/ai`, with authenticated FastAPI transport and independent capability/quality gates. The connected owner assistant uses the retrieval contract below.
 
 Reset tokens are single-use. Development file mail writes private `{text}` messages directly to root `.local/mail` without a worker. SMTP requires explicit configuration and testing. Old UUID account/workspace data is not automatically migrated into the ObjectId backend. Read [backend operations](../development/backend.md) before choosing a database.
 
@@ -112,3 +112,31 @@ All `/feedbacks` routes require a current authenticated owner business. Foreign 
 List/export filters: `range=7d|30d|90d|all` (default30d), `from`/`to` as UTC calendar days inclusive, `sentiment`, `language`, `aspect`, `branchId`, `surveyId`, literal `search` (text or feedback number), `sort=newest|oldest`. List adds `page` (default1) and `limit` (default8, maximum50). Detail navigation follows newest-first order across the business, independently of list filters.
 
 Analysis states are pending, processing, completed, partial, failed and skipped. Sentiment stays null when there is insufficient accepted aspect evidence; mixed requires positive and negative accepted mentions. Aspect scores are signed, uncalibrated polarity confidence, not satisfaction ratings. Highlights quote customer text. Summaries are unavailable in this worker. Baseline results retain `qualityStatus=baseline` and `qualityAccepted=false`; no assessed quality is inferred from successful processing. The worker uses the same strict envelope, source-span and quality-consistency validation as `/api/ai`, and does not retry an unavailable service automatically. Owners can retry after configuration/service recovery.
+
+## Connected owner assistant
+
+GET `/ai/assistant/context` accepts optional `branchId`, `from`, `to` (UTC days,
+inclusive end). Returns `{data:{branches,metrics}}`. POST `/ai/assistant/answers`
+accepts `{question,locale,branchId?,from?,to?,previousQuestion?}` and returns
+`{data:{status,items,metrics,coverage,provenance}}`. Locale is `en|ar`; questions
+are bounded to 1,000 Unicode code points. Unknown fields/types, impossible or
+reversed dates and foreign branches are rejected. Both endpoints require the
+current owner/business and active session; POST uses normal Origin/CSRF and owner
+rate limits. Client-supplied evidence texts, IDs or business identity are not
+accepted by this retrieval API.
+
+Each item contains source-bound `text` and
+`citations:[{id,quote,responseId,number}]`. Quoted source retains its language.
+No matching textual evidence returns `status=insufficient_evidence` and empty
+items without inference. Node revalidates current owned sources before returning
+citations; the browser can open `#/feedback-details?id=<responseId>`.
+
+Metrics contain `totalResponses`, `writtenResponses`, `analysisStatuses`,
+`sentiments`, `negativeAspects:[{name,count}]`. Scope metrics cover all matching
+responses independently of retrieved evidence. Sentiment/aspect counts exclude
+unaccepted analysis; lifecycle counts and accepted/baseline/unaccepted totals
+remain explicit. Coverage declares `{candidateLimit:500,candidatesScanned,
+evidenceCount,sampled:true}`; at most ten 2,000-code-point excerpts are sent to
+the private answers operation. Provenance is null when no inference was used,
+otherwise the unchanged AI quality metadata. See
+[assistant configuration, privacy and limits](../development/groq-assistant.md).
