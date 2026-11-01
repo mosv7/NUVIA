@@ -95,7 +95,27 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     for (const width of [1440, 393]) {
       await page.setViewportSize({ width, height: width === 393 ? 800 : 900 });
       assert.equal(await page.locator('.workspace-account-actions').count(), 0);
+      // Capture the first exposed layout, before a later effect can hide a positioning race.
+      const firstLayout = page.evaluate(
+        () =>
+          new Promise((resolve) => {
+            const observer = new MutationObserver(() => {
+              const button = document.querySelector('#workspace-profile .workspace-signout');
+              if (!button) return;
+              observer.disconnect();
+              const { x, y, width, height } = button.getBoundingClientRect();
+              resolve({ x, y, width, height });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+          }),
+      );
       await page.getByRole('button', { name: 'Profile', exact: true }).click();
+      const initialLogout = await firstLayout;
+      assert.ok(
+        initialLogout.y >= 0 &&
+          initialLogout.y + initialLogout.height <= (width === 393 ? 800 : 900),
+        `Sign out must be reachable on first layout: ${JSON.stringify(initialLogout)}`,
+      );
       const logout = await page
         .getByRole('button', { name: 'Sign out', exact: true })
         .boundingBox();

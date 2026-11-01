@@ -1,7 +1,7 @@
 import { en, ar } from '../../lib/i18n/auth-copy.js';
 import ChoiceMenu from '../ui/ChoiceMenu.jsx';
 import LanguageIcon from '../ui/LanguageIcon.jsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { asset } from '../../lib/assets.js';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
@@ -62,7 +62,7 @@ export default function HeaderMenus() {
     [signoutError, setSignoutError] = useState(false),
     [signingOut, setSigningOut] = useState(false);
   const close = useCallback(() => setTopbarMenu(null), [setTopbarMenu]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!topbarMenu) return;
     const place = () => {
       const rect = topbarMenu.anchor.getBoundingClientRect(),
