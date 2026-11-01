@@ -10,28 +10,43 @@
 //   - "service down" errors stop the run: the remaining feedbacks get the same failure instead of waiting
 //     for a timeout each
 
-const adapter = require("../utils/aiAdapter");
-const client = require("../integrations/ai/client");
+const adapter = require('../utils/aiAdapter');
+const client = require('../integrations/ai/client');
 
-const ISOLATE_ON = new Set(["AI_INPUT_INVALID", "AI_OUTPUT_INVALID", "AI_MALFORMED"]);
-const STOP_ON = new Set(["AI_NOT_CONFIGURED", "AI_UNAVAILABLE", "AI_UNREACHABLE", "AI_TIMEOUT"]);
+const ISOLATE_ON = new Set([
+  'AI_INPUT_INVALID',
+  'AI_OUTPUT_INVALID',
+  'AI_MALFORMED',
+  'AI_UPSTREAM_INVALID',
+]);
+const STOP_ON = new Set([
+  'AI_NOT_CONFIGURED',
+  'AI_CONFIG_INVALID',
+  'AI_UNAVAILABLE',
+  'AI_TIMEOUT',
+  'AI_CANCELLED',
+]);
 
-const codeOf = (error) => (error instanceof client.AIError ? error.code : "INTERNAL");
+const codeOf = (error) => (error instanceof client.AIError ? error.code : 'INTERNAL');
 
-const runOne = async (batch, analyze) => {
-  const envelope = await analyze(adapter.toTexts(batch));
+const runOne = async (batch, analyze, options) => {
+  const envelope = await analyze(adapter.toTexts(batch), options);
   const byId = adapter.indexItems(envelope);
-  if (!byId) throw new client.AIError("AI_MALFORMED");
-  return batch.plans.map((plan) => ({ id: plan.feedbackId, ...adapter.buildAnalysis(plan, byId, envelope.provenance) }));
+  if (!byId) throw new client.AIError('AI_MALFORMED');
+  return batch.plans.map((plan) => ({
+    id: plan.feedbackId,
+    ...adapter.buildAnalysis(plan, byId, envelope.provenance),
+  }));
 };
 
-const runBatch = async (docs, { analyze = client.analyze } = {}) => {
+const runBatch = async (docs, { analyze = client.analyze, signal } = {}) => {
   const results = [];
   const plans = [];
 
   for (const doc of docs) {
     const plan = adapter.planFeedback(doc);
-    if (plan.chunks.length === 0) results.push({ id: plan.feedbackId, ok: false, code: "AI_INPUT_INVALID" });
+    if (plan.chunks.length === 0)
+      results.push({ id: plan.feedbackId, ok: false, code: 'AI_INPUT_INVALID' });
     else plans.push(plan);
   }
 
@@ -45,14 +60,14 @@ const runBatch = async (docs, { analyze = client.analyze } = {}) => {
     }
 
     try {
-      results.push(...(await runOne(batch, analyze)));
+      results.push(...(await runOne(batch, analyze, { signal })));
     } catch (error) {
       const code = codeOf(error);
 
       if (batch.plans.length > 1 && ISOLATE_ON.has(code)) {
         for (const plan of batch.plans) {
           try {
-            results.push(...(await runOne({ plans: [plan] }, analyze)));
+            results.push(...(await runOne({ plans: [plan] }, analyze, { signal })));
           } catch (inner) {
             results.push({ id: plan.feedbackId, ok: false, code: codeOf(inner) });
           }

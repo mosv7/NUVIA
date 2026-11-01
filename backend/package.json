@@ -5,16 +5,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-<<<<<<< HEAD
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "mock-ai": "node scripts/mock-ai.js"
-=======
     "dev": "node --watch server.js",
     "start": "node server.js",
     "test": "node --test tests/*.test.js",
     "test:unit": "node --test tests/*.test.js"
->>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
   },
   "keywords": [],
   "author": "",

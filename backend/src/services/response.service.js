@@ -1,16 +1,6 @@
 // Anonymous submission stores feedback and an honest pending/skipped analysis state.
 // No worker or inference is triggered by this endpoint.
 
-<<<<<<< HEAD
-const Survey = require("../models/survey.model");
-const Branch = require("../models/branch.model");
-const CustomerResponse = require("../models/customerResponse.model");
-const Counter = require("../models/counter.model");
-const { fail } = require("../utils/errors");
-const { detectLanguage } = require("../utils/language");
-const { loadQuestions } = require("./question.service");
-const analysisWorker = require("./analysisWorker.service");
-=======
 const Survey = require('../models/survey.model');
 const Branch = require('../models/branch.model');
 const CustomerResponse = require('../models/customerResponse.model');
@@ -20,7 +10,6 @@ const { detectLanguage } = require('../utils/language');
 const { loadQuestions } = require('./question.service');
 const { runBusinessMutation } = require('./businessMutation');
 const { snapshotForm } = require('./formRevision');
->>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
 const MAX_TEXT_TOTAL = 10000;
 
 const requiredError = (question) => ({
@@ -209,21 +198,7 @@ const submitInTransaction = async (shortCode, body, session) => {
     doc.respondent = { name: body.respondent.name, email: body.respondent.email };
   }
 
-<<<<<<< HEAD
-  let created;
-  try {
-    created = await CustomerResponse.create(doc);
-  } catch (error) {
-    if (error.code === 11000 && body.submissionId) return { ...thanks, duplicate: true }; // two identical submits at once
-    throw error;
-  }
-
-  // Start the analysis now instead of waiting for the next poll. The customer does not wait for it.
-  if (created.analysis.status === "pending") analysisWorker.kick();
-
-=======
   await CustomerResponse.create([doc], { session });
->>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
   return thanks;
 };
 

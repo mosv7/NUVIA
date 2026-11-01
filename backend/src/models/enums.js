@@ -28,7 +28,7 @@ module.exports = Object.freeze({
   FEEDBACK_DELIVERY: e('instant', 'daily_09:00', 'weekly'),
   LANGUAGE: e('en', 'ar'),
   CHANNEL_TYPE: e('short_link', 'qr_code'),
-  ANALYSIS_STATUS: e('pending', 'processing', 'completed', 'failed', 'skipped'),
+  ANALYSIS_STATUS: e('pending', 'processing', 'completed', 'partial', 'failed', 'skipped'),
   JOB_STATUS: e('queued', 'running', 'completed', 'failed'),
   JOB_STAGE: e('preprocessing', 'sentiment', 'aspect_analysis', 'clustering', 'scoring'),
   SENTIMENT_TYPE: e('positive', 'negative', 'neutral', 'mixed'),

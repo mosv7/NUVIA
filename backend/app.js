@@ -4,23 +4,12 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { appOrigin, requireBrowserCsrf } = require('./src/utils/browserSession');
 
-<<<<<<< HEAD
-const authRoutes = require("./src/routes/auth.routes");
-const onboardingRoutes = require("./src/routes/onboarding.routes");
-const surveyRoutes = require("./src/routes/survey.routes");
-const surveyTemplateRoutes = require("./src/routes/surveyTemplate.routes");
-const branchRoutes = require("./src/routes/branch.routes");
-const settingsRoutes = require("./src/routes/settings.routes");
-const publicSurveyRoutes = require("./src/routes/publicSurvey.routes");
-const feedbackRoutes = require("./src/routes/feedback.routes");
-=======
 const authRoutes = require('./src/routes/auth.routes');
 const onboardingRoutes = require('./src/routes/onboarding.routes');
 const surveyRoutes = require('./src/routes/survey.routes');
 const surveyTemplateRoutes = require('./src/routes/surveyTemplate.routes');
 const branchRoutes = require('./src/routes/branch.routes');
 const businessRoutes = require('./src/routes/business.routes');
->>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
 
 const app = express();
 
@@ -60,22 +49,13 @@ app.get('/', (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-app.use("/api/auth", authRoutes);
-app.use("/api/onboarding", onboardingRoutes);
-app.use("/api/surveys", surveyRoutes);
-app.use("/api/survey-templates", surveyTemplateRoutes);
-app.use("/api/branches", branchRoutes);
-app.use("/api/settings", settingsRoutes);
-app.use("/api/public", publicSurveyRoutes);
-app.use("/api/feedbacks", feedbackRoutes);
-=======
 app.use('/api/auth', authRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/surveys', surveyRoutes);
 app.use('/api/survey-templates', surveyTemplateRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/feedbacks', require('./src/routes/feedback.routes'));
 app.use('/api/ai', require('./src/routes/ai.routes'));
 app.use('/api/settings', require('./src/routes/settings.routes'));
 app.use('/api/public', require('./src/routes/publicSurvey.routes'));
@@ -87,6 +67,5 @@ app.use((error, req, res, next) => {
     message: status === 500 ? 'Something went wrong, please try again' : 'Invalid request body',
   });
 });
->>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
 
 module.exports = app;

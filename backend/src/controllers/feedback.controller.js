@@ -1,5 +1,5 @@
-const feedbackService = require("../services/feedback.service");
-const { handleError } = require("../utils/errors");
+const feedbackService = require('../services/feedback.service');
+const { handleError } = require('../utils/errors');
 
 const list = async (req, res) => {
   try {
@@ -20,8 +20,11 @@ const filters = async (req, res) => {
 const exportCsv = async (req, res) => {
   try {
     const csv = await feedbackService.exportCsv(req.user, req.query);
-    res.setHeader("Content-Type", "text/csv; charset=utf-8");
-    res.setHeader("Content-Disposition", `attachment; filename="feedbacks-${new Date().toISOString().slice(0, 10)}.csv"`);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="feedbacks-${new Date().toISOString().slice(0, 10)}.csv"`,
+    );
     res.send(csv);
   } catch (error) {
     handleError(res, error);
@@ -46,7 +49,10 @@ const getAnalysis = async (req, res) => {
 
 const retry = async (req, res) => {
   try {
-    res.status(202).json({ message: "Analysis restarted", data: await feedbackService.retry(req.user, req.params.id) });
+    res.status(202).json({
+      message: 'Analysis restarted',
+      data: await feedbackService.retry(req.user, req.params.id),
+    });
   } catch (error) {
     handleError(res, error);
   }

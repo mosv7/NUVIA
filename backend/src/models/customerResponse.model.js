@@ -46,14 +46,14 @@ const aspectSchema = new mongoose.Schema(
 // Which model produced the result and how far it is trusted (copied from the AI response, never shown raw).
 const provenanceSchema = new mongoose.Schema(
   {
-    qualityStatus: { type: String, enum: ["accepted", "baseline", "unavailable"] },
+    qualityStatus: { type: String, enum: ['accepted', 'baseline', 'unavailable'] },
     qualityAccepted: { type: Boolean },
     models: { type: [String], default: undefined },
     profile: { type: String },
     methodVersion: { type: String },
     warnings: { type: [String], default: undefined },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // The AI result + the backend-owned lifecycle. Lives inside the response,
@@ -64,6 +64,8 @@ const analysisSchema = new mongoose.Schema(
     attempts: { type: Number, default: 0 },
     requestedAt: { type: Date },
     startedAt: { type: Date },
+    claimId: { type: String }, // fences writes from a worker whose lease was recovered
+    leaseUntil: { type: Date },
     completedAt: { type: Date },
     // Only a safe code + message are stored for failures. Never the raw AI output or a stack trace.
     errorCode: { type: String },
@@ -73,7 +75,7 @@ const analysisSchema = new mongoose.Schema(
     droppedAspects: { type: Number },
 
     overallSentiment: { type: String, enum: SENTIMENT_TYPE }, // missing = the AI found no clear aspects
-    reason: { type: String, enum: ["insufficient_evidence"] }, // why overallSentiment is missing
+    reason: { type: String, enum: ['insufficient_evidence'] }, // why overallSentiment is missing
     // Not filled yet: the summary endpoint of the AI service is switched off until a provider is approved.
     summary: { type: String },
     aspects: { type: [aspectSchema], default: undefined },
@@ -121,16 +123,11 @@ customerResponseSchema.index({ businessId: 1, number: 1 }, { unique: true });
 customerResponseSchema.index({ businessId: 1, submittedAt: -1, _id: -1 }); // list, newest first
 customerResponseSchema.index({ businessId: 1, branchId: 1, submittedAt: -1 });
 customerResponseSchema.index({ surveyId: 1, submittedAt: -1 });
-<<<<<<< HEAD
-customerResponseSchema.index({ businessId: 1, "analysis.overallSentiment": 1, submittedAt: -1 });
-customerResponseSchema.index({ businessId: 1, "analysis.aspects.name": 1 });
-customerResponseSchema.index({ "analysis.status": 1, "analysis.startedAt": 1 }); // recovery sweep
-customerResponseSchema.index({ "analysis.status": 1, "analysis.requestedAt": 1 }); // worker queue
-=======
 customerResponseSchema.index({ businessId: 1, 'analysis.overallSentiment': 1, submittedAt: -1 });
 customerResponseSchema.index({ businessId: 1, 'analysis.aspects.name': 1 });
-customerResponseSchema.index({ 'analysis.status': 1, 'analysis.startedAt': 1 }); // recovery sweep
->>>>>>> 52bee84a3bab5fc185edf36cf60b25afc4f73f3c
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.startedAt': 1 }); // legacy recovery
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.leaseUntil': 1 }); // active leases
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.requestedAt': 1 }); // worker queue
 customerResponseSchema.index(
   { surveyId: 1, submissionId: 1 },
   { unique: true, partialFilterExpression: { submissionId: { $type: 'string' } } },

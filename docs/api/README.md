@@ -94,4 +94,21 @@ A new response returns201; repeating the same survey/submissionId returns200 wit
 
 The server retains the version and complete customer-visible form snapshot, including the resolved branch identity, with each response. Reassigning the only branch invalidates an earlier unqualified form; feedback is never silently moved to the new branch. An existing Business write lock and explicit MongoDB transactions coordinate acceptance with survey/question edits, pause/close/delete and branch changes. Whichever operation commits first determines acceptance; a rejected attempt rolls back its response/counter writes. Old snapshots remain intact after later edits.
 
-CustomerResponse/Counter indexes are additive through the normal database setup. There is no response-analysis worker in this change: written feedback remains `analysis.status=pending`, rating/choice-only feedback is `skipped`. Existing protected `/api/ai` operations do not write these records or automatically drain that pending state. Response collection does not imply a connected feedback dashboard, delivery queue or AI quality acceptance.
+CustomerResponse/Counter indexes are additive through the normal database setup. Written feedback starts as `analysis.status=pending`; rating/choice-only feedback is `skipped`. A serial Node worker now drains pending responses and stores source-validated aspect results, with renewable leases and per-claim fencing for recovery. Existing protected `/api/ai` operations remain transient. Response collection and stored analysis do not imply a connected feedback dashboard, aggregate analytics or AI quality acceptance.
+
+## Stored feedback and analysis
+
+All `/feedbacks` routes require a current authenticated owner business. Foreign feedback IDs return404. Browser retry writes require the same exact Origin/CSRF protection as other product writes.
+
+| Method | Path                            | Result                                                                       |
+| ------ | ------------------------------- | ---------------------------------------------------------------------------- |
+| GET    | `/feedbacks`                    | Stored-response list, pagination and `hasAnyResponses`                       |
+| GET    | `/feedbacks/filters`            | Available branches, surveys, languages and aspect categories                 |
+| GET    | `/feedbacks/export`             | Formula-safe UTF-8 CSV, at most 5,000 matching responses                     |
+| GET    | `/feedbacks/:id`                | Original stored text/question, respondent display and previous/next IDs      |
+| GET    | `/feedbacks/:id/analysis`       | Pollable stored status, sentiment, aspect quotes and safe quality provenance |
+| POST   | `/feedbacks/:id/analysis/retry` | 202 with pending status; only failed/partial written responses, otherwise409 |
+
+List/export filters: `range=7d|30d|90d|all` (default30d), `from`/`to` as UTC calendar days inclusive, `sentiment`, `language`, `aspect`, `branchId`, `surveyId`, literal `search` (text or feedback number), `sort=newest|oldest`. List adds `page` (default1) and `limit` (default8, maximum50). Detail navigation follows newest-first order across the business, independently of list filters.
+
+Analysis states are pending, processing, completed, partial, failed and skipped. Sentiment stays null when there is insufficient accepted aspect evidence; mixed requires positive and negative accepted mentions. Aspect scores are signed, uncalibrated polarity confidence, not satisfaction ratings. Highlights quote customer text. Summaries are unavailable in this worker. Baseline results retain `qualityStatus=baseline` and `qualityAccepted=false`; no assessed quality is inferred from successful processing. The worker uses the same strict envelope, source-span and quality-consistency validation as `/api/ai`, and does not retry an unavailable service automatically. Owners can retry after configuration/service recovery.

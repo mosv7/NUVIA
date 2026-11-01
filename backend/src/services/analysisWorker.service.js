@@ -7,27 +7,41 @@
 // The customer never waits for any of this. The owner screens only read what is stored here.
 //
 // Config (.env): AI_BATCH_SIZE=5 (feedbacks per tick), AI_POLL_MS=2000, AI_STALE_MS=300000 (a "processing" row
-// older than this is put back in the queue: the server probably died mid-call).
+// whose renewable lease expired is put back in the queue).
 
-const CustomerResponse = require("../models/customerResponse.model");
-const { runBatch } = require("./analysis.service");
-const { safeMessage } = require("../integrations/ai/client");
+const { randomUUID } = require('node:crypto');
+const CustomerResponse = require('../models/customerResponse.model');
+const { runBatch } = require('./analysis.service');
+const { safeMessage } = require('../integrations/ai/client');
 
 const batchSize = () => Math.min(Math.max(Number(process.env.AI_BATCH_SIZE) || 5, 1), 10);
 const pollMs = () => Number(process.env.AI_POLL_MS) || 2000;
-const staleMs = () => Number(process.env.AI_STALE_MS) || 5 * 60 * 1000;
+const staleMs = () => Math.max(Number(process.env.AI_STALE_MS) || 5 * 60 * 1000, 1000);
 
 let running = false; // the AI service handles one model call at a time, so we do too
 let timer = null;
 let sweepTimer = null;
 let stopped = true;
+let activeController = null;
 
 // Takes one pending document, or returns null. findOneAndUpdate is atomic: two workers never get the same one.
 const claimOne = () =>
   CustomerResponse.findOneAndUpdate(
-    { "analysis.status": "pending" },
-    { $set: { "analysis.status": "processing", "analysis.startedAt": new Date() }, $inc: { "analysis.attempts": 1 } },
-    { sort: { "analysis.requestedAt": 1, _id: 1 }, returnDocument: "after", projection: { feedbackText: 1 } }
+    { 'analysis.status': 'pending' },
+    {
+      $set: {
+        'analysis.status': 'processing',
+        'analysis.startedAt': new Date(),
+        'analysis.claimId': randomUUID(),
+        'analysis.leaseUntil': new Date(Date.now() + staleMs()),
+      },
+      $inc: { 'analysis.attempts': 1 },
+    },
+    {
+      sort: { 'analysis.requestedAt': 1, _id: 1 },
+      returnDocument: 'after',
+      projection: { feedbackText: 1, 'analysis.claimId': 1 },
+    },
   ).lean();
 
 const claim = async (limit) => {
@@ -40,31 +54,48 @@ const claim = async (limit) => {
   return docs;
 };
 
-const store = (id, result) => {
-  const guard = { _id: id, "analysis.status": "processing" }; // never overwrite a retry that started meanwhile
+const claimGuard = (doc) => ({
+  _id: doc._id,
+  'analysis.status': 'processing',
+  'analysis.claimId': doc.analysis.claimId,
+});
+
+const store = (doc, result) => {
+  const guard = claimGuard(doc);
 
   if (!result.ok) {
     return CustomerResponse.updateOne(guard, {
+      $unset: { 'analysis.claimId': '', 'analysis.leaseUntil': '' },
       $set: {
-        "analysis.status": "failed",
-        "analysis.completedAt": new Date(),
-        "analysis.errorCode": result.code,
-        "analysis.errorMessage": safeMessage(result.code),
+        'analysis.status': 'failed',
+        'analysis.completedAt': new Date(),
+        'analysis.errorCode': result.code,
+        'analysis.errorMessage': safeMessage(result.code),
       },
     });
   }
 
   const a = result.analysis;
   const set = {
-    "analysis.status": a.status,
-    "analysis.completedAt": new Date(),
-    "analysis.aspects": a.aspects,
-    "analysis.provenance": a.provenance,
+    'analysis.status': a.status,
+    'analysis.completedAt': new Date(),
+    'analysis.aspects': a.aspects,
+    'analysis.provenance': a.provenance,
   };
-  const unset = { "analysis.errorCode": "", "analysis.errorMessage": "", "analysis.missingSections": "" };
+  const unset = {
+    'analysis.claimId': '',
+    'analysis.leaseUntil': '',
+    'analysis.errorCode': '',
+    'analysis.errorMessage': '',
+    'analysis.missingSections': '',
+  };
 
-  for (const [field, value] of [["overallSentiment", a.overallSentiment], ["reason", a.reason], ["droppedAspects", a.droppedAspects]]) {
-    if (value === undefined) unset[`analysis.${field}`] = "";
+  for (const [field, value] of [
+    ['overallSentiment', a.overallSentiment],
+    ['reason', a.reason],
+    ['droppedAspects', a.droppedAspects],
+  ]) {
+    if (value === undefined) unset[`analysis.${field}`] = '';
     else set[`analysis.${field}`] = value;
   }
   return CustomerResponse.updateOne(guard, { $set: set, $unset: unset });
@@ -74,22 +105,42 @@ const store = (id, result) => {
 const tick = async () => {
   if (running) return 0;
   running = true;
+  let heartbeat;
+  activeController = new AbortController();
   try {
     const docs = await claim(batchSize());
     if (docs.length === 0) return 0;
 
+    // Renew every claimed document, including those waiting for a later serial AI batch.
+    heartbeat = setInterval(
+      () => {
+        Promise.all(
+          docs.map((doc) =>
+            CustomerResponse.updateOne(claimGuard(doc), {
+              $set: { 'analysis.leaseUntil': new Date(Date.now() + staleMs()) },
+            }),
+          ),
+        ).catch(() => console.error('analysis worker: lease renewal failed'));
+      },
+      Math.max(100, Math.floor(staleMs() / 3)),
+    );
+    heartbeat.unref();
     let results;
     try {
-      results = await runBatch(docs);
+      results = await runBatch(docs, { signal: activeController.signal });
     } catch (error) {
-      console.error("analysis worker:", error.message);
-      results = docs.map((d) => ({ id: String(d._id), ok: false, code: "INTERNAL" }));
+      console.error('analysis worker:', error.message);
+      results = docs.map((d) => ({ id: String(d._id), ok: false, code: 'INTERNAL' }));
     }
 
     const byId = new Map(results.map((r) => [r.id, r]));
-    await Promise.all(docs.map((d) => store(d._id, byId.get(String(d._id)) || { ok: false, code: "INTERNAL" })));
+    await Promise.all(
+      docs.map((d) => store(d, byId.get(String(d._id)) || { ok: false, code: 'INTERNAL' })),
+    );
     return docs.length;
   } finally {
+    clearInterval(heartbeat);
+    activeController = null;
     running = false;
   }
 };
@@ -100,7 +151,7 @@ const loop = async () => {
   try {
     worked = await tick();
   } catch (error) {
-    console.error("analysis worker:", error.message);
+    console.error('analysis worker:', error.message);
   }
   if (!stopped) timer = setTimeout(loop, worked ? 0 : pollMs());
   if (timer?.unref) timer.unref();
@@ -118,8 +169,17 @@ const kick = () => {
 const sweep = async () => {
   const cutoff = new Date(Date.now() - staleMs());
   const { modifiedCount } = await CustomerResponse.updateMany(
-    { "analysis.status": "processing", "analysis.startedAt": { $lt: cutoff } },
-    { $set: { "analysis.status": "pending" } }
+    {
+      'analysis.status': 'processing',
+      $or: [
+        { 'analysis.leaseUntil': { $lte: new Date() } },
+        { 'analysis.leaseUntil': { $exists: false }, 'analysis.startedAt': { $lt: cutoff } },
+      ],
+    },
+    {
+      $set: { 'analysis.status': 'pending' },
+      $unset: { 'analysis.claimId': '', 'analysis.leaseUntil': '' },
+    },
   );
   if (modifiedCount) console.log(`analysis worker: re-queued ${modifiedCount} stuck feedback(s)`);
 };
@@ -127,14 +187,18 @@ const sweep = async () => {
 const start = () => {
   if (!stopped) return;
   stopped = false;
-  sweep().catch((e) => console.error("analysis sweep:", e.message));
-  sweepTimer = setInterval(() => sweep().catch((e) => console.error("analysis sweep:", e.message)), 60 * 1000);
+  sweep().catch((e) => console.error('analysis sweep:', e.message));
+  sweepTimer = setInterval(
+    () => sweep().catch((e) => console.error('analysis sweep:', e.message)),
+    60 * 1000,
+  );
   if (sweepTimer.unref) sweepTimer.unref();
   loop();
 };
 
 const stop = () => {
   stopped = true;
+  activeController?.abort();
   clearTimeout(timer);
   clearInterval(sweepTimer);
 };
