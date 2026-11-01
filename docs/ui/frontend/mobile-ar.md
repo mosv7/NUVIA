@@ -270,6 +270,8 @@
 
 ![customer-feedback](screens/customer-feedback/mobile/ar/customer-feedback.jpg)
 
+[View all 13 updated customer survey screens](screens/customer-feedback/README.md)
+
 ## analytics-sentiment — empty
 
 ![analytics-sentiment — empty](screens/analytics/mobile/ar/analytics-sentiment-empty.jpg)
