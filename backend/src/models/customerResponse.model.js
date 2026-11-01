@@ -27,19 +27,36 @@ const answerSchema = new mongoose.Schema(
   { _id: false },
 );
 
-// One aspect-level result from the AI (contract 4.2).
+// One aspect row shown on Feedback details. Built from the AI mentions (see utils/aiAdapter.js).
 const aspectSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true }, // aspect_name
-    evidence: { type: String, required: true }, // evidence_text, always a span of the original feedback
+    name: { type: String, required: true }, // category shown on screen and used by the Aspect filter: "Coffee", "Wait time"
+    term: { type: String }, // the customer's own word the AI found: "flat white"
+    evidence: { type: String, required: true }, // clause of the original feedback around the term (always an exact slice)
     polarity: { type: String, enum: POLARITY_TYPE, required: true },
-    score: { type: Number, default: null }, // -1..+1, null = not scored
-    confidence: { type: Number, default: null }, // 0..1
+    // Signed for display: +c positive, -c negative, 0 neutral. c is the model's confidence in that polarity (uncalibrated).
+    score: { type: Number, default: null },
+    confidence: { type: Number, default: null }, // 0..1, the unsigned value
+    start: { type: Number }, // code-point offsets of `term` inside feedbackText
+    end: { type: Number },
   },
   { _id: false },
 );
 
-// The AI result (contract 4.1) + the backend-owned lifecycle (contract 6). Lives inside the response,
+// Which model produced the result and how far it is trusted (copied from the AI response, never shown raw).
+const provenanceSchema = new mongoose.Schema(
+  {
+    qualityStatus: { type: String, enum: ['accepted', 'baseline', 'unavailable'] },
+    qualityAccepted: { type: Boolean },
+    models: { type: [String], default: undefined },
+    profile: { type: String },
+    methodVersion: { type: String },
+    warnings: { type: [String], default: undefined },
+  },
+  { _id: false },
+);
+
+// The AI result + the backend-owned lifecycle. Lives inside the response,
 // so the list screen can filter and sort on it without a join.
 const analysisSchema = new mongoose.Schema(
   {
@@ -47,6 +64,8 @@ const analysisSchema = new mongoose.Schema(
     attempts: { type: Number, default: 0 },
     requestedAt: { type: Date },
     startedAt: { type: Date },
+    claimId: { type: String }, // fences writes from a worker whose lease was recovered
+    leaseUntil: { type: Date },
     completedAt: { type: Date },
     // Only a safe code + message are stored for failures. Never the raw AI output or a stack trace.
     errorCode: { type: String },
@@ -55,12 +74,12 @@ const analysisSchema = new mongoose.Schema(
     missingSections: { type: [String], default: undefined },
     droppedAspects: { type: Number },
 
-    overallSentiment: { type: String, enum: SENTIMENT_TYPE },
-    sentimentConfidence: { type: Number, default: null },
+    overallSentiment: { type: String, enum: SENTIMENT_TYPE }, // missing = the AI found no clear aspects
+    reason: { type: String, enum: ['insufficient_evidence'] }, // why overallSentiment is missing
+    // Not filled yet: the summary endpoint of the AI service is switched off until a provider is approved.
     summary: { type: String },
-    whatWentWell: { type: [String], default: undefined },
-    roomForImprovement: { type: [String], default: undefined },
     aspects: { type: [aspectSchema], default: undefined },
+    provenance: { type: provenanceSchema, default: undefined },
   },
   { _id: false },
 );
@@ -106,7 +125,9 @@ customerResponseSchema.index({ businessId: 1, branchId: 1, submittedAt: -1 });
 customerResponseSchema.index({ surveyId: 1, submittedAt: -1 });
 customerResponseSchema.index({ businessId: 1, 'analysis.overallSentiment': 1, submittedAt: -1 });
 customerResponseSchema.index({ businessId: 1, 'analysis.aspects.name': 1 });
-customerResponseSchema.index({ 'analysis.status': 1, 'analysis.startedAt': 1 }); // recovery sweep
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.startedAt': 1 }); // legacy recovery
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.leaseUntil': 1 }); // active leases
+customerResponseSchema.index({ 'analysis.status': 1, 'analysis.requestedAt': 1 }); // worker queue
 customerResponseSchema.index(
   { surveyId: 1, submissionId: 1 },
   { unique: true, partialFilterExpression: { submissionId: { $type: 'string' } } },

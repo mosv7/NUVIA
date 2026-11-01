@@ -55,6 +55,7 @@ app.use('/api/surveys', surveyRoutes);
 app.use('/api/survey-templates', surveyTemplateRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/feedbacks', require('./src/routes/feedback.routes'));
 app.use('/api/ai', require('./src/routes/ai.routes'));
 app.use('/api/settings', require('./src/routes/settings.routes'));
 app.use('/api/public', require('./src/routes/publicSurvey.routes'));

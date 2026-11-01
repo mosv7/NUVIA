@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 const mongoose = require('mongoose');
 
 const app = require('./app');
+const analysisWorker = require('./src/services/analysisWorker.service');
 
 const PORT = process.env.PORT || 3001;
 
@@ -34,6 +35,7 @@ const startServer = async () => {
 
     app.listen(PORT, process.env.HOST || '127.0.0.1', () => {
       console.log(`Server running on port ${PORT}`);
+      analysisWorker.start();
     });
   } catch {
     console.error('Failed to start server. Check private database and JWT configuration.');
