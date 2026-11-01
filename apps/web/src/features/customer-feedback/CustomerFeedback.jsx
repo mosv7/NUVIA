@@ -25,6 +25,7 @@ const screenNames = [
   'incomplete',
   'sending',
   'thank-you',
+  'single-choice',
 ];
 const titles = [
   'Which branch did you visit?',
@@ -76,11 +77,15 @@ export default function CustomerFeedback({ language } = {}) {
               : index === 10
                 ? 8
                 : 9;
-  const [step, setStep] = useState(initialStep);
+  const [step, setStep] = useState(requested === 'single-choice' ? 10 : initialStep);
+  const isQuestion = step <= 6 || step === 10;
+  const questionNumber = step === 10 ? 6 : step === 6 ? 7 : step;
+  const missingStep = (i) => (i === 5 ? 10 : i + 1);
   const [ar, setAr] = useState(language === 'ar');
   const [answers, setAnswers] = useState(
-    index > 0
+    index >= 7
       ? {
+          firstVisit: 'Yes',
           branch: 'El Zamalek',
           visit: 'Work or study',
           rating: index === 7 || index === 9 ? 0 : 4,
@@ -88,7 +93,15 @@ export default function CustomerFeedback({ language } = {}) {
           recommendation: 9,
           comment: index === 8 ? longComment : sampleComment,
         }
-      : { branch: '', visit: '', rating: 0, highlights: [], recommendation: null, comment: '' },
+      : {
+          firstVisit: '',
+          branch: '',
+          visit: '',
+          rating: 0,
+          highlights: [],
+          recommendation: null,
+          comment: '',
+        },
   );
   const [error, setError] = useState(index === 7);
   const [sendError, setSendError] = useState('');
@@ -109,19 +122,22 @@ export default function CustomerFeedback({ language } = {}) {
     !answers.rating,
     !answers.highlights.length,
     answers.recommendation === null,
+    !answers.firstVisit,
   ];
   const currentFrame =
-    step === 3 && error
-      ? '808-1452'
-      : step === 6 && answers.comment.length > 300
-        ? '808-1575'
-        : step === 7
-          ? '808-1670'
-          : step === 8
-            ? '808-1879'
-            : step === 9
-              ? '808-1984'
-              : frames[step];
+    step === 10
+      ? '808-1025'
+      : step === 3 && error
+        ? '808-1452'
+        : step === 6 && answers.comment.length > 300
+          ? '808-1575'
+          : step === 7
+            ? '808-1670'
+            : step === 8
+              ? '808-1879'
+              : step === 9
+                ? '808-1984'
+                : frames[step];
   const img = (name, frame = currentFrame, extra = '') => (
     <img
       className={'cf-icon ' + extra}
@@ -134,12 +150,13 @@ export default function CustomerFeedback({ language } = {}) {
     setError(false);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
+  const openReviewQuestion = (questionStep) => {
+    move(questionStep);
+    const requiredIndex = questionStep === 10 ? 5 : questionStep === 6 ? -1 : questionStep - 1;
+    setError(requiredIndex >= 0 && missing[requiredIndex]);
+  };
   const next = () => {
-    if (step < 6 && missing[step - 1]) {
-      setError(true);
-      return;
-    }
-    move(step + 1);
+    move(step === 5 ? 10 : step === 10 ? 6 : step + 1);
   };
   // This project currently exposes the public survey as a design preview only.
   // This preview does not submit responses to the public API.
@@ -166,9 +183,9 @@ export default function CustomerFeedback({ language } = {}) {
       <p>
         {t(
           step === 9
-            ? '6 answers received · Submitted anonymously'
-            : '6 answers ready · Your feedback is anonymous',
-          step === 9 ? 'تم استلام ٦ إجابات · بشكل مجهول' : '٦ إجابات جاهزة · رأيك مجهول الهوية',
+            ? '7 answers received · Submitted anonymously'
+            : '7 answers ready · Your feedback is anonymous',
+          step === 9 ? 'تم استلام ٧ إجابات · بشكل مجهول' : '٧ إجابات جاهزة · رأيك مجهول الهوية',
         )}
       </p>
     </div>
@@ -209,8 +226,11 @@ export default function CustomerFeedback({ language } = {}) {
           </button>
         </header>
         <main
-          aria-live={step >= 8 ? 'polite' : undefined}
-          className={'cf-main ' + (step === 0 ? 'cf-welcome' : step >= 8 ? 'cf-completion' : '')}
+          aria-live={step === 8 || step === 9 ? 'polite' : undefined}
+          className={
+            'cf-main ' +
+            (step === 0 ? 'cf-welcome' : step === 8 || step === 9 ? 'cf-completion' : '')
+          }
         >
           {step === 0 ? (
             <>
@@ -230,7 +250,7 @@ export default function CustomerFeedback({ language } = {}) {
               <div className="cf-metadata">
                 <span>
                   {img('ListChecks')}
-                  {t('6 questions', '٦ أسئلة')}
+                  {t('7 questions', '٧ أسئلة')}
                 </span>
                 <span>
                   {img('Clock3')}
@@ -252,11 +272,13 @@ export default function CustomerFeedback({ language } = {}) {
                 </p>
               </div>
             </>
-          ) : step <= 6 ? (
+          ) : isQuestion ? (
             <>
               <div className="cf-progress">
                 <div>
-                  <strong>{t(`Question ${step} of 6`, `السؤال ${step} من ٦`)}</strong>
+                  <strong>
+                    {t(`Question ${questionNumber} of 7`, `السؤال ${questionNumber} من ٧`)}
+                  </strong>
                   <span>
                     {step === 6
                       ? t('Last question', 'السؤال الأخير')
@@ -268,11 +290,11 @@ export default function CustomerFeedback({ language } = {}) {
                   role="progressbar"
                   aria-label={t('Survey progress', 'تقدم الاستبيان')}
                   aria-valuemin={0}
-                  aria-valuemax={6}
-                  aria-valuenow={step}
+                  aria-valuemax={7}
+                  aria-valuenow={questionNumber}
                 >
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <i className={i < step ? 'done' : ''} key={i} />
+                  {Array.from({ length: 7 }, (_, i) => (
+                    <i className={i < questionNumber ? 'done' : ''} key={i} />
                   ))}
                 </div>
               </div>
@@ -281,9 +303,22 @@ export default function CustomerFeedback({ language } = {}) {
                   {step === 6 ? t('OPTIONAL', 'اختياري') : t('REQUIRED', 'مطلوب')}
                 </span>
                 <h1 ref={heading} tabIndex={-1}>
-                  {ar ? arabicTitles[step - 1] : titles[step - 1]}
+                  {step === 10
+                    ? t('Is this your first visit?', 'هل دي أول زيارة ليك؟')
+                    : ar
+                      ? arabicTitles[step - 1]
+                      : titles[step - 1]}
                 </h1>
-                <p>{ar ? arabicHints[step - 1] : hints[step - 1]}</p>
+                <p>
+                  {step === 10
+                    ? t(
+                        'Single choice · Select one answer only.',
+                        'اختيار واحد · اختار إجابة واحدة بس.',
+                      )
+                    : ar
+                      ? arabicHints[step - 1]
+                      : hints[step - 1]}
+                </p>
               </div>
               {[1, 2, 4].includes(step) && (
                 <div className="cf-choices" role="group" aria-label={titles[step - 1]}>
@@ -346,8 +381,34 @@ export default function CustomerFeedback({ language } = {}) {
                   })}
                 </div>
               )}
+              {step === 10 && (
+                <fieldset className="cf-single-choice">
+                  <legend>{t('Choose one answer', 'اختار إجابة واحدة')}</legend>
+                  {['Yes', 'No'].map((option) => (
+                    <label
+                      className={'cf-choice ' + (answers.firstVisit === option ? 'selected' : '')}
+                      key={option}
+                    >
+                      <span>{t(option, option === 'Yes' ? 'أيوه' : 'لأ')}</span>
+                      <input
+                        type="radio"
+                        name="first-visit"
+                        checked={answers.firstVisit === option}
+                        onChange={() => set('firstVisit', option)}
+                        aria-invalid={error}
+                      />
+                    </label>
+                  ))}
+                </fieldset>
+              )}
               {step === 3 && (
-                <div className={'cf-rating ' + (error ? 'invalid' : '')}>
+                <div
+                  className={
+                    'cf-rating cf-rating-tone-' +
+                    (answers.rating <= 2 ? 'red' : answers.rating === 3 ? 'yellow' : 'green') +
+                    (error ? ' invalid' : '')
+                  }
+                >
                   <div
                     className="cf-stars"
                     role="group"
@@ -359,6 +420,7 @@ export default function CustomerFeedback({ language } = {}) {
                         onClick={() => set('rating', n)}
                         aria-label={`${n} out of 5`}
                         aria-pressed={answers.rating === n}
+                        className={n <= answers.rating ? 'cf-star-selected' : ''}
                       >
                         {img(
                           error ? 'Star' : n <= answers.rating ? 'Star' : 'Star1',
@@ -451,8 +513,10 @@ export default function CustomerFeedback({ language } = {}) {
                   <div>
                     <strong>
                       {t(
-                        step === 3 ? 'Please choose a rating' : 'Please choose an answer',
-                        step === 3 ? 'يرجى اختيار تقييم' : 'يرجى اختيار إجابة',
+                        step === 3
+                          ? 'Required · Please choose a rating'
+                          : 'Required · Please choose an answer',
+                        step === 3 ? 'مطلوب · يرجى اختيار تقييم' : 'مطلوب · يرجى اختيار إجابة',
                       )}
                     </strong>
                     <p>
@@ -483,12 +547,17 @@ export default function CustomerFeedback({ language } = {}) {
               <div className="cf-prompt">
                 <span className="cf-error-text">
                   {t(
-                    `${5 - missing.filter(Boolean).length} of 5 required questions answered`,
+                    `${6 - missing.filter(Boolean).length} of 6 required questions answered`,
                     'بعض الأسئلة المطلوبة لم تتم الإجابة عنها',
                   )}
                 </span>
                 <h1 ref={heading} tabIndex={-1}>
-                  {t('One more answer before you submit', 'إجابة أخرى قبل الإرسال')}
+                  {t(
+                    missing.filter(Boolean).length === 1
+                      ? 'One more answer before you submit'
+                      : 'Complete your required answers before submitting',
+                    'إجابة أخرى قبل الإرسال',
+                  )}
                 </h1>
               </div>
               <div className="cf-warning">
@@ -497,7 +566,7 @@ export default function CustomerFeedback({ language } = {}) {
                   <strong>{t('Your survey hasn’t been sent', 'لم يتم إرسال الاستبيان')}</strong>
                   <p>
                     {t(
-                      `Answer question ${missing.indexOf(true) + 1}, then submit again.`,
+                      `Answer question ${missing.indexOf(true) === 5 ? 6 : missing.indexOf(true) + 1}, then submit again.`,
                       'أجب عن السؤال المطلوب، ثم أرسل مجددًا.',
                     )}
                   </p>
@@ -511,13 +580,24 @@ export default function CustomerFeedback({ language } = {}) {
                   'Highlights',
                   'Recommendation',
                   'Comment',
+                  'First visit',
                 ].map((label, i) => (
-                  <button key={label} onClick={() => move(i + 1)}>
-                    {img(missing[i] ? 'CircleAlert' : 'CircleCheck')}
+                  <button key={label} onClick={() => openReviewQuestion(i === 6 ? 10 : i + 1)}>
+                    {img(
+                      (i === 6 ? missing[5] : i === 5 ? false : missing[i])
+                        ? 'CircleAlert'
+                        : 'CircleCheck',
+                    )}
                     <span>
                       <strong>{label}</strong>
-                      <small className={missing[i] ? 'cf-error-text' : ''}>
-                        {missing[i]
+                      <small
+                        className={
+                          (i === 6 ? missing[5] : i === 5 ? false : missing[i])
+                            ? 'cf-error-text'
+                            : ''
+                        }
+                      >
+                        {(i === 6 ? missing[5] : i === 5 ? false : missing[i])
                           ? 'Required · Not answered'
                           : [
                               answers.branch,
@@ -528,6 +608,7 @@ export default function CustomerFeedback({ language } = {}) {
                               answers.comment
                                 ? `Added · ${answers.comment.length} characters`
                                 : 'Not added',
+                              answers.firstVisit,
                             ][i]}
                       </small>
                     </span>
@@ -588,7 +669,7 @@ export default function CustomerFeedback({ language } = {}) {
               </button>
               <p className="cf-support">{t('Works on any phone', 'يعمل على أي هاتف')}</p>
             </>
-          ) : step <= 6 ? (
+          ) : isQuestion ? (
             <>
               {step === 6 && (
                 <p className="cf-support">
@@ -599,7 +680,7 @@ export default function CustomerFeedback({ language } = {}) {
                 </p>
               )}
               <div className="cf-actions">
-                <button onClick={() => move(step - 1)}>
+                <button onClick={() => move(step === 6 ? 10 : step === 10 ? 5 : step - 1)}>
                   {step === 1 ? t('Back', 'رجوع') : t('Previous', 'السابق')}
                 </button>
                 <button className="cf-primary" onClick={step === 6 ? submit : next}>
@@ -610,7 +691,10 @@ export default function CustomerFeedback({ language } = {}) {
             </>
           ) : step === 7 ? (
             <>
-              <button className="cf-primary" onClick={() => move(missing.indexOf(true) + 1)}>
+              <button
+                className="cf-primary"
+                onClick={() => openReviewQuestion(missingStep(missing.indexOf(true)))}
+              >
                 {t('Answer missing question', 'أجب عن السؤال الناقص')}
               </button>
               <p className="cf-support">
