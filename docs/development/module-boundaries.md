@@ -22,3 +22,5 @@ Private server configuration chooses the provider; Node remains the sole public
 authorization boundary. The offline comparison CLI can use local Qwen summaries;
 product summary routes cannot. ABSA stays on the local DeBERTa pipeline. Provider
 keys never enter local worker settings, responses or assessment reports.
+
+`response.service` owns anonymous answer validation and transactional persistence, `publicSurvey.service` owns read availability/customer form shape, and survey/question/branch services coordinate mutations with the shared business transaction helper. Only these Node services write CustomerResponse/Counter. The UI must preserve the GET formVersion until submission and refresh on stale409. No Python writer or automatic analysis worker is introduced.

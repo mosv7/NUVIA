@@ -64,4 +64,34 @@ All `/settings` endpoints require the same owner-scoped cookie or explicit Beare
 
 When 2FA is enabled, password login returns `{data:{requiresTwoFactor:true,twoFactorToken}}` without an access cookie. The five-minute challenge is bound to the credential version and cannot authenticate protected routes. TOTP follows RFC 6238 (SHA-1, six digits, 30 seconds, one-step skew); each accepted step/recovery code is consumed atomically. Recovery/sign-out invalidate pending login challenges. Keep recovery codes private.
 
-Email links use `APP_ORIGIN/#/confirm-email?token=...`; the browser removes the token from the address and requires an explicit confirmation click. Changing sign-in email verifies only the new address, not arbitrary signup addresses. Full settings screens remain under development; the added APIs do not imply complete UI or notification delivery. Public survey reads do not collect responses.
+Email links use `APP_ORIGIN/#/confirm-email?token=...`; the browser removes the token from the address and requires an explicit confirmation click. Changing sign-in email verifies only the new address, not arbitrary signup addresses. Full settings screens remain under development; the added APIs do not imply complete UI or notification delivery. Public reads return a form revision for the submission contract below.
+
+## Anonymous customer response submission
+
+`GET /api/public/surveys/:shortCode?branch=slug` returns the existing availability state and, when open, a root `data.formVersion` (64 lowercase hexadecimal characters) plus questions. Preserve that version with the loaded form. Drafts and foreign branches remain hidden; paused/closed/archived forms cannot accept new submissions.
+
+`POST /api/public/surveys/:shortCode/responses` is anonymous, rate-limited and JSON. Browser clients first GET `/api/auth/session` (anonymous identity is valid) to obtain the CSRF cookie/token, then send exact `Origin` and `X-CSRF-Token` with the POST. This does not require account registration. Send:
+
+```json
+{
+  "formVersion": "<64-character version from GET>",
+  "submissionId": "<8-64-character id generated once for this form>",
+  "branch": "branch-slug",
+  "language": "en",
+  "channel": "short_link",
+  "answers": [
+    { "questionId": "<ObjectId>", "value": "Written feedback" },
+    { "questionId": "<ObjectId>", "value": 4 },
+    { "questionId": "<ObjectId>", "value": true },
+    { "questionId": "<ObjectId>", "optionIds": ["<option ObjectId>"] }
+  ]
+}
+```
+
+`value` is a string for short/long text, an integer from 1 through the configured star maximum for rating, or a boolean for yes/no. Choice/dropdown answers use optionIds belonging to that question; only allowMultiple choice questions accept several options. Required, unknown, duplicate, invalid-type, option and length checks are enforced by the server. At most 50 answer entries and 10,000 written characters are accepted. Branch may be omitted only when one active branch can be resolved. `language`/`channel` are optional en/ar and short_link/qr_code; stored text language uses a character heuristic, not an assessed language model. Optional respondent `{name,email}` is stored only for non-anonymous forms.
+
+A new response returns201; repeating the same survey/submissionId returns200 with the original thank-you message and no new row. Generate a fresh ID for a new form; never reuse one for a different customer submission. Invalid shape/version format returns400, unknown/draft form404, and stale formVersion or closed/unavailable form409. On stale409, reload and show the refreshed form; never silently reinterpret an answer against edited questions.
+
+The server retains the version and complete customer-visible form snapshot, including the resolved branch identity, with each response. Reassigning the only branch invalidates an earlier unqualified form; feedback is never silently moved to the new branch. An existing Business write lock and explicit MongoDB transactions coordinate acceptance with survey/question edits, pause/close/delete and branch changes. Whichever operation commits first determines acceptance; a rejected attempt rolls back its response/counter writes. Old snapshots remain intact after later edits.
+
+CustomerResponse/Counter indexes are additive through the normal database setup. There is no response-analysis worker in this change: written feedback remains `analysis.status=pending`, rating/choice-only feedback is `skipped`. Existing protected `/api/ai` operations do not write these records or automatically drain that pending state. Response collection does not imply a connected feedback dashboard, delivery queue or AI quality acceptance.

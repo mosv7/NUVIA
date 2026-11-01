@@ -1,3 +1,4 @@
+const { runBusinessMutation } = require('./businessMutation');
 const Survey = require('../models/survey.model');
 const Question = require('../models/questions.model');
 const QuestionOption = require('../models/questionOptions.model');
@@ -102,14 +103,21 @@ const generateShortCode = async (businessSlug) => {
 };
 
 // No branchIds sent = every branch of the business.
-const resolveBranchIds = async (businessId, branchIds) => {
+const resolveBranchIds = async (businessId, branchIds, session = null) => {
   if (branchIds === undefined) {
-    const all = await Branch.find({ businessId, status: 'active' }).select('_id').lean();
+    const all = await Branch.find({ businessId, status: 'active' })
+      .select('_id')
+      .session(session)
+      .lean();
     return all.map((b) => b._id);
   }
 
   const unique = [...new Set(branchIds.map(String))];
-  const found = await Branch.countDocuments({ _id: { $in: unique }, businessId, status: 'active' });
+  const found = await Branch.countDocuments({
+    _id: { $in: unique },
+    businessId,
+    status: 'active',
+  }).session(session);
   if (found !== unique.length) throw fail("One or more branches don't exist or are archived", 400);
   return unique;
 };
@@ -271,17 +279,26 @@ const exportCsv = async (user, query = {}) => {
 
 const remove = async (user, surveyId) => {
   const businessId = requireBusinessId(user);
-  const survey = await getOwnedSurvey(businessId, surveyId);
+  const result = await runBusinessMutation(businessId, async (session) => {
+    const survey = await getOwnedSurvey(businessId, surveyId, session);
 
-  if (survey.status === 'live') throw fail('Pause or close the survey before deleting it', 409);
-  if (await surveyStats.hasResponses(survey._id)) {
-    throw fail("This survey has responses and can't be deleted. Close it instead.", 409);
-  }
+    if (survey.status === 'live') throw fail('Pause or close the survey before deleting it', 409);
+    if (await surveyStats.hasResponses(survey._id, session)) {
+      throw fail("This survey has responses and can't be deleted. Close it instead.", 409);
+    }
 
-  const questions = await Question.find({ surveyId: survey._id }).select('_id').lean();
-  await QuestionOption.deleteMany({ questionId: { $in: questions.map((q) => q._id) } });
-  await Question.deleteMany({ surveyId: survey._id });
-  await survey.deleteOne();
+    const questions = await Question.find({ surveyId: survey._id })
+      .select('_id')
+      .session(session)
+      .lean();
+    await QuestionOption.deleteMany(
+      { questionId: { $in: questions.map((q) => q._id) } },
+      { session },
+    );
+    await Question.deleteMany({ surveyId: survey._id }, { session });
+    await survey.deleteOne({ session });
+  });
+  return result;
 };
 
 const duplicate = async (user, surveyId) => {
@@ -379,47 +396,53 @@ const getById = async (user, surveyId) => {
 
 const update = async (user, surveyId, body) => {
   const businessId = requireBusinessId(user);
-  const survey = await getOwnedSurvey(businessId, surveyId);
-  assertEditable(survey);
+  const result = await runBusinessMutation(businessId, async (session) => {
+    const survey = await getOwnedSurvey(businessId, surveyId, session);
+    assertEditable(survey);
 
-  ['name', 'message', 'thankYouMessage'].forEach((field) => {
-    if (body[field] !== undefined) survey[field] = body[field] === null ? '' : body[field];
+    ['name', 'message', 'thankYouMessage'].forEach((field) => {
+      if (body[field] !== undefined) survey[field] = body[field] === null ? '' : body[field];
+    });
+    if (body.isAnonymous !== undefined) survey.isAnonymous = body.isAnonymous;
+
+    if (body.languages !== undefined || body.defaultLanguage !== undefined) {
+      const languages = body.languages || survey.languages;
+      // Keep the current default if it is still valid, otherwise resolveLanguages picks the first language.
+      const requested =
+        body.defaultLanguage ||
+        (languages.includes(survey.defaultLanguage) ? survey.defaultLanguage : undefined);
+      const resolved = resolveLanguages(languages, requested);
+      survey.languages = resolved.languages;
+      survey.defaultLanguage = resolved.defaultLanguage;
+    }
+
+    if (body.branchIds !== undefined)
+      survey.branchIds = await resolveBranchIds(businessId, body.branchIds, session);
+
+    await survey.save({ session });
+    return survey;
   });
-  if (body.isAnonymous !== undefined) survey.isAnonymous = body.isAnonymous;
-
-  if (body.languages !== undefined || body.defaultLanguage !== undefined) {
-    const languages = body.languages || survey.languages;
-    // Keep the current default if it is still valid, otherwise resolveLanguages picks the first language.
-    const requested =
-      body.defaultLanguage ||
-      (languages.includes(survey.defaultLanguage) ? survey.defaultLanguage : undefined);
-    const resolved = resolveLanguages(languages, requested);
-    survey.languages = resolved.languages;
-    survey.defaultLanguage = resolved.defaultLanguage;
-  }
-
-  if (body.branchIds !== undefined)
-    survey.branchIds = await resolveBranchIds(businessId, body.branchIds);
-
-  await survey.save();
-  return buildSurveyDetail(businessId, survey);
+  return buildSurveyDetail(businessId, result);
 };
 
 const updateStatus = async (user, surveyId, status) => {
   const businessId = requireBusinessId(user);
-  const survey = await getOwnedSurvey(businessId, surveyId);
+  const result = await runBusinessMutation(businessId, async (session) => {
+    const survey = await getOwnedSurvey(businessId, surveyId, session);
 
-  if (survey.status === status)
+    if (survey.status === status)
+      return { id: survey._id, status: survey.status, updatedAt: survey.updatedAt };
+
+    if (survey.status === 'draft') throw fail('Publish the survey to make it live', 409);
+    if (!TRANSITIONS[survey.status].includes(status)) {
+      throw fail(`A ${survey.status} survey can't be changed to ${status}`, 409);
+    }
+
+    survey.status = status;
+    await survey.save({ session });
     return { id: survey._id, status: survey.status, updatedAt: survey.updatedAt };
-
-  if (survey.status === 'draft') throw fail('Publish the survey to make it live', 409);
-  if (!TRANSITIONS[survey.status].includes(status)) {
-    throw fail(`A ${survey.status} survey can't be changed to ${status}`, 409);
-  }
-
-  survey.status = status;
-  await survey.save();
-  return { id: survey._id, status: survey.status, updatedAt: survey.updatedAt };
+  });
+  return result;
 };
 
 // A survey is ready when it has branches and questions, and everything the customer will read
@@ -469,25 +492,28 @@ const findPublishProblems = (survey, questions, activeBranchCount) => {
 
 const publish = async (user, surveyId) => {
   const businessId = requireBusinessId(user);
-  const survey = await getOwnedSurvey(businessId, surveyId);
+  const result = await runBusinessMutation(businessId, async (session) => {
+    const survey = await getOwnedSurvey(businessId, surveyId, session);
 
-  if (survey.status === 'live') return buildSurveyDetail(businessId, survey); // already live: nothing to do
-  if (survey.status !== 'draft')
-    throw fail(`This survey is ${survey.status}. Change its status instead.`, 409);
+    if (survey.status === 'live') return survey; // already live: nothing to do
+    if (survey.status !== 'draft')
+      throw fail(`This survey is ${survey.status}. Change its status instead.`, 409);
 
-  const questions = await loadQuestions(survey._id);
-  const activeBranchCount = await Branch.countDocuments({
-    _id: { $in: survey.branchIds },
-    businessId,
-    status: 'active',
+    const questions = await loadQuestions(survey._id, session);
+    const activeBranchCount = await Branch.countDocuments({
+      _id: { $in: survey.branchIds },
+      businessId,
+      status: 'active',
+    }).session(session);
+    const problems = findPublishProblems(survey, questions, activeBranchCount);
+    if (problems.length) throw fail("The survey isn't ready to publish yet", 422, problems);
+
+    survey.status = 'live';
+    survey.publishedAt = new Date();
+    await survey.save({ session });
+    return survey;
   });
-  const problems = findPublishProblems(survey, questions, activeBranchCount);
-  if (problems.length) throw fail("The survey isn't ready to publish yet", 422, problems);
-
-  survey.status = 'live';
-  survey.publishedAt = new Date();
-  await survey.save();
-  return buildSurveyDetail(businessId, survey);
+  return buildSurveyDetail(businessId, result);
 };
 
 module.exports = {

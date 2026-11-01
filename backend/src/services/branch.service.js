@@ -32,18 +32,7 @@ const getOwnedBranch = async (businessId, branchId, session = null) => {
 
 const duplicateNameError = () => fail('A branch with this name already exists', 409);
 
-// Serialize branch mutations on the existing Business document. Its built-in
-// Mongoose version counter provides a real write conflict for concurrent
-// transactions; the retry then observes the committed active-branch state.
-const lockBusiness = async (businessId, session) => {
-  const business = await Business.findOneAndUpdate(
-    { _id: businessId },
-    { $inc: { __v: 1 } },
-    { session, returnDocument: 'after' },
-  );
-  if (!business) throw fail('Business not found', 404);
-  return business;
-};
+const { lockBusiness } = require('./businessMutation');
 
 /* ---------- list + cards ---------- */
 

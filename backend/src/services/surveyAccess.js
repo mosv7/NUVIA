@@ -10,8 +10,8 @@ const requireBusinessId = (user) => {
 };
 
 // Every survey query is scoped to the caller's business, so another business's id gives a 404.
-const getOwnedSurvey = async (businessId, surveyId) => {
-  const survey = await Survey.findOne({ _id: surveyId, businessId });
+const getOwnedSurvey = async (businessId, surveyId, session = null) => {
+  const survey = await Survey.findOne({ _id: surveyId, businessId }).session(session);
   if (!survey) throw fail('Survey not found', 404);
   return survey;
 };
@@ -21,8 +21,8 @@ const assertEditable = (survey) => {
 };
 
 // Changing a question should move "Last updated" on the surveys list.
-const touchSurvey = (surveyId) =>
-  Survey.updateOne({ _id: surveyId }, { $set: { updatedAt: new Date() } });
+const touchSurvey = (surveyId, session = null) =>
+  Survey.updateOne({ _id: surveyId }, { $set: { updatedAt: new Date() } }, { session });
 
 // Aggregation pipelines don't cast strings to ObjectId like find() does.
 const oid = (id) => new mongoose.Types.ObjectId(String(id));

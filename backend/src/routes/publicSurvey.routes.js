@@ -4,8 +4,16 @@ const { param, query } = require('express-validator');
 
 const validate = require('../middlewares/validation.middleware');
 const publicSurvey = require('../controllers/publicSurvey.controller');
+const responseController = require('../controllers/response.controller');
+const responseValidation = require('../validations/response.validation');
 
 const router = express.Router();
+const submitLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Generous: a café full of customers can share one IP.
 const readLimiter = rateLimit({
@@ -29,4 +37,12 @@ router.get(
   publicSurvey.getSurvey,
 );
 
+// Saving feedback records a pending analysis state; no inference worker runs here.
+router.post(
+  '/surveys/:shortCode/responses',
+  submitLimiter,
+  responseValidation.submitResponse,
+  validate,
+  responseController.submit,
+);
 module.exports = router;
