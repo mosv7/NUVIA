@@ -1,3 +1,5 @@
+import useConnectedAssistant from '../useConnectedAssistant.js';
+import { AssistantConversation, AssistantMetrics, AssistantScope } from '../ConnectedAssistant.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { useProductView } from '../../../app/providers/ProductProvider.jsx';
 import { asset } from '../../../lib/assets.js';
@@ -21,11 +23,17 @@ export default function Assistant() {
     [draft, setDraft] = useState(''),
     [messages, setMessages] = useState([]);
   const restoreFocus = useRef(true);
+  const connected = useConnectedAssistant(open);
   useEffect(() => {
     if (!open) return;
     restoreFocus.current = true;
     const outside = (e) => {
-      if (dialog.current?.contains(e.target) || trigger.current?.contains(e.target)) return;
+      if (
+        dialog.current?.contains(e.target) ||
+        trigger.current?.contains(e.target) ||
+        e.target.closest?.('.overview-date-dialog')
+      )
+        return;
       restoreFocus.current = false;
       setOpen(false);
     };
@@ -41,7 +49,7 @@ export default function Assistant() {
     if (open && !dialog.current.open) dialog.current.show();
     if (!open && dialog.current.open) dialog.current.close();
     const closeOnEscape = (e) => {
-      if (open && e.key === 'Escape') {
+      if (open && e.key === 'Escape' && !e.target.closest?.('.overview-date-dialog')) {
         e.preventDefault();
         setOpen(false);
       }
@@ -55,7 +63,7 @@ export default function Assistant() {
   const ask = (text) => {
     if (!text.trim()) return;
     if (!preview) {
-      setDraft('');
+      connected.ask(text);
       return;
     }
     const topic = /price|pricing|combo|سعر|أسعار|تسعير/i.test(text)
@@ -201,9 +209,15 @@ export default function Assistant() {
                 <h3>{ar ? 'كيف يمكننا مساعدتك؟' : 'How can we help?'}</h3>
                 <p>
                   {ar
-                    ? 'المساعد الذكي غير متاح بعد. ستظهر محادثاتك هنا عند إتاحة الخدمة.'
-                    : 'AI Assistant is not available yet. Your conversations will appear here when the service is available.'}
+                    ? 'اسأل عن الردود المحفوظة وراجع مقتطفات العملاء الأصلية.'
+                    : 'Ask about stored feedback and review original customer excerpts.'}
                 </p>
+                <button type="button" className="assistant-reset" onClick={connected.reset}>
+                  {ar ? 'محادثة جديدة' : 'New conversation'}
+                </button>
+                <AssistantScope conversation={connected} />
+                <AssistantMetrics metrics={connected.context?.metrics} />
+                <AssistantConversation conversation={connected} onSource={() => setOpen(false)} />
               </div>
             )}
             {messages.map((m, i) => (
@@ -228,7 +242,7 @@ export default function Assistant() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              ask(draft);
+              ask(preview ? draft : connected.draft);
             }}
           >
             <label className="assistant-compose">
@@ -236,10 +250,23 @@ export default function Assistant() {
                 rows="1"
                 aria-label={ar ? 'رسالتك للمساعد' : 'Message NUVIA'}
                 placeholder={ar ? 'اسأل عن تجربة عملائك…' : 'Ask about your customer experience…'}
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
+                value={preview ? draft : connected.draft}
+                maxLength={1000}
+                disabled={!preview && connected.pending}
+                onChange={(e) =>
+                  preview ? setDraft(e.target.value) : connected.setDraft(e.target.value)
+                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    ask(preview ? draft : connected.draft);
+                  }
+                }}
               />
-              <button disabled={!draft.trim()} aria-label={ar ? 'إرسال' : 'Send message'}>
+              <button
+                disabled={preview ? !draft.trim() : connected.pending || !connected.draft.trim()}
+                aria-label={ar ? 'إرسال' : 'Send message'}
+              >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path
                     d="M8 12V4M4.5 7.5 8 4l3.5 3.5"
@@ -255,10 +282,10 @@ export default function Assistant() {
               {ar
                 ? preview
                   ? 'البيانات والإجابات في هذه المعاينة تجريبية.'
-                  : 'المساعد الذكي غير متاح بعد.'
+                  : 'اختيار الأدلة تجريبي؛ راجع المصادر الأصلية. المحادثة مؤقتة.'
                 : preview
                   ? 'Data and replies in this preview are illustrative.'
-                  : 'AI Assistant is not available yet.'}
+                  : 'Experimental evidence selection; check original sources. Conversation is temporary.'}
             </small>
           </form>
         </div>

@@ -27,6 +27,18 @@ The backend uses ObjectId models for business owners, businesses, branches, surv
 
 `pnpm dev` owns web/backend only. Root scripts own additive index setup and read-only connectivity checks. Compose owns a separate local replica-set volume, never an Atlas import. Root `.local/` remains ignored private runtime space. See [API](../api/README.md), [backend operations](../development/backend.md) and [module boundaries](../development/module-boundaries.md).
 
+## Connected owner assistant
+
+Node `/api/ai/assistant` derives the business from the active owner, validates
+branch/date scope, computes whole-scope metrics and retrieves bounded text
+evidence. It redacts known respondent names/contact patterns before using the
+existing private `answers` operation, then maps only validated current owned
+citations to feedback details. Python's separately configured Groq adapter has no
+MongoDB access and does not alter summaries, local DeBERTa or local quality gates.
+The existing page/panel share cancellable in-memory conversations; preview
+responses remain separate. No write-capable agent or vector database is added.
+See [assistant setup](../development/groq-assistant.md).
+
 ## Settings and device sessions
 
 Owner settings and encrypted authenticator material remain in BusinessOwner; Session stores owner-scoped expiring/revocable device records; EmailChange holds hashed one-use confirmation tokens with TTL. JWT authentication resolves the active owner/current business, checks credential version and requires an unexpired device session. Browser cookies/CSRF remain canonical. Settings APIs and public survey reads are backend capabilities; full settings/survey UI remains under development; anonymous response submission follows the contract below. Browser second-factor sign-in and explicit email-change confirmation reuse the existing auth shell.

@@ -85,3 +85,54 @@ export interface AiAnalysis {
   contributing_ids: string[];
   excluded_count: number;
 }
+
+export interface AssistantScope {
+  branchId?: string;
+  /** Inclusive UTC calendar day, YYYY-MM-DD. */
+  from?: string;
+  /** Inclusive UTC calendar day, YYYY-MM-DD. */
+  to?: string;
+}
+export interface AssistantMetrics {
+  totalResponses: number;
+  writtenResponses: number;
+  /** Lifecycle counts plus accepted, baseline and unaccepted quality counts. */
+  analysisStatuses: Record<string, number>;
+  /** Counts from quality-accepted completed/partial stored analyses only. */
+  sentiments: Record<AiSentiment, number>;
+  /** Quality-accepted analyses; each response counts once per aspect. */
+  negativeAspects: { name: string; count: number }[];
+}
+export interface AssistantContext {
+  branches: { id: string; name: string }[];
+  metrics: AssistantMetrics;
+}
+export interface AssistantAnswerRequest extends AssistantScope {
+  question: string;
+  locale: Locale;
+  previousQuestion?: string;
+}
+export interface AssistantAnswer {
+  status: 'answered' | 'insufficient_evidence';
+  items: {
+    text: string;
+    citations: { id: string; quote: string; responseId: string; number: number }[];
+  }[];
+  metrics: AssistantMetrics;
+  coverage: {
+    candidateLimit: 500;
+    candidatesScanned: number;
+    evidenceCount: number;
+    sampled: true;
+  };
+  provenance: {
+    models: string[];
+    profile: string;
+    prompt_version: string;
+    method_version: 'aspects-v1';
+    scores: 'uncalibrated';
+    quality_status: 'accepted' | 'baseline';
+    quality_accepted: boolean;
+    warnings: ('experimental_baseline' | 'quality_not_accepted')[];
+  } | null;
+}

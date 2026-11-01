@@ -48,6 +48,12 @@ export async function startConnectedFixture() {
         port: 0,
         strictPort: false,
         proxy: {
+          '/api/ai': {
+            target: `http://127.0.0.1:${api.address().port}`,
+            changeOrigin: false,
+            timeout: 200000,
+            proxyTimeout: 200000,
+          },
           '/api': { target: `http://127.0.0.1:${api.address().port}`, changeOrigin: false },
         },
       },

@@ -24,6 +24,10 @@ class Settings:
     baseline: bool = False
     summary_provider: str = "disabled"
     summary_output_tokens: int = 2048
+    assistant_provider: str = "disabled"
+    assistant_model: str = "openai/gpt-oss-120b"
+    assistant_output_tokens: int = 2048
+    assistant_api_key: str = field(default="", repr=False)
     gemini_model: str = ""
     groq_model: str = ""
     ollama_model: str = ""
@@ -57,6 +61,8 @@ class Settings:
         baseline = str(values.get("AI_BASELINE_MODE") or "false").strip().lower()
         summary_provider = values.get("AI_SUMMARY_PROVIDER") or "disabled"
         summary_output_tokens = int(values.get("AI_SUMMARY_OUTPUT_TOKENS") or 2048)
+        assistant_provider = values.get("AI_ASSISTANT_PROVIDER") or "disabled"
+        assistant_output_tokens = int(values.get("AI_ASSISTANT_OUTPUT_TOKENS") or 2048)
         if (
             not 1 <= timeout <= 600
             or not 256 <= max_tokens <= 8192
@@ -66,6 +72,8 @@ class Settings:
             or baseline not in ("true", "false")
             or summary_provider not in ("disabled", "gemini", "groq", "ollama")
             or not 64 <= summary_output_tokens <= 8192
+            or assistant_provider not in ("disabled", "groq")
+            or not 64 <= assistant_output_tokens <= 8192
         ):
             raise ValueError("Invalid AI limits")
         model_root = Path(values.get("AI_MODEL_ROOT") or root_directory() / ".local/models")
@@ -82,6 +90,10 @@ class Settings:
             baseline=baseline == "true",
             summary_provider=summary_provider,
             summary_output_tokens=summary_output_tokens,
+            assistant_provider=assistant_provider,
+            assistant_model=values.get("AI_ASSISTANT_MODEL") or "openai/gpt-oss-120b",
+            assistant_output_tokens=assistant_output_tokens,
+            assistant_api_key=values.get("AI_ASSISTANT_API_KEY") or "",
             gemini_model=values.get("AI_GEMINI_MODEL") or "",
             groq_model=values.get("AI_GROQ_MODEL") or "",
             ollama_model=values.get("AI_OLLAMA_MODEL") or "",

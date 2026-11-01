@@ -1,3 +1,4 @@
+import OwnedFeedbackDetail from './OwnedFeedbackDetail.jsx';
 import { useWorkspaceScale } from '../../hooks/useWorkspaceScale.js';
 import { useEffect, useState } from 'react';
 import { asset } from '../../lib/assets.js';
@@ -54,8 +55,12 @@ export default function FeedbacksPage({
           />
         )}
         <WorkspaceShell title={page === 'feedback-details' ? 'Feedback details' : 'Feedbacks'}>
-          {preview && page === 'feedback-details' ? (
-            <FeedbackDetail key={location.hash} />
+          {page === 'feedback-details' ? (
+            preview ? (
+              <FeedbackDetail key={location.hash} />
+            ) : (
+              <OwnedFeedbackDetail key={location.hash} />
+            )
           ) : (
             <FeedbackList key={page} empty={!preview || page === 'feedbacks-empty'} />
           )}

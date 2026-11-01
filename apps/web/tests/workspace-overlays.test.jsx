@@ -1,4 +1,5 @@
-import { it, expect } from 'vitest';
+import { assistantApi } from '../src/features/ai-analysis/api.js';
+import { it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProductProvider, useProductView } from '../src/app/providers/ProductProvider.jsx';
@@ -39,16 +40,25 @@ it('keeps illustrative assistant evidence inside explicit preview routes', () =>
     '/preview/#/feedbacks?evidence=wait',
   );
 });
-it('does not show fabricated customer evidence or replies in a connected workspace', () => {
+it('does not show fabricated customer evidence or replies in a connected workspace', async () => {
+  vi.spyOn(assistantApi, 'context').mockResolvedValue({
+    branches: [],
+    metrics: { totalResponses: 0, writtenResponses: 0 },
+  });
+  vi.spyOn(assistantApi, 'answer').mockRejectedValue(new Error('unavailable'));
   mount(false);
   fireEvent.click(screen.getByRole('button', { name: 'Open Ask NUVIA' }));
   expect(screen.queryByRole('link', { name: 'View supporting feedback' })).not.toBeInTheDocument();
-  expect(screen.getAllByText(/AI Assistant is not available yet/).length).toBeGreaterThan(0);
+  expect(
+    screen.getByText('Ask about stored feedback and review original customer excerpts.'),
+  ).toBeVisible();
   fireEvent.change(screen.getByRole('textbox', { name: 'Message NUVIA' }), {
     target: { value: 'waiting times' },
   });
   fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('An answer is unavailable right now.');
   expect(screen.queryByText(/104 reviews mention delays/)).not.toBeInTheDocument();
+  vi.restoreAllMocks();
 });
 it.each([
   ['View profile', '#/settings'],

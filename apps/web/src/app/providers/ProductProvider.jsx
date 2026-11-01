@@ -148,7 +148,8 @@ export function ProductProvider({
                 ? 'Analytics'
                 : location.hash.startsWith('#/report')
                   ? 'Reports'
-                  : location.hash.startsWith('#/nuvia-assistant')
+                  : location.hash.startsWith('#/nuvia-assistant') ||
+                      location.hash.startsWith('#/assistant')
                     ? 'NUVIA Assistant'
                     : location.hash.startsWith('#/feedback')
                       ? 'Feedbacks'

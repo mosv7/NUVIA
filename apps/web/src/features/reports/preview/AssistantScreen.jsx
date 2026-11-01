@@ -1,3 +1,5 @@
+import useConnectedAssistant from '../../ai-analysis/useConnectedAssistant.js';
+import { AssistantConversation, AssistantMetrics } from '../../ai-analysis/ConnectedAssistant.jsx';
 import HeadingBack from '../../../components/layout/HeadingBack.jsx';
 import WorkspaceScopeControls from '../../dashboard/WorkspaceScopeControls.jsx';
 import { overviewDateLabel } from '../../dashboard/OverviewControls.jsx';
@@ -18,8 +20,9 @@ const imgLoadingDot1 = asset('preview/assistantDesign-imgLoadingDot1.svg');
 const imgCheckCheck = asset('preview/assistantDesign-imgCheckCheck.svg');
 const imgScanText = asset('preview/assistantDesign-imgScanText.svg');
 export default function AssistantScreen() {
-  const { tr, language, dashboard, preview, workspace, action } = useProductView();
+  const { tr, language, dashboard, preview, workspace } = useProductView();
   const [generate, setGenerate] = useState(false);
+  const connected = useConnectedAssistant();
   const [scopeInConversation, setScopeInConversation] = useState(() => window.innerWidth <= 600);
   useEffect(() => {
     const resize = () => setScopeInConversation(window.innerWidth <= 600);
@@ -34,7 +37,7 @@ export default function AssistantScreen() {
   const ask = (q) => {
     if (!q.trim()) return;
     if (!preview) {
-      action('ask-nuvia');
+      connected.ask(q);
       return;
     }
     setFresh(false);
@@ -48,7 +51,7 @@ export default function AssistantScreen() {
     <div className="pv1" data-node-id="301:1462" data-name="Conversation controls">
       <div className="pv9" data-node-id="301:1463" data-name="Data scope">
         <span className="assistant-scope-buttons">
-          <WorkspaceScopeControls />
+          <WorkspaceScopeControls branches={preview ? undefined : connected.branches} />
         </span>
         <div className="pv10" data-node-id="301:1472" data-name="Status">
           <p
@@ -56,13 +59,23 @@ export default function AssistantScreen() {
             data-node-id="301:1473"
             style={{ fontVariationSettings: '"opsz" 14' }}
           >
-            {preview ? tr('1,250 reviews') : language === 'ar' ? '٠ مراجعات' : '0 reviews'}
+            {preview
+              ? tr('1,250 reviews')
+              : connected.context
+                ? new Intl.NumberFormat(language === 'ar' ? 'ar-EG' : 'en-US').format(
+                    connected.context.metrics.totalResponses,
+                  ) + (language === 'ar' ? ' ردود' : ' responses')
+                : '—'}
           </p>
         </div>
       </div>
       <div className="pv10" data-node-id="301:1474" data-name="Status">
         <p className="pv11" data-node-id="301:1475" style={{ fontVariationSettings: '"opsz" 14' }}>
-          {tr('English answers')}
+          {preview
+            ? tr('English answers')
+            : language === 'ar'
+              ? 'واجهة عربية'
+              : 'English interface'}
         </p>
       </div>
     </div>
@@ -73,8 +86,10 @@ export default function AssistantScreen() {
       onClick={(e) => {
         const item = e.target.closest('[data-name="Suggested question"],[data-name="Action"]');
         if (!item) return;
-        if (item.closest('[data-name="Message composer"]')) ask(question);
+        if (item.closest('[data-name="Message composer"]'))
+          ask(preview ? question : connected.draft);
         else if (item.closest('[data-name="Page introduction"]')) {
+          connected.reset();
           setFresh(true);
           setReply('');
           setQuestion('');
@@ -140,13 +155,13 @@ export default function AssistantScreen() {
                         'Explore patterns across Bloom & Co., find opportunities to improve, or dig into a customer concern.',
                       )
                     : language === 'ar'
-                      ? 'المساعد الذكي غير متاح بعد. ستظهر محادثاتك هنا عند إتاحة الخدمة.'
-                      : 'AI Assistant is not available yet. Your conversations will appear here when the service is available.'}
+                      ? 'اسأل عن الردود المحفوظة وراجع مقتطفات العملاء الأصلية. تبقى المحادثة في هذه الجلسة فقط.'
+                      : 'Ask about stored feedback and review original customer excerpts. This conversation stays in this session only.'}
                 </p>
               </div>
             </div>
             <div className="assistant-conversation-scroll">
-              {' '}
+              {!preview && <AssistantConversation conversation={connected} />}{' '}
               <div className="pv20" data-node-id="301:1485" data-name="Suggested questions">
                 <button
                   type="button"
@@ -202,7 +217,11 @@ export default function AssistantScreen() {
                     data-node-id="301:1501"
                     style={{ fontVariationSettings: '"opsz" 14' }}
                   >
-                    {tr('What changed this month?')}
+                    {preview
+                      ? tr('What changed this month?')
+                      : language === 'ar'
+                        ? 'لخص آراء العملاء'
+                        : 'Summarize customer feedback'}
                   </p>
                   <div className="pv24" data-node-id="301:1502" data-name="arrow-up-right">
                     <PreviewArrow direction="external" />
@@ -312,15 +331,33 @@ export default function AssistantScreen() {
               <div className="pv42" data-node-id="301:1528" data-name="Question input">
                 <input
                   className="preview-question"
-                  aria-label={tr('Ask a follow-up about this feedback…')}
+                  aria-label={
+                    preview
+                      ? tr('Ask a follow-up about this feedback…')
+                      : language === 'ar'
+                        ? 'اسأل عن آراء العملاء'
+                        : 'Ask about your feedback'
+                  }
                   placeholder={tr('Ask a follow-up about this feedback…')}
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
+                  value={preview ? question : connected.draft}
+                  maxLength={1000}
+                  disabled={!preview && connected.pending}
+                  onChange={(e) =>
+                    preview ? setQuestion(e.target.value) : connected.setDraft(e.target.value)
+                  }
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') ask(question);
+                    if (e.key === 'Enter' && !e.nativeEvent.isComposing)
+                      ask(preview ? question : connected.draft);
                   }}
                 />
-                <button type="button" className="pv44" data-node-id="301:1530" data-name="Action">
+                <button
+                  type="button"
+                  aria-label={language === 'ar' ? 'إرسال' : 'Send message'}
+                  disabled={!preview && (connected.pending || !connected.draft.trim())}
+                  className="pv44"
+                  data-node-id="301:1530"
+                  data-name="Action"
+                >
                   <div className="pv6" data-node-id="301:1531" data-name="arrow-up">
                     <PreviewArrow direction="up" />
                   </div>
@@ -338,6 +375,7 @@ export default function AssistantScreen() {
             </div>
           </div>
           <div className="pv46" data-node-id="301:1534" data-name="Conversation context">
+            {!preview && <AssistantMetrics metrics={connected.context?.metrics} />}
             <div className="pv47" data-node-id="301:1535" data-name="In this conversation">
               <div className="pv48" data-node-id="301:1536" data-name="Section heading">
                 <p
@@ -406,7 +444,11 @@ export default function AssistantScreen() {
                           ? ['Cairo', 'El Zamalek', 'Alex'].map(tr)
                           : (workspace?.branches || []).map((branch) => branch.name)
                         ).join('، ')
-                      : tr(dashboard.filters.branch)}
+                      : preview
+                        ? tr(dashboard.filters.branch)
+                        : connected.branches.find(
+                            (branch) => branch.id === dashboard.filters.branch,
+                          )?.name || dashboard.filters.branch}
                   </p>
                 </div>
                 <div className="pv52" data-node-id="301:1549" data-name="Context item">
@@ -425,8 +467,8 @@ export default function AssistantScreen() {
                     {preview
                       ? tr('Sample feedback scope')
                       : language === 'ar'
-                        ? 'لا توجد ردود بعد'
-                        : 'No responses yet'}
+                        ? 'ردود محفوظة من حسابك'
+                        : 'Stored account feedback'}
                   </p>
                 </div>
               </div>
@@ -443,8 +485,8 @@ export default function AssistantScreen() {
                   {preview
                     ? tr('Feedback ready for analysis')
                     : language === 'ar'
-                      ? 'المساعد غير متاح بعد'
-                      : 'Assistant not available yet'}
+                      ? 'اختيار الأدلة تجريبي؛ راجع المصادر الأصلية'
+                      : 'Evidence selection is experimental; check original sources'}
                 </p>
               </div>
             </div>
@@ -466,9 +508,13 @@ export default function AssistantScreen() {
                 data-node-id="301:1562"
                 style={{ fontVariationSettings: '"opsz" 14' }}
               >
-                {tr(
-                  'AI interpretation is labeled. Original customer quotes appear separately with their source, branch and date when available.',
-                )}
+                {preview
+                  ? tr(
+                      'AI interpretation is labeled. Original customer quotes appear separately with their source, branch and date when available.',
+                    )
+                  : language === 'ar'
+                    ? 'تظهر مقتطفات العملاء الأصلية مع مصادرها. الأعداد مستخرجة من الردود المحفوظة في النطاق المحدد.'
+                    : 'Original customer excerpts are shown with their sources. Counts come from stored feedback in the selected scope.'}
               </p>
               <p
                 className="pv62"

@@ -46,6 +46,16 @@ Existing headers use 76px desktop / 72px mobile geometry and responsive product 
 - Preserve visible focus, keyboard-operable menus, password visibility controls, native form semantics and reduced-motion behavior. No additional decorative motion is introduced.
 - Verify changes through frontend tests and the account browser scenario at desktop and 393px mobile widths in both languages. Reference screenshots remain previews, not proof of real backend/AI behavior.
 
+## Connected assistant
+
+Preserve the reviewed assistant page and floating panel geometry/assets. Both
+share request state, real owner-scoped branch/date controls, pending/error/retry
+and empty/insufficient-evidence behavior. Counts are backend-computed; quotes are
+customer source evidence with owned detail links, sample-coverage disclosure and
+visible experimental quality when applicable. Close/new conversation/scope,
+workspace or locale changes abort requests and suppress late replies. Previews
+retain sample interactions. Conversations are not persisted.
+
 ## Security continuation routes
 
 `#/login-2fa` and `#/confirm-email` reuse AuthPage/Field, existing type/colors/art and EN/AR copy. Challenges stay only in memory; refreshing a login challenge requires password sign-in again. Email-change tokens leave the URL before an explicit confirmation; invalid/used links report failure without claiming success. Busy states prevent duplicate submission, navigation aborts pending work and late replies do not navigate. Broader settings screens remain under development. Browser evidence covers desktop/narrow EN/AR and replay/error cases.

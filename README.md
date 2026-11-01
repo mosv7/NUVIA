@@ -6,6 +6,14 @@ The backend provides owner registration/login, browser cookie sessions, password
 
 ## Local development
 
+The connected owner assistant now retrieves stored feedback through protected
+`/api/ai/assistant` routes and links to real source details. Its page and floating
+panel preserve the existing EN/AR design. Explicit `AI_ASSISTANT_PROVIDER=groq`
+uses independently configured Groq answers with experimental quality disclosure;
+statistics are calculated in Node and answers contain source quotations. This
+does not connect the full feedback list or aggregate analytics. See
+[assistant setup and limits](docs/development/groq-assistant.md).
+
 Use Node >=22.13 and pnpm 11.25.0. Python and Docker are optional.
 
 ```sh

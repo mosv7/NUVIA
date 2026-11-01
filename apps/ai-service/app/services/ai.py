@@ -11,6 +11,7 @@ from pathlib import Path
 
 from app.models.artifacts import POLARITY_FORMATS, read_manifest
 from app.schemas.ai import OPERATIONS, REQUESTS, RESULTS
+from app.services.assistant_provider import AssistantProvider, assistant_config
 from app.services.interfaces import (
     BASELINE_PROMPT_VERSION,
     PROMPT_VERSION,
@@ -58,6 +59,7 @@ class AiService:
         self.settings = replace(settings, baseline=True) if comparison else settings
         self.comparison = comparison  # CLI only; never read from environment or HTTP input.
         self.summary_lock = threading.Lock()
+        self.assistant_lock = threading.Lock()
         self.manifests = {}
         self.reasons = {}
         self.worker = None
@@ -96,6 +98,9 @@ class AiService:
         capabilities = {}
         dependencies = all(importlib.util.find_spec(n) for n in ("torch", "transformers"))
         for operation in OPERATIONS:
+            if operation == "answers" and self.settings.assistant_provider == "groq":
+                capabilities[operation] = self.assistant_capability(acceptance)
+                continue
             if operation == "summaries" and not (
                 self.comparison and self.settings.summary_provider == "qwen"
             ):
@@ -142,6 +147,38 @@ class AiService:
             }
         return {"schema_version": "1", "capabilities": capabilities}
 
+    def assistant_capability(self, acceptance):
+        try:
+            config = assistant_config(self.settings)
+        except ValueError:
+            return {
+                "ready": False,
+                "reason": "service_not_configured",
+                "models": [],
+                "profile": "0" * 64,
+                "quality_status": "unavailable",
+                "quality_accepted": False,
+                "warnings": [],
+            }
+        # Remote answers assessments are independent from local answers and summaries.
+        profiles = acceptance.get("assistant_profiles", {})
+        record = profiles.get(config.profile, {}) if isinstance(profiles, dict) else {}
+        accepted = (
+            isinstance(record, dict)
+            and record.get("profile") == config.profile
+            and record.get("passed") is True
+            and record.get("reviewed") is True
+        )
+        return {
+            "ready": True,
+            "reason": None,
+            "models": [config.alias],
+            "profile": config.profile,
+            "quality_status": "accepted" if accepted else "baseline",
+            "quality_accepted": bool(accepted),
+            "warnings": [] if accepted else ["experimental_baseline", "quality_not_accepted"],
+        }
+
     def summary_capability(self, acceptance):
         try:
             config = summary_config(self.settings)
@@ -186,7 +223,15 @@ class AiService:
         remote_summary = operation == "summaries" and not (
             self.comparison and self.settings.summary_provider == "qwen"
         )
-        if remote_summary:
+        remote_assistant = operation == "answers" and self.settings.assistant_provider == "groq"
+        if remote_assistant:
+            if not self.assistant_lock.acquire(blocking=False):
+                raise ExecutionError("model_busy")
+            try:
+                result, _ = await AssistantProvider(self.settings).generate(request)
+            finally:
+                self.assistant_lock.release()
+        elif remote_summary:
             if not self.summary_lock.acquire(blocking=False):
                 raise ExecutionError("model_busy")
             try:
@@ -203,7 +248,7 @@ class AiService:
                 "models": capability["models"],
                 "profile": capability["profile"],
                 "prompt_version": PROMPT_VERSION
-                if remote_summary
+                if remote_summary or remote_assistant
                 else (BASELINE_PROMPT_VERSION if self.settings.baseline else PROMPT_VERSION),
                 "method_version": "aspects-v1",
                 "scores": "uncalibrated",
