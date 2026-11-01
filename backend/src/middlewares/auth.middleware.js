@@ -1,56 +1,77 @@
-const { verifyToken } = require("../utils/jwt");
-const { touchSession } = require("../services/session.service");
+const { verifyToken } = require('../utils/jwt');
+const { AUTH_COOKIE } = require('../utils/browserSession');
+const BusinessOwner = require('../models/businessOwner.model');
+const Business = require('../models/business.model');
+const { touchSession } = require('../services/session.service');
+
+const resolveIdentity = async (req) => {
+  const header = req.get('Authorization');
+  let token = req.cookies?.[AUTH_COOKIE];
+  if (header) {
+    if (!/^Bearer [^ ]+$/.test(header)) return null;
+    token = header.slice(7);
+  }
+  if (!token) return null;
+  let payload;
+  try {
+    payload = verifyToken(token);
+  } catch {
+    return null;
+  }
+  if (
+    payload.purpose ||
+    payload.type !== 'owner' ||
+    !/^[a-f0-9]{24}$/i.test(payload.id) ||
+    !/^[a-f0-9]{24}$/i.test(payload.sid)
+  )
+    return null;
+  const owner = await BusinessOwner.findById(payload.id).select('+tokenVersion');
+  if (
+    !owner ||
+    owner.status !== 'active' ||
+    (owner.tokenVersion || 0) !== (payload.tokenVersion || 0)
+  )
+    return null;
+  if (!(await touchSession(payload.sid, payload.id))) return null;
+  // Derive scope from the current owner relationship rather than stale token claims.
+  const business = await Business.findOne({ ownerId: owner._id }).select('_id');
+  return {
+    owner,
+    user: {
+      id: String(owner._id),
+      sid: String(payload.sid),
+      type: 'owner',
+      role: 'owner',
+      businessId: business ? String(business._id) : null,
+    },
+  };
+};
 
 const authenticate = async (req, res, next) => {
-  let payload;
-
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
+    const identity = await resolveIdentity(req);
+    if (!identity)
       return res.status(401).json({
-        message: "Authentication required",
+        error: { code: 'SESSION_EXPIRED', message: 'Sign in to continue' },
+        message: 'Sign in to continue',
       });
-    }
-
-    const parts = authHeader.split(" ");
-
-    if (parts.length !== 2 || parts[0] !== "Bearer") {
-      return res.status(401).json({
-        message: "Invalid authorization format",
-      });
-    }
-
-    payload = verifyToken(parts[1]);
-
-    // The short token handed out for the 2FA step is not a login.
-    if (payload.purpose) throw new Error("Wrong token type");
-
-    // Tokens issued before sessions existed have no sid; they keep working until they expire.
-    if (payload.sid && !(await touchSession(payload.sid, payload.id))) {
-      return res.status(401).json({ message: "This session has ended, please sign in again" });
-    }
-  } catch (error) {
-    return res.status(401).json({
-      message: "Invalid or expired token",
+    req.user = identity.user;
+    req.account = identity.owner;
+    next();
+  } catch {
+    res.status(503).json({
+      error: { code: 'STORAGE_UNAVAILABLE', message: 'Service temporarily unavailable' },
+      message: 'Service temporarily unavailable',
     });
   }
-
-  // req.user = { id, type, role, businessId, sid }
-  req.user = payload;
-  next();
 };
-
-// Usage: router.post("/branches", authenticate, authorize("owner", "manager"), ...)
-const authorize = (...allowedRoles) => (req, res, next) => {
-  if (!allowedRoles.includes(req.user.role)) {
-    return res.status(403).json({
-      message: "You do not have permission to do this",
-    });
-  }
-
-  next();
-};
-
-module.exports = authenticate;          // keeps your existing import working
-module.exports.authorize = authorize;   // const { authorize } = require(...)
+const authorize =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role))
+      return res.status(403).json({ message: 'You do not have permission to do this' });
+    next();
+  };
+module.exports = authenticate;
+module.exports.authorize = authorize;
+module.exports.resolveIdentity = resolveIdentity;

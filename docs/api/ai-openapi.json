@@ -1,0 +1,1159 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NUVIA internal AI API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health/live": {
+      "get": {
+        "tags": ["health"],
+        "summary": "Live",
+        "operationId": "live_api_v1_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/capabilities": {
+      "get": {
+        "tags": ["ai"],
+        "summary": "Capabilities",
+        "operationId": "capabilities_api_v1_capabilities_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Capabilities"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/analyze": {
+      "post": {
+        "tags": ["ai"],
+        "summary": "Analyze",
+        "operationId": "analyze_api_v1_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/analyze_response"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/summaries": {
+      "post": {
+        "tags": ["ai"],
+        "summary": "Summaries",
+        "operationId": "summaries_api_v1_summaries_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummaryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/summaries_response"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports": {
+      "post": {
+        "tags": ["ai"],
+        "summary": "Reports",
+        "operationId": "reports_api_v1_reports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/reports_response"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/survey-suggestions": {
+      "post": {
+        "tags": ["ai"],
+        "summary": "Survey Suggestions",
+        "operationId": "survey_suggestions_api_v1_survey_suggestions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SurveyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/survey_suggestions_response"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/answers": {
+      "post": {
+        "tags": ["ai"],
+        "summary": "Answers",
+        "operationId": "answers_api_v1_answers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/answers_response"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Analyses": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Analysis"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["items"],
+        "title": "Analyses"
+      },
+      "Analysis": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "title": "Id"
+          },
+          "sentiment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["positive", "negative", "neutral", "mixed"]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "insufficient_evidence"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "method": {
+            "type": "string",
+            "const": "aspect_derived",
+            "title": "Method"
+          },
+          "coverage": {
+            "type": "string",
+            "const": "partial_aspects",
+            "title": "Coverage"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/Mention"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Mentions"
+          },
+          "contributing_ids": {
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "type": "array",
+            "title": "Contributing Ids"
+          },
+          "excluded_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Excluded Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "sentiment",
+          "reason",
+          "method",
+          "coverage",
+          "mentions",
+          "contributing_ids",
+          "excluded_count"
+        ],
+        "title": "Analysis"
+      },
+      "AnalyzeRequest": {
+        "properties": {
+          "texts": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Texts"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["texts"],
+        "title": "AnalyzeRequest"
+      },
+      "Answer": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["answered", "insufficient_evidence"],
+            "title": "Status"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["status", "items"],
+        "title": "Answer"
+      },
+      "AnswerRequest": {
+        "properties": {
+          "texts": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Texts"
+          },
+          "locale": {
+            "type": "string",
+            "enum": ["ar", "en"],
+            "title": "Locale"
+          },
+          "question": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Question"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["texts", "locale", "question"],
+        "title": "AnswerRequest"
+      },
+      "Capabilities": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/CapabilityMap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["schema_version", "capabilities"],
+        "title": "Capabilities"
+      },
+      "Capability": {
+        "properties": {
+          "ready": {
+            "type": "boolean",
+            "title": "Ready"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "package_unavailable",
+                  "inference_dependencies_missing",
+                  "unverified_input_format",
+                  "unassessed",
+                  "service_not_configured"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "models": {
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]{1,100}$"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "title": "Models"
+          },
+          "profile": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Profile"
+          },
+          "quality_status": {
+            "type": "string",
+            "enum": ["accepted", "baseline", "unavailable"],
+            "title": "Quality Status"
+          },
+          "quality_accepted": {
+            "type": "boolean",
+            "title": "Quality Accepted"
+          },
+          "warnings": {
+            "items": {
+              "type": "string",
+              "enum": ["experimental_baseline", "quality_not_accepted"]
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ready",
+          "reason",
+          "models",
+          "profile",
+          "quality_status",
+          "quality_accepted",
+          "warnings"
+        ],
+        "title": "Capability"
+      },
+      "CapabilityMap": {
+        "properties": {
+          "analyze": {
+            "$ref": "#/components/schemas/Capability"
+          },
+          "summaries": {
+            "$ref": "#/components/schemas/Capability"
+          },
+          "reports": {
+            "$ref": "#/components/schemas/Capability"
+          },
+          "survey-suggestions": {
+            "$ref": "#/components/schemas/Capability"
+          },
+          "answers": {
+            "$ref": "#/components/schemas/Capability"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["analyze", "summaries", "reports", "survey-suggestions", "answers"],
+        "title": "CapabilityMap"
+      },
+      "Citation": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "title": "Id"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Quote"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["id", "quote"],
+        "title": "Citation"
+      },
+      "Claim": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Citations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["text", "citations"],
+        "title": "Claim"
+      },
+      "Evidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["id", "text"],
+        "title": "Evidence"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "live",
+            "title": "Status",
+            "default": "live"
+          },
+          "service": {
+            "type": "string",
+            "const": "nuvia-ai-service",
+            "title": "Service",
+            "default": "nuvia-ai-service"
+          },
+          "analysis_available": {
+            "type": "null",
+            "title": "Analysis Available"
+          },
+          "baseline_enabled": {
+            "type": "boolean",
+            "title": "Baseline Enabled",
+            "default": false
+          },
+          "capabilities_url": {
+            "type": "string",
+            "const": "/api/v1/capabilities",
+            "title": "Capabilities Url",
+            "default": "/api/v1/capabilities"
+          }
+        },
+        "type": "object",
+        "title": "HealthResponse"
+      },
+      "Mention": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Start"
+          },
+          "end": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "End"
+          },
+          "sentiment": {
+            "type": "string",
+            "enum": ["positive", "negative", "neutral"],
+            "title": "Sentiment"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score"
+          },
+          "extraction_score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Extraction Score"
+          },
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "start",
+          "end",
+          "sentiment",
+          "score",
+          "extraction_score",
+          "accepted"
+        ],
+        "title": "Mention"
+      },
+      "Provenance": {
+        "properties": {
+          "models": {
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]{1,100}$"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Models"
+          },
+          "profile": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Profile"
+          },
+          "prompt_version": {
+            "type": "string",
+            "enum": ["extractive-v1", "baseline-extractive-v1", "baseline-extractive-v2"],
+            "title": "Prompt Version"
+          },
+          "method_version": {
+            "type": "string",
+            "const": "aspects-v1",
+            "title": "Method Version"
+          },
+          "scores": {
+            "type": "string",
+            "const": "uncalibrated",
+            "title": "Scores"
+          },
+          "quality_status": {
+            "type": "string",
+            "enum": ["accepted", "baseline"],
+            "title": "Quality Status"
+          },
+          "quality_accepted": {
+            "type": "boolean",
+            "title": "Quality Accepted"
+          },
+          "warnings": {
+            "items": {
+              "type": "string",
+              "enum": ["experimental_baseline", "quality_not_accepted"]
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "models",
+          "profile",
+          "prompt_version",
+          "method_version",
+          "scores",
+          "quality_status",
+          "quality_accepted",
+          "warnings"
+        ],
+        "title": "Provenance"
+      },
+      "Question": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["text", "rating"],
+            "title": "Type"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["text", "type"],
+        "title": "Question"
+      },
+      "Recommendation": {
+        "properties": {
+          "suggestion": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Suggestion"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Citations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["suggestion", "citations"],
+        "title": "Recommendation"
+      },
+      "Report": {
+        "properties": {
+          "strengths": {
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Strengths"
+          },
+          "problems": {
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Problems"
+          },
+          "suggested_actions": {
+            "items": {
+              "$ref": "#/components/schemas/Recommendation"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Suggested Actions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["strengths", "problems", "suggested_actions"],
+        "title": "Report"
+      },
+      "ReportRequest": {
+        "properties": {
+          "texts": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Texts"
+          },
+          "locale": {
+            "type": "string",
+            "enum": ["ar", "en"],
+            "title": "Locale"
+          },
+          "objective": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objective"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["texts", "locale"],
+        "title": "ReportRequest"
+      },
+      "Summary": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["items"],
+        "title": "Summary"
+      },
+      "SummaryRequest": {
+        "properties": {
+          "texts": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Texts"
+          },
+          "locale": {
+            "type": "string",
+            "enum": ["ar", "en"],
+            "title": "Locale"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["texts", "locale"],
+        "title": "SummaryRequest"
+      },
+      "Survey": {
+        "properties": {
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 5,
+            "title": "Questions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["questions"],
+        "title": "Survey"
+      },
+      "SurveyRequest": {
+        "properties": {
+          "industry": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Industry"
+          },
+          "objective": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Objective"
+          },
+          "locale": {
+            "type": "string",
+            "enum": ["ar", "en"],
+            "title": "Locale"
+          },
+          "count": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 5.0,
+            "title": "Count",
+            "default": 5
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["industry", "objective", "locale"],
+        "title": "SurveyRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      },
+      "analyze_response": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version"
+          },
+          "operation": {
+            "type": "string",
+            "const": "analyze",
+            "title": "Operation"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9-]{36}$",
+            "title": "Request Id"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Analyses"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+        "title": "analyze_response"
+      },
+      "answers_response": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version"
+          },
+          "operation": {
+            "type": "string",
+            "const": "answers",
+            "title": "Operation"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9-]{36}$",
+            "title": "Request Id"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Answer"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+        "title": "answers_response"
+      },
+      "reports_response": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version"
+          },
+          "operation": {
+            "type": "string",
+            "const": "reports",
+            "title": "Operation"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9-]{36}$",
+            "title": "Request Id"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Report"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+        "title": "reports_response"
+      },
+      "summaries_response": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version"
+          },
+          "operation": {
+            "type": "string",
+            "const": "summaries",
+            "title": "Operation"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9-]{36}$",
+            "title": "Request Id"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Summary"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+        "title": "summaries_response"
+      },
+      "survey_suggestions_response": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version"
+          },
+          "operation": {
+            "type": "string",
+            "const": "survey-suggestions",
+            "title": "Operation"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9-]{36}$",
+            "title": "Request Id"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Survey"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["schema_version", "operation", "request_id", "provenance", "result"],
+        "title": "survey_suggestions_response"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-AI-Service-Token"
+      }
+    }
+  }
+}

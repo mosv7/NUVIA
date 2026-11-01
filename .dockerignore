@@ -19,3 +19,10 @@ atlas-credentials.env
 **/playwright-report
 docs/references/*.pdf
 models
+# Never bake local inference artifacts into application images.
+apps/ai-service/app/models/qwen2.5-1.5b
+**/*.safetensors
+**/*.pt
+**/*.pth
+**/*.onnx
+**/training_args.bin

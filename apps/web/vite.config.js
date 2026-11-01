@@ -6,6 +6,12 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     proxy: {
+      '/api/ai': {
+        target: process.env.NUVIA_API_TARGET || 'http://127.0.0.1:3001',
+        changeOrigin: false,
+        timeout: 200000,
+        proxyTimeout: 200000,
+      },
       '/api': {
         target: process.env.NUVIA_API_TARGET || 'http://127.0.0.1:3001',
         changeOrigin: false,

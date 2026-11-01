@@ -1,12 +1,12 @@
 // Account, Language and Notification settings of the signed-in owner.
-const BusinessOwner = require("../models/businessOwner.model");
-const Business = require("../models/business.model");
-const { fail } = require("../utils/errors");
-const { DISPLAY_LANGUAGES } = require("../utils/settingsOptions");
+const BusinessOwner = require('../models/businessOwner.model');
+const Business = require('../models/business.model');
+const { fail } = require('../utils/errors');
+const { DISPLAY_LANGUAGES } = require('../utils/settingsOptions');
 
 const loadOwner = async (ownerId) => {
   const owner = await BusinessOwner.findById(ownerId);
-  if (!owner) throw fail("Account not found", 404);
+  if (!owner) throw fail('Account not found', 404);
   return owner;
 };
 
@@ -17,18 +17,23 @@ const toAccountDTO = (owner, business) => ({
   name: owner.name,
   email: owner.email,
   emailVerified: owner.emailVerified,
-  phone: owner.phone || "",
-  country: owner.country || "",
-  jobTitle: owner.jobTitle || "",
+  phone: owner.phone || '',
+  country: owner.country || '',
+  jobTitle: owner.jobTitle || '',
   memberSince: owner.createdAt,
   hasAvatar: Boolean(owner.avatar?.contentType),
-  avatarUrl: owner.avatar?.contentType ? `/api/settings/avatar?v=${new Date(owner.avatar.updatedAt || 0).getTime()}` : null,
-  role: "owner",
+  avatarUrl: owner.avatar?.contentType
+    ? `/api/settings/avatar?v=${new Date(owner.avatar.updatedAt || 0).getTime()}`
+    : null,
+  role: 'owner',
   workspace: business ? { id: business._id, name: business.name } : null,
 });
 
 const getAccount = async (ownerId) => {
-  const [owner, business] = await Promise.all([loadOwner(ownerId), Business.findOne({ ownerId }).select("name").lean()]);
+  const [owner, business] = await Promise.all([
+    loadOwner(ownerId),
+    Business.findOne({ ownerId }).select('name').lean(),
+  ]);
   return toAccountDTO(owner, business);
 };
 
@@ -51,28 +56,33 @@ const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 
 // Check the real file signature, not just the Content-Type header the client sent.
 const detectImageType = (buf) => {
-  if (buf.length > 8 && buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return "image/png";
-  if (buf.length > 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "image/jpeg";
+  if (
+    buf.length > 8 &&
+    buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+  )
+    return 'image/png';
+  if (buf.length > 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'image/jpeg';
   return null;
 };
 
 const setAvatar = async (ownerId, buffer) => {
-  if (!Buffer.isBuffer(buffer) || buffer.length === 0) throw fail("Send the image as the request body (PNG or JPG)", 400);
-  if (buffer.length > MAX_AVATAR_BYTES) throw fail("The photo must be 2 MB or smaller", 413);
+  if (!Buffer.isBuffer(buffer) || buffer.length === 0)
+    throw fail('Send the image as the request body (PNG or JPG)', 400);
+  if (buffer.length > MAX_AVATAR_BYTES) throw fail('The photo must be 2 MB or smaller', 413);
 
   const contentType = detectImageType(buffer);
-  if (!contentType) throw fail("The photo must be a JPG or PNG image", 415);
+  if (!contentType) throw fail('The photo must be a JPG or PNG image', 415);
 
   await BusinessOwner.updateOne(
     { _id: ownerId },
-    { $set: { avatar: { data: buffer, contentType, updatedAt: new Date() } } }
+    { $set: { avatar: { data: buffer, contentType, updatedAt: new Date() } } },
   );
   return getAccount(ownerId);
 };
 
 const getAvatar = async (ownerId) => {
-  const owner = await BusinessOwner.findById(ownerId).select("+avatar.data avatar.contentType");
-  if (!owner?.avatar?.data) throw fail("No photo", 404);
+  const owner = await BusinessOwner.findById(ownerId).select('+avatar.data avatar.contentType');
+  if (!owner?.avatar?.data) throw fail('No photo', 404);
   return { contentType: owner.avatar.contentType, body: owner.avatar.data };
 };
 
@@ -99,11 +109,11 @@ const getLanguage = async (ownerId) => ({
 const updateLanguage = async (ownerId, changes) => {
   const owner = await loadOwner(ownerId);
 
-  for (const key of ["displayLanguage", "region", "timeZone", "dateFormat", "timeFormat"]) {
+  for (const key of ['displayLanguage', 'region', 'timeZone', 'dateFormat', 'timeFormat']) {
     if (changes[key] !== undefined) owner.language[key] = changes[key];
   }
   // The rest of the app (and the survey tools) still read preferredLanguage: "en" or "ar".
-  if (changes.displayLanguage) owner.preferredLanguage = changes.displayLanguage.split("-")[0];
+  if (changes.displayLanguage) owner.preferredLanguage = changes.displayLanguage.split('-')[0];
 
   await owner.save();
   return languageDTO(owner);
@@ -139,9 +149,9 @@ const getNotifications = async (ownerId) => notificationsDTO(await loadOwner(own
 const updateNotifications = async (ownerId, changes) => {
   const owner = await loadOwner(ownerId);
 
-  for (const group of ["channels", "email", "inApp"]) {
+  for (const group of ['channels', 'email', 'inApp']) {
     for (const [key, value] of Object.entries(changes[group] || {})) {
-      if (group === "email" && key === "accountSecurity") continue;
+      if (group === 'email' && key === 'accountSecurity') continue;
       owner.notifications[group][key] = value;
     }
   }
@@ -151,8 +161,13 @@ const updateNotifications = async (ownerId, changes) => {
 };
 
 module.exports = {
-  getAccount, updateAccount,
-  setAvatar, getAvatar, removeAvatar,
-  getLanguage, updateLanguage,
-  getNotifications, updateNotifications,
+  getAccount,
+  updateAccount,
+  setAvatar,
+  getAvatar,
+  removeAvatar,
+  getLanguage,
+  updateLanguage,
+  getNotifications,
+  updateNotifications,
 };

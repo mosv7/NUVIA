@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "criteria": "All cases must have their expected overall sentiment and all listed aspect polarities accepted at the unchanged threshold. Exact source spans and existing schemas must validate. No threshold or fixture tuning after observing outputs. These synthetic cases are a smoke assessment, not a broad accuracy benchmark.",
+  "cases": [
+    {
+      "locale": "en",
+      "text": "The food was delicious.",
+      "expected_sentiment": "positive",
+      "aspects": [{ "text": "food", "sentiment": "positive" }]
+    },
+    {
+      "locale": "en",
+      "text": "The service was not good.",
+      "expected_sentiment": "negative",
+      "aspects": [{ "text": "service", "sentiment": "negative" }]
+    },
+    {
+      "locale": "en",
+      "text": "The food was on the table.",
+      "expected_sentiment": "neutral",
+      "aspects": [{ "text": "food", "sentiment": "neutral" }]
+    },
+    {
+      "locale": "en",
+      "text": "The room was spotless, but the staff were rude.",
+      "expected_sentiment": "mixed",
+      "aspects": [
+        { "text": "room", "sentiment": "positive" },
+        { "text": "staff", "sentiment": "negative" }
+      ]
+    },
+    {
+      "locale": "ar",
+      "text": "الخدمة ممتازة وسريعة.",
+      "expected_sentiment": "positive",
+      "aspects": [{ "text": "الخدمة", "sentiment": "positive" }]
+    },
+    {
+      "locale": "ar",
+      "text": "الخدمة سيئة جدًا.",
+      "expected_sentiment": "negative",
+      "aspects": [{ "text": "الخدمة", "sentiment": "negative" }]
+    },
+    {
+      "locale": "ar",
+      "text": "الطعام موجود على الطاولة.",
+      "expected_sentiment": "neutral",
+      "aspects": [{ "text": "الطعام", "sentiment": "neutral" }]
+    },
+    {
+      "locale": "ar",
+      "text": "المكان نظيف لكن الأسعار غالية.",
+      "expected_sentiment": "mixed",
+      "aspects": [
+        { "text": "المكان", "sentiment": "positive" },
+        { "text": "الأسعار", "sentiment": "negative" }
+      ]
+    }
+  ]
+}
