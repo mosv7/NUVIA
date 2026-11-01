@@ -8,6 +8,7 @@ const Counter = require("../models/counter.model");
 const { fail } = require("../utils/errors");
 const { detectLanguage } = require("../utils/language");
 const { loadQuestions } = require("./question.service");
+const analysisWorker = require("./analysisWorker.service");
 const MAX_TEXT_TOTAL = 10000;
 
 const requiredError = (question) => ({ field: `answers.${question.id}`, message: "This question is required" });
@@ -150,6 +151,9 @@ const submitResponse = async (shortCode, body) => {
     if (error.code === 11000 && body.submissionId) return { ...thanks, duplicate: true }; // two identical submits at once
     throw error;
   }
+
+  // Start the analysis now instead of waiting for the next poll. The customer does not wait for it.
+  if (created.analysis.status === "pending") analysisWorker.kick();
 
   return thanks;
 };

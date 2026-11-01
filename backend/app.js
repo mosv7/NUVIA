@@ -8,6 +8,7 @@ const surveyTemplateRoutes = require("./src/routes/surveyTemplate.routes");
 const branchRoutes = require("./src/routes/branch.routes");
 const settingsRoutes = require("./src/routes/settings.routes");
 const publicSurveyRoutes = require("./src/routes/publicSurvey.routes");
+const feedbackRoutes = require("./src/routes/feedback.routes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/survey-templates", surveyTemplateRoutes);
 app.use("/api/branches", branchRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/public", publicSurveyRoutes);
+app.use("/api/feedbacks", feedbackRoutes);
 
 
 module.exports = app;
