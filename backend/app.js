@@ -3,21 +3,24 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { appOrigin, requireBrowserCsrf } = require('./src/utils/browserSession');
-
+const overviewRoutes = require('./src/routes/overview.routes');
 const authRoutes = require('./src/routes/auth.routes');
 const onboardingRoutes = require('./src/routes/onboarding.routes');
 const surveyRoutes = require('./src/routes/survey.routes');
 const surveyTemplateRoutes = require('./src/routes/surveyTemplate.routes');
 const branchRoutes = require('./src/routes/branch.routes');
 const businessRoutes = require('./src/routes/business.routes');
+const reportRoutes = require('./src/routes/reports.routes');
+const sentimentRoutes = require('./src/routes/overviewSentiment.routes');
+const analysticsRoutes = require('./src/routes/overviewAnalytics.routes');
+const topicsComplaints = require('./src/routes/topics-complaints.routes');
+const trendsRoutes = require('./src/routes/overviewTrends.routes');
+const branchComparisonRoutes = require('./src/routes/branchComparison.routes');
 
 const app = express();
 
 app.use(
-  cors({
-    origin: appOrigin(),
-    credentials: true,
-  }),
+  cors(),
 );
 app.use(
   express.json({
@@ -49,12 +52,20 @@ app.get('/', (req, res) => {
   });
 });
 
+
+app.use('/api/branch-comparison', branchComparisonRoutes);
+app.use('/api/trends', trendsRoutes);
+app.use('/api/analytics', analysticsRoutes);
+app.use('/api/topics', topicsComplaints);
+app.use('/api/sentiment', sentimentRoutes);
+app.use('/api/overview', overviewRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/surveys', surveyRoutes);
 app.use('/api/survey-templates', surveyTemplateRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/reports', reportRoutes);
 app.use('/api/feedbacks', require('./src/routes/feedback.routes'));
 app.use('/api/ai/assistant', require('./src/routes/assistant.routes'));
 app.use('/api/ai', require('./src/routes/ai.routes'));
