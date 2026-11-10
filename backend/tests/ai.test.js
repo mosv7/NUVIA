@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const { MongoMemoryReplSet } = require('mongodb-memory-server-core');
 const { callService } = require('../src/integrations/ai-service/client');
+const reportIntegration = require('../src/integrations/ai-service/reports');
 const { validateOutput } = require('../src/integrations/ai-service/contracts');
 
 process.env.NODE_ENV = 'test';
@@ -152,6 +153,46 @@ test('transport refuses redirects and times out using a real local upstream', as
   mode = 'slow';
   await assert.rejects(callService('capabilities', undefined, { config }), { code: 'AI_TIMEOUT' });
   mode = 'capabilities';
+});
+
+test('report integration logs upstream status without logging feedback or credentials', async () => {
+  const unauthorizedServer = http.createServer((_req, res) => {
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    res.end('{"error":{"code":"unauthorized"}}');
+  });
+  await new Promise((resolve) => unauthorizedServer.listen(0, '127.0.0.1', resolve));
+
+  const logEntries = [];
+  const originalError = console.error;
+  console.error = (message, details) => logEntries.push({ message, details });
+  const feedbackText = 'Private customer feedback';
+  try {
+    await assert.rejects(
+      reportIntegration.generate(
+        { texts: [{ id: 'feedback1', text: feedbackText }], locale: 'en' },
+        {
+          requestId: '00000000-0000-4000-8000-000000000001',
+          config: {
+            base: `http://127.0.0.1:${unauthorizedServer.address().port}`,
+            token: 's'.repeat(32),
+            timeout: 1000,
+          },
+        },
+      ),
+      { code: 'AI_UNAVAILABLE' },
+    );
+  } finally {
+    console.error = originalError;
+    unauthorizedServer.closeAllConnections();
+    await new Promise((resolve) => unauthorizedServer.close(resolve));
+  }
+
+  assert.equal(logEntries.length, 1);
+  assert.equal(logEntries[0].message, '[AI reports] request failed');
+  assert.equal(logEntries[0].details.upstreamStatus, 401);
+  assert.equal(logEntries[0].details.code, 'AI_UNAVAILABLE');
+  assert.equal(JSON.stringify(logEntries).includes(feedbackText), false);
+  assert.equal(JSON.stringify(logEntries).includes('s'.repeat(32)), false);
 });
 
 test('successful analysis preserves Unicode offsets and rejects invented mixed or foreign evidence', () => {
