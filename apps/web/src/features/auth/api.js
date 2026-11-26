@@ -17,7 +17,7 @@ export const authApi = {
     apiRequest('/auth/confirm-email', { method: 'POST', body: { token }, signal }),
   logout: () => apiRequest('/auth/logout', { method: 'POST', body: {} }),
   verify: (token, signal) =>
-    apiRequest('/auth/verify-email', { method: 'POST', body: { token }, signal }),
+    apiRequest('/auth/confirm-email', { method: 'POST', body: { token }, signal }),
   resend: (email, signal) =>
     apiRequest('/auth/resend-verification', { method: 'POST', body: { email }, signal }),
   forgot: (email, signal) =>

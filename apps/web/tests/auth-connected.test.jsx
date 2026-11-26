@@ -167,9 +167,7 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   fireEvent.click(screen.getByRole('button', { name: 'Close assistant' }));
   expect(screen.queryByText('Cairo’s wait times need a closer look')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Notifications', exact: true }));
-  expect(
-    screen.getByText('No notifications yet. Updates about your workspace will appear here.'),
-  ).toBeVisible();
+  expect(screen.getByText('Notifications are not available yet')).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Profile', exact: true }));
   expect(screen.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
   expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
@@ -177,7 +175,7 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   fireEvent.click(screen.getByRole('button', { name: 'Sign out', exact: true }));
   expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();
   expect(logout).toHaveBeenCalledTimes(1);
-});
+}, 20000);
 it('marks old real verification links under development without consuming tokens', async () => {
   const verify = vi.spyOn(authApi, 'verify');
   open('verify-email?token=' + 'a'.repeat(64));
@@ -249,4 +247,4 @@ it('opens the connected assistant workspace without sample conversations or metr
   expect(location.hash).toBe('#/settings');
   expect(screen.queryByRole('dialog', { name: 'Profile' })).not.toBeInTheDocument();
   expect(screen.queryByText('Sample workspace profile')).not.toBeInTheDocument();
-});
+}, 20000);

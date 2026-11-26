@@ -1,49 +1,81 @@
 import { safeLocalStorage } from '../src/lib/storage.js';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { it, expect, vi } from 'vitest';
+import { afterEach, it, expect, vi } from 'vitest';
 import App from '../src/app/App.jsx';
 import { authApi } from '../src/features/auth/api.js';
+import { feedbackApi } from '../src/features/feedback/api.js';
+
+const ownerSession = () => ({
+  user: { id: 'owner', name: 'Actual Owner', emailVerified: true },
+  workspace: {
+    id: 'workspace',
+    businessName: 'Actual Cafe',
+    industry: 'Cafe',
+    onboardingStep: 'complete',
+    branches: [],
+  },
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  history.replaceState(null, '', '/');
+  safeLocalStorage.setItem('nuvia-language', 'en');
+});
 
 it.each(['feedbacks', 'feedbacks-empty'])(
-  'keeps the reviewed empty feedback layout on the account route %s',
+  'renders real account responses from the feedback API on %s',
   async (route) => {
-    vi.spyOn(authApi, 'session').mockResolvedValue({
-      user: { id: 'owner', name: 'Actual Owner', emailVerified: true },
-      workspace: {
-        id: 'workspace',
-        businessName: 'Actual Cafe',
-        industry: 'Cafe',
-        onboardingStep: 'complete',
-        branches: [],
-      },
+    vi.spyOn(authApi, 'session').mockResolvedValue(ownerSession());
+    vi.spyOn(feedbackApi, 'list').mockResolvedValue({
+      feedbacks: [
+        {
+          id: '012345678901234567890123',
+          displayId: 7,
+          surveyName: 'Actual Cafe survey',
+          branchName: 'Main',
+          preview: 'Great service',
+          sentiment: 'positive',
+          submittedAt: '2026-11-01T10:00:00.000Z',
+          analysisStatus: 'completed',
+        },
+      ],
+      pagination: { page: 1, totalPages: 1 },
+    });
+    vi.spyOn(feedbackApi, 'filters').mockResolvedValue({
+      sentiments: ['positive'],
+      branches: [{ id: 'b1', name: 'Main' }],
+      surveys: [{ id: 's1', name: 'Actual Cafe survey' }],
     });
     history.replaceState(null, '', '/#/' + route);
     render(<App />);
-    expect(
-      await screen.findByRole('heading', { name: 'Your first response starts here' }),
-    ).toBeVisible();
-    expect(screen.getByRole('region', { name: 'Filters' })).toBeVisible();
-    expect(document.querySelectorAll('.feedback-filter')).toHaveLength(5);
-    expect(screen.getByRole('button', { name: 'Sentiment', exact: true })).toBeDisabled();
-    expect(screen.getByRole('table')).toBeVisible();
-    expect(screen.getByText('0 responses', { exact: true })).toBeVisible();
-    expect(screen.getByRole('button', { name: 'Export', exact: true })).toBeDisabled();
-    expect(screen.getByText('Create your survey')).toBeVisible();
+    expect((await screen.findAllByRole('heading', { name: 'Feedbacks' }))[0]).toBeVisible();
+    expect(await screen.findByText('Great service')).toBeVisible();
+    expect(screen.getAllByText('Actual Cafe survey').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Actual Cafe').length).toBeGreaterThan(0);
     expect(screen.queryByText('Bloom & Co.')).not.toBeInTheDocument();
-    expect(screen.queryByText('1,248 / 5,000 responses')).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'View sample responses' })).not.toBeInTheDocument();
-    const clipboard = vi.fn();
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText: clipboard },
+    expect(feedbackApi.list).toHaveBeenCalledWith(expect.objectContaining({ page: 1, limit: 10 }));
+
+    fireEvent.change(screen.getByPlaceholderText('Search feedback'), {
+      target: { value: 'Great' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Share a survey', exact: true }));
-    expect(screen.getByRole('status')).toHaveTextContent('This feature is not available yet.');
-    expect(clipboard).not.toHaveBeenCalled();
-    expect(location.hash).toBe('#/' + route);
+    fireEvent.click(screen.getByRole('button', { name: 'Apply filters' }));
+    expect(feedbackApi.list).toHaveBeenLastCalledWith(expect.objectContaining({ search: 'Great' }));
   },
 );
+
+it('shows an honest empty state when the account has no responses', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue(ownerSession());
+  vi.spyOn(feedbackApi, 'list').mockResolvedValue({
+    feedbacks: [],
+    pagination: { page: 1, totalPages: 0 },
+  });
+  vi.spyOn(feedbackApi, 'filters').mockResolvedValue({ sentiments: [], branches: [], surveys: [] });
+  history.replaceState(null, '', '/#/feedbacks');
+  render(<App />);
+  expect(await screen.findByText('No responses yet.')).toBeVisible();
+  expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  expect(screen.queryByText('Your first response starts here')).not.toBeInTheDocument();
+});
 
 it.each([
   [
@@ -74,9 +106,11 @@ it('rejects a missing owned detail id without showing a sample or the empty list
       branches: [],
     },
   });
+  const detail = vi.spyOn(feedbackApi, 'detail');
   history.replaceState(null, '', '/#/feedback-details');
   render(<App />);
   expect(await screen.findByRole('alert')).toHaveTextContent('This feedback could not be loaded.');
+  expect(detail).not.toHaveBeenCalled();
   expect(
     screen.queryByRole('heading', { name: 'Your first response starts here' }),
   ).not.toBeInTheDocument();

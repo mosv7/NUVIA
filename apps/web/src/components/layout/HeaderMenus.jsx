@@ -128,8 +128,27 @@ export default function HeaderMenus() {
               </header>
               <div className="workspace-notification-empty">
                 <img src={asset('dashboard/overview/notifications.svg')} alt="" />
-                <h3>{tr('You’re all caught up')}</h3>
-                <p>{tr('No notifications yet. Updates about your workspace will appear here.')}</p>
+                {preview ? (
+                  <>
+                    <h3>{tr('You’re all caught up')}</h3>
+                    <p>
+                      {tr('No notifications yet. Updates about your workspace will appear here.')}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3>
+                      {language === 'ar'
+                        ? 'الإشعارات غير متاحة بعد'
+                        : 'Notifications are not available yet'}
+                    </h3>
+                    <p>
+                      {language === 'ar'
+                        ? 'لا توجد خدمة إشعارات في هذا الإصدار.'
+                        : 'A notification feed is not available in this build.'}
+                    </p>
+                  </>
+                )}
               </div>
             </>
           ) : topbarMenu.kind === 'profile' ? (
@@ -275,8 +294,10 @@ export default function HeaderMenus() {
             </span>
             <h2>{tr(profile === 'security' ? 'Account & security' : 'Sara Ahmed')}</h2>
             {profile === 'security' && <strong>{tr('Sara Ahmed')}</strong>}
-            <p>{tr('Workspace owner')} · Bloom &amp; Co.</p>
-            <small>{tr('Sample workspace profile')}</small>
+            <p>
+              {tr('Workspace owner')} · {tr('Bloom & Co.')}
+            </p>
+            {preview && <small>{tr('Sample workspace profile')}</small>}
             {profile === 'security' && (
               <div className="workspace-security-actions">
                 <button onClick={() => setProfile(true)}>{tr('View profile')}</button>

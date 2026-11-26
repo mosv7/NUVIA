@@ -28,6 +28,11 @@ const ConnectedBusinessOnboarding = lazy(() =>
   })),
 );
 const WorkspacePages = lazy(() => import('../../features/workspace/WorkspacePages.jsx'));
+const ConnectedFeaturePage = lazy(
+  () => import('../../features/workspace/ConnectedFeaturePage.jsx'),
+);
+const HelpCenterPage = lazy(() => import('../../features/workspace/HelpCenterPage.jsx'));
+const ReferenceFrame = lazy(() => import('../../features/insights/ReferenceFrame.jsx'));
 export default function AppRouter() {
   useEffect(() => installRouteHistory(), []);
   const auth = useAuth(),
@@ -257,10 +262,10 @@ export default function AppRouter() {
       'surveys',
       'nuvia-assistant',
       'assistant',
-      'reports',
       'report-details',
       'notifications',
       'subscription',
+      'reports',
       'action-board',
       'evidence',
     ].includes(page) ||
@@ -279,6 +284,34 @@ export default function AppRouter() {
         <CustomerFeedback language={language} setLanguage={setLanguage} />
       </div>
     );
+  if (page === 'help-center')
+    return (
+      <ReferenceFrame
+        page={page}
+        title={language === 'ar' ? 'مركز المساعدة' : 'Help center'}
+        language={language}
+        setLanguage={setLanguage}
+      >
+        <HelpCenterPage language={language} />
+      </ReferenceFrame>
+    );
+  if (!preview && page === 'evidence')
+    return (
+      <main className="session-state">
+        <h1>{language === 'ar' ? 'الميزة غير متاحة بعد' : 'This feature is not available yet.'}</h1>
+        <p>
+          {language === 'ar'
+            ? 'الرؤى والتوصيات التجريبية متاحة في معاينة التصميم فقط.'
+            : 'Preview-only insights and recommendations are available in the design preview.'}
+        </p>
+        <a href={'/preview/#/' + page}>
+          {language === 'ar' ? 'فتح معاينة التصميم' : 'Open design preview'}
+        </a>
+        <a href="#/dashboard">
+          {language === 'ar' ? 'رجوع إلى النظرة العامة' : 'Back to Overview'}
+        </a>
+      </main>
+    );
   if (
     [
       'business',
@@ -291,10 +324,7 @@ export default function AppRouter() {
       'branch-history',
       'subscription',
       'notifications',
-      'analytics',
-      'surveys',
       'assistant',
-      'action-board',
       'evidence',
     ].includes(page) ||
     page.startsWith('settings')
@@ -308,6 +338,99 @@ export default function AppRouter() {
         />
       </div>
     );
+  const connectedFeatureRoutes = [
+    'surveys',
+    'survey-create',
+    'survey-edit',
+    'survey-questions',
+    'survey-results',
+    'survey-all',
+    'survey-empty',
+    'survey-live',
+    'survey-drafts',
+    'survey-paused',
+    'survey-closed',
+    'survey-share',
+    'survey-ai',
+    'survey-ai-review',
+    'survey-choices',
+    'public-survey',
+    'analytics',
+    'analytics-sentiment',
+    'analytics-aspects',
+    'analytics-topics',
+    'analytics-trends',
+    'analytics-comparison',
+    'reports',
+    'report-details',
+    'action-board',
+    'feedbacks',
+    'feedbacks-empty',
+    'feedbacks-loading',
+    'feedbacks-no-results',
+    'feedback-details',
+    'dashboard',
+    'dashboard-empty',
+    'overview',
+  ];
+  if (!preview && connectedFeatureRoutes.includes(page)) {
+    const connectedRoute =
+      page === 'survey-create' ||
+      [
+        'survey-results',
+        'survey-all',
+        'survey-empty',
+        'survey-live',
+        'survey-drafts',
+        'survey-paused',
+        'survey-closed',
+        'survey-share',
+        'survey-ai',
+        'survey-ai-review',
+        'survey-choices',
+      ].includes(page)
+        ? 'surveys'
+        : ['feedbacks-loading', 'feedbacks-no-results'].includes(page)
+          ? 'feedbacks'
+          : page === 'dashboard-empty'
+            ? 'dashboard'
+            : page;
+    const connectedTitle =
+      connectedRoute === 'dashboard' || connectedRoute === 'overview'
+        ? 'Overview'
+        : connectedRoute === 'action-board'
+          ? 'Action board'
+          : connectedRoute.startsWith('survey-') || connectedRoute === 'surveys'
+            ? 'Surveys'
+            : connectedRoute.startsWith('analytics')
+              ? 'Analytics'
+              : connectedRoute.startsWith('report')
+                ? 'Reports'
+                : connectedRoute.startsWith('feedback')
+                  ? 'Feedbacks'
+                  : 'Workspace';
+    const feature = (
+      <ConnectedFeaturePage
+        key={location.hash}
+        route={connectedRoute}
+        language={language}
+        workspace={auth.workspace}
+        onLogout={auth.logout}
+      />
+    );
+    return connectedRoute === 'public-survey' ? (
+      feature
+    ) : (
+      <ReferenceFrame
+        page={connectedRoute}
+        title={connectedTitle}
+        language={language}
+        setLanguage={setLanguage}
+      >
+        {feature}
+      </ReferenceFrame>
+    );
+  }
   const designOnly =
     page === 'customer-feedback' ||
     page.startsWith('survey-') ||
@@ -317,8 +440,9 @@ export default function AppRouter() {
     if (
       !preview &&
       (page.startsWith('analytics-') ||
-        page === 'reports' ||
-        ['survey-all', 'survey-empty'].includes(page))
+        page.startsWith('survey-') ||
+        page.startsWith('feedbacks') ||
+        ['reports', 'feedback-details'].includes(page))
     )
       return (
         <div className="workspace-extension">

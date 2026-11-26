@@ -17,6 +17,8 @@ export const workspaceApi = {
         signal,
       }),
     ),
+  history: (branchId, signal) =>
+    data(apiRequest(`/branches/${encodeURIComponent(branchId)}/history`, { signal })),
   get: async () => presentWorkspace((await apiRequest('/auth/session')).workspace),
   save: ({ businessName, industry }, signal) =>
     savedWorkspace(

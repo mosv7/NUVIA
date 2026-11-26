@@ -31,6 +31,7 @@ export function buildSearchIndex(language = 'en', storage) {
     ['NUVIA Assistant', 'nuvia-assistant', 'ask feedback answers verify'],
     ['Action board', 'action-board', 'recommendations tasks actions status'],
     ['Supporting Evidence', 'evidence', 'feedback evidence recommendations'],
+    ['Help center', 'help-center', 'help support faq guides questions'],
   ];
   const entries = pages.map(([title, path, keywords]) => ({
     id: path,

@@ -30,6 +30,7 @@ import renderSecurityPages from './SecurityPages.jsx';
 import renderWorkspaceStates from './WorkspaceStates.jsx';
 import applyWorkspaceOverrides from './WorkspaceOverrides.jsx';
 import WorkspaceDialogs from './WorkspaceDialogs.jsx';
+import ConnectedWorkspaceData from './ConnectedWorkspaceData.jsx';
 const ReferenceAction = lazy(() => import('../feedback/ActionEvidencePage.jsx'));
 const ReferenceAnalytics = lazy(() => import('../analytics/preview/AnalyticsPage.jsx'));
 const ReferenceReports = lazy(() => import('../reports/preview/ExtraPreviewPage.jsx'));
@@ -65,57 +66,6 @@ export default function WorkspacePages({ language, setLanguage }) {
     renderSecurityPages(model) ??
     renderWorkspaceStates(model);
   content = applyWorkspaceOverrides(model, content);
-  const developing =
-    !auth.preview &&
-    (page.startsWith('survey') ||
-      page.startsWith('analytics') ||
-      [
-        'reports',
-        'report-details',
-        'action-board',
-        'evidence',
-        'notifications',
-        'branch-history',
-        'settings-security',
-        'settings-password',
-        'settings-two-factor',
-        'settings-devices',
-        'settings-email',
-      ].includes(page));
-  if (developing)
-    return (
-      <ReferenceFrame
-        page={page}
-        title={businessPage ? 'Business' : settingsPage ? 'Settings' : 'Overview'}
-        language={lang}
-        setLanguage={setLang}
-      >
-        <section className="card coming">
-          <h1>{L('This feature is under development', 'هذه الميزة قيد التطوير')}</h1>
-          <p>
-            {L(
-              'This screen is not connected to an available product workflow yet.',
-              'هذه الشاشة لم تتصل بتدفق متاح في المنتج بعد.',
-            )}
-          </p>
-          <a className="text-link" href={'/preview/#/' + page}>
-            {L('Open design preview', 'فتح معاينة التصميم')}
-          </a>
-          <button className="button primary" onClick={() => go('overview')}>
-            {L('Back to overview', 'العودة للنظرة العامة')}
-          </button>
-        </section>
-      </ReferenceFrame>
-    );
-  if (!auth.preview && ['branch-history'].includes(page))
-    content = (
-      <section className="card">
-        <h1>{lang === 'ar' ? 'التحليلات غير متاحة بعد' : 'Analytics are not available yet.'}</h1>
-        <button type="button" className="text-link" onClick={() => go('branches')}>
-          {lang === 'ar' ? 'العودة للفروع' : 'Back to branches'}
-        </button>
-      </section>
-    );
   return (
     <PreviewWorkspaceContext.Provider
       value={{
@@ -139,8 +89,6 @@ export default function WorkspacePages({ language, setLanguage }) {
           const button = event.target.closest('button');
           if (!button) return;
           const unsupported =
-            (page.startsWith('settings') &&
-              (button.classList.contains('primary') || button.getAttribute('role') === 'switch')) ||
             (page === 'business-add' && button.classList.contains('primary'));
           if (unsupported) {
             event.preventDefault();
@@ -151,7 +99,17 @@ export default function WorkspacePages({ language, setLanguage }) {
           }
         }}
       >
-        {['action-board', 'evidence'].includes(page) ? (
+        {!auth.preview && (page === 'surveys' || page.startsWith('survey-')) ? (
+          <ReferenceFrame page={page} title="Surveys" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="surveys" language={lang} /></ReferenceFrame>
+        ) : !auth.preview && page.startsWith('analytics') ? (
+          <ReferenceFrame page={page} title="Analytics" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="analytics" language={lang} /></ReferenceFrame>
+        ) : !auth.preview && page === 'report-details' ? (
+          <ReferenceFrame page={page} title="Report details" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="report-details" language={lang} /></ReferenceFrame>
+        ) : !auth.preview && page === 'reports' ? (
+          <ReferenceFrame page={page} title="Reports" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="reports" language={lang} /></ReferenceFrame>
+        ) : !auth.preview && page === 'feedbacks' ? (
+          <ReferenceFrame page={page} title="Feedbacks" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="feedbacks" language={lang} /></ReferenceFrame>
+        ) : ['action-board', 'evidence'].includes(page) ? (
           <ReferenceAction
             preview={auth.preview}
             workspace={auth.workspace}
@@ -201,7 +159,9 @@ export default function WorkspacePages({ language, setLanguage }) {
             setLanguage={setLang}
           />
         ) : page === 'overview' ? (
-          sample ? (
+          !auth.preview ? (
+            <ReferenceFrame page="overview" title="Overview" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="analytics" language={lang} /></ReferenceFrame>
+          ) : sample ? (
             <ReferenceDashboard
               preview={auth.preview}
               workspace={auth.workspace}

@@ -1,5 +1,6 @@
 import { useAuth } from '../../app/providers/AuthProvider.jsx';
 import { workspaceApi } from '../workspaces/api.js';
+import { settingsApi } from '../settings/api.js';
 import { useState, useEffect, useRef } from 'react';
 
 import UiArrow from '../../components/ui/UiArrow.jsx';
@@ -39,7 +40,10 @@ export default function useWorkspaceModel({ language, setLanguage }) {
   const [historyStart, setHistoryStart] = useState('2026-09-12'),
     [historyEnd, setHistoryEnd] = useState('2026-10-09'),
     [historySurvey, setHistorySurvey] = useState('Customer experience survey'),
-    [historyDateOpen, setHistoryDateOpen] = useState(false);
+    [historyDateOpen, setHistoryDateOpen] = useState(false),
+    [branchHistory, setBranchHistory] = useState(null),
+    [branchHistoryLoading, setBranchHistoryLoading] = useState(false),
+    [branchHistoryError, setBranchHistoryError] = useState('');
   const [otherBusinesses, setOtherBusinesses] = useState([]);
   const [biz, setBiz] = useState(
       preview
@@ -90,7 +94,9 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     [read, setRead] = useState([]),
     [sessions, setSessions] = useState(preview ? [1, 2, 3] : []),
     [code, setCode] = useState(''),
-    [twoFA, setTwoFA] = useState(false);
+    [twoFA, setTwoFA] = useState(false),
+    [twoFactorSetup, setTwoFactorSetup] = useState(null),
+    [recoveryCodes, setRecoveryCodes] = useState([]);
   const lang = language,
     setLang = setLanguage;
   const ar = lang === 'ar',
@@ -120,19 +126,158 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     document.documentElement.dir = ar ? 'rtl' : 'ltr';
   }, [lang, ar]);
   useEffect(() => {
-    if (page !== 'branch-edit') return;
-    const id = new URLSearchParams(location.hash.split('?')[1]).get('id');
+    if (preview || !page.startsWith('settings')) return;
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const load = async () => {
+      try {
+        if (['settings', 'settings-personal', 'settings-profile'].includes(page)) {
+          const data = await settingsApi.account(signal);
+          if (signal.aborted) return;
+          setAccount((current) => ({
+            ...current,
+            name: data.name || '',
+            email: data.email || '',
+            phone: data.phone || '',
+            country:
+              { EG: 'Egypt', GB: 'United Kingdom', SA: 'Saudi Arabia', AE: 'United Arab Emirates' }[
+                data.country
+              ] ||
+              data.country ||
+              '',
+            title: data.jobTitle || '',
+            photo: data.avatarUrl || current.photo,
+          }));
+          if (page === 'settings-profile')
+            setDraft({
+              name: data.name || '',
+              phone: data.phone || '',
+              country:
+                {
+                  EG: 'Egypt',
+                  GB: 'United Kingdom',
+                  SA: 'Saudi Arabia',
+                  AE: 'United Arab Emirates',
+                }[data.country] ||
+                data.country ||
+                '',
+              title: data.jobTitle || '',
+              photo: data.avatarUrl || '',
+            });
+        }
+        if (page === 'settings-language') {
+          const data = await settingsApi.language(signal);
+          if (signal.aborted) return;
+          const next = {
+            language: (data.displayLanguage || 'en-GB').startsWith('ar') ? 'ar' : 'en',
+            region:
+              data.region === 'EG'
+                ? 'Egypt'
+                : data.region === 'GB'
+                  ? 'United Kingdom'
+                  : data.region === 'SA'
+                    ? 'Saudi Arabia'
+                    : data.region === 'AE'
+                      ? 'United Arab Emirates'
+                      : 'Egypt',
+            zone: data.timeZone || 'Africa/Cairo',
+            date: data.dateFormat || 'DD/MM/YYYY',
+            time: data.timeFormat === '24h' ? '24-Hour' : '12-Hour',
+          };
+          setPreferences(next);
+          setPrefDraft(next);
+        }
+        if (page.startsWith('settings-notifications')) {
+          const data = await settingsApi.notifications(signal);
+          if (signal.aborted) return;
+          const next = {
+            email: !!data.channels?.email,
+            inapp: !!data.channels?.inApp,
+            emailFeedback: !!data.email?.newFeedback,
+            emailLow: !!data.email?.lowRating,
+            inappFeedback: !!data.inApp?.newFeedback,
+            inappLow: !!data.inApp?.lowRating,
+            weekly: !!data.email?.weeklyReport,
+            news: !!data.email?.productNews,
+            security: true,
+            reports: !!data.inApp?.reportsReady,
+            sound: !!data.inApp?.sound,
+            popup: !!data.inApp?.popups,
+          };
+          setToggles(next);
+          setSwitchDraft(next);
+          setDelivery(
+            { instant: 'Immediately', 'daily_09:00': 'Daily digest', weekly: 'Weekly digest' }[
+              data.email?.feedbackDelivery
+            ] || 'Daily digest',
+          );
+        }
+        if (page === 'settings-email') {
+          const data = await settingsApi.pendingEmailChange(signal);
+          if (!signal.aborted) setPending(data?.pendingEmail || '');
+        }
+        if (['settings-security', 'settings-devices', 'settings-two-factor'].includes(page)) {
+          const data = await settingsApi.security(signal);
+          if (signal.aborted) return;
+          setTwoFA(!!data.twoFactorEnabled);
+          const rows = await settingsApi.sessions(signal);
+          if (!signal.aborted) setSessions(Array.isArray(rows) ? rows : rows.sessions || []);
+          if (page === 'settings-two-factor' && !data.twoFactorEnabled) {
+            const setup = await settingsApi.setupTwoFactor(signal);
+            if (!signal.aborted) setTwoFactorSetup(setup);
+          }
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError')
+          setToast(language === 'ar' ? 'تعذر تحميل الإعدادات.' : 'Could not load settings.');
+      }
+    };
+    load();
+    return () => controller.abort();
+  }, [page, preview, language]);
+
+  useEffect(() => {
+    if (preview || page !== 'branch-history') return;
+    const id = new URLSearchParams(location.hash.split('?')[1] || '').get('id') || draft.id;
+    if (!id) return;
+    const controller = new AbortController();
+    setBranchHistory(null);
+    setBranchHistoryError('');
+    setBranchHistoryLoading(true);
+    workspaceApi
+      .history(id, controller.signal)
+      .then((result) => {
+        if (!controller.signal.aborted) setBranchHistory(result);
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError' && !controller.signal.aborted) {
+          const message =
+            language === 'ar' ? 'تعذر تحميل سجل الفرع.' : 'Could not load branch history.';
+          setBranchHistoryError(message);
+          setToast(message);
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setBranchHistoryLoading(false);
+      });
+    return () => controller.abort();
+  }, [preview, page, draft.id, language, setToast]);
+
+  useEffect(() => {
+    if (preview || !['branch-edit', 'branch-history'].includes(page)) return;
+    const id = new URLSearchParams(location.hash.split('?')[1] || '').get('id') || draft.id;
     const branch = branches.find((item) => String(item.id) === id);
     if (branch) setDraft((current) => (String(current.id) === id ? current : { ...branch }));
     else if (!id || branches.length) {
-      setToast(
-        language === 'ar'
-          ? 'اختر فرعًا من القائمة لتعديله.'
-          : 'Choose a branch from the list to edit.',
-      );
+      if (page === 'branch-edit')
+        setToast(
+          language === 'ar'
+            ? 'اختر فرعًا من القائمة لتعديله.'
+            : 'Choose a branch from the list to edit.',
+        );
       location.hash = '/branches';
     }
-  }, [page, branches, language]);
+  }, [page, branches, language, preview, draft.id]);
   useEffect(() => {
     const shortcut = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -269,6 +414,197 @@ export default function useWorkspaceModel({ language, setLanguage }) {
         await auth.refresh();
       }
     }, 'branches');
+  const saveAccount = async () => {
+    try {
+      const countryCodes = {
+        Egypt: 'EG',
+        'United Kingdom': 'GB',
+        'Saudi Arabia': 'SA',
+        'United Arab Emirates': 'AE',
+      };
+      let data = await settingsApi.updateAccount({
+        name: draft.name,
+        phone: draft.phone,
+        country: countryCodes[draft.country] || draft.country,
+        jobTitle: draft.title,
+      });
+      if (draft.photoFile) data = await settingsApi.setAvatar(draft.photoFile);
+      else if (
+        draft.photo === '' &&
+        account.photo &&
+        account.photo !== '/assets/dashboard/overview/account-avatar.svg'
+      )
+        data = await settingsApi.removeAvatar();
+      setAccount((current) => ({
+        ...current,
+        name: data.name,
+        phone: data.phone || '',
+        country:
+          { EG: 'Egypt', GB: 'United Kingdom', SA: 'Saudi Arabia', AE: 'United Arab Emirates' }[
+            data.country
+          ] ||
+          data.country ||
+          '',
+        title: data.jobTitle || '',
+        email: data.email || current.email,
+        photo:
+          data.avatarUrl ||
+          (draft.photo === '' ? '/assets/dashboard/overview/account-avatar.svg' : current.photo),
+      }));
+      setDraft({});
+      notify('Changes saved');
+      go('settings-personal');
+    } catch (error) {
+      setToast(
+        error.message === 'NETWORK_ERROR'
+          ? 'Network error. Please try again.'
+          : 'Could not save account details.',
+      );
+    }
+  };
+  const saveEmailChange = async () => {
+    try {
+      const result = await settingsApi.requestEmailChange({
+        newEmail: draft.email,
+        currentPassword: draft.password,
+      });
+      setPending(result.pendingEmail || draft.email);
+      setDraft({});
+      notify('Verification email sent. Check your new inbox.');
+    } catch (error) {
+      setToast(
+        error.status === 502
+          ? 'Could not send the verification email.'
+          : 'Could not request email change. Check your password and email.',
+      );
+    }
+  };
+  const cancelEmailChange = async () => {
+    try {
+      await settingsApi.cancelEmailChange();
+      setPending('');
+      notify('Email change cancelled');
+    } catch {
+      setToast('Could not cancel email change.');
+    }
+  };
+  const savePassword = async () => {
+    try {
+      await settingsApi.changePassword({
+        currentPassword: draft.current,
+        newPassword: draft.password,
+        confirmPassword: draft.confirm,
+      });
+      setDraft({});
+      notify('Password updated successfully');
+      go('settings-security');
+      await auth.refresh();
+    } catch (error) {
+      setToast(
+        error.status === 401
+          ? 'Current password is incorrect.'
+          : 'Could not update password. Check the password requirements.',
+      );
+    }
+  };
+  const languagePayload = (value) => ({
+    displayLanguage: value.language === 'ar' ? 'ar-EG' : 'en-GB',
+    region:
+      { Egypt: 'EG', 'United Kingdom': 'GB', 'Saudi Arabia': 'SA', 'United Arab Emirates': 'AE' }[
+        value.region
+      ] || 'EG',
+    timeZone: value.zone,
+    dateFormat: value.date,
+    timeFormat: value.time === '24-Hour' ? '24h' : '12h',
+  });
+  const saveLanguage = async () => {
+    try {
+      await settingsApi.updateLanguage(languagePayload(prefDraft));
+      setPreferences({ ...prefDraft });
+      setLang(prefDraft.language);
+      notify('Changes saved');
+    } catch {
+      setToast('Could not save language preferences.');
+    }
+  };
+  const notificationPayload = (value, pageName = page) => {
+    if (pageName === 'settings-notifications')
+      return { channels: { email: !!value.email, inApp: !!value.inapp } };
+    if (pageName.endsWith('email'))
+      return {
+        email: {
+          newFeedback: !!value.emailFeedback,
+          lowRating: !!value.emailLow,
+          weeklyReport: !!value.weekly,
+          productNews: !!value.news,
+          feedbackDelivery:
+            { Immediately: 'instant', 'Daily digest': 'daily_09:00', 'Weekly digest': 'weekly' }[
+              delivery
+            ] || 'daily_09:00',
+        },
+      };
+    return {
+      inApp: {
+        newFeedback: !!value.inappFeedback,
+        lowRating: !!value.inappLow,
+        reportsReady: !!value.reports,
+        sound: !!value.sound,
+        popups: !!value.popup,
+      },
+    };
+  };
+  const saveNotifications = async (pageName = page) => {
+    try {
+      await settingsApi.updateNotifications(notificationPayload(switchDraft, pageName));
+      setToggles({ ...switchDraft });
+      notify('Changes saved');
+      if (pageName !== 'settings-notifications') go('settings-notifications');
+    } catch {
+      setToast('Could not save notification preferences.');
+    }
+  };
+  const enableTwoFactor = async () => {
+    try {
+      const result = await settingsApi.enableTwoFactor({ code: code.trim() });
+      setTwoFA(true);
+      setRecoveryCodes(result.recoveryCodes || []);
+      setTwoFactorSetup(null);
+      setCode('');
+      notify('Two-factor authentication enabled. Save your recovery codes.');
+    } catch (error) {
+      setToast(error.message || 'Could not verify the authenticator code.');
+    }
+  };
+  const disableTwoFactor = async () => {
+    try {
+      await settingsApi.disableTwoFactor({ password: draft.password, code: code.trim() });
+      setTwoFA(false);
+      setCode('');
+      setDraft({});
+      notify('Two-factor authentication disabled.');
+      go('settings-security');
+    } catch (error) {
+      setToast(error.message || 'Could not disable two-factor authentication.');
+    }
+  };
+  const revokeSession = async (sessionId) => {
+    try {
+      await settingsApi.revokeSession(sessionId);
+      setSessions((rows) => rows.filter((row) => String(row.id || row._id) !== String(sessionId)));
+      notify('Session signed out.');
+    } catch (error) {
+      setToast(error.message || 'Could not sign out this session.');
+    }
+  };
+  const signOutAllSessions = async () => {
+    try {
+      await settingsApi.signOutAll();
+      await auth.refresh();
+      location.hash = '/login';
+    } catch (error) {
+      setToast(error.message || 'Could not sign out all devices.');
+    }
+  };
   const businessPage = page.startsWith('business') || page.startsWith('branch'),
     settingsPage = page.startsWith('settings'),
     active = branches.filter((b) => !b.archived),
@@ -524,6 +860,20 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     saveConnectedBusiness,
     saveConnectedBranch,
     archiveConnectedBranch,
+    saveAccount,
+    saveEmailChange,
+    cancelEmailChange,
+    savePassword,
+    saveLanguage,
+    saveNotifications,
+    twoFactorSetup,
+    setTwoFactorSetup,
+    recoveryCodes,
+    setRecoveryCodes,
+    enableTwoFactor,
+    disableTwoFactor,
+    revokeSession,
+    signOutAllSessions,
     page,
     setPage,
     setMobile,
@@ -540,6 +890,9 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     setQuery,
     archive,
     setArchive,
+    branchHistory,
+    branchHistoryLoading,
+    branchHistoryError,
     historyStart,
     setHistoryStart,
     historyEnd,

@@ -39,7 +39,7 @@ describe('API transport', () => {
     expect(fetch.mock.calls[1][1].headers['X-CSRF-Token']).toBe('csrf');
     expect(localStorage.length).toBe(0);
   });
-  it('surfaces safe errors without reflecting raw server messages', async () => {
+  it('keeps the error code safe while preserving sanitized server context', async () => {
     vi.stubGlobal(
       'fetch',
       vi
@@ -54,6 +54,25 @@ describe('API transport', () => {
     await expect(apiRequest('/auth/session')).rejects.toMatchObject({
       code: 'SERVICE_UNAVAILABLE',
       status: 503,
+      serverMessage: 'private detail',
+    });
+  });
+  it('preserves the real backend message and status for failed report generation', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValueOnce(new Response(JSON.stringify({ user: null, csrfToken: 'csrf' })))
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ message: 'Something went wrong, please try again' }), {
+            status: 500,
+          }),
+        ),
+    );
+    await expect(apiRequest('/reports', { method: 'POST', body: {} })).rejects.toMatchObject({
+      code: 'REQUEST_FAILED',
+      status: 500,
+      serverMessage: 'Something went wrong, please try again',
     });
   });
 });

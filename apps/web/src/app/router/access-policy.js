@@ -1,6 +1,7 @@
 const publicRoutes = [
   'landing',
   'customer-feedback',
+  'public-survey',
   'login',
   'login-2fa',
   'confirm-email',

@@ -19,13 +19,13 @@ export default function renderAccountPages(model) {
     pending,
     prefDraft,
     preferences,
-    setAccount,
+    saveAccount,
+    saveEmailChange,
+    cancelEmailChange,
+    saveLanguage,
     setDraft,
     setError,
-    setLang,
-    setPending,
     setPrefDraft,
-    setPreferences,
     settingsTabs,
     t,
     validate,
@@ -152,12 +152,13 @@ export default function renderAccountPages(model) {
                       return;
                     }
                     const reader = new FileReader();
-                    reader.onload = () => setDraft((prev) => ({ ...prev, photo: reader.result }));
+                    reader.onload = () =>
+                      setDraft((prev) => ({ ...prev, photo: reader.result, photoFile: file }));
                     reader.readAsDataURL(file);
                   }}
                 />
               </label>
-              {btn('Remove', () => setDraft({ ...draft, photo: '' }))}
+              {btn('Remove', () => setDraft({ ...draft, photo: '', photoFile: null }))}
             </div>
             <small className="muted">JPG / PNG · Max 2 MB</small>
             <div className="field-grid">
@@ -175,12 +176,7 @@ export default function renderAccountPages(model) {
             {field('Full name', 'name', { required: true })}
             {field('Job title', 'title')}
             {actions(() => {
-              if (validate(['name'])) {
-                setAccount({ ...draft });
-                setDraft({});
-                notify('Changes saved');
-                go('settings');
-              }
+              if (validate(['name'])) saveAccount();
             }, 'settings')}
           </form>
           {note(
@@ -231,10 +227,7 @@ export default function renderAccountPages(model) {
                   </div>
                 </div>
                 <div className="inline-actions">
-                  {btn(L('Resend verification email', 'إعادة إرسال رابط التأكيد'), () =>
-                    notify(L('Preview only. No email sent.', 'معاينة فقط، لم يتم إرسال بريد.')),
-                  )}
-                  {btn(L('Cancel email change', 'إلغاء تغيير البريد'), () => setPending(''))}
+                  {btn(L('Cancel email change', 'إلغاء تغيير البريد'), cancelEmailChange)}
                 </div>
               </>
             ) : (
@@ -247,14 +240,7 @@ export default function renderAccountPages(model) {
                     setError({ email: L('Enter a valid email.', 'أدخل بريدًا صالحًا.') });
                     return;
                   }
-                  setPending(draft.email);
-                  setDraft({});
-                  notify(
-                    L(
-                      'Pending verification preview. No email sent.',
-                      'معاينة انتظار التأكيد، لم يتم إرسال بريد.',
-                    ),
-                  );
+                  saveEmailChange();
                 }, 'settings')}
               </>
             )}
@@ -262,8 +248,8 @@ export default function renderAccountPages(model) {
           {note(
             L('Your sign-in email', 'بريد تسجيل الدخول'),
             L(
-              'This preview does not send emails or change your real account.',
-              'هذه المعاينة لا ترسل بريدًا أو تغيّر حسابك الحقيقي.',
+              'We will send a verification link to your new email. Your sign-in email changes only after verification.',
+              'سنرسل رابط تأكيد إلى بريدك الجديد. لن يتغير بريد الدخول إلا بعد التأكيد.',
             ),
           )}
         </div>
@@ -341,15 +327,7 @@ export default function renderAccountPages(model) {
                   setPrefDraft(preferences);
                   go('settings');
                 })}
-                {btn(
-                  'Save changes',
-                  () => {
-                    setPreferences(prefDraft);
-                    setLang(prefDraft.language);
-                    notify('Changes saved');
-                  },
-                  true,
-                )}
+                {btn('Save changes', saveLanguage, true)}
               </div>
             </div>
           </section>

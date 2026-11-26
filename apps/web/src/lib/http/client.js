@@ -13,7 +13,10 @@ async function request(path, options = {}) {
     response = await fetch(`${API_PREFIX}${path}`, {
       credentials: 'include',
       ...options,
-      headers: { 'Content-Type': 'application/json', ...options.headers },
+      headers: {
+        ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+        ...options.headers,
+      },
     });
   } catch (error) {
     if (error.name === 'AbortError') throw error;
@@ -33,10 +36,14 @@ async function request(path, options = {}) {
           : /email already exists/i.test(data?.message || '')
             ? 'EMAIL_USED'
             : 'REQUEST_FAILED');
+    const serverMessage = [data?.message, data?.error?.message].find(
+      (value) => typeof value === 'string' && value.trim(),
+    );
     throw Object.assign(new Error(code), {
       code,
       status: response.status,
-      details: data?.error?.details || [],
+      details: data?.error?.details || data?.errors || [],
+      serverMessage: serverMessage ? serverMessage.slice(0, 300) : '',
     });
   }
   return data;
@@ -55,7 +62,10 @@ export function bootstrapSession() {
   pendingBootstrap = promise;
   return promise;
 }
-export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
+export async function apiRequest(
+  path,
+  { method = 'GET', body, rawBody, contentType, signal } = {},
+) {
   if (path === '/auth/session' && method === 'GET') return bootstrapSession();
   if (method !== 'GET' && !csrfToken) await bootstrapSession();
   if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
@@ -65,8 +75,15 @@ export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
     data = await request(path, {
       method,
       signal,
-      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-      headers: method === 'GET' ? {} : { 'X-CSRF-Token': csrfToken },
+      ...(rawBody !== undefined
+        ? { body: rawBody }
+        : body !== undefined
+          ? { body: JSON.stringify(body) }
+          : {}),
+      headers:
+        method === 'GET'
+          ? {}
+          : { 'X-CSRF-Token': csrfToken, ...(contentType ? { 'Content-Type': contentType } : {}) },
     });
   } catch (error) {
     if (

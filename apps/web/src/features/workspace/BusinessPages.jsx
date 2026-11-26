@@ -14,6 +14,9 @@ export default function renderBusinessPages(model) {
     archive,
     biz,
     branches,
+    branchHistory,
+    branchHistoryLoading,
+    branchHistoryError,
     btn,
     businessTabs,
     draft,
@@ -48,6 +51,24 @@ export default function renderBusinessPages(model) {
     t,
     validate,
   } = model;
+  const historyWeeks =
+    !preview && Array.isArray(branchHistory?.weeklyResponses) ? branchHistory.weeklyResponses : [];
+  const historyRange = historyWeeks.length
+    ? `${historyWeeks[0].weekStart} – ${historyWeeks.at(-1).weekStart}`
+    : '';
+  const historyScores = preview
+    ? draft.responses
+      ? [
+          ['Service', 'الخدمة', 8.3],
+          ['Price', 'السعر', 6.6],
+          ['Speed', 'السرعة', 6],
+          ['Cleanliness', 'النظافة', 8.7],
+          ['Product quality', 'جودة المنتج', 8.7],
+        ]
+      : []
+    : Array.isArray(branchHistory?.aspectScores)
+      ? branchHistory.aspectScores
+      : [];
   let content;
   if (page === 'business')
     content = (
@@ -479,88 +500,143 @@ export default function renderBusinessPages(model) {
             </div>
           </div>
         )}
-        <div className="history-controls">
-          <div className="history-date-wrap">
-            <button
-              className="button"
-              onClick={() => setHistoryDateOpen(!historyDateOpen)}
-              aria-expanded={historyDateOpen}
-            >
-              <img
-                className="figma-icon"
-                src="/assets/dashboard/overview/calendar-days.svg"
-                alt=""
+        {preview ? (
+          <div className="history-controls">
+            <div className="history-date-wrap">
+              <button
+                className="button"
+                onClick={() => setHistoryDateOpen(!historyDateOpen)}
+                aria-expanded={historyDateOpen}
+              >
+                <img
+                  className="figma-icon"
+                  src="/assets/dashboard/overview/calendar-days.svg"
+                  alt=""
+                />
+                {historyStart === '2026-09-12' && historyEnd === '2026-10-09'
+                  ? '12 Sep – 9 Oct, 2026'
+                  : historyStart + ' – ' + historyEnd}
+              </button>
+              {historyDateOpen && (
+                <section className="history-date-popover card">
+                  <label>
+                    {L('From', 'من')}
+                    <input
+                      type="date"
+                      value={historyStart}
+                      max={historyEnd}
+                      onChange={(e) => setHistoryStart(e.target.value)}
+                    />
+                  </label>
+                  <label>
+                    {L('To', 'إلى')}
+                    <input
+                      type="date"
+                      value={historyEnd}
+                      min={historyStart}
+                      onChange={(e) => setHistoryEnd(e.target.value)}
+                    />
+                  </label>
+                  <button className="button primary" onClick={() => setHistoryDateOpen(false)}>
+                    {L('Apply', 'تطبيق')}
+                  </button>
+                </section>
+              )}
+            </div>
+            <label className="field history-survey">
+              <span className="sr-only">{L('Survey', 'الاستبيان')}</span>
+              <PreviewSelect
+                label={L('Survey', 'الاستبيان')}
+                value={historySurvey}
+                values={['Customer experience survey']}
+                onChange={setHistorySurvey}
               />
-              {historyStart === '2026-09-12' && historyEnd === '2026-10-09'
-                ? '12 Sep – 9 Oct, 2026'
-                : historyStart + ' – ' + historyEnd}
-            </button>
-            {historyDateOpen && (
-              <section className="history-date-popover card">
-                <label>
-                  {L('From', 'من')}
-                  <input
-                    type="date"
-                    value={historyStart}
-                    max={historyEnd}
-                    onChange={(e) => setHistoryStart(e.target.value)}
-                  />
-                </label>
-                <label>
-                  {L('To', 'إلى')}
-                  <input
-                    type="date"
-                    value={historyEnd}
-                    min={historyStart}
-                    onChange={(e) => setHistoryEnd(e.target.value)}
-                  />
-                </label>
-                <button className="button primary" onClick={() => setHistoryDateOpen(false)}>
-                  {L('Apply', 'تطبيق')}
-                </button>
-              </section>
-            )}
+            </label>
           </div>
-          <label className="field history-survey">
-            <span className="sr-only">{L('Survey', 'الاستبيان')}</span>
-            <PreviewSelect
-              label={L('Survey', 'الاستبيان')}
-              value={historySurvey}
-              values={['Customer experience survey']}
-              onChange={setHistorySurvey}
+        ) : (
+          <div className="history-controls">
+            <div className="history-date-wrap">
+              <button className="button" type="button" disabled aria-expanded={false}>
+                <img
+                  className="figma-icon"
+                  src="/assets/dashboard/overview/calendar-days.svg"
+                  alt=""
+                />
+                {historyRange || L('Last 12 weeks', 'آخر ١٢ أسبوعًا')}
+              </button>
+            </div>
+            <label className="field history-survey">
+              <span>{L('Survey', 'الاستبيان')}</span>
+              <input
+                value={L('All surveys', 'كل الاستبيانات')}
+                readOnly
+                aria-label={L('Survey', 'الاستبيان')}
+              />
+            </label>
+            <p className="muted">
+              {L(
+                'History includes every survey for this branch. Date and survey filters are not available.',
+                'يتضمن السجل جميع استبيانات هذا الفرع. لا تتوفر فلاتر التاريخ أو الاستبيان.',
+              )}
+            </p>
+          </div>
+        )}
+        {!preview && branchHistoryLoading && (
+          <p role="status">{L('Loading branch history…', 'جارٍ تحميل سجل الفرع…')}</p>
+        )}
+        {!preview && branchHistoryError && <p role="alert">{branchHistoryError}</p>}
+        {(preview || branchHistory) && (
+          <div className="metrics">
+            <Metric
+              title={t('Responses')}
+              value={preview ? draft.responses : (branchHistory.earlierResponses ?? '—')}
+              detail={preview ? '12 Sep–9 Oct 2026' : historyRange}
             />
-          </label>
-        </div>
-        <div className="metrics">
-          <Metric title={t('Responses')} value={draft.responses} detail="12 Sep–9 Oct 2026" />
-          <Metric
-            title={L('Positive sentiment', 'المشاعر الإيجابية')}
-            value={draft.responses ? '77.9%' : '—'}
-          />
-          <Metric
-            title={L('Speed score', 'تقييم السرعة')}
-            value={draft.responses ? '6.0 / 10' : '—'}
-          />
-        </div>
+            <Metric
+              title={L('Positive sentiment', 'المشاعر الإيجابية')}
+              value={
+                preview
+                  ? draft.responses
+                    ? '77.9%'
+                    : '—'
+                  : branchHistory.positiveSentiment == null
+                    ? '—'
+                    : `${branchHistory.positiveSentiment}%`
+              }
+            />
+            <Metric
+              title={L('Speed score', 'تقييم السرعة')}
+              value={
+                preview
+                  ? draft.responses
+                    ? '6.0 / 10'
+                    : '—'
+                  : branchHistory.speedScore == null
+                    ? '—'
+                    : `${Number(branchHistory.speedScore).toFixed(1)} / 10`
+              }
+            />
+          </div>
+        )}
         <div className="two-col">
           <section className="card">
             <h2>{L('Historical aspect scores', 'درجات الجوانب السابقة')}</h2>
-            {draft.responses ? (
-              [
-                ['Service', 'الخدمة', 8.3],
-                ['Price', 'السعر', 6.6],
-                ['Speed', 'السرعة', 6],
-                ['Cleanliness', 'النظافة', 8.7],
-                ['Product quality', 'جودة المنتج', 8.7],
-              ].map(([en, arabic, n]) => (
-                <div className="score" key={en}>
-                  <span>{L(en, arabic)}</span>
-                  <div>
-                    <span style={{ width: n * 10 + '%' }} />
+            {historyScores.length ? (
+              historyScores.map((score) => {
+                const [label, arabicLabel, value] = Array.isArray(score)
+                  ? score
+                  : [score.aspect, score.aspect, Number(score.score)];
+                const n = Number(value);
+                return (
+                  <div className="score" key={label}>
+                    <span>{preview ? L(label, arabicLabel) : label}</span>
+                    <div>
+                      <span style={{ width: (Number.isFinite(n) ? n : 0) * 10 + '%' }} />
+                    </div>
+                    <strong>{Number.isFinite(n) ? n.toFixed(1) : '—'}</strong>
                   </div>
-                  <strong>{n}</strong>
-                </div>
-              ))
+                );
+              })
             ) : (
               <p>
                 {L('Scores appear after feedback is received.', 'تظهر الدرجات بعد وصول الردود.')}

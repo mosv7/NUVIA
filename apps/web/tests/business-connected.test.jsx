@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { it, expect, vi } from 'vitest';
+import { afterEach, it, expect, vi } from 'vitest';
 import App from '../src/app/App.jsx';
 import { authApi } from '../src/features/auth/api.js';
 import { workspaceApi } from '../src/features/workspaces/api.js';
@@ -12,6 +12,10 @@ const workspace = {
   onboardingStep: 'complete',
   branches: [{ id: 'primary', name: 'Saved branch', archivedAt: null }],
 };
+afterEach(() => {
+  vi.restoreAllMocks();
+  history.replaceState(null, '', '/');
+});
 function setup(route) {
   vi.spyOn(authApi, 'session').mockResolvedValue({
     user: { id: 'owner', name: 'Actual Owner', email: 'owner@example.test', emailVerified: true },
@@ -26,7 +30,11 @@ it('saves approved business identity through the existing workspace API', async 
     .spyOn(workspaceApi, 'save')
     .mockResolvedValue({ ...workspace, businessName: 'Updated Cafe' });
   setup('business');
-  fireEvent.click(await screen.findByRole('button', { name: 'Edit profile', exact: true }));
+  fireEvent.click(
+    await screen.findByRole('button', { name: 'Edit profile', exact: true }, undefined, {
+      timeout: 5000,
+    }),
+  );
   fireEvent.change(await screen.findByLabelText(/Business name/), {
     target: { value: 'Updated Cafe' },
   });
@@ -85,4 +93,34 @@ it('keeps the edited values and reports failure instead of optimistic success', 
 it('restores a selected branch after opening its edit URL directly', async () => {
   setup('branch-edit?id=primary');
   await waitFor(() => expect(screen.getByLabelText(/Branch name/)).toHaveValue('Saved branch'));
+});
+
+it('loads owned branch history and removes preview-only metrics', async () => {
+  const history = vi.spyOn(workspaceApi, 'history').mockResolvedValue({
+    branchId: 'primary',
+    status: 'active',
+    earlierResponses: 7,
+    positiveSentiment: 71,
+    speedScore: null,
+    aspectScores: [{ aspect: 'Service', score: 8.4 }],
+    weeklyResponses: [
+      { weekStart: '2026-09-12', responses: 3 },
+      { weekStart: '2026-10-09', responses: 4 },
+    ],
+  });
+  setup('branch-history?id=primary');
+  expect(await screen.findByText('Service')).toBeVisible();
+  expect(screen.getByText('8.4')).toBeVisible();
+  expect(screen.getByText('71%')).toBeVisible();
+  expect(history).toHaveBeenCalledWith('primary', expect.any(AbortSignal));
+  expect(screen.queryByText('77.9%')).not.toBeInTheDocument();
+  expect(screen.queryByText('6.0 / 10')).not.toBeInTheDocument();
+});
+
+it('reports branch-history failures without showing invented values', async () => {
+  vi.spyOn(workspaceApi, 'history').mockRejectedValue(new Error('REQUEST_FAILED'));
+  setup('branch-history?id=primary');
+  expect(await screen.findByRole('alert')).toHaveTextContent('Could not load branch history.');
+  expect(screen.queryByText('77.9%')).not.toBeInTheDocument();
+  expect(screen.queryByText('6.0 / 10')).not.toBeInTheDocument();
 });

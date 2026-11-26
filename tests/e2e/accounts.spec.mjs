@@ -9,6 +9,66 @@ async function waitFor(callback, ms = 10000) {
   }
   throw new Error('Timed out waiting for browser state');
 }
+async function assertDashboardSidebar(page) {
+  const sidebar = page.locator('.product-navigation');
+  assert.ok(await sidebar.isVisible(), 'Authenticated dashboard must render workspace navigation');
+  for (const label of ['Overview', 'Feedbacks', 'Surveys', 'Settings']) {
+    assert.ok(
+      await sidebar.getByRole('button', { name: label }).first().isVisible(),
+      `Workspace navigation must expose ${label} on the connected dashboard`,
+    );
+  }
+}
+async function assertHelpCenterFlow(page, { mobile = false, arabic = false, output }) {
+  if (mobile) await page.getByRole('button', { name: 'Navigation menu' }).click();
+  const label = arabic ? 'مركز المساعدة' : 'Help center';
+  const helpButton = page.locator('.product-navigation').getByRole('button', { name: label });
+  assert.ok(await helpButton.first().isVisible(), `${label} must be reachable from the workspace`);
+  await helpButton.first().click();
+  await waitFor(() => page.url().endsWith('#/help-center'));
+  const heading = arabic ? 'مركز المساعدة' : 'Help center';
+  await page.getByRole('heading', { name: heading, exact: true, level: 1 }).waitFor();
+  assert.ok(
+    await page.getByText(arabic ? 'مساعدة ذاتية فقط' : 'Self-service help only').isVisible(),
+  );
+  assert.ok(
+    await page.getByText(arabic ? /الدردشة المباشرة/ : /Live chat, email support/).isVisible(),
+    'Help center must state that live support is unavailable',
+  );
+  assert.equal(
+    await page
+      .locator(
+        '[data-preview-page="help-center"] input, [data-preview-page="help-center"] textarea',
+      )
+      .count(),
+    0,
+    'Help center must not present a fake support form',
+  );
+  assert.ok(
+    await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    'Help center must not overflow horizontally',
+  );
+  const question = arabic
+    ? 'هل يمكنني التواصل مع الدعم من هذه الصفحة؟'
+    : 'Can I contact support from this page?';
+  const summary = page.locator('summary', { hasText: question });
+  assert.equal(await summary.evaluate((element) => element.parentElement.open), false);
+  await summary.click();
+  assert.equal(await summary.evaluate((element) => element.parentElement.open), true);
+  if (output)
+    await page.screenshot({
+      path: join(output, arabic ? 'help-center-ar-mobile.png' : 'help-center-en-desktop.png'),
+      fullPage: true,
+      animations: 'disabled',
+    });
+  const back = arabic ? 'العودة إلى النظرة العامة' : 'Back to Overview';
+  const backLink = page.getByRole('link', { name: back }).first();
+  assert.ok(await backLink.isVisible(), 'Help center must link back to the dashboard');
+  await backLink.click();
+  await waitFor(() => page.url().endsWith('#/dashboard'));
+  await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+  if (!mobile) await assertDashboardSidebar(page);
+}
 export async function runAccountScenario({ browser, origin, deps, output }) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage(),
@@ -83,15 +143,20 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await page.getByRole('heading', { name: 'Welcome to NUVIA' }).waitFor();
     await page.getByRole('button', { name: 'Get Started', exact: true }).click();
-    await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
+    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+    assert.ok(page.url().endsWith('#/dashboard'), 'Onboarding must land on the dashboard');
+    await assertDashboardSidebar(page);
     assert.equal(await page.getByText('Bloom & Co.', { exact: true }).count(), 0);
     await page.screenshot({ path: join(output, 'overview-en-desktop.png'), fullPage: true });
+    await assertHelpCenterFlow(page, { output });
     await page.reload();
-    await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
+    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+    await assertDashboardSidebar(page);
     await page.goto(`${origin}/#/feedbacks`);
-    await page.getByRole('heading', { name: 'Your first response starts here' }).waitFor();
-    assert.equal(await page.locator('.feedback-filter').count(), 5);
-    assert.equal(await page.locator('.feedback-table tbody tr').count(), 0);
+    await page.getByRole('heading', { name: 'Feedbacks', exact: true }).waitFor();
+    await page.getByText('No responses yet.', { exact: true }).waitFor();
+    assert.ok(await page.getByPlaceholder('Search feedback').isVisible());
+    assert.equal(await page.locator('tbody tr').count(), 0);
     for (const width of [1440, 393]) {
       await page.setViewportSize({ width, height: width === 393 ? 800 : 900 });
       assert.equal(await page.locator('.workspace-account-actions').count(), 0);
@@ -147,7 +212,8 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
       assert.ok((await page.getByText('Browser Cafe', { exact: true }).count()) > 0);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await page.goto(`${origin}/#/feedbacks`);
-      await page.getByRole('heading', { name: 'Your first response starts here' }).waitFor();
+      await page.getByRole('heading', { name: 'Feedbacks', exact: true }).waitFor();
+      await page.getByText('No responses yet.', { exact: true }).waitFor();
     }
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/branches`);
@@ -190,7 +256,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     assert.equal(await page.getByRole('option', { name: 'Cairo', exact: true }).count(), 0);
     await page.keyboard.press('Escape');
     await page.goto(`${origin}/#/surveys`);
-    await page.getByRole('heading', { name: 'This feature is under development' }).waitFor();
+    await page.getByRole('heading', { name: 'Surveys', exact: true }).first().waitFor();
     await page.goto(`${origin}/#/feedbacks`);
     await page.getByRole('button', { name: 'Open Ask NUVIA' }).click();
     assert.equal(await page.getByRole('link', { name: 'View supporting feedback' }).count(), 0);
@@ -198,12 +264,14 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByText('Design preview · معاينة التصميم').waitFor();
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/dashboard`);
-    await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
+    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
     await page.getByRole('button', { name: 'Profile', exact: true }).click();
     await page.getByRole('button', { name: 'Sign out', exact: true }).click();
     await page.getByRole('heading', { name: 'Welcome back' }).waitFor();
     await login('Synthetic123');
-    await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
+    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+    assert.ok(page.url().endsWith('#/dashboard'), 'Login must land on the dashboard');
+    await assertDashboardSidebar(page);
     await page.goto(`${origin}/#/forgot`);
     await page.getByLabel('Work email').fill('browser@example.test');
     await page.getByRole('button', { name: 'Send reset link' }).click();
@@ -216,11 +284,12 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await login('Synthetic123');
     await page.getByRole('status').filter({ hasText: 'incorrect' }).waitFor();
     await login('Changed123');
-    await page.getByRole('heading', { name: 'No responses yet' }).waitFor();
+    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+    await assertDashboardSidebar(page);
     await page.goto(`${origin}/?lang=ar#/dashboard`);
     await page.setViewportSize({ width: 393, height: 800 });
     await page.reload();
-    await page.getByRole('heading', { name: 'لا توجد ردود بعد' }).waitFor();
+    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
     assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
     await waitFor(async () =>
       page.locator('.product-navigation').evaluate((element) => {
@@ -237,6 +306,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       'Mobile page must not overflow horizontally',
     );
+    await assertHelpCenterFlow(page, { mobile: true, arabic: true, output });
     await page.goto(`${origin}/#/business-information`);
     await page.getByRole('heading', { name: 'معلومات النشاط' }).waitFor();
     assert.equal(await page.getByLabel(/اسم النشاط/).inputValue(), 'Browser Cafe');
