@@ -4659,3 +4659,56 @@
 #root .workspace-extension .new-preview-content .business-branches-link {
   color: var(--blue);
 }
+
+/* Business edit: prevent guidance text overlap on narrower laptop screens. */
+@media (max-width: 1100px) {
+  #root .workspace-extension .new-preview-content[data-preview-page='business-edit'] .edit-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root
+    .workspace-extension
+    .new-preview-content[data-preview-page='business-edit']
+    .edit-layout
+    > .guidance-stack {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root
+    .workspace-extension
+    .new-preview-content[data-preview-page='business-edit']
+    .side-note:has(> .guidance-icon) {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  #root
+    .workspace-extension
+    .new-preview-content[data-preview-page='business-edit']
+    .side-note
+    > .guidance-icon {
+    display: inline-grid !important;
+    vertical-align: middle;
+    margin: 0 0 8px !important;
+  }
+
+  #root
+    .workspace-extension
+    .new-preview-content[data-preview-page='business-edit']
+    .side-note
+    > h3,
+  #root .workspace-extension .new-preview-content[data-preview-page='business-edit'] .side-note > p,
+  #root
+    .workspace-extension
+    .new-preview-content[data-preview-page='business-edit']
+    .side-note
+    > small {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 0 8px !important;
+    overflow-wrap: anywhere;
+  }
+}

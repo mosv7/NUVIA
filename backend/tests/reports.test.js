@@ -18,11 +18,14 @@ const Business = require('../src/models/business.model');
 const BusinessOwner = require('../src/models/businessOwner.model');
 const CustomerResponse = require('../src/models/customerResponse.model');
 const Survey = require('../src/models/survey.model');
+const Report = require('../src/models/report.model');
 
 let replica;
 let upstream;
 let base;
 const received = [];
+let upstreamMode = 'valid';
+let pauseUpstream;
 
 before(async () => {
   const candidate = path.resolve(__dirname, '../../.local/tools/mongod.exe');
@@ -37,9 +40,13 @@ before(async () => {
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
     const payload = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    assert.equal(req.headers['x-ai-service-token'] === process.env.AI_SERVICE_TOKEN, true);
     received.push(payload);
+    if (pauseUpstream) await pauseUpstream();
     const evidence = payload.texts[0];
     res.setHeader('Content-Type', 'application/json');
+    if (upstreamMode === 'invalid')
+      return res.end(JSON.stringify({ detail: 'private-upstream-details' }));
     res.end(
       JSON.stringify({
         schema_version: '1',
@@ -100,7 +107,7 @@ async function createOwner(email) {
     .expect(200);
   const owner = await BusinessOwner.findOne({ email });
   const business = await Business.findOne({ ownerId: owner._id });
-  return { mutate, owner, business };
+  return { agent, mutate, owner, business };
 }
 
 test('report generation selects owner surveys, batches all feedback and preserves evidence links', async () => {
@@ -186,4 +193,175 @@ test('report generation selects owner surveys, batches all feedback and preserve
   assert.ok(
     data.reports[0].batches.every((batch) => batch.provenance.quality_status === 'baseline'),
   );
+});
+
+test('saved reports keep the requested inclusive day, source links, locale and validated quality', async () => {
+  const account = await createOwner('saved-reports@example.test');
+  const otherAccount = await createOwner('other-saved-reports@example.test');
+  const input = { from: '2026-10-31', to: '2026-10-31', locale: 'ar' };
+
+  const survey = await Survey.create({
+    businessId: account.business._id,
+    name: 'Customer experience',
+    shortCode: 'saved-report-customer-experience',
+    createdBy: account.owner._id,
+  });
+  const branchId = new mongoose.Types.ObjectId();
+  const fixture = {
+    businessId: account.business._id,
+    surveyId: survey._id,
+    branchId,
+    number: 1,
+    formVersion: 'a'.repeat(64),
+    formSnapshot: { branch: { id: String(branchId), name: 'Garden Branch' } },
+    feedbackText: 'انتظرنا طويلًا',
+    language: 'ar',
+    submittedAt: new Date('2026-10-31T23:59:59.999Z'),
+  };
+  const [included] = await CustomerResponse.create([
+    fixture,
+    {
+      ...fixture,
+      number: 2,
+      feedbackText: 'November response',
+      submittedAt: new Date('2026-11-01T00:00:00.000Z'),
+    },
+    { ...fixture, number: 3, feedbackText: '   ' },
+  ]);
+  const legacy = await Report.create({
+    business: otherAccount.business._id,
+    reportName: 'Earlier report',
+    periodCovered: 'October 2026',
+  });
+  await Report.collection.updateOne(
+    { _id: legacy._id },
+    { $unset: { qualityStatus: '', qualityAccepted: '' } },
+  );
+
+  const callCount = received.length;
+  await account.mutate('/api/reports', { ...input, from: '2026-09-31' }).expect(400);
+  await account.mutate('/api/reports', { ...input, to: '2026-10-30' }).expect(400);
+  await account.mutate('/api/reports', { from: input.from }).expect(400);
+  assert.equal(received.length, callCount);
+
+  const saved = await account.mutate('/api/reports', input).expect(201);
+  const { report } = saved.body;
+  assert.equal(received.length, callCount + 1);
+  assert.equal(received.at(-1).locale, 'ar');
+  assert.deepEqual(
+    received.at(-1).texts.map(({ text }) => text),
+    [fixture.feedbackText],
+  );
+  assert.deepEqual(report.period, { from: '2026-10-31', to: '2026-10-31' });
+  assert.deepEqual(report.branchesCovered, ['Garden Branch']);
+  assert.equal(report.language, 'ar');
+  assert.equal(report.totalReviewsAnalyzed, 1);
+  assert.equal(report.qualityStatus, 'baseline');
+  assert.equal(report.qualityAccepted, false);
+  assert.equal(report.evidenceBatches[0].provenance.quality_accepted, false);
+  assert.equal(report.problems[0].citations[0].responseId, String(included._id));
+  assert.equal(report.problems[0].citations[0].number, 1);
+
+  const list = await account.agent.get('/api/reports').expect(200);
+  assert.deepEqual(
+    list.body.reports.map(({ _id }) => _id),
+    [report._id],
+  );
+  const detail = await account.agent.get('/api/reports/' + report._id).expect(200);
+  assert.deepEqual(detail.body.report, report);
+  await account.agent.get('/api/reports/not-a-report-id').expect(400);
+
+  const otherList = await otherAccount.agent.get('/api/reports').expect(200);
+  assert.deepEqual(
+    otherList.body.reports.map(({ _id }) => _id),
+    [String(legacy._id)],
+  );
+  assert.equal(otherList.body.reports[0].qualityStatus, null);
+  assert.equal(otherList.body.reports[0].qualityAccepted, false);
+  await otherAccount.agent.get('/api/reports/' + report._id).expect(404);
+});
+
+test('report generation safely reports an invalid upstream response without saving a report', async () => {
+  const account = await createOwner('unavailable-reports@example.test');
+  const survey = await Survey.create({
+    businessId: account.business._id,
+    name: 'Cafe feedback',
+    shortCode: 'unavailable-report-cafe-feedback',
+    createdBy: account.owner._id,
+  });
+  await CustomerResponse.create({
+    businessId: account.business._id,
+    surveyId: survey._id,
+    branchId: new mongoose.Types.ObjectId(),
+    number: 1,
+    formVersion: 'a'.repeat(64),
+    formSnapshot: {},
+    feedbackText: 'Long wait',
+    language: 'en',
+  });
+
+  const empty = await account
+    .mutate('/api/reports', { from: '2000-01-01', to: '2000-01-02' })
+    .expect(422);
+  assert.match(empty.body.message, /No written feedback/);
+  const serviceUrl = process.env.AI_SERVICE_URL;
+  delete process.env.AI_SERVICE_URL;
+  try {
+    const unconfigured = await account.mutate('/api/reports', {}).expect(503);
+    assert.equal(unconfigured.body.error.code, 'AI_NOT_CONFIGURED');
+  } finally {
+    process.env.AI_SERVICE_URL = serviceUrl;
+  }
+
+  let unavailable;
+  upstreamMode = 'invalid';
+  try {
+    unavailable = await account.mutate('/api/reports', {}).expect(502);
+  } finally {
+    upstreamMode = 'valid';
+  }
+  assert.equal(unavailable.body.error.code, 'AI_UPSTREAM_INVALID');
+  assert.equal(JSON.stringify(unavailable.body).includes('private-upstream-details'), false);
+  const list = await account.agent.get('/api/reports').expect(200);
+  assert.deepEqual(list.body.reports, []);
+});
+
+test('ending the browser session during inference prevents a report from being saved', async () => {
+  const account = await createOwner('ended-session-reports@example.test');
+  const survey = await Survey.create({
+    businessId: account.business._id,
+    name: 'Takeaway feedback',
+    shortCode: 'ended-session-report-takeaway',
+    createdBy: account.owner._id,
+  });
+  await CustomerResponse.create({
+    businessId: account.business._id,
+    surveyId: survey._id,
+    branchId: new mongoose.Types.ObjectId(),
+    number: 1,
+    formVersion: 'a'.repeat(64),
+    formSnapshot: {},
+    feedbackText: 'Excellent service',
+    language: 'en',
+  });
+
+  const upstreamStarted = Promise.withResolvers();
+  const upstreamRelease = Promise.withResolvers();
+  pauseUpstream = () => {
+    upstreamStarted.resolve();
+    return upstreamRelease.promise;
+  };
+  const generation = account
+    .mutate('/api/reports', {})
+    .expect(401)
+    .then((result) => result);
+  try {
+    await Promise.race([upstreamStarted.promise, generation]);
+    await account.mutate('/api/auth/logout', {}).expect(204);
+  } finally {
+    upstreamRelease.resolve();
+    pauseUpstream = undefined;
+  }
+  await generation;
+  assert.equal(await Report.exists({ business: account.business._id }), null);
 });

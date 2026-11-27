@@ -2,6 +2,7 @@
 // Usage: const { Business, Branch } = require("./models");
 module.exports = {
   CustomerResponse: require('./customerResponse.model'),
+  Report: require('./report.model'),
   Counter: require('./counter.model'),
   Session: require('./session.model'),
   EmailChange: require('./emailChange.model'),

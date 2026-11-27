@@ -13,13 +13,16 @@ function openRoute(route) {
 describe('bilingual frontend flows', () => {
   it('switches the landing page to Arabic and persists the language preference', async () => {
     const user = userEvent.setup();
-    openRoute('landing');
+    const session = vi.spyOn(auth.authApi, 'session').mockResolvedValue(null);
+    history.replaceState(null, '', '/#/landing');
+    render(<App />);
     await user.click(await screen.findByRole('button', { name: 'Language / اللغة' }));
     await user.click(screen.getByRole('option', { name: /العربية/ }));
     expect(document.documentElement).toHaveAttribute('dir', 'rtl');
     expect(document.documentElement).toHaveAttribute('lang', 'ar');
     expect(safeLocalStorage.getItem('nuvia-language')).toBe('ar');
     expect(screen.getByRole('link', { name: 'تسجيل الدخول' })).toBeVisible();
+    session.mockRestore();
   });
 
   it('blocks invalid signup and never persists a password', async () => {

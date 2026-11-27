@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const CustomerResponse = require('../models/customerResponse.model');
+const accepted = require('./acceptedAnalysis');
 
 const getSentimentSummary = async (businessId, filters = {}) => {
   const match = {
     businessId: new mongoose.Types.ObjectId(businessId),
-    'analysis.status': 'completed',
+    ...accepted,
     'analysis.overallSentiment': {
       $in: ['positive', 'negative', 'neutral', 'mixed'],
     },
@@ -75,14 +76,14 @@ module.exports = {
 };
 
 const getSentimentTrends = async (businessId, filters = {}) => {
-  const now = new Date();
-
-  // Default period: last 30 days
+  const endDate = filters.endDate ? new Date(filters.endDate + 'T23:59:59.999Z') : new Date();
   const startDate = filters.startDate
-    ? new Date(`${filters.startDate}T00:00:00.000Z`)
-    : new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000);
-
-  const endDate = filters.endDate ? new Date(`${filters.endDate}T23:59:59.999Z`) : now;
+    ? new Date(filters.startDate + 'T00:00:00.000Z')
+    : new Date(endDate);
+  if (!filters.startDate) {
+    startDate.setUTCDate(startDate.getUTCDate() - 29);
+    startDate.setUTCHours(0, 0, 0, 0);
+  }
 
   const match = {
     businessId: new mongoose.Types.ObjectId(businessId),
@@ -90,7 +91,7 @@ const getSentimentTrends = async (businessId, filters = {}) => {
       $gte: startDate,
       $lte: endDate,
     },
-    'analysis.status': 'completed',
+    ...accepted,
     'analysis.overallSentiment': {
       $in: ['positive', 'negative', 'neutral', 'mixed'],
     },
@@ -184,7 +185,7 @@ const getSentimentResponses = async (businessId, filters = {}, pagination = {}) 
 
   const match = {
     businessId: new mongoose.Types.ObjectId(businessId),
-    'analysis.status': 'completed',
+    ...accepted,
     'analysis.overallSentiment': {
       $in: ['positive', 'negative', 'neutral', 'mixed'],
     },
@@ -307,7 +308,6 @@ const getResponseAnalysis = async (businessId, responseId) => {
     analysis: response.analysis || null,
   };
 };
-
 
 module.exports = {
   getSentimentSummary,

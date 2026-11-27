@@ -6,3 +6,17 @@ export function branchSurveyUrl(branch) {
   url.searchParams.set('b', branch);
   return url.toString();
 }
+
+// Connected surveys must stay on the exact browser origin allowed by the API's
+// Origin/CSRF policy. Preview/design links keep their separate configured URL.
+const connectedOrigin = () =>
+  typeof window !== 'undefined' && window.location?.origin ? window.location.origin : '';
+
+export function connectedSurveyUrl(shortCode, branchSlug) {
+  if (!shortCode) return '';
+  const origin = connectedOrigin();
+  if (!origin) return '';
+  const params = new URLSearchParams({ code: String(shortCode) });
+  if (branchSlug) params.set('branch', String(branchSlug));
+  return `${origin}/#/public-survey?${params.toString()}`;
+}

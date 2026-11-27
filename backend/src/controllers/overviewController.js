@@ -1,8 +1,6 @@
-
 const overviewService = require('../services/overview.service');
 const mongoose = require('mongoose');
 const Branch = require('../models/branch.model');
-
 
 exports.getNextActions = async (req, res) => {
   try {
@@ -72,10 +70,7 @@ exports.getAspectScores = async (req, res) => {
 
       const date = new Date(`${value}T00:00:00.000Z`);
 
-      return (
-        !Number.isNaN(date.getTime()) &&
-        date.toISOString().slice(0, 10) === value
-      );
+      return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
     };
 
     if (startDate && !isValidDate(startDate)) {
@@ -99,10 +94,11 @@ exports.getAspectScores = async (req, res) => {
       });
     }
 
-    const data = await overviewService.getAspectScores(
-      businessId,
-      { branchId, startDate, endDate }
-    );
+    const data = await overviewService.getAspectScores(businessId, {
+      branchId,
+      startDate,
+      endDate,
+    });
 
     return res.status(200).json({
       success: true,
@@ -157,10 +153,7 @@ exports.getSentiment = async (req, res) => {
 
       const date = new Date(`${value}T00:00:00.000Z`);
 
-      return (
-        !Number.isNaN(date.getTime()) &&
-        date.toISOString().slice(0, 10) === value
-      );
+      return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
     };
 
     if (startDate && !isValidDate(startDate)) {
@@ -184,10 +177,11 @@ exports.getSentiment = async (req, res) => {
       });
     }
 
-    const data = await overviewService.getSentimentDistribution(
-      businessId,
-      { branchId, startDate, endDate }
-    );
+    const data = await overviewService.getSentimentDistribution(businessId, {
+      branchId,
+      startDate,
+      endDate,
+    });
 
     return res.status(200).json({
       success: true,
@@ -244,10 +238,7 @@ exports.getTrends = async (req, res) => {
 
       const date = new Date(`${value}T00:00:00.000Z`);
 
-      return (
-        !Number.isNaN(date.getTime()) &&
-        date.toISOString().slice(0, 10) === value
-      );
+      return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
     };
 
     if (startDate && !isValidDate(startDate)) {
@@ -271,10 +262,11 @@ exports.getTrends = async (req, res) => {
       });
     }
 
-    const data = await overviewService.getResponseTrends(
-      businessId,
-      { branchId, startDate, endDate }
-    );
+    const data = await overviewService.getResponseTrends(businessId, {
+      branchId,
+      startDate,
+      endDate,
+    });
 
     return res.status(200).json({
       success: true,
@@ -317,7 +309,6 @@ exports.getBranches = async (req, res) => {
   }
 };
 
-
 exports.getMetrics = async (req, res) => {
   try {
     const businessId = req.user.businessId;
@@ -354,8 +345,7 @@ exports.getMetrics = async (req, res) => {
 
     if (
       startDate &&
-      (Number.isNaN(Date.parse(startDate)) ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(startDate))
+      (Number.isNaN(Date.parse(startDate)) || !/^\d{4}-\d{2}-\d{2}$/.test(startDate))
     ) {
       return res.status(400).json({
         success: false,
@@ -363,11 +353,7 @@ exports.getMetrics = async (req, res) => {
       });
     }
 
-    if (
-      endDate &&
-      (Number.isNaN(Date.parse(endDate)) ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(endDate))
-    ) {
+    if (endDate && (Number.isNaN(Date.parse(endDate)) || !/^\d{4}-\d{2}-\d{2}$/.test(endDate))) {
       return res.status(400).json({
         success: false,
         message: 'Invalid endDate. Use YYYY-MM-DD',
@@ -381,10 +367,11 @@ exports.getMetrics = async (req, res) => {
       });
     }
 
-    const data = await overviewService.getOverviewMetrics(
-      businessId,
-      { branchId, startDate, endDate }
-    );
+    const data = await overviewService.getOverviewMetrics(businessId, {
+      branchId,
+      startDate,
+      endDate,
+    });
 
     return res.status(200).json({
       success: true,
@@ -399,6 +386,3 @@ exports.getMetrics = async (req, res) => {
     });
   }
 };
-
-
-

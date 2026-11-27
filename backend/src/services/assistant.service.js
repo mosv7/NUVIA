@@ -1,4 +1,5 @@
 const CustomerResponse = require('../models/customerResponse.model');
+const accepted = require('./acceptedAnalysis');
 const Branch = require('../models/branch.model');
 const { requireBusinessId, oid } = require('./surveyAccess');
 const { fail } = require('../utils/errors');
@@ -9,11 +10,6 @@ const EVIDENCE_LIMIT = 10;
 const EXCERPT_LIMIT = 2000;
 const DAY_MS = 86400000;
 const analysisFinal = { 'analysis.status': { $in: ['completed', 'partial'] } };
-const accepted = {
-  ...analysisFinal,
-  'analysis.provenance.qualityAccepted': true,
-  'analysis.provenance.qualityStatus': 'accepted',
-};
 const written = {
   $expr: { $gt: [{ $strLenCP: { $trim: { input: { $ifNull: ['$feedbackText', ''] } } } }, 0] },
 };

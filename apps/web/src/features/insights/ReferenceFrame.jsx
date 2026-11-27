@@ -22,7 +22,7 @@ export default function ReferenceFrame({ children, language, setLanguage, title,
       <div className="product-page reference-frame" data-menu-open={menuOpen}>
         <button
           className="product-mobile-toggle"
-          aria-label="Navigation menu"
+          aria-label={language === 'ar' ? 'قائمة التنقل' : 'Navigation menu'}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
         >
@@ -31,7 +31,7 @@ export default function ReferenceFrame({ children, language, setLanguage, title,
         {menuOpen && (
           <button
             className="product-menu-backdrop"
-            aria-label="Close navigation"
+            aria-label={language === 'ar' ? 'إغلاق القائمة' : 'Close navigation'}
             onClick={() => setMenuOpen(false)}
           />
         )}

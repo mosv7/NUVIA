@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProductView } from '../../app/providers/ProductProvider.jsx';
 import HeadingBack from '../../components/layout/HeadingBack.jsx';
 import { feedbackApi } from './api.js';
@@ -12,6 +12,9 @@ export default function OwnedFeedbackDetail() {
     [error, setError] = useState(false),
     [analysisError, setAnalysisError] = useState(false),
     [reload, setReload] = useState(0);
+  const [retryState, setRetryState] = useState('');
+  const activeRetry = useRef(null);
+  useEffect(() => () => activeRetry.current?.abort(), [id, workspace?.id]);
   useEffect(() => {
     const controller = new AbortController();
     setDetail(null);
@@ -41,10 +44,33 @@ export default function OwnedFeedbackDetail() {
     return () => controller.abort();
   }, [id, workspace?.id, language, reload]);
   const retry = (
-    <button type="button" className="feedback-btn" onClick={() => setReload((old) => old + 1)}>
+    <button
+      type="button"
+      className="feedback-btn"
+      disabled={retryState === 'requesting'}
+      onClick={() => setReload((old) => old + 1)}
+    >
       {ar ? 'إعادة التحميل' : 'Reload'}
     </button>
   );
+  async function retryAnalysis() {
+    if (activeRetry.current) return;
+    const controller = new AbortController();
+    activeRetry.current = controller;
+    setRetryState('requesting');
+    try {
+      const next = await feedbackApi.retryAnalysis(id, controller.signal);
+      if (controller.signal.aborted) return;
+      setAnalysis(next);
+      setRetryState('queued');
+    } catch (failure) {
+      if (controller.signal.aborted) return;
+      setRetryState('error');
+      if (failure?.status === 409) setReload((old) => old + 1);
+    } finally {
+      if (activeRetry.current === controller) activeRetry.current = null;
+    }
+  }
   const statuses = {
     pending: ar ? 'قيد الانتظار' : 'Pending',
     processing: ar ? 'قيد التحليل' : 'Processing',
@@ -111,6 +137,16 @@ export default function OwnedFeedbackDetail() {
                 <div className="feedback-analysis-heading">
                   <h2>{tr('Aspect Analysis')}</h2>
                 </div>
+                {retryState === 'queued' && (
+                  <p role="status">
+                    {ar ? 'أُضيف الرد إلى قائمة التحليل.' : 'Analysis retry queued.'}
+                  </p>
+                )}
+                {retryState === 'error' && (
+                  <p role="alert">
+                    {ar ? 'تعذر إعادة طلب التحليل.' : 'Analysis could not be retried.'}
+                  </p>
+                )}
                 {analysisError ? (
                   <div role="alert">
                     <p>
@@ -125,6 +161,16 @@ export default function OwnedFeedbackDetail() {
                 ) : (
                   <>
                     <p>{statuses[analysis.status] || '—'}</p>
+                    {detail.original.text && ['failed', 'partial'].includes(analysis.status) && (
+                      <button
+                        type="button"
+                        className="feedback-btn"
+                        onClick={retryAnalysis}
+                        disabled={retryState === 'requesting'}
+                      >
+                        {ar ? 'إعادة التحليل' : 'Retry analysis'}
+                      </button>
+                    )}
                     {analysis.provenance?.qualityAccepted !== true &&
                       analysis.aspects?.length > 0 && (
                         <p className="feedback-analysis-unavailable">

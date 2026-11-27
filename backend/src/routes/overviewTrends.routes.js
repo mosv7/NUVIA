@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const trendsController = require('../controllers/overviewTrends.controller');
-const authenticate = require('../middlewares/auth.middleware');
+const overviewAuth = require('../middlewares/overviewAuth.middleware');
 
-router.use(authenticate);
+router.use(overviewAuth);
 
 router.get('/', trendsController.getTrendsAndSignals);
 

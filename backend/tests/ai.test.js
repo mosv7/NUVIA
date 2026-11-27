@@ -155,7 +155,7 @@ test('transport refuses redirects and times out using a real local upstream', as
   mode = 'capabilities';
 });
 
-test('report integration logs upstream status without logging feedback or credentials', async () => {
+test('report integration logs mapped status without logging feedback or credentials', async () => {
   const unauthorizedServer = http.createServer((_req, res) => {
     res.writeHead(401, { 'Content-Type': 'application/json' });
     res.end('{"error":{"code":"unauthorized"}}');
@@ -189,7 +189,7 @@ test('report integration logs upstream status without logging feedback or creden
 
   assert.equal(logEntries.length, 1);
   assert.equal(logEntries[0].message, '[AI reports] request failed');
-  assert.equal(logEntries[0].details.upstreamStatus, 401);
+  assert.equal(logEntries[0].details.status, 503);
   assert.equal(logEntries[0].details.code, 'AI_UNAVAILABLE');
   assert.equal(JSON.stringify(logEntries).includes(feedbackText), false);
   assert.equal(JSON.stringify(logEntries).includes('s'.repeat(32)), false);

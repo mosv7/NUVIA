@@ -9,6 +9,7 @@ export default function renderSecurityPages(model) {
     actions,
     ar,
     btn,
+    settingsBusy,
     code,
     draft,
     field,
@@ -19,14 +20,18 @@ export default function renderSecurityPages(model) {
     notify,
     page,
     sessions,
+    savePassword,
     setCode,
-    setDraft,
     setError,
-    setModal,
-    setTwoFA,
     settingsTabs,
     t,
     twoFA,
+    twoFactorSetup,
+    recoveryCodes,
+    enableTwoFactor,
+    disableTwoFactor,
+    revokeSession,
+    signOutAllSessions,
     validate,
   } = model;
   let content;
@@ -51,10 +56,10 @@ export default function renderSecurityPages(model) {
                   {L(
                     preview
                       ? 'Your email is verified. Add two-factor authentication for an extra layer of protection.'
-                      : 'Email verification and two-factor authentication are under development.',
+                      : 'Two-factor authentication is available. Email verification for new accounts is not currently supported.',
                     preview
                       ? 'بريدك مؤكد. أضف المصادقة الثنائية لمزيد من الحماية.'
-                      : 'تأكيد البريد والمصادقة الثنائية قيد التطوير.',
+                      : 'المصادقة الثنائية متاحة، لكن تأكيد البريد للحسابات الجديدة غير متاح حاليًا.',
                   )}
                 </p>
               </div>
@@ -79,14 +84,14 @@ export default function renderSecurityPages(model) {
                   <strong>{t('Two-factor authentication')}</strong>
                   <p>
                     {twoFA
-                      ? L('Enabled in preview', 'مفعلة في المعاينة')
+                      ? L('Enabled for this account', 'مفعلة لهذا الحساب')
                       : L(
                           'Not enabled · Use an authenticator app to secure your account.',
                           'غير مفعلة · استخدم تطبيق مصادقة لحماية الحساب.',
                         )}
                   </p>
                 </div>
-                {linkAction('Set up', 'settings-two-factor')}
+                {linkAction(twoFA ? 'Manage' : 'Set up', 'settings-two-factor')}
               </div>
               <div className="setting-row">
                 <div>
@@ -95,7 +100,7 @@ export default function renderSecurityPages(model) {
                 </div>
                 <div className="verification-actions">
                   <span className={'badge ' + (preview ? 'green' : 'neutral')}>
-                    {preview ? L('Verified', 'مؤكد') : L('Under development', 'قيد التطوير')}
+                    {preview ? L('Verified', 'مؤكد') : L('Not available', 'غير متاح')}
                   </span>
                   {linkAction(L('Manage email', 'إدارة البريد'), 'settings-email')}
                 </div>
@@ -143,7 +148,7 @@ export default function renderSecurityPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <form className="card" onSubmit={(e) => e.preventDefault()}>
+          <form className="card" inert={settingsBusy} onSubmit={(e) => e.preventDefault()}>
             <h2>{t('Update password')}</h2>
             {field('Current password', 'current', { type: 'password', required: true })}
             {field('New password', 'password', {
@@ -167,16 +172,7 @@ export default function renderSecurityPages(model) {
                 if (draft.password !== draft.confirm)
                   e.confirm = L('Passwords do not match.', 'كلمتا المرور غير متطابقتين.');
                 setError(e);
-                if (!Object.keys(e).length) {
-                  setDraft({});
-                  notify(
-                    L(
-                      'Password update simulated. Your real password is unchanged.',
-                      'تمت محاكاة التغيير. كلمة مرورك الحقيقية لم تتغير.',
-                    ),
-                  );
-                  go('settings-security');
-                }
+                if (!Object.keys(e).length) savePassword();
               },
               'settings-security',
               'Update password',
@@ -185,8 +181,8 @@ export default function renderSecurityPages(model) {
           {note(
             L('Keep your password private', 'احتفظ بكلمة مرورك لنفسك'),
             L(
-              'This preview does not save passwords or update real account credentials.',
-              'هذه المعاينة لا تحفظ كلمات المرور أو تحدث بيانات حساب حقيقي.',
+              'After a successful update, other active sessions are signed out and this session remains active.',
+              'بعد نجاح التحديث، سيتم تسجيل الخروج من الجلسات الأخرى مع بقاء جلستك الحالية.',
             ),
           )}
         </div>
@@ -206,7 +202,7 @@ export default function renderSecurityPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card two-factor-card">
+          <section className="card two-factor-card" inert={settingsBusy}>
             <h2>{L('Connect your authenticator', 'اربط تطبيق المصادقة')}</h2>
             <p>
               {L(
@@ -221,19 +217,30 @@ export default function renderSecurityPages(model) {
             </div>
             <div className="enrolment-row">
               <div className="enrolment-tile">
-                <img src={new URL('./assets/figma/smartphone.svg', import.meta.url).href} alt="" />
+                {twoFA ? (
+                  <I name="check" />
+                ) : twoFactorSetup?.qrSvg ? (
+                  <img
+                    alt={L('Authenticator setup QR code', 'رمز QR لإعداد تطبيق المصادقة')}
+                    src={
+                      'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(twoFactorSetup.qrSvg)
+                    }
+                  />
+                ) : (
+                  <I name="loader" />
+                )}
                 <strong>
-                  {L(
-                    'Enrollment preview · Not a scannable QR code',
-                    'معاينة الإعداد · ليست شفرة QR قابلة للمسح',
-                  )}
+                  {twoFA
+                    ? L('Two-factor authentication is enabled', 'المصادقة الثنائية مفعلة')
+                    : twoFactorSetup?.secret ||
+                      L('Preparing secure setup…', 'جارٍ تجهيز الإعداد الآمن…')}
                 </strong>
               </div>
               <div className="enrolment-copy">
                 <h3>{L('1. Add NUVIA to your app', '١. أضف NUVIA إلى تطبيقك')}</h3>
                 <p>
                   {L(
-                    'Open your authenticator and choose “Add account”. In the live app, scan the secure QR code shown here.',
+                    'Open your authenticator, choose “Add account”, then scan the QR code or enter the setup key shown here.',
                     'افتح تطبيق المصادقة واختر إضافة حساب. في التطبيق الفعلي، امسح شفرة QR الآمنة المعروضة هنا.',
                   )}
                 </p>
@@ -241,17 +248,22 @@ export default function renderSecurityPages(model) {
                   {L('Account: ', 'الحساب: ')}
                   {account.email} ·{' '}
                   {L(
-                    'Manual setup key: shown only during live setup',
+                    'Manual setup key: shown above',
                     'مفتاح الإعداد اليدوي: يظهر أثناء الإعداد الفعلي فقط',
                   )}
                 </small>
               </div>
             </div>
             <div className="verification-step">
+              {twoFA && field('Current password', 'password', { type: 'password', required: true })}
               <h3>
                 {L(
-                  '2. Enter your 6-digit verification code',
-                  '٢. أدخل رمز التحقق المكون من ٦ أرقام',
+                  twoFA
+                    ? 'Enter your password and 6-digit code to disable 2FA'
+                    : '2. Enter your 6-digit verification code',
+                  twoFA
+                    ? 'أدخل كلمة المرور ورمز التحقق المكون من ٦ أرقام لإيقاف المصادقة'
+                    : '٢. أدخل رمز التحقق المكون من ٦ أرقام',
                 )}
               </h3>
               <p>
@@ -294,40 +306,62 @@ export default function renderSecurityPages(model) {
             <div className="figma-information">
               <I name="info" />
               <div>
-                <strong>{L('Setup is not complete yet', 'لم يكتمل الإعداد بعد')}</strong>
+                <strong>
+                  {twoFA
+                    ? L('Your account is protected', 'حسابك محمي')
+                    : L('Setup is not complete yet', 'لم يكتمل الإعداد بعد')}
+                </strong>
                 <p>
-                  {L(
-                    'Two-factor authentication stays off until your verification code is accepted.',
-                    'تظل المصادقة الثنائية غير مفعلة حتى قبول رمز التحقق.',
-                  )}
+                  {twoFA
+                    ? L(
+                        'Two-factor authentication is enabled for this account.',
+                        'المصادقة الثنائية مفعلة لهذا الحساب.',
+                      )
+                    : L(
+                        'Two-factor authentication stays off until your verification code is accepted.',
+                        'تظل المصادقة الثنائية غير مفعلة حتى قبول رمز التحقق.',
+                      )}
                 </p>
               </div>
             </div>
             <div className="form-actions">
-              <small>{L('Next: save your recovery codes.', 'التالي: حفظ رموز الاسترداد.')}</small>
+              <small>
+                {L(
+                  twoFA
+                    ? 'Disable authentication only if you intend to remove this protection.'
+                    : 'Save your recovery codes after enabling.',
+                  'لا توقف المصادقة إلا إذا كنت تريد إزالة هذه الحماية.',
+                )}
+              </small>
               <div>
                 {btn('Cancel', () => go('settings-security'))}
                 {btn(
-                  'Verify & enable',
+                  twoFA ? 'Disable two-factor authentication' : 'Verify & enable',
                   () => {
                     if (!/^\d{6}$/.test(code)) {
                       notify(L('Enter all six digits.', 'أدخل الأرقام الستة.'));
                       return;
                     }
-                    setTwoFA(true);
-                    setCode('');
-                    notify(
-                      L(
-                        'Two-factor setup simulated in preview only.',
-                        'تمت محاكاة التفعيل داخل المعاينة فقط.',
-                      ),
-                    );
-                    go('settings-security');
+                    if (twoFA) {
+                      if (!draft.password) {
+                        notify('Enter your current password.');
+                        return;
+                      }
+                      disableTwoFactor();
+                    } else enableTwoFactor();
                   },
                   true,
                 )}
               </div>
             </div>
+            {recoveryCodes?.length > 0 && (
+              <div className="info-strip">
+                <div>
+                  <strong>{L('Save these recovery codes now', 'احفظ رموز الاسترداد الآن')}</strong>
+                  <p>{recoveryCodes.join(' · ')}</p>
+                </div>
+              </div>
+            )}
           </section>
           {note(
             L('Secure sign-in, made simple', 'دخول آمن بخطوات بسيطة'),
@@ -353,46 +387,35 @@ export default function renderSecurityPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <div>
+          <div inert={settingsBusy}>
             <section className="card">
               <h2>
                 {L('Active sessions', 'الجلسات النشطة')}{' '}
                 <span className="badge neutral">{sessions.length}</span>
               </h2>
-              {sessions.map((id) => (
-                <div className="session-row" key={id}>
+              {sessions.map((session) => (
+                <div className="session-row" key={preview ? session : session.id || session._id}>
                   <span className="tile">
                     <I name="device" />
                   </span>
                   <div>
-                    <strong>
-                      {['Chrome on macOS', 'Safari on iOS', 'Edge on Windows'][id - 1]}
-                    </strong>
-                    <p>
-                      {
-                        [
-                          'Cairo, Egypt · MacBook Pro',
-                          'Cairo, Egypt · iPhone 14 Pro Max',
-                          'Alexandria, Egypt · Windows PC',
-                        ][id - 1]
-                      }
-                    </p>
+                    <strong>{session.device || 'Unknown device'}</strong>
+                    <p>{session.location || session.ip || session.deviceType || ''}</p>
                     <small>
-                      {id === 1
-                        ? L('Active now', 'نشط الآن')
-                        : L('Last active yesterday', 'آخر نشاط أمس')}
+                      {L('Last active: ', 'آخر نشاط: ')}
+                      {session.lastActiveAt ? new Date(session.lastActiveAt).toLocaleString() : '—'}
                     </small>
                   </div>
-                  {id === 1 ? (
+                  {session.isCurrent ? (
                     <span className="badge green">{t('This device')}</span>
                   ) : (
-                    btn('Sign out', () => setModal({ type: 'session', id }))
+                    btn('Sign out', () =>
+                      revokeSession(preview ? session : session.id || session._id),
+                    )
                   )}
                 </div>
               ))}
-              {!sessions.length && (
-                <p>{L('No active sessions in this preview.', 'لا توجد جلسات نشطة في المعاينة.')}</p>
-              )}
+              {!sessions.length && <p>{L('No active sessions found.', 'لا توجد جلسات نشطة.')}</p>}
             </section>
             <section className="card spaced">
               <div className="setting-row">
@@ -405,7 +428,7 @@ export default function renderSecurityPages(model) {
                     )}
                   </p>
                 </div>
-                {btn('Sign out of all devices', () => setModal({ type: 'sessions' }))}
+                {btn('Sign out of all devices', signOutAllSessions)}
               </div>
             </section>
           </div>

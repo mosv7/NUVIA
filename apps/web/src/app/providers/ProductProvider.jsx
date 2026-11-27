@@ -75,14 +75,7 @@ export function ProductProvider({
   };
   const navigateLabel = (label) => navigateAction(actionIdFromLabel(label, tr));
   const action = (id) => {
-    if (navigateAction(id)) return;
-    if (!preview) {
-      setNotice(
-        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
-      );
-      return;
-    }
-    if (id === 'export-report') {
+    if (preview && id === 'export-report') {
       const r = dashboard?.report,
         f = dashboard?.filters;
       const rows = r
@@ -116,6 +109,13 @@ export function ProductProvider({
       a.download = 'NUVIA-demo-overview.csv';
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 0);
+      return;
+    }
+    if (navigateAction(id)) return;
+    if (!preview) {
+      setNotice(
+        language === 'ar' ? 'هذه الميزة غير متاحة بعد.' : 'This feature is not available yet.',
+      );
       return;
     }
     window.alert(
@@ -155,7 +155,9 @@ export function ProductProvider({
                       ? 'Feedbacks'
                       : location.hash.startsWith('#/survey')
                         ? 'Surveys'
-                        : 'Overview',
+                        : location.hash.startsWith('#/help-center')
+                          ? 'Help center'
+                          : 'Overview',
         language,
         setLanguage,
         tr,
@@ -184,7 +186,7 @@ export function ProductProvider({
       }}
     >
       {children}
-      <GlobalSearch />
+      {preview && <GlobalSearch />}
       <HeaderMenus />
       {!preview && !['#/nuvia-assistant', '#/assistant'].includes(location.hash.split('?')[0]) && (
         <ConnectedAssistantLauncher />

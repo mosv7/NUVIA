@@ -440,8 +440,17 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
                   fontVariationSettings: '"opsz" 14',
                 }}
                 data-workspace-search=""
-                aria-label={tr('Search across pages')}
-                placeholder={tr('Search across pages')}
+                disabled={!ui.preview}
+                aria-label={
+                  ui.preview
+                    ? tr('Search across pages')
+                    : tr('Page search is available in the design preview')
+                }
+                placeholder={
+                  ui.preview
+                    ? tr('Search across pages')
+                    : tr('Page search is available in the design preview')
+                }
                 value={ui.workspaceQuery}
                 onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />

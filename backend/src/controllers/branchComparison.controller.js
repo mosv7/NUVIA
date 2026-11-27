@@ -1,6 +1,7 @@
-const CustomerResponse = require("../models/customerResponse.model");
-const Branch = require("../models/branch.model");
-const mongoose = require("mongoose");
+const accepted = require('../services/acceptedAnalysis');
+const CustomerResponse = require('../models/customerResponse.model');
+const Branch = require('../models/branch.model');
+const mongoose = require('mongoose');
 
 exports.getBranchComparison = async (req, res) => {
   try {
@@ -9,10 +10,8 @@ exports.getBranchComparison = async (req, res) => {
 
     const matchStage = { businessId: new mongoose.Types.ObjectId(businessId) };
 
-    if (branchIds && branchIds !== "all") {
-      const idsArray = branchIds
-        .split(",")
-        .map((id) => new mongoose.Types.ObjectId(id.trim()));
+    if (branchIds && branchIds !== 'all') {
+      const idsArray = branchIds.split(',').map((id) => new mongoose.Types.ObjectId(id.trim()));
       matchStage.branchId = { $in: idsArray };
     }
 
@@ -24,11 +23,11 @@ exports.getBranchComparison = async (req, res) => {
       if (startDate) matchStage.submittedAt.$gte = new Date(startDate);
       if (endDate) {
         const endDateTime = new Date(endDate);
-        endDateTime.setHours(23, 59, 59, 999);
+        endDateTime.setUTCHours(23, 59, 59, 999);
         matchStage.submittedAt.$lte = endDateTime;
       }
     }
-    if (lang && lang !== "all") {
+    if (lang && lang !== 'all') {
       matchStage.$or = [{ language: lang }, { declaredLanguage: lang }];
     }
 
@@ -37,64 +36,53 @@ exports.getBranchComparison = async (req, res) => {
 
     // 2. Detailed analysis of aspects at the level of each branch
     const aspectAnalysisPipeline = [
-      { $match: matchStage },
-      { $unwind: "$analysis.aspects" },
+      { $match: { ...matchStage, ...accepted } },
+      { $unwind: '$analysis.aspects' },
       {
         $group: {
           _id: {
-            branchId: "$branchId",
-            aspectName: "$analysis.aspects.name",
+            branchId: '$branchId',
+            aspectName: '$analysis.aspects.name',
           },
-          avgScore: { $avg: "$analysis.aspects.score" },
+          avgScore: { $avg: '$analysis.aspects.score' },
           totalMentions: { $sum: 1 },
           positiveCount: {
             $sum: {
-              $cond: [
-                { $eq: ["$analysis.aspects.polarity", "positive"] },
-                1,
-                0,
-              ],
+              $cond: [{ $eq: ['$analysis.aspects.polarity', 'positive'] }, 1, 0],
             },
           },
           negativeCount: {
             $sum: {
-              $cond: [
-                { $eq: ["$analysis.aspects.polarity", "negative"] },
-                1,
-                0,
-              ],
+              $cond: [{ $eq: ['$analysis.aspects.polarity', 'negative'] }, 1, 0],
             },
           },
         },
       },
       {
         $lookup: {
-          from: "branches",
-          localField: "_id.branchId",
-          foreignField: "_id",
-          as: "branchInfo",
+          from: 'branches',
+          localField: '_id.branchId',
+          foreignField: '_id',
+          as: 'branchInfo',
         },
       },
-      { $unwind: "$branchInfo" },
+      { $unwind: '$branchInfo' },
       {
         $project: {
-          branchId: "$_id.branchId",
-          branchName: "$branchInfo.name",
-          aspectName: "$_id.aspectName",
-          score: { $round: ["$avgScore", 1] },
+          branchId: '$_id.branchId',
+          branchName: '$branchInfo.name',
+          aspectName: '$_id.aspectName',
+          score: { $round: ['$avgScore', 1] },
           totalMentions: 1,
           positiveCount: 1,
           negativeCount: 1,
           positivePercentage: {
             $cond: [
-              { $gt: ["$totalMentions", 0] },
+              { $gt: ['$totalMentions', 0] },
               {
                 $round: [
                   {
-                    $multiply: [
-                      { $divide: ["$positiveCount", "$totalMentions"] },
-                      100,
-                    ],
+                    $multiply: [{ $divide: ['$positiveCount', '$totalMentions'] }, 100],
                   },
                   1,
                 ],
@@ -107,53 +95,42 @@ exports.getBranchComparison = async (req, res) => {
       { $sort: { branchName: 1, aspectName: 1 } },
     ];
 
-    const aspectScoresByBranch = await CustomerResponse.aggregate(
-      aspectAnalysisPipeline,
-    );
+    const aspectScoresByBranch = await CustomerResponse.aggregate(aspectAnalysisPipeline);
 
     // 3. Overview of branches
     const branchesList = await Branch.find({
       businessId: new mongoose.Types.ObjectId(businessId),
+      ...(matchStage.branchId && { _id: matchStage.branchId }),
     });
 
     const branchesOverviewPromises = branchesList.map(async (branch) => {
       const branchMatch = { ...matchStage, branchId: branch._id };
-      const branchTotalReviews =
-        await CustomerResponse.countDocuments(branchMatch);
+      const branchTotalReviews = await CustomerResponse.countDocuments(branchMatch);
 
       const branchAspects = await CustomerResponse.aggregate([
-        { $match: branchMatch },
-        { $unwind: "$analysis.aspects" },
+        { $match: { ...branchMatch, ...accepted } },
+        { $unwind: '$analysis.aspects' },
         {
           $group: {
             _id: null,
             totalAspects: { $sum: 1 },
             positiveAspects: {
               $sum: {
-                $cond: [
-                  { $eq: ["$analysis.aspects.polarity", "positive"] },
-                  1,
-                  0,
-                ],
+                $cond: [{ $eq: ['$analysis.aspects.polarity', 'positive'] }, 1, 0],
               },
             },
           },
         },
       ]);
 
-      let positivePercentage = 0;
+      let positivePercentage = null;
       if (branchAspects.length > 0 && branchAspects[0].totalAspects > 0) {
         positivePercentage = Number(
-          (
-            (branchAspects[0].positiveAspects / branchAspects[0].totalAspects) *
-            100
-          ).toFixed(1),
+          ((branchAspects[0].positiveAspects / branchAspects[0].totalAspects) * 100).toFixed(1),
         );
       }
 
-      let status = "On track";
-      if (positivePercentage >= 80) status = "Top performer";
-      else if (positivePercentage < 70) status = "Needs attention";
+      const status = positivePercentage === null ? 'Insufficient data' : 'Available';
 
       return {
         branchId: branch._id,
@@ -176,42 +153,40 @@ exports.getBranchComparison = async (req, res) => {
       0,
     );
     const overallPositiveSentiment =
-      totalMentionsSum > 0
-        ? Number(((totalPositivesSum / totalMentionsSum) * 100).toFixed(1))
-        : 0;
+      totalMentionsSum > 0 ? Number(((totalPositivesSum / totalMentionsSum) * 100).toFixed(1)) : 0;
 
-    const validPercentages = activeBranches.map((b) => b.positivePercentage);
-    const maxSentiment =
-      validPercentages.length > 0 ? Math.max(...validPercentages) : 0;
-    const minSentiment =
-      validPercentages.length > 0 ? Math.min(...validPercentages) : 0;
-    const sentimentGap = Number((maxSentiment - minSentiment).toFixed(1));
+    const validPercentages = activeBranches.flatMap((b) =>
+      b.positivePercentage === null ? [] : [b.positivePercentage],
+    );
+    const maxSentiment = validPercentages.length > 0 ? Math.max(...validPercentages) : 0;
+    const minSentiment = validPercentages.length > 0 ? Math.min(...validPercentages) : 0;
+    const sentimentGap =
+      validPercentages.length >= 2 ? Number((maxSentiment - minSentiment).toFixed(1)) : null;
 
     // --- 4. Generating insightful "Notable Differences": What distinguishes each branch from the others ---
     const notableDifferences = [];
 
     // Organizing data for each branch, along with its various aspects
-    const branchAspectsMap = {};
+    const branchAspectsMap = new Map();
     aspectScoresByBranch.forEach((item) => {
-      if (!branchAspectsMap[item.branchName]) {
-        branchAspectsMap[item.branchName] = [];
+      if (!branchAspectsMap.has(item.branchId)) {
+        branchAspectsMap.set(item.branchId, { name: item.branchName, aspects: [] });
       }
-      branchAspectsMap[item.branchName].push({
-        aspectName: item.aspectName,
-        score: item.score,
-      });
+      branchAspectsMap
+        .get(item.branchId)
+        .aspects.push({ aspectName: item.aspectName, score: item.score });
     });
 
     // For each branch, we identify its strongest aspect (the highest score)
-    for (const [branchName, aspects] of Object.entries(branchAspectsMap)) {
+    for (const { name: branchName, aspects } of branchAspectsMap.values()) {
       if (aspects.length > 0) {
         // Sort the branch aspects in descending order based on the score
         aspects.sort((a, b) => b.score - a.score);
         const bestAspect = aspects[0];
 
         notableDifferences.push({
-          title: `${branchName} excels in ${bestAspect.aspectName}`,
-          description: `${branchName} achieves its highest score in ${bestAspect.aspectName} with ${bestAspect.score} / 10.`,
+          title: `${branchName} has its highest average in ${bestAspect.aspectName}`,
+          description: `${branchName} achieves its highest score in ${bestAspect.aspectName} with ${bestAspect.score}.`,
         });
       }
     }
@@ -219,9 +194,8 @@ exports.getBranchComparison = async (req, res) => {
     // If there is not enough data to generate specific insights, we provide a general message
     if (notableDifferences.length === 0 && activeBranches.length > 0) {
       notableDifferences.push({
-        title: "Performance Overview",
-        description:
-          "Awaiting more aspect evaluations to display specific branch highlights.",
+        title: 'Performance Overview',
+        description: 'Awaiting more aspect evaluations to display specific branch highlights.',
       });
     }
 
@@ -230,8 +204,9 @@ exports.getBranchComparison = async (req, res) => {
       data: {
         summary: {
           responsesInSelectedBranches: totalResponses,
-          overallPositiveSentiment: `${overallPositiveSentiment}%`,
-          positiveSentimentGap: `${sentimentGap} pts`,
+          overallPositiveSentiment:
+            overallPositiveSentiment === null ? null : overallPositiveSentiment + '%',
+          positiveSentimentGap: sentimentGap === null ? null : sentimentGap + ' pts',
           branchesComparedCount: activeBranches.length,
         },
         aspectScoresByBranch,
@@ -242,9 +217,7 @@ exports.getBranchComparison = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error in getBranchComparison:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
+    console.error('Error in getBranchComparison:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };

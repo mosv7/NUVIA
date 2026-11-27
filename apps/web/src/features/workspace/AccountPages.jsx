@@ -19,13 +19,15 @@ export default function renderAccountPages(model) {
     pending,
     prefDraft,
     preferences,
-    setAccount,
+    saveAccount,
+    saveEmailChange,
+    cancelEmailChange,
+    saveLanguage,
+    setProfilePhoto,
+    settingsBusy,
     setDraft,
     setError,
-    setLang,
-    setPending,
     setPrefDraft,
-    setPreferences,
     settingsTabs,
     t,
     validate,
@@ -127,7 +129,7 @@ export default function renderAccountPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <form className="card" onSubmit={(e) => e.preventDefault()}>
+          <form className="card" inert={settingsBusy} onSubmit={(e) => e.preventDefault()}>
             <h2>{t('Personal information')}</h2>
             <div className="photo-row">
               <span className="avatar large">
@@ -151,13 +153,11 @@ export default function renderAccountPages(model) {
                       );
                       return;
                     }
-                    const reader = new FileReader();
-                    reader.onload = () => setDraft((prev) => ({ ...prev, photo: reader.result }));
-                    reader.readAsDataURL(file);
+                    setProfilePhoto(file);
                   }}
                 />
               </label>
-              {btn('Remove', () => setDraft({ ...draft, photo: '' }))}
+              {btn('Remove', () => setProfilePhoto(null))}
             </div>
             <small className="muted">JPG / PNG · Max 2 MB</small>
             <div className="field-grid">
@@ -175,12 +175,7 @@ export default function renderAccountPages(model) {
             {field('Full name', 'name', { required: true })}
             {field('Job title', 'title')}
             {actions(() => {
-              if (validate(['name'])) {
-                setAccount({ ...draft });
-                setDraft({});
-                notify('Changes saved');
-                go('settings');
-              }
+              if (validate(['name'])) saveAccount();
             }, 'settings')}
           </form>
           {note(
@@ -207,7 +202,7 @@ export default function renderAccountPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{t('Email address')}</h2>
             <p>
               {account.email}{' '}
@@ -220,21 +215,26 @@ export default function renderAccountPages(model) {
                 <div className="info-strip">
                   <I name="mail" />
                   <div>
-                    <strong>{L('Check your new inbox', 'تحقق من بريدك الجديد')}</strong>
+                    <strong>
+                      {preview
+                        ? L('Email change simulated', 'تمت محاكاة تغيير البريد')
+                        : L('Check your new inbox', 'تحقق من بريدك الجديد')}
+                    </strong>
                     <p>{pending}</p>
                     <p>
                       {L(
-                        'Your email changes only after verification. Continue signing in with your current address.',
-                        'يتغير البريد بعد التأكيد فقط. استمر بالدخول ببريدك الحالي.',
+                        preview
+                          ? 'This preview shows a pending change.'
+                          : 'Your email changes only after verification. Continue signing in with your current address.',
+                        preview
+                          ? 'تعرض هذه المعاينة طلب تغيير معلقًا.'
+                          : 'يتغير البريد بعد التأكيد فقط. استمر بالدخول ببريدك الحالي.',
                       )}
                     </p>
                   </div>
                 </div>
                 <div className="inline-actions">
-                  {btn(L('Resend verification email', 'إعادة إرسال رابط التأكيد'), () =>
-                    notify(L('Preview only. No email sent.', 'معاينة فقط، لم يتم إرسال بريد.')),
-                  )}
-                  {btn(L('Cancel email change', 'إلغاء تغيير البريد'), () => setPending(''))}
+                  {btn(L('Cancel email change', 'إلغاء تغيير البريد'), cancelEmailChange)}
                 </div>
               </>
             ) : (
@@ -247,14 +247,7 @@ export default function renderAccountPages(model) {
                     setError({ email: L('Enter a valid email.', 'أدخل بريدًا صالحًا.') });
                     return;
                   }
-                  setPending(draft.email);
-                  setDraft({});
-                  notify(
-                    L(
-                      'Pending verification preview. No email sent.',
-                      'معاينة انتظار التأكيد، لم يتم إرسال بريد.',
-                    ),
-                  );
+                  saveEmailChange();
                 }, 'settings')}
               </>
             )}
@@ -262,8 +255,12 @@ export default function renderAccountPages(model) {
           {note(
             L('Your sign-in email', 'بريد تسجيل الدخول'),
             L(
-              'This preview does not send emails or change your real account.',
-              'هذه المعاينة لا ترسل بريدًا أو تغيّر حسابك الحقيقي.',
+              preview
+                ? 'Try the email change flow in the preview.'
+                : 'We will send a verification link to your new email. Your sign-in email changes only after verification.',
+              preview
+                ? 'جرّب خطوات تغيير البريد في المعاينة.'
+                : 'سنرسل رابط تأكيد إلى بريدك الجديد. لن يتغير بريد الدخول إلا بعد التأكيد.',
             ),
           )}
         </div>
@@ -281,7 +278,7 @@ export default function renderAccountPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{L('Language & region', 'اللغة والمنطقة')}</h2>
             {[
               [
@@ -341,15 +338,7 @@ export default function renderAccountPages(model) {
                   setPrefDraft(preferences);
                   go('settings');
                 })}
-                {btn(
-                  'Save changes',
-                  () => {
-                    setPreferences(prefDraft);
-                    setLang(prefDraft.language);
-                    notify('Changes saved');
-                  },
-                  true,
-                )}
+                {btn('Save changes', saveLanguage, true)}
               </div>
             </div>
           </section>

@@ -12,7 +12,6 @@ export default function renderNotificationPages(model) {
     heading,
     note,
     notificationTab,
-    notify,
     page,
     read,
     sample,
@@ -20,7 +19,8 @@ export default function renderNotificationPages(model) {
     setNotificationTab,
     setRead,
     setSwitchDraft,
-    setToggles,
+    saveNotifications,
+    settingsBusy,
     settingsTabs,
     switchDraft,
     t,
@@ -40,7 +40,7 @@ export default function renderNotificationPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{L('Notification channels', 'قنوات الإشعارات')}</h2>
             <p className="muted">
               {L('Control how NUVIA reaches you.', 'تحكم في طريقة تواصل NUVIA معك.')}
@@ -103,14 +103,7 @@ export default function renderNotificationPages(model) {
                   setSwitchDraft({ ...toggles });
                   go('settings');
                 })}
-                {btn(
-                  'Save changes',
-                  () => {
-                    setToggles({ ...switchDraft });
-                    notify('Changes saved');
-                  },
-                  true,
-                )}
+                {btn('Save changes', () => saveNotifications('settings-notifications'), true)}
               </div>
             </div>
           </section>
@@ -136,19 +129,19 @@ export default function renderNotificationPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{t(email ? 'Email notifications' : 'In-app notifications')}</h2>
             {(email
               ? [
-                  ['feedback', 'New customer feedback'],
-                  ['low', 'Low-rating alerts'],
+                  ['emailFeedback', 'New customer feedback'],
+                  ['emailLow', 'Low-rating alerts'],
                   ['weekly', 'Weekly performance report'],
                   ['news', 'Product news & tips'],
                   ['security', 'Account & security'],
                 ]
               : [
-                  ['feedback', 'New customer feedback'],
-                  ['low', 'Low-rating alerts'],
+                  ['inappFeedback', 'New customer feedback'],
+                  ['inappLow', 'Low-rating alerts'],
                   ['reports', 'Reports ready to view'],
                   ['sound', 'Play a notification sound'],
                   ['popup', 'Show pop-up alerts'],
@@ -194,15 +187,7 @@ export default function renderNotificationPages(model) {
               <small>{L('Changes apply only to your account.', 'التغييرات تخص حسابك فقط.')}</small>
               <div>
                 {btn('Cancel', () => go('settings-notifications'))}
-                {btn(
-                  'Save changes',
-                  () => {
-                    setToggles({ ...switchDraft });
-                    notify('Changes saved');
-                    go('settings-notifications');
-                  },
-                  true,
-                )}
+                {btn('Save changes', () => saveNotifications(), true)}
               </div>
             </div>
           </section>
