@@ -384,7 +384,6 @@ export default function AppRouter() {
         'survey-drafts',
         'survey-paused',
         'survey-closed',
-        'survey-share',
         'survey-ai',
         'survey-ai-review',
         'survey-choices',
@@ -508,22 +507,6 @@ export default function AppRouter() {
       <FeedbacksPage key={hash} page={page} language={language} setLanguage={setLanguage} preview />
     );
   }
-  if (!preview && page.startsWith('verify-email'))
-    return (
-      <main className="session-state">
-        <h1>
-          {language === 'ar'
-            ? 'تأكيد البريد قيد التطوير'
-            : 'Email verification is under development'}
-        </h1>
-        <p>
-          {language === 'ar'
-            ? 'تأكيد البريد غير متاح في الخدمة الحالية.'
-            : 'The current service does not support email verification yet.'}
-        </p>
-        <a href="#/login">{t.login}</a>
-      </main>
-    );
   if (page === 'verify-email' || (preview && page.startsWith('verify-email-')))
     return (
       <VerificationPage

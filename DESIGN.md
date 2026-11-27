@@ -39,10 +39,10 @@ Existing headers use 76px desktop / 72px mobile geometry and responsive product 
 ## Interaction contract
 
 - Forms validate locally and on the server, disable duplicate submission while pending and announce failure/success through status/alert regions. Failed saving retains non-secret fields and never advances the step.
-- Hash routes support refresh and persisted onboarding. Public account routes remain reachable; product routes require a signed-in owner and completed setup. Registration signs in directly; email verification is unavailable with the sole backend.
+- Hash routes support refresh and persisted onboarding. Public account routes remain reachable; product routes require a signed-in owner and completed setup. Registration signs in directly. Address verification remains available from Account Security when mail is configured.
 - Arabic changes document direction, labels and navigation semantics. User-entered names are displayed as entered. Dates use the user's locale and workspace reporting defaults.
 - Private product routes show saved identity/workspace data and honest empty/unavailable states. Sample records, canned assistant replies and synthetic subscription/usage claims belong only to explicit `/preview/` routes.
-- Account feedback routes reuse `FeedbackShell` and `FeedbackList` with the reviewed empty layout: heading, five filters, zero-response table, illustration, actions and getting-started steps. Sample responses open `/preview/#/feedbacks`. The account share action opens survey management, where published surveys provide same-origin sharing links. Keep the approved empty Overview copy in previews, with availability-aware copy in account routes.
+- Account feedback routes reuse `FeedbackShell` and `FeedbackList` with the reviewed empty layout: heading, five filters, zero-response table, illustration, actions and getting-started steps. Sample responses open `/preview/#/feedbacks`. The account share action opens survey management, where active published surveys provide same-origin links and PNG QR downloads. Keep the approved empty Overview copy in previews, with availability-aware copy in account routes.
 - Preserve visible focus, keyboard-operable menus, password visibility controls, native form semantics and reduced-motion behavior. No additional decorative motion is introduced.
 - Verify changes through frontend tests and the account browser scenario at desktop and 393px mobile widths in both languages. Reference screenshots remain previews, not proof of real backend/AI behavior.
 

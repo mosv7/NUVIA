@@ -56,6 +56,7 @@ const imgNotifications = asset('dashboard/overview/notifications.svg');
 export default function FeedbackShell({ children, title = 'Feedbacks' }) {
   const ui = useProductView();
   const tr = ui.tr;
+  const searchLabel = tr(ui.preview ? 'Search across pages' : 'Search unavailable');
   return (
     <div className="product-view ds-overview feedback-shell">
       <div
@@ -166,17 +167,19 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
             >
               {tr('Feedbacks')}
             </p>
-            <div className="f21" data-node-id="127:283" data-name="Unread count">
-              <p
-                className="f22"
-                data-node-id="127:284"
-                style={{
-                  fontVariationSettings: '"opsz" 14',
-                }}
-              >
-                {tr('12')}
-              </p>
-            </div>
+            {ui.preview && (
+              <div className="f21" data-node-id="127:283" data-name="Unread count">
+                <p
+                  className="f22"
+                  data-node-id="127:284"
+                  style={{
+                    fontVariationSettings: '"opsz" 14',
+                  }}
+                >
+                  {tr('12')}
+                </p>
+              </div>
+            )}
           </button>
           <button
             className={ui.activeDestination === 'Analytics' ? 'f16' : 'f19'}
@@ -439,30 +442,24 @@ export default function FeedbackShell({ children, title = 'Feedbacks' }) {
                 style={{
                   fontVariationSettings: '"opsz" 14',
                 }}
-                data-workspace-search=""
+                data-workspace-search={ui.preview ? '' : undefined}
                 disabled={!ui.preview}
-                aria-label={
-                  ui.preview
-                    ? tr('Search across pages')
-                    : tr('Page search is available in the design preview')
-                }
-                placeholder={
-                  ui.preview
-                    ? tr('Search across pages')
-                    : tr('Page search is available in the design preview')
-                }
+                aria-label={searchLabel}
+                placeholder={searchLabel}
                 value={ui.workspaceQuery}
                 onChange={(event) => ui.setWorkspaceQuery(event.target.value)}
               />
-              <p
-                className="f46"
-                data-node-id="127:339"
-                style={{
-                  fontVariationSettings: '"opsz" 14',
-                }}
-              >
-                {tr('⌘ K')}
-              </p>
+              {ui.preview && (
+                <p
+                  className="f46"
+                  data-node-id="127:339"
+                  style={{
+                    fontVariationSettings: '"opsz" 14',
+                  }}
+                >
+                  {tr('⌘ K')}
+                </p>
+              )}
             </div>
             <div className="f47" data-node-id="127:340" data-name="Language">
               <div className="f35" data-node-id="127:341" data-name="globe">

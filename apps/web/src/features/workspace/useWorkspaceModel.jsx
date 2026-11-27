@@ -76,6 +76,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     [account, setAccount] = useState({
       name: preview ? 'Sara Ahmed' : auth?.user?.name || '',
       email: preview ? 'sara@example.test' : auth?.user?.email || '',
+      emailVerified: preview || auth?.user?.emailVerified === true,
       title: preview ? 'Founder & workspace owner' : 'Workspace owner',
       phone: preview ? '+20 100 123 4567' : '',
       country: preview ? 'Egypt' : '',
@@ -257,6 +258,13 @@ export default function useWorkspaceModel({ language, setLanguage }) {
           const data = await settingsApi.security(signal);
           if (!isCurrent()) return;
           setTwoFA(!!data.twoFactorEnabled);
+          if (page === 'settings-security') {
+            setAccount((current) => ({
+              ...current,
+              email: data.email || current.email,
+              emailVerified: data.emailVerified === true,
+            }));
+          }
           const rows = await settingsApi.sessions(signal);
           if (!isCurrent()) return;
           setSessions(Array.isArray(rows) ? rows : rows.sessions || []);
@@ -317,6 +325,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     }
   }, [page, branches, language, preview, draft.id]);
   useEffect(() => {
+    if (!preview) return;
     const shortcut = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -326,7 +335,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     };
     addEventListener('keydown', shortcut);
     return () => removeEventListener('keydown', shortcut);
-  }, []);
+  }, [preview]);
   useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToast(''), 4500);
@@ -1017,6 +1026,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     };
   return {
     preview,
+    emailVerificationAvailable: auth?.user?.emailVerificationAvailable === true,
     saving,
     settingsLoading,
     settingsLoadFailed,

@@ -9,6 +9,12 @@ export const surveyApi = {
   summary: (signal) => data(apiRequest('/surveys/summary', { signal })),
   templates: (signal) => data(apiRequest('/survey-templates', { signal })),
   get: (id, signal) => data(apiRequest(`/surveys/${idPath(id)}`, { signal })),
+  share: (id, signal) => data(apiRequest(`/surveys/${idPath(id)}/share`, { signal })),
+  qr: (id, branchId, signal) =>
+    apiRequest(`/surveys/${idPath(id)}/qr${queryString({ branchId, format: 'png' })}`, {
+      signal,
+      responseType: 'blob',
+    }),
   create: (body, signal) => data(apiRequest('/surveys', { method: 'POST', body, signal })),
   update: (id, body, signal) =>
     data(apiRequest(`/surveys/${idPath(id)}`, { method: 'PATCH', body, signal })),

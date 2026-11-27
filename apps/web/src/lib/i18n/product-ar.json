@@ -982,7 +982,7 @@
   "Question deleted": "تم حذف السؤال",
   "Keep at least one question": "يجب أن يحتوي الاستبيان على سؤال واحد على الأقل",
   "Search across pages": "ابحث في الصفحات",
-  "Page search is available in the design preview": "البحث في الصفحات متاح في معاينة التصميم",
+  "Search unavailable": "البحث غير متاح",
   "Search feedback": "ابحث في آراء العملاء",
   "Action board": "لوحة الإجراءات",
   "Aspect analytics": "تحليل الجوانب",

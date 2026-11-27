@@ -59,7 +59,6 @@ export function ProductProvider({
         'Cafe &workspace': workspace?.industry || '',
         B: Array.from(workspace?.businessName || '')[0] || '',
         'Sara Ahmed': identity?.name || '',
-        12: '0',
       };
       if (Object.hasOwn(actual, text)) return actual[text];
     }

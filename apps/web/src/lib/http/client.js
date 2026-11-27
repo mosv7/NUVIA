@@ -7,7 +7,7 @@ export function resetApiSession() {
   csrfToken = null;
   pendingBootstrap = null;
 }
-async function request(path, options = {}) {
+async function request(path, options = {}, responseType) {
   let response;
   try {
     response = await fetch(`${API_PREFIX}${path}`, {
@@ -22,6 +22,7 @@ async function request(path, options = {}) {
     if (error.name === 'AbortError') throw error;
     throw Object.assign(new Error('NETWORK_ERROR'), { code: 'NETWORK_ERROR', status: 0 });
   }
+  if (response.ok && responseType === 'blob') return response.blob();
   const data = response.status === 204 ? undefined : await response.json().catch(() => ({}));
   if (!response.ok) {
     const code =
@@ -64,7 +65,7 @@ export function bootstrapSession() {
 }
 export async function apiRequest(
   path,
-  { method = 'GET', body, rawBody, contentType, signal } = {},
+  { method = 'GET', body, rawBody, contentType, signal, responseType } = {},
 ) {
   if (path === '/auth/session' && method === 'GET') return bootstrapSession();
   if (method !== 'GET' && !csrfToken) await bootstrapSession();
@@ -72,19 +73,26 @@ export async function apiRequest(
   const version = epoch;
   let data;
   try {
-    data = await request(path, {
-      method,
-      signal,
-      ...(rawBody !== undefined
-        ? { body: rawBody }
-        : body !== undefined
-          ? { body: JSON.stringify(body) }
-          : {}),
-      headers:
-        method === 'GET'
-          ? {}
-          : { 'X-CSRF-Token': csrfToken, ...(contentType ? { 'Content-Type': contentType } : {}) },
-    });
+    data = await request(
+      path,
+      {
+        method,
+        signal,
+        ...(rawBody !== undefined
+          ? { body: rawBody }
+          : body !== undefined
+            ? { body: JSON.stringify(body) }
+            : {}),
+        headers:
+          method === 'GET'
+            ? {}
+            : {
+                'X-CSRF-Token': csrfToken,
+                ...(contentType ? { 'Content-Type': contentType } : {}),
+              },
+      },
+      responseType,
+    );
   } catch (error) {
     if (
       version === epoch &&

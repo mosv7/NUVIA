@@ -4,6 +4,17 @@ import { LanguageMenu } from '../../components/ui/ChoiceMenu.jsx';
 import LanguageIcon from '../../components/ui/LanguageIcon.jsx';
 const copy = {
   en: {
+    emailTitle: 'Verify your email address',
+    emailIntro:
+      'Open a verification link from your inbox or request one for your NUVIA email address.',
+    confirmTitle: 'Confirm your email address',
+    confirmIntro: 'Select Confirm email address to complete verification for this link.',
+    confirm: 'Confirm email address',
+    return: 'Continue to your account',
+    invalidTitle: 'This verification link no longer works',
+    confirmedIntro: 'Your NUVIA email address is confirmed.',
+    confirmedLinkIntro: 'The email address associated with this link is verified.',
+    resendIntro: 'Request a new verification link for your NUVIA email address.',
     expiredTitle: 'This link has expired',
     expiredIntro: 'Request a new verification email to finish activating your account.',
     verifiedTitle: 'Email verified',
@@ -38,10 +49,19 @@ const copy = {
     demo: 'Preview only · No verification email has been sent.',
     resent: 'Demo only: the resend request was checked. No email was sent.',
     changed: 'Email updated for this preview. No verification email was sent.',
-    wait: 'Resend available in',
     unavailable: 'This page will be available in the complete flow.',
   },
   ar: {
+    emailTitle: 'أكّد بريدك الإلكتروني',
+    emailIntro: 'افتح رابط التأكيد من صندوق الوارد أو اطلب رابطًا لبريدك الإلكتروني في NUVIA.',
+    confirmTitle: 'تأكيد بريدك الإلكتروني',
+    confirmIntro: 'اختر تأكيد البريد الإلكتروني لإكمال التأكيد باستخدام هذا الرابط.',
+    confirm: 'تأكيد البريد الإلكتروني',
+    return: 'المتابعة إلى حسابك',
+    invalidTitle: 'رابط التأكيد لم يعد صالحًا',
+    confirmedIntro: 'تم تأكيد بريدك الإلكتروني في NUVIA.',
+    confirmedLinkIntro: 'تم تأكيد عنوان البريد الإلكتروني المرتبط بهذا الرابط.',
+    resendIntro: 'اطلب رابط تأكيد جديدًا لبريدك الإلكتروني في NUVIA.',
     expiredTitle: 'انتهت صلاحية الرابط',
     expiredIntro: 'اطلب رسالة تأكيد جديدة لإكمال تفعيل حسابك.',
     verifiedTitle: 'تم تأكيد بريدك',
@@ -75,7 +95,6 @@ const copy = {
     demo: 'معاينة فقط · لم يتم إرسال رسالة تأكيد فعلية.',
     resent: 'عرض تجريبي: تم التحقق من طلب إعادة الإرسال، ولم يتم إرسال رسالة فعلية.',
     changed: 'تم تحديث البريد في المعاينة. لم يتم إرسال رسالة تأكيد فعلية.',
-    wait: 'يمكن إعادة الإرسال بعد',
     unavailable: 'ستتاح هذه الصفحة في التدفق الكامل.',
   },
 };
@@ -120,23 +139,29 @@ export default function EmailVerificationView({
   email,
   onEmailChange,
   status = 'sent',
+  confirmedLink,
   busy = false,
   message,
   onResend,
+  onConfirm,
+  preview,
+  editableEmail,
+  resendDisabled,
+  continueHref,
 }) {
   const t = copy[language],
     root = useRef(null),
     emailInput = useRef(null),
     [editing, setEditing] = useState(false),
     [draft, setDraft] = useState(email || ''),
-    [seconds, setSeconds] = useState(0),
     [notice, setNotice] = useState('');
+  const confirmed = status === 'verified';
+  const confirming = status === 'confirm';
+  const showAddress = !confirmed && !confirming;
+  const enterAddress = showAddress && !preview && editableEmail;
+  const editPreviewAddress = showAddress && preview && editing;
+  const signedIn = continueHref !== '#/login';
   const img = (name) => asset('auth/signup/' + name);
-  useEffect(() => {
-    if (!seconds) return;
-    const timeout = setTimeout(() => setSeconds((n) => Math.max(0, n - 1)), 1000);
-    return () => clearTimeout(timeout);
-  }, [seconds]);
   useEffect(() => {
     if (editing) emailInput.current?.focus();
   }, [editing]);
@@ -175,7 +200,6 @@ export default function EmailVerificationView({
     e.preventDefault();
     onEmailChange(draft.trim());
     setEditing(false);
-    setSeconds(0);
   };
   return (
     <main className="auth-layout email-verification" ref={root}>
@@ -218,38 +242,78 @@ export default function EmailVerificationView({
             <div className="intro">
               <h1 className={status === 'expired' ? 'expired-title' : undefined}>
                 {status === 'expired'
-                  ? t.expiredTitle
-                  : status === 'verified'
+                  ? preview
+                    ? t.expiredTitle
+                    : t.invalidTitle
+                  : confirmed
                     ? t.verifiedTitle
-                    : t.title}
+                    : confirming
+                      ? t.confirmTitle
+                      : preview
+                        ? t.title
+                        : t.emailTitle}
               </h1>
               <p>
                 {status === 'expired'
-                  ? t.expiredIntro
-                  : status === 'verified'
-                    ? t.verifiedIntro
-                    : t.intro}
+                  ? preview
+                    ? t.expiredIntro
+                    : t.resendIntro
+                  : confirmed
+                    ? preview
+                      ? t.verifiedIntro
+                      : confirmedLink
+                        ? t.confirmedLinkIntro
+                        : t.confirmedIntro
+                    : confirming
+                      ? t.confirmIntro
+                      : preview
+                        ? t.intro
+                        : t.emailIntro}
               </p>
             </div>
-            {status !== 'verified' && (
+            {showAddress && !enterAddress && (
               <div className="email-box">
                 <Mail />
                 <div>
                   <small>{t.sentTo}</small>
                   <strong dir="ltr">{email || 'you@company.com'}</strong>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDraft(email || '');
-                    setEditing(true);
-                  }}
-                >
-                  {t.change}
-                </button>
+                {preview && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDraft(email || '');
+                      setEditing(true);
+                    }}
+                  >
+                    {t.change}
+                  </button>
+                )}
               </div>
             )}
-            {editing && status !== 'verified' && (
+            {enterAddress && (
+              <form
+                id="verification-request"
+                className="edit-form"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  if (!busy && !resendDisabled) await onResend();
+                }}
+              >
+                <input
+                  aria-label={t.email}
+                  type="email"
+                  dir="ltr"
+                  value={email}
+                  placeholder={t.email}
+                  onChange={(event) => onEmailChange(event.target.value)}
+                  required
+                  disabled={busy || resendDisabled}
+                  autoComplete="email"
+                />
+              </form>
+            )}
+            {editPreviewAddress && (
               <form className="edit-form" onSubmit={save}>
                 <input
                   ref={emailInput}
@@ -268,29 +332,38 @@ export default function EmailVerificationView({
             )}
             <button
               className="primary"
-              disabled={busy || (status !== 'verified' && seconds > 0)}
+              type={enterAddress ? 'submit' : 'button'}
+              form={enterAddress ? 'verification-request' : undefined}
+              disabled={busy || (showAddress && resendDisabled)}
               onClick={async () => {
-                if (status === 'verified') {
-                  location.hash = '/login';
+                if (confirmed) {
+                  location.hash = continueHref;
                   return;
                 }
+                if (confirming) {
+                  await onConfirm();
+                  return;
+                }
+                if (enterAddress) return;
                 setNotice('');
                 if (editing && !emailInput.current?.reportValidity()) return;
                 if (!email) {
                   setEditing(true);
                   return;
                 }
-                if (await onResend()) setSeconds(60);
+                await onResend();
               }}
             >
-              {status === 'verified'
-                ? t.continue
+              {confirmed
+                ? signedIn
+                  ? t.return
+                  : t.continue
                 : busy
                   ? language === 'ar'
                     ? 'يرجى الانتظار…'
                     : 'Please wait…'
-                  : seconds
-                    ? t.wait + ' ' + seconds + 's'
+                  : confirming
+                    ? t.confirm
                     : t.resend}
             </button>
             {(message || notice) && (
@@ -298,12 +371,14 @@ export default function EmailVerificationView({
                 {notice ? t[notice] : message}
               </p>
             )}
-            <p className="cross-link">
-              <a href="#/login">
-                <Arrow />
-                {t.login}
-              </a>
-            </p>
+            {(!confirmed || preview) && (
+              <p className="cross-link">
+                <a href={continueHref}>
+                  <Arrow />
+                  {signedIn ? t.return : t.login}
+                </a>
+              </p>
+            )}
           </div>
         </div>
         <footer>

@@ -91,8 +91,11 @@ const workspaceRoute = (hash) =>
   );
 function currentEntry() {
   if (typeof window === 'undefined' || !window.history?.replaceState) return null;
+  const hash = window.location.hash.startsWith('#/verify-email?')
+    ? '#/verify-email'
+    : window.location.hash;
   const existing = window.history.state?.nuviaEntry;
-  if (existing?.hash === window.location.hash) {
+  if (existing?.hash === hash) {
     if (!entries.has(existing.id))
       entries.set(existing.id, {
         ...existing,
@@ -104,7 +107,7 @@ function currentEntry() {
   }
   const entry = {
     id: globalThis.crypto?.randomUUID?.() || String(Date.now()) + Math.random(),
-    hash: window.location.hash,
+    hash,
     previous: activeEntry?.hash,
     fromNavigation: navigationOrigin,
     view: {},

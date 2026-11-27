@@ -2401,23 +2401,6 @@
   }
 }
 
-/* Exact navigation icon rendering from the reference frontend. */
-#root .workspace-extension .product-navigation .workspace-navigation-icon {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-color: #64738a;
-  mask-position: center;
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-}
-#root .workspace-extension .product-navigation .workspace-navigation-icon[data-active='true'] {
-  background-color: var(--primary-color, #1e68ef);
-}
-
 /* Page-local controls cannot inherit the auth form's full-width primary button. */
 #root .workspace-extension .new-preview-content .button {
   width: auto;

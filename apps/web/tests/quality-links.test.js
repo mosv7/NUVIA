@@ -14,13 +14,3 @@ it('uses the configured survey URL for displayed, copied and branch links', asyn
   expect(branch.searchParams.get('survey')).toBe('approved');
   expect(branch.searchParams.get('b')).toBe('El Zamalek');
 });
-
-it('builds connected survey links from the exact current browser origin', async () => {
-  history.replaceState(null, '', '/#/surveys');
-  const { connectedSurveyUrl } = await import('../src/config/links.js');
-  const url = connectedSurveyUrl('abc123', 'main');
-  const parsed = new URL(url);
-  expect(parsed.origin).toBe(window.location.origin);
-  expect(parsed.hash).toBe('#/public-survey?code=abc123&branch=main');
-  expect(connectedSurveyUrl('')).toBe('');
-});

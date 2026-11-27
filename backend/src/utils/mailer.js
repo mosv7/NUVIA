@@ -4,19 +4,26 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 const port = Number(process.env.SMTP_PORT) || 587;
+const secure = port === 465 || process.env.SMTP_SECURE === 'true';
+const smtpPassword = () => process.env.SMTP_PASSWORD || process.env.SMTP_PASS;
+const fileMailEnabled = () =>
+  process.env.MAIL_MODE === 'file' && process.env.NODE_ENV !== 'production';
+const smtpEnabled = () =>
+  Boolean(process.env.SMTP_HOST && process.env.MAIL_FROM) &&
+  Boolean(process.env.SMTP_USER) === Boolean(smtpPassword());
+const mailDeliveryAvailable = () => fileMailEnabled() || smtpEnabled();
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port,
-  secure: port === 465, // true only for 465, STARTTLS otherwise
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
+  secure,
+  requireTLS: !secure,
+  tls: { rejectUnauthorized: true },
+  ...(process.env.SMTP_USER && { auth: { user: process.env.SMTP_USER, pass: smtpPassword() } }),
 });
 
 const sendMail = async ({ to, subject, html, text }) => {
-  if (process.env.MAIL_MODE === 'file' && process.env.NODE_ENV !== 'production') {
+  if (fileMailEnabled()) {
     const directory =
       process.env.MAIL_FILE_DIRECTORY || path.resolve(__dirname, '../../../.local/mail');
     await fs.mkdir(directory, { recursive: true });
@@ -26,8 +33,7 @@ const sendMail = async ({ to, subject, html, text }) => {
     });
     return;
   }
-  if (!process.env.SMTP_HOST || !process.env.MAIL_FROM)
-    throw new Error('Mail delivery is not configured');
+  if (!smtpEnabled()) throw new Error('Mail delivery is not configured');
   return transporter.sendMail({
     from: process.env.MAIL_FROM,
     to,
@@ -37,4 +43,4 @@ const sendMail = async ({ to, subject, html, text }) => {
   });
 };
 
-module.exports = { sendMail, transporter };
+module.exports = { mailDeliveryAvailable, sendMail, transporter };

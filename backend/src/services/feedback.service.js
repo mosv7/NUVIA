@@ -82,7 +82,7 @@ const list = async (user, q) => {
     CustomerResponse.countDocuments(filter),
     CustomerResponse.find(filter)
       .select(
-        'number feedbackText submittedAt language branchId surveyId analysis.status analysis.overallSentiment analysis.aspects.name',
+        'number feedbackText submittedAt language branchId surveyId analysis.status analysis.overallSentiment analysis.aspects.name analysis.provenance.qualityStatus analysis.provenance.qualityAccepted',
       )
       .sort(sortOf(q.sort))
       .skip(skip)
@@ -106,6 +106,10 @@ const list = async (user, q) => {
     language: r.language,
     sentiment: r.analysis?.overallSentiment || null, // null while pending / failed / skipped: show "Analysing..." or "-"
     analysisStatus: r.analysis?.status || 'pending',
+    qualityStatus: r.analysis?.provenance?.qualityStatus ?? null,
+    qualityAccepted:
+      r.analysis?.provenance?.qualityStatus === 'accepted' &&
+      r.analysis.provenance.qualityAccepted === true,
     aspects: unique((r.analysis?.aspects || []).map((a) => a.name)),
     branch: branches.get(String(r.branchId)) || null,
     survey: surveys.get(String(r.surveyId)) || null,
@@ -365,6 +369,7 @@ const exportCsv = async (user, q) => {
     'Language',
     'Source',
     'Sentiment',
+    'Analysis quality',
     'Aspects',
     'Feedback',
   ];
@@ -376,6 +381,8 @@ const exportCsv = async (user, q) => {
     r.language,
     r.channel === 'qr_code' ? 'QR code' : 'Link',
     SENTIMENT_LABEL[r.analysis?.overallSentiment] || '',
+    r.analysis?.provenance?.qualityStatus ||
+      (r.analysis?.overallSentiment || r.analysis?.aspects?.length ? 'unverified' : ''),
     unique((r.analysis?.aspects || []).map((a) => a.name)).join('; '),
     r.feedbackText || '',
   ]);

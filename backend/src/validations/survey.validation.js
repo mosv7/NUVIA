@@ -132,16 +132,17 @@ const reorderQuestions = [
 ];
 
 const qrQuery = [
-  query('branchId').optional().isMongoId().withMessage('Invalid branch id'),
-  query('format').optional().isIn(['svg', 'png']).withMessage('format must be svg or png'),
-  query('size')
+  query('branchId')
     .optional()
-    .isInt({ min: 128, max: 2048 })
-    .withMessage('size must be between 128 and 2048'),
-  query('download')
+    .isString()
+    .withMessage('Invalid branch id')
+    .bail()
+    .isMongoId()
+    .withMessage('Invalid branch id'),
+  query('format')
     .optional()
-    .isIn(['0', '1', 'true', 'false'])
-    .withMessage('download must be 1 or 0'),
+    .custom((value) => value === 'png')
+    .withMessage('Format must be png'),
 ];
 
 module.exports = {

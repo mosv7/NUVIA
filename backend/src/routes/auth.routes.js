@@ -10,6 +10,8 @@ const {
   forgotPasswordValidation,
   verifyResetTokenValidation,
   resetPasswordValidation,
+  resendVerificationValidation,
+  verifyEmailValidation,
 } = require('../validations/auth.validation');
 const validate = require('../middlewares/validation.middleware');
 
@@ -35,6 +37,28 @@ const loginLimiter = rateLimit({
 router.post('/register', loginLimiter, registerValidation, validate, authController.register);
 
 router.post('/login', loginLimiter, loginValidation, validate, authController.login);
+
+const emailVerificationLimiter = () =>
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+router.post(
+  '/resend-verification',
+  emailVerificationLimiter(),
+  resendVerificationValidation,
+  validate,
+  authController.resendVerification,
+);
+router.post(
+  '/verify-email',
+  emailVerificationLimiter(),
+  verifyEmailValidation,
+  validate,
+  authController.verifyEmail,
+);
 
 router.post(
   '/forgot-password',

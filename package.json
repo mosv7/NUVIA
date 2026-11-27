@@ -26,7 +26,7 @@
     "test:backend:unit": "pnpm --filter @nuvia/api test:unit",
     "test:e2e:accounts": "node tests/e2e/run.mjs",
     "test:ai": "uv run --directory apps/ai-service pytest",
-    "lint": "eslint apps/web/src apps/web/tests backend packages/shared-types/src scripts tests/e2e",
+    "lint": "eslint apps/web/src apps/web/tests backend packages/shared-types/src scripts tests/e2e --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:watch": "pnpm --filter @nuvia/web test:watch",

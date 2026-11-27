@@ -1,19 +1,27 @@
-// Builds the public links shown on the Share screen.
-//   survey link:  <base>/<shortCode>
-//   branch link:  <base>/<shortCode>/<branchSlug>
-//
-// Set SURVEY_LINK_BASE_URL (e.g. https://nuvia.link) in .env. Without it we fall back to
-// <FRONTEND_URL>/s so links still work in development.
-const getBaseUrl = () => {
-  const explicit = process.env.SURVEY_LINK_BASE_URL;
-  if (explicit) return explicit.replace(/\/+$/, '');
+const { createHmac, timingSafeEqual } = require('node:crypto');
+const { appOrigin } = require('./browserSession');
 
-  const frontend = (process.env.FRONTEND_URL || 'http://localhost:5173').split(',')[0].trim();
-  return `${frontend.replace(/\/+$/, '')}/s`;
+const buildSurveyLink = (shortCode, branchSlug, qrToken) => {
+  const target = new URL('/', appOrigin());
+  const query = new URLSearchParams({ code: shortCode });
+  if (branchSlug) query.set('branch', branchSlug);
+  if (qrToken) query.set('qr', qrToken);
+  target.hash = `/public-survey?${query}`;
+  return target.href;
 };
 
-const buildSurveyLink = (shortCode) => `${getBaseUrl()}/${shortCode}`;
+const signQrLink = (surveyId, branchId = '') =>
+  createHmac('sha256', process.env.JWT_SECRET)
+    .update(`nuvia-survey-qr:v1:${surveyId}:${branchId}`)
+    .digest('hex');
 
-const buildBranchLink = (shortCode, branchSlug) => `${getBaseUrl()}/${shortCode}/${branchSlug}`;
+const isIssuedQrToken = (token, surveyId, branchId) => {
+  if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) return false;
+  const supplied = Buffer.from(token, 'hex');
+  // A survey-wide QR can resolve any current branch. A branch QR stays scoped to its branch.
+  return ['', branchId].some((scope) =>
+    timingSafeEqual(supplied, Buffer.from(signQrLink(surveyId, scope), 'hex')),
+  );
+};
 
-module.exports = { buildSurveyLink, buildBranchLink };
+module.exports = { buildSurveyLink, signQrLink, isIssuedQrToken };

@@ -6,6 +6,8 @@ const { generateToken, generateTwoFactorToken } = require('../utils/jwt');
 const { createSession } = require('./session.service');
 const Branch = require('../models/branch.model');
 const { fail } = require('../utils/errors');
+const { mailDeliveryAvailable } = require('../utils/mailer');
+const { scheduleVerification } = require('./emailVerification.service');
 
 const toUser = (account, businessId) => ({
   id: String(account._id),
@@ -15,7 +17,8 @@ const toUser = (account, businessId) => ({
   role: 'owner',
   businessId: businessId ? String(businessId) : null,
   locale: account.preferredLanguage === 'ar' ? 'ar' : 'en',
-  emailVerificationAvailable: false,
+  emailVerified: account.emailVerified === true,
+  emailVerificationAvailable: mailDeliveryAvailable(),
 });
 
 // businessId: the Business the account belongs to
@@ -54,7 +57,9 @@ const register = async ({ name, email, password, phone, preferredLanguage, meta 
     preferredLanguage: preferredLanguage || 'en',
   });
 
-  return buildAuthResponse(owner, 'owner', null, meta);
+  const result = await buildAuthResponse(owner, 'owner', null, meta);
+  scheduleVerification(owner.email);
+  return result;
 };
 
 const login = async ({ email, password, meta }) => {
