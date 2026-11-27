@@ -29,7 +29,7 @@ const copy = {
       {
         question: 'How do I share a survey?',
         answer:
-          'Open Surveys, find the survey and use Copy public link. The link uses this site address and the survey’s real code.',
+          'Open Surveys, publish the survey, then use Copy public link. The link uses this site address and the survey’s code.',
         href: '#/survey-all',
         linkText: 'Open Surveys',
       },
@@ -79,7 +79,7 @@ const copy = {
       {
         question: 'كيف أشارك استبيانًا؟',
         answer:
-          'افتح الاستبيانات، وابحث عن الاستبيان، ثم استخدم نسخ رابط الاستبيان. يستخدم الرابط عنوان هذا الموقع والرمز الحقيقي للاستبيان.',
+          'افتح الاستبيانات وانشر الاستبيان، ثم استخدم نسخ رابط الاستبيان. يستخدم الرابط عنوان هذا الموقع ورمز الاستبيان.',
         href: '#/survey-all',
         linkText: 'فتح الاستبيانات',
       },

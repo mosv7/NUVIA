@@ -12,7 +12,7 @@ const branchRoutes = require('./src/routes/branch.routes');
 const businessRoutes = require('./src/routes/business.routes');
 const reportRoutes = require('./src/routes/reports.routes');
 const sentimentRoutes = require('./src/routes/overviewSentiment.routes');
-const analysticsRoutes = require('./src/routes/overviewAnalytics.routes');
+const analyticsRoutes = require('./src/routes/overviewAnalytics.routes');
 const topicsComplaints = require('./src/routes/topics-complaints.routes');
 const trendsRoutes = require('./src/routes/overviewTrends.routes');
 const branchComparisonRoutes = require('./src/routes/branchComparison.routes');
@@ -20,7 +20,10 @@ const branchComparisonRoutes = require('./src/routes/branchComparison.routes');
 const app = express();
 
 app.use(
-  cors(),
+  cors({
+    origin: (origin, done) => done(null, origin === appOrigin() ? origin : false),
+    credentials: true,
+  }),
 );
 app.use(
   express.json({
@@ -52,10 +55,9 @@ app.get('/', (req, res) => {
   });
 });
 
-
 app.use('/api/branch-comparison', branchComparisonRoutes);
 app.use('/api/trends', trendsRoutes);
-app.use('/api/analytics', analysticsRoutes);
+app.use('/api/analytics', analyticsRoutes);
 app.use('/api/topics', topicsComplaints);
 app.use('/api/sentiment', sentimentRoutes);
 app.use('/api/overview', overviewRoutes);

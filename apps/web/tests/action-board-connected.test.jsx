@@ -25,6 +25,8 @@ it('renders real saved recommendations from the overview next-actions API', asyn
   const nextActions = vi.spyOn(analyticsApi, 'nextActions').mockResolvedValue({
     reportName: 'Actual monthly report',
     actions: ['Review waiting-time feedback', 'Clarify combo pricing'],
+    qualityStatus: 'baseline',
+    qualityAccepted: false,
   });
 
   history.replaceState(null, '', '/#/action-board');
@@ -32,6 +34,7 @@ it('renders real saved recommendations from the overview next-actions API', asyn
 
   expect(await screen.findByText('Review waiting-time feedback')).toBeVisible();
   expect(screen.getByText('Clarify combo pricing')).toBeVisible();
+  expect(screen.getByText('Experimental AI output. Quality has not been accepted.')).toBeVisible();
   expect(nextActions).toHaveBeenCalledTimes(1);
   expect(screen.queryByText('This feature is not available yet.')).not.toBeInTheDocument();
 });

@@ -3,8 +3,6 @@ const router = express.Router();
 const analyticsController = require('../controllers/overviewAnalytics.controller');
 const overviewAuth = require('../middlewares/overviewAuth.middleware');
 
-
-
 router.use(overviewAuth);
 
 router.get('/aspect-score-comparison', analyticsController.getAspectScoreComparison);

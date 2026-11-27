@@ -57,6 +57,8 @@ export default function WorkspacePages({ language, setLanguage }) {
     setOtherBusinesses,
     setToast,
     settingsPage,
+    settingsLoading,
+    settingsLoadFailed,
     toast,
   } = model;
   let content =
@@ -88,8 +90,7 @@ export default function WorkspacePages({ language, setLanguage }) {
           if (auth.preview) return;
           const button = event.target.closest('button');
           if (!button) return;
-          const unsupported =
-            (page === 'business-add' && button.classList.contains('primary'));
+          const unsupported = page === 'business-add' && button.classList.contains('primary');
           if (unsupported) {
             event.preventDefault();
             event.stopPropagation();
@@ -100,15 +101,25 @@ export default function WorkspacePages({ language, setLanguage }) {
         }}
       >
         {!auth.preview && (page === 'surveys' || page.startsWith('survey-')) ? (
-          <ReferenceFrame page={page} title="Surveys" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="surveys" language={lang} /></ReferenceFrame>
+          <ReferenceFrame page={page} title="Surveys" language={lang} setLanguage={setLang}>
+            <ConnectedWorkspaceData type="surveys" language={lang} />
+          </ReferenceFrame>
         ) : !auth.preview && page.startsWith('analytics') ? (
-          <ReferenceFrame page={page} title="Analytics" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="analytics" language={lang} /></ReferenceFrame>
+          <ReferenceFrame page={page} title="Analytics" language={lang} setLanguage={setLang}>
+            <ConnectedWorkspaceData type="analytics" language={lang} />
+          </ReferenceFrame>
         ) : !auth.preview && page === 'report-details' ? (
-          <ReferenceFrame page={page} title="Report details" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="report-details" language={lang} /></ReferenceFrame>
+          <ReferenceFrame page={page} title="Report details" language={lang} setLanguage={setLang}>
+            <ConnectedWorkspaceData type="report-details" language={lang} />
+          </ReferenceFrame>
         ) : !auth.preview && page === 'reports' ? (
-          <ReferenceFrame page={page} title="Reports" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="reports" language={lang} /></ReferenceFrame>
+          <ReferenceFrame page={page} title="Reports" language={lang} setLanguage={setLang}>
+            <ConnectedWorkspaceData type="reports" language={lang} />
+          </ReferenceFrame>
         ) : !auth.preview && page === 'feedbacks' ? (
-          <ReferenceFrame page={page} title="Feedbacks" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="feedbacks" language={lang} /></ReferenceFrame>
+          <ReferenceFrame page={page} title="Feedbacks" language={lang} setLanguage={setLang}>
+            <ConnectedWorkspaceData type="feedbacks" language={lang} />
+          </ReferenceFrame>
         ) : ['action-board', 'evidence'].includes(page) ? (
           <ReferenceAction
             preview={auth.preview}
@@ -160,7 +171,9 @@ export default function WorkspacePages({ language, setLanguage }) {
           />
         ) : page === 'overview' ? (
           !auth.preview ? (
-            <ReferenceFrame page="overview" title="Overview" language={lang} setLanguage={setLang}><ConnectedWorkspaceData type="analytics" language={lang} /></ReferenceFrame>
+            <ReferenceFrame page="overview" title="Overview" language={lang} setLanguage={setLang}>
+              <ConnectedWorkspaceData type="analytics" language={lang} />
+            </ReferenceFrame>
           ) : sample ? (
             <ReferenceDashboard
               preview={auth.preview}
@@ -216,6 +229,12 @@ export default function WorkspacePages({ language, setLanguage }) {
                       : navigation.find((n) => n[1] === page)?.[0]) || 'Notifications'
             }
           >
+            {settingsLoading && (
+              <p role="status">{L('Loading settings…', 'جارٍ تحميل الإعدادات…')}</p>
+            )}
+            {settingsLoadFailed && (
+              <p role="alert">{L('Could not load settings.', 'تعذر تحميل الإعدادات.')}</p>
+            )}
             {content}
           </ReferenceFrame>
         )}

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Branch = require('../models/branch.model');
 const CustomerResponse = require('../models/customerResponse.model');
-// const CustomerResponse = require('../models/customerResponse.model');
+const accepted = require('./acceptedAnalysis');
 const Survey = require('../models/survey.model');
 const Report = require('../models/report.model');
 
@@ -56,8 +56,9 @@ const getOverviewMetrics = async (businessId, filters = {}) => {
           sentiment: [
             {
               $match: {
+                ...accepted,
                 'analysis.overallSentiment': {
-                  $in: ['positive', 'neutral', 'negative'],
+                  $in: ['positive', 'neutral', 'negative', 'mixed'],
                 },
               },
             },
@@ -108,10 +109,6 @@ const getOverviewMetrics = async (businessId, filters = {}) => {
   const sentiment = stats[0]?.sentiment[0];
   const satisfaction = stats[0]?.satisfaction[0];
 
-  // Temporary estimated indicator, not a true completion rate
-  const estimatedCompletionRate =
-    activeSurveys > 0 ? Math.min(Math.round((totalResponses / activeSurveys) * 100), 100) : null;
-
   return {
     totalResponses,
 
@@ -121,7 +118,7 @@ const getOverviewMetrics = async (businessId, filters = {}) => {
 
     customerSatisfaction: satisfaction ? Number(satisfaction.average.toFixed(1)) : null,
 
-    estimatedCompletionRate,
+    estimatedCompletionRate: null,
 
     activeSurveys,
   };
@@ -152,6 +149,22 @@ const getResponseTrends = async (businessId, filters = {}) => {
     match.branchId = new mongoose.Types.ObjectId(branchId);
   }
 
+  const countsAs = (sentiment) => ({
+    $sum: {
+      $cond: [
+        {
+          $and: [
+            { $in: ['$analysis.status', accepted['analysis.status'].$in] },
+            { $eq: ['$analysis.provenance.qualityAccepted', true] },
+            { $eq: ['$analysis.provenance.qualityStatus', 'accepted'] },
+            { $eq: ['$analysis.overallSentiment', sentiment] },
+          ],
+        },
+        1,
+        0,
+      ],
+    },
+  });
   const results = await CustomerResponse.aggregate([
     { $match: match },
     {
@@ -166,23 +179,12 @@ const getResponseTrends = async (businessId, filters = {}) => {
 
         responses: { $sum: 1 },
 
-        positive: {
-          $sum: {
-            $cond: [{ $eq: ['$analysis.overallSentiment', 'positive'] }, 1, 0],
-          },
-        },
+        positive: countsAs('positive'),
 
-        neutral: {
-          $sum: {
-            $cond: [{ $eq: ['$analysis.overallSentiment', 'neutral'] }, 1, 0],
-          },
-        },
+        neutral: countsAs('neutral'),
 
-        negative: {
-          $sum: {
-            $cond: [{ $eq: ['$analysis.overallSentiment', 'negative'] }, 1, 0],
-          },
-        },
+        negative: countsAs('negative'),
+        mixed: countsAs('mixed'),
       },
     },
     { $sort: { _id: 1 } },
@@ -209,6 +211,7 @@ const getResponseTrends = async (businessId, filters = {}) => {
       positive: item?.positive || 0,
       neutral: item?.neutral || 0,
       negative: item?.negative || 0,
+      mixed: item?.mixed || 0,
     });
 
     current.setUTCDate(current.getUTCDate() + 1);
@@ -222,8 +225,9 @@ const getSentimentDistribution = async (businessId, filters = {}) => {
 
   const match = {
     businessId: new mongoose.Types.ObjectId(businessId),
+    ...accepted,
     'analysis.overallSentiment': {
-      $in: ['positive', 'neutral', 'negative'],
+      $in: ['positive', 'neutral', 'negative', 'mixed'],
     },
   };
 
@@ -257,13 +261,14 @@ const getSentimentDistribution = async (businessId, filters = {}) => {
     positive: 0,
     neutral: 0,
     negative: 0,
+    mixed: 0,
   };
 
   results.forEach((item) => {
     counts[item._id] = item.count;
   });
 
-  const totalAnalyzed = counts.positive + counts.neutral + counts.negative;
+  const totalAnalyzed = counts.positive + counts.neutral + counts.negative + counts.mixed;
 
   const percentage = (count) => (totalAnalyzed > 0 ? Math.round((count / totalAnalyzed) * 100) : 0);
 
@@ -284,6 +289,11 @@ const getSentimentDistribution = async (businessId, filters = {}) => {
       count: counts.negative,
       percentage: percentage(counts.negative),
     },
+
+    mixed: {
+      count: counts.mixed,
+      percentage: percentage(counts.mixed),
+    },
   };
 };
 
@@ -292,6 +302,7 @@ const getAspectScores = async (businessId, filters = {}) => {
 
   const match = {
     businessId: new mongoose.Types.ObjectId(businessId),
+    ...accepted,
   };
 
   if (branchId && branchId !== 'all') {
@@ -412,7 +423,7 @@ const getNextActions = async (businessId) => {
   const report = await Report.findOne({
     business: businessId,
   })
-    .select('suggestedActions reportName createdAt')
+    .select('suggestedActions reportName createdAt qualityStatus qualityAccepted')
     .sort({ createdAt: -1 })
     .lean();
 
@@ -420,12 +431,16 @@ const getNextActions = async (businessId) => {
     return {
       reportName: null,
       actions: [],
+      qualityStatus: null,
+      qualityAccepted: false,
     };
   }
 
   return {
     reportName: report.reportName,
     actions: report.suggestedActions || [],
+    qualityStatus: report.qualityStatus || null,
+    qualityAccepted: report.qualityStatus === 'accepted' && report.qualityAccepted === true,
   };
 };
 

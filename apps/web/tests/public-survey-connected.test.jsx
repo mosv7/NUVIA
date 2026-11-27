@@ -62,3 +62,88 @@ it('submits every answer with a stable submission id through the connected publi
   expect(body.branch).toBe('main');
   expect(await screen.findByText('Thank you!')).toBeVisible();
 });
+
+it('uses the Arabic form language and labels, and omits cleared optional answers', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue(null);
+  vi.spyOn(publicSurveyApi, 'get').mockResolvedValue({
+    formVersion: 'b'.repeat(64),
+    survey: { name: 'استبيان', languages: ['en', 'ar'], defaultLanguage: 'en', isAnonymous: false },
+    state: 'open',
+    questions: [
+      {
+        id: questionId,
+        type: 'long_text',
+        questionTextEn: 'Tell us more',
+        questionTextAr: 'أخبرنا بالمزيد',
+        isRequired: true,
+      },
+      {
+        id: optionId,
+        type: 'yes_no',
+        questionTextEn: 'Would you return?',
+        questionTextAr: 'هل ستعود؟',
+      },
+    ],
+  });
+  const submit = vi.spyOn(publicSurveyApi, 'submit').mockResolvedValue({});
+  history.replaceState(null, '', '/?lang=ar#/public-survey?code=abc123');
+  render(<App />);
+
+  const comments = await screen.findByRole('textbox', { name: /أخبرنا بالمزيد/ });
+  expect(comments.closest('main')).toHaveAttribute('dir', 'rtl');
+  expect(screen.getByRole('textbox', { name: 'البريد الإلكتروني' })).toBeVisible();
+  fireEvent.change(comments, { target: { value: 'خدمة رائعة' } });
+  const yesNo = screen.getByRole('combobox', { name: /هل ستعود/ });
+  fireEvent.change(yesNo, { target: { value: 'true' } });
+  fireEvent.change(yesNo, { target: { value: '' } });
+  fireEvent.click(screen.getByRole('button', { name: 'إرسال الملاحظات' }));
+  await waitFor(() => expect(submit).toHaveBeenCalledTimes(1));
+  expect(submit.mock.calls[0][1]).toMatchObject({
+    language: 'ar',
+    answers: [{ questionId, value: 'خدمة رائعة' }],
+  });
+});
+
+it('shows an unavailable link without a continuing loading indicator', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue(null);
+  vi.spyOn(publicSurveyApi, 'get').mockRejectedValue(Object.assign(new Error(), { status: 404 }));
+  history.replaceState(null, '', '/?lang=en#/public-survey?code=unknown');
+  render(<App />);
+  expect(await screen.findByRole('alert')).toHaveTextContent('This survey link is unavailable.');
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+});
+
+it('reloads revised questions and issues a new submission ID after a version conflict', async () => {
+  const form = (questionTextEn, formVersion) => ({
+    state: 'open',
+    formVersion,
+    survey: { name: 'Customer survey', defaultLanguage: 'en', isAnonymous: true },
+    questions: [{ id: questionId, type: 'short_text', questionTextEn, isRequired: true }],
+  });
+  vi.spyOn(authApi, 'session').mockResolvedValue(null);
+  vi.spyOn(publicSurveyApi, 'get')
+    .mockResolvedValueOnce(form('First prompt', 'a'.repeat(64)))
+    .mockResolvedValueOnce(form('Revised prompt', 'b'.repeat(64)));
+  const submit = vi
+    .spyOn(publicSurveyApi, 'submit')
+    .mockRejectedValueOnce(Object.assign(new Error(), { status: 409 }))
+    .mockResolvedValueOnce({});
+  history.replaceState(null, '', '/#/public-survey?code=abc123');
+  render(<App />);
+
+  fireEvent.change(await screen.findByRole('textbox', { name: /First prompt/ }), {
+    target: { value: 'Old answer' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Submit feedback' }));
+  const revised = await screen.findByRole('textbox', { name: /Revised prompt/ });
+  expect(screen.getByRole('alert')).toHaveTextContent('The survey changed.');
+  expect(revised).toHaveValue('');
+  fireEvent.change(revised, { target: { value: 'New answer' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Submit feedback' }));
+  await waitFor(() => expect(submit).toHaveBeenCalledTimes(2));
+  expect(submit.mock.calls[1][1]).toMatchObject({
+    formVersion: 'b'.repeat(64),
+    answers: [{ questionId, value: 'New answer' }],
+  });
+  expect(submit.mock.calls[1][1].submissionId).not.toBe(submit.mock.calls[0][1].submissionId);
+});

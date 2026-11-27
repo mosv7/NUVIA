@@ -1,7 +1,5 @@
-
 const express = require('express');
 
-const authenticate = require('../middlewares/auth.middleware');
 const { authorize } = require('../middlewares/auth.middleware');
 const overviewController = require('../controllers/overviewController');
 const overviewAuth = require('../middlewares/overviewAuth.middleware');

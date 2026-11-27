@@ -20,7 +20,8 @@ async function assertDashboardSidebar(page) {
   }
 }
 async function assertHelpCenterFlow(page, { mobile = false, arabic = false, output }) {
-  if (mobile) await page.getByRole('button', { name: 'Navigation menu' }).click();
+  if (mobile)
+    await page.getByRole('button', { name: arabic ? 'قائمة التنقل' : 'Navigation menu' }).click();
   const label = arabic ? 'مركز المساعدة' : 'Help center';
   const helpButton = page.locator('.product-navigation').getByRole('button', { name: label });
   assert.ok(await helpButton.first().isVisible(), `${label} must be reachable from the workspace`);
@@ -66,7 +67,9 @@ async function assertHelpCenterFlow(page, { mobile = false, arabic = false, outp
   assert.ok(await backLink.isVisible(), 'Help center must link back to the dashboard');
   await backLink.click();
   await waitFor(() => page.url().endsWith('#/dashboard'));
-  await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+  await page
+    .getByRole('heading', { name: arabic ? 'نظرة عامة' : 'Overview', exact: true })
+    .waitFor();
   if (!mobile) await assertDashboardSidebar(page);
 }
 export async function runAccountScenario({ browser, origin, deps, output }) {
@@ -153,9 +156,11 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
     await assertDashboardSidebar(page);
     await page.goto(`${origin}/#/feedbacks`);
-    await page.getByRole('heading', { name: 'Feedbacks', exact: true }).waitFor();
-    await page.getByText('No responses yet.', { exact: true }).waitFor();
-    assert.ok(await page.getByPlaceholder('Search feedback').isVisible());
+    await page
+      .getByRole('heading', { name: 'Your first response starts here', exact: true })
+      .waitFor();
+    assert.ok(await page.getByRole('button', { name: 'Share a survey', exact: true }).isVisible());
+    assert.ok(await page.getByRole('table').isVisible());
     assert.equal(await page.locator('tbody tr').count(), 0);
     for (const width of [1440, 393]) {
       await page.setViewportSize({ width, height: width === 393 ? 800 : 900 });
@@ -213,7 +218,9 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await page.goto(`${origin}/#/feedbacks`);
       await page.getByRole('heading', { name: 'Feedbacks', exact: true }).waitFor();
-      await page.getByText('No responses yet.', { exact: true }).waitFor();
+      await page
+        .getByRole('heading', { name: 'Your first response starts here', exact: true })
+        .waitFor();
     }
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${origin}/#/branches`);
@@ -289,7 +296,7 @@ export async function runAccountScenario({ browser, origin, deps, output }) {
     await page.goto(`${origin}/?lang=ar#/dashboard`);
     await page.setViewportSize({ width: 393, height: 800 });
     await page.reload();
-    await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor();
+    await page.getByRole('heading', { name: 'نظرة عامة', exact: true }).waitFor();
     assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
     await waitFor(async () =>
       page.locator('.product-navigation').evaluate((element) => {

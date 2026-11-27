@@ -179,16 +179,12 @@ const getResponseAnalysis = async (req, res, next) => {
     }
 
     // Get response details and AI analysis
-    const result = await sentimentService.getResponseAnalysis(
-      req.user.businessId,
-      responseId
-    );
+    const result = await sentimentService.getResponseAnalysis(req.user.businessId, responseId);
 
     return res.status(200).json({
       success: true,
       data: result,
     });
-
   } catch (error) {
     // Log the actual error for debugging
     console.error('Get Response Analysis Error:', {

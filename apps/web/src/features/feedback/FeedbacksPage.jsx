@@ -14,6 +14,7 @@ export default function FeedbacksPage({
   workspace,
   onLogout,
   preview = false,
+  children,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   useWorkspaceScale();
@@ -55,15 +56,16 @@ export default function FeedbacksPage({
           />
         )}
         <WorkspaceShell title={page === 'feedback-details' ? 'Feedback details' : 'Feedbacks'}>
-          {page === 'feedback-details' ? (
-            preview ? (
-              <FeedbackDetail key={location.hash} />
+          {children ??
+            (page === 'feedback-details' ? (
+              preview ? (
+                <FeedbackDetail key={location.hash} />
+              ) : (
+                <OwnedFeedbackDetail key={location.hash} />
+              )
             ) : (
-              <OwnedFeedbackDetail key={location.hash} />
-            )
-          ) : (
-            <FeedbackList key={page} empty={!preview || page === 'feedbacks-empty'} />
-          )}
+              <FeedbackList key={page} empty={!preview || page === 'feedbacks-empty'} />
+            ))}
         </WorkspaceShell>
         {preview && <Assistant />}
       </div>

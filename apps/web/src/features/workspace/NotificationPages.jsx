@@ -20,6 +20,7 @@ export default function renderNotificationPages(model) {
     setRead,
     setSwitchDraft,
     saveNotifications,
+    settingsBusy,
     settingsTabs,
     switchDraft,
     t,
@@ -39,7 +40,7 @@ export default function renderNotificationPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{L('Notification channels', 'قنوات الإشعارات')}</h2>
             <p className="muted">
               {L('Control how NUVIA reaches you.', 'تحكم في طريقة تواصل NUVIA معك.')}
@@ -128,7 +129,7 @@ export default function renderNotificationPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{t(email ? 'Email notifications' : 'In-app notifications')}</h2>
             {(email
               ? [
@@ -186,7 +187,7 @@ export default function renderNotificationPages(model) {
               <small>{L('Changes apply only to your account.', 'التغييرات تخص حسابك فقط.')}</small>
               <div>
                 {btn('Cancel', () => go('settings-notifications'))}
-                {btn('Save changes', saveNotifications, true)}
+                {btn('Save changes', () => saveNotifications(), true)}
               </div>
             </div>
           </section>

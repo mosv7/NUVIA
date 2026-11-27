@@ -6,5 +6,9 @@ export const publicSurveyApi = {
     return data(apiRequest(`/public/surveys/${encodeURIComponent(shortCode)}${query}`, { signal }));
   },
   submit: (shortCode, body, signal) =>
-    apiRequest(`/public/surveys/${encodeURIComponent(shortCode)}/responses`, { method: 'POST', body, signal }),
+    apiRequest(`/public/surveys/${encodeURIComponent(shortCode)}/responses`, {
+      method: 'POST',
+      body,
+      signal,
+    }),
 };

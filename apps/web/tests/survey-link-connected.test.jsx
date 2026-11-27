@@ -36,6 +36,12 @@ it('copies a real shortCode as a same-origin public survey link', async () => {
         questionCount: 1,
         responseCount: 0,
       },
+      {
+        id: '507f1f77bcf86cd799439012',
+        name: 'Unpublished survey',
+        status: 'draft',
+        shortCode: 'draft-code',
+      },
     ],
   });
   vi.spyOn(surveyApi, 'summary').mockResolvedValue({});
@@ -55,6 +61,8 @@ it('copies a real shortCode as a same-origin public survey link', async () => {
   await waitFor(() =>
     expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/#/public-survey?code=abc123`),
   );
+  expect(screen.getByText('Unpublished survey').closest('tr')).not.toHaveTextContent('Public link');
+  expect(screen.getAllByRole('link', { name: 'Public link' })).toHaveLength(1);
   expect(await screen.findByText(/Keep the original site origin/)).toBeVisible();
   expect(screen.queryByText(/nuvia\.link/)).not.toBeInTheDocument();
 });

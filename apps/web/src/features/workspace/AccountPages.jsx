@@ -23,6 +23,8 @@ export default function renderAccountPages(model) {
     saveEmailChange,
     cancelEmailChange,
     saveLanguage,
+    setProfilePhoto,
+    settingsBusy,
     setDraft,
     setError,
     setPrefDraft,
@@ -127,7 +129,7 @@ export default function renderAccountPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <form className="card" onSubmit={(e) => e.preventDefault()}>
+          <form className="card" inert={settingsBusy} onSubmit={(e) => e.preventDefault()}>
             <h2>{t('Personal information')}</h2>
             <div className="photo-row">
               <span className="avatar large">
@@ -151,14 +153,11 @@ export default function renderAccountPages(model) {
                       );
                       return;
                     }
-                    const reader = new FileReader();
-                    reader.onload = () =>
-                      setDraft((prev) => ({ ...prev, photo: reader.result, photoFile: file }));
-                    reader.readAsDataURL(file);
+                    setProfilePhoto(file);
                   }}
                 />
               </label>
-              {btn('Remove', () => setDraft({ ...draft, photo: '', photoFile: null }))}
+              {btn('Remove', () => setProfilePhoto(null))}
             </div>
             <small className="muted">JPG / PNG · Max 2 MB</small>
             <div className="field-grid">
@@ -203,7 +202,7 @@ export default function renderAccountPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{t('Email address')}</h2>
             <p>
               {account.email}{' '}
@@ -216,12 +215,20 @@ export default function renderAccountPages(model) {
                 <div className="info-strip">
                   <I name="mail" />
                   <div>
-                    <strong>{L('Check your new inbox', 'تحقق من بريدك الجديد')}</strong>
+                    <strong>
+                      {preview
+                        ? L('Email change simulated', 'تمت محاكاة تغيير البريد')
+                        : L('Check your new inbox', 'تحقق من بريدك الجديد')}
+                    </strong>
                     <p>{pending}</p>
                     <p>
                       {L(
-                        'Your email changes only after verification. Continue signing in with your current address.',
-                        'يتغير البريد بعد التأكيد فقط. استمر بالدخول ببريدك الحالي.',
+                        preview
+                          ? 'This preview shows a pending change.'
+                          : 'Your email changes only after verification. Continue signing in with your current address.',
+                        preview
+                          ? 'تعرض هذه المعاينة طلب تغيير معلقًا.'
+                          : 'يتغير البريد بعد التأكيد فقط. استمر بالدخول ببريدك الحالي.',
                       )}
                     </p>
                   </div>
@@ -248,8 +255,12 @@ export default function renderAccountPages(model) {
           {note(
             L('Your sign-in email', 'بريد تسجيل الدخول'),
             L(
-              'We will send a verification link to your new email. Your sign-in email changes only after verification.',
-              'سنرسل رابط تأكيد إلى بريدك الجديد. لن يتغير بريد الدخول إلا بعد التأكيد.',
+              preview
+                ? 'Try the email change flow in the preview.'
+                : 'We will send a verification link to your new email. Your sign-in email changes only after verification.',
+              preview
+                ? 'جرّب خطوات تغيير البريد في المعاينة.'
+                : 'سنرسل رابط تأكيد إلى بريدك الجديد. لن يتغير بريد الدخول إلا بعد التأكيد.',
             ),
           )}
         </div>
@@ -267,7 +278,7 @@ export default function renderAccountPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card">
+          <section className="card" inert={settingsBusy}>
             <h2>{L('Language & region', 'اللغة والمنطقة')}</h2>
             {[
               [

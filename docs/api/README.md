@@ -34,7 +34,7 @@ Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspac
 
 Request validation and business errors follow the backend route/service contracts in `backend/src`. Business/branch/survey resources are scoped through the authenticated owner's business. Role checks are present; a team membership management product is not implemented. Browser adapters translate backend fields into the existing screen model. Public DTO declarations/constants live in `packages/shared-types`.
 
-Publishing persists survey status. Public response collection follows the versioned submission contract below; complete survey frontend integration and live analytics remain under development. Survey management CSV is separate from feedback export. [AI integration APIs](ai.md) exist under `/api/ai`, with authenticated FastAPI transport and independent capability/quality gates. The connected owner assistant uses the retrieval contract below.
+Publishing persists survey status. The connected public form collects responses through the versioned submission contract below. Survey management CSV is separate from feedback export. [AI integration APIs](ai.md) exist under `/api/ai`, with authenticated FastAPI transport and independent capability/quality gates. The connected owner assistant uses the retrieval contract below.
 
 Reset tokens are single-use. Development file mail writes private `{text}` messages directly to root `.local/mail` without a worker. SMTP requires explicit configuration and testing. Old UUID account/workspace data is not automatically migrated into the ObjectId backend. Read [backend operations](../development/backend.md) before choosing a database.
 
@@ -64,7 +64,7 @@ All `/settings` endpoints require the same owner-scoped cookie or explicit Beare
 
 When 2FA is enabled, password login returns `{data:{requiresTwoFactor:true,twoFactorToken}}` without an access cookie. The five-minute challenge is bound to the credential version and cannot authenticate protected routes. TOTP follows RFC 6238 (SHA-1, six digits, 30 seconds, one-step skew); each accepted step/recovery code is consumed atomically. Recovery/sign-out invalidate pending login challenges. Keep recovery codes private.
 
-Email links use `APP_ORIGIN/#/confirm-email?token=...`; the browser removes the token from the address and requires an explicit confirmation click. Changing sign-in email verifies only the new address, not arbitrary signup addresses. Full settings screens remain under development; the added APIs do not imply complete UI or notification delivery. Public reads return a form revision for the submission contract below.
+Email links use `APP_ORIGIN/#/confirm-email?token=...`; the browser removes the token from the address and requires an explicit confirmation click. Changing sign-in email verifies only the new address, not arbitrary signup addresses. Connected settings persist preferences. Live notification delivery remains unavailable. Public reads return a form revision for the submission contract below.
 
 ## Anonymous customer response submission
 
@@ -94,7 +94,7 @@ A new response returns201; repeating the same survey/submissionId returns200 wit
 
 The server retains the version and complete customer-visible form snapshot, including the resolved branch identity, with each response. Reassigning the only branch invalidates an earlier unqualified form; feedback is never silently moved to the new branch. An existing Business write lock and explicit MongoDB transactions coordinate acceptance with survey/question edits, pause/close/delete and branch changes. Whichever operation commits first determines acceptance; a rejected attempt rolls back its response/counter writes. Old snapshots remain intact after later edits.
 
-CustomerResponse/Counter indexes are additive through the normal database setup. Written feedback starts as `analysis.status=pending`; rating/choice-only feedback is `skipped`. A serial Node worker now drains pending responses and stores source-validated aspect results, with renewable leases and per-claim fencing for recovery. Existing protected `/api/ai` operations remain transient. Response collection and stored analysis do not imply a connected feedback dashboard, aggregate analytics or AI quality acceptance.
+CustomerResponse/Counter indexes are additive through the normal database setup. Written feedback starts as `analysis.status=pending`; rating/choice-only feedback is `skipped`. A serial Node worker now drains pending responses and stores source-validated aspect results, with renewable leases and per-claim fencing for recovery. Existing protected `/api/ai` operations remain transient. Connected feedback displays stored status and provenance. Aggregate sentiment and aspects require accepted analysis.
 
 ## Stored feedback and analysis
 
@@ -140,3 +140,27 @@ evidenceCount,sampled:true}`; at most ten 2,000-code-point excerpts are sent to
 the private answers operation. Provenance is null when no inference was used,
 otherwise the unchanged AI quality metadata. See
 [assistant configuration, privacy and limits](../development/groq-assistant.md).
+
+## Analytics and reports
+
+Owner-only analytics routes include GET `/overview/*`, `/sentiment/*`, `/analytics/*`,
+`/trends`, `/topics/*`, and `/branch-comparison`. Date filters use UTC calendar days
+and an inclusive end date. The overview daily series accepts at most 366 days.
+Volume counts persisted responses. Aggregate sentiment and aspects require accepted
+analysis provenance. Completion rate, forecasting, anomaly assessment, and risk
+assessment remain unavailable. Aspect averages use signed polarity confidence.
+
+All report routes require the current business owner and return `Cache-Control: no-store`.
+
+| Method | Path                | Result                                                                                              |
+| ------ | ------------------- | --------------------------------------------------------------------------------------------------- |
+| GET    | `/reports`          | Owned reports and pagination. `page` starts at 1 and `limit` defaults to 100 with a maximum of 100. |
+| GET    | `/reports/:id`      | Owned report with citations and quality metadata. Unknown or foreign IDs return 404.                |
+| POST   | `/reports`          | Generate and save a report. Returns 201 with `{report}`.                                            |
+| POST   | `/reports/generate` | Generate a transient per-survey report for a required date range.                                   |
+
+Saved generation accepts optional `locale` (`en` or `ar`), `reportName`, and `objective`.
+Supply both `from` and `to` as UTC dates or omit both. A one-day range is valid.
+A request that exceeds 100 surveys, 100 written responses, or ten AI batches is
+rejected before inference. AI results are validated against the requested source text.
+`qualityStatus` is `accepted`, `baseline`, or null for a legacy report without provenance.

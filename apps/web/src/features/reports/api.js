@@ -1,4 +1,5 @@
 import { apiRequest } from '../../lib/http/client.js';
+import { queryString } from '../../lib/http/query.js';
 
 const reportPayload = (response) => response.report ?? response.data ?? response;
 
@@ -7,6 +8,7 @@ export const reportsApi = {
     const response = await apiRequest('/reports', { signal });
     return response.reports ?? response.data ?? [];
   },
+  listPage: (page, signal) => apiRequest(`/reports${queryString({ page })}`, { signal }),
   get: async (id, signal) => {
     const response = await apiRequest(`/reports/${encodeURIComponent(id)}`, { signal });
     return reportPayload(response);

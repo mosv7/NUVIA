@@ -1,7 +1,7 @@
 import { validateAuth } from '../../validation/auth.js';
 import { safeLocalStorage } from '../../lib/storage.js';
 import { installRouteHistory } from '../../components/layout/navigation.js';
-import { currentRoute } from './routes.js';
+import { currentRoute, readHashRoute } from './routes.js';
 import SecurityActionPage from '../../features/auth/SecurityActionPage.jsx';
 import AuthPage from '../../features/auth/AuthPage.jsx';
 import { lazy, useEffect, useRef, useState } from 'react';
@@ -48,7 +48,7 @@ export default function AppRouter() {
     branchType: 'multiple',
     branchName: '',
   });
-  const [page, setPage] = useState(currentRoute),
+  const [hash, setHash] = useState(() => location.hash),
     [language, setLanguage] = useState(
       () =>
         (['en', 'ar'].includes(new URLSearchParams(location.search).get('lang'))
@@ -66,6 +66,7 @@ export default function AppRouter() {
     [errors, setErrors] = useState({}),
     [notice, setNotice] = useState(''),
     [busy, setBusy] = useState(false);
+  const page = readHashRoute(hash);
   const t = language === 'ar' ? ar : en,
     isSignup = page === 'signup',
     isLogin = page === 'login',
@@ -78,7 +79,7 @@ export default function AppRouter() {
       requestGeneration.current += 1;
       setBusy(false);
       if (currentRoute() !== 'login-2fa') setChallenge(null);
-      setPage(currentRoute());
+      setHash(location.hash);
       setErrors({});
       setNotice('');
       setValues({ name: '', email: '', password: '', confirm: '', terms: false, remember: false });
@@ -93,8 +94,8 @@ export default function AppRouter() {
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    safeLocalStorage.setItem('nuvia-language', language);
-  }, [language]);
+    if (!preview && page !== 'public-survey') safeLocalStorage.setItem('nuvia-language', language);
+  }, [language, page, preview]);
   const resetParam = new URLSearchParams(location.hash.split('?')[1]).get('token');
   useEffect(() => {
     if (page !== 'reset' || preview) return;
@@ -368,7 +369,6 @@ export default function AppRouter() {
     'feedbacks-empty',
     'feedbacks-loading',
     'feedbacks-no-results',
-    'feedback-details',
     'dashboard',
     'dashboard-empty',
     'overview',
@@ -411,7 +411,11 @@ export default function AppRouter() {
                   : 'Workspace';
     const feature = (
       <ConnectedFeaturePage
-        key={location.hash}
+        key={
+          connectedRoute === 'public-survey'
+            ? hash
+            : `${auth.user?.id}/${auth.workspace?.id}/${hash}`
+        }
         route={connectedRoute}
         language={language}
         workspace={auth.workspace}
@@ -420,6 +424,16 @@ export default function AppRouter() {
     );
     return connectedRoute === 'public-survey' ? (
       feature
+    ) : ['feedbacks', 'feedbacks-empty'].includes(connectedRoute) ? (
+      <FeedbacksPage
+        page={connectedRoute}
+        language={language}
+        setLanguage={setLanguage}
+        workspace={auth.workspace}
+        onLogout={auth.logout}
+      >
+        {feature}
+      </FeedbacksPage>
     ) : (
       <ReferenceFrame
         page={connectedRoute}
@@ -491,13 +505,7 @@ export default function AppRouter() {
         />
       );
     return (
-      <FeedbacksPage
-        key={location.hash}
-        page={page}
-        language={language}
-        setLanguage={setLanguage}
-        preview
-      />
+      <FeedbacksPage key={hash} page={page} language={language} setLanguage={setLanguage} preview />
     );
   }
   if (!preview && page.startsWith('verify-email'))
@@ -548,7 +556,7 @@ export default function AppRouter() {
   if (['feedbacks', 'feedbacks-empty', 'feedback-details'].includes(page))
     return (
       <FeedbacksPage
-        key={location.hash}
+        key={`${auth.user?.id}/${auth.workspace?.id}/${hash}`}
         page={page}
         language={language}
         setLanguage={setLanguage}

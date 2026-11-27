@@ -9,6 +9,7 @@ export default function renderSecurityPages(model) {
     actions,
     ar,
     btn,
+    settingsBusy,
     code,
     draft,
     field,
@@ -147,7 +148,7 @@ export default function renderSecurityPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <form className="card" onSubmit={(e) => e.preventDefault()}>
+          <form className="card" inert={settingsBusy} onSubmit={(e) => e.preventDefault()}>
             <h2>{t('Update password')}</h2>
             {field('Current password', 'current', { type: 'password', required: true })}
             {field('New password', 'password', {
@@ -201,7 +202,7 @@ export default function renderSecurityPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <section className="card two-factor-card">
+          <section className="card two-factor-card" inert={settingsBusy}>
             <h2>{L('Connect your authenticator', 'اربط تطبيق المصادقة')}</h2>
             <p>
               {L(
@@ -386,14 +387,14 @@ export default function renderSecurityPages(model) {
         )}
         {settingsTabs}
         <div className="edit-layout">
-          <div>
+          <div inert={settingsBusy}>
             <section className="card">
               <h2>
                 {L('Active sessions', 'الجلسات النشطة')}{' '}
                 <span className="badge neutral">{sessions.length}</span>
               </h2>
               {sessions.map((session) => (
-                <div className="session-row" key={session.id || session._id}>
+                <div className="session-row" key={preview ? session : session.id || session._id}>
                   <span className="tile">
                     <I name="device" />
                   </span>
@@ -408,13 +409,13 @@ export default function renderSecurityPages(model) {
                   {session.isCurrent ? (
                     <span className="badge green">{t('This device')}</span>
                   ) : (
-                    btn('Sign out', () => revokeSession(session.id || session._id))
+                    btn('Sign out', () =>
+                      revokeSession(preview ? session : session.id || session._id),
+                    )
                   )}
                 </div>
               ))}
-              {!sessions.length && (
-                <p>{L('No active sessions found.', 'لا توجد جلسات نشطة في المعاينة.')}</p>
-              )}
+              {!sessions.length && <p>{L('No active sessions found.', 'لا توجد جلسات نشطة.')}</p>}
             </section>
             <section className="card spaced">
               <div className="setting-row">

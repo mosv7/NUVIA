@@ -112,6 +112,11 @@ function NoResponses({ empty, onClear }) {
             <Icon name="send" folder="feedbacks-empty" />
             {tr(shared === 'copied' ? 'Link copied' : 'Share a survey')}
           </button>
+          {!preview && (
+            <a className="feedback-btn" href="/preview/#/feedbacks">
+              {tr('View sample responses')}
+            </a>
+          )}
         </div>
       ) : (
         <button className="feedback-btn feedback-primary" onClick={onClear}>

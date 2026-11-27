@@ -1,19 +1,13 @@
 const csvCell = (value) => {
   const text = value == null ? '' : String(value);
-  const safe = /^[=+\-@]/.test(text) ? `'${text}` : text;
+  const safe = /^[\t\r\n]|^\s*[=+\-@]/u.test(text) ? `'${text}` : text;
   return `"${safe.replaceAll('"', '""')}"`;
 };
 
 export function reportsCsv(reports = []) {
   const rows = [
-    ['Report', 'Period', 'Responses', 'Created', 'Summary'],
-    ...reports.map((r) => [
-      r.reportName,
-      r.periodCovered,
-      r.totalReviewsAnalyzed,
-      r.createdAt,
-      r.executiveSummary,
-    ]),
+    ['Report', 'Period', 'Responses', 'Created'],
+    ...reports.map((r) => [r.reportName, r.periodCovered, r.totalReviewsAnalyzed, r.createdAt]),
   ];
   return `\uFEFF${rows.map((row) => row.map(csvCell).join(',')).join('\r\n')}`;
 }

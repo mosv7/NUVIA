@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { surveyApi } from '../surveys/api.js';
 import { publicSurveyApi } from '../public-surveys/api.js';
 import { analyticsApi } from '../analytics/api.js';
 import { reportsApi } from '../reports/api.js';
 import { downloadReportsCsv } from '../reports/export.js';
+import { FeedbackList } from '../feedback/FeedbackScreens.jsx';
 import { feedbackApi } from '../feedback/api.js';
 import { connectedSurveyUrl } from '../../config/links.js';
 
@@ -58,13 +59,44 @@ const messageOf = (e) => {
     : 'Something went wrong. Please try again.';
 };
 const date = (x) => (x ? new Date(x).toLocaleDateString() : '—');
+async function loadSections(requests) {
+  const results = await Promise.allSettled(Object.values(requests));
+  return Object.fromEntries(
+    Object.keys(requests).map((key, index) => {
+      const result = results[index];
+      return [
+        key,
+        result.status === 'fulfilled' ? unwrap(result.value) : { error: messageOf(result.reason) },
+      ];
+    }),
+  );
+}
+
+function publicSurveyError(error, t) {
+  if (error?.status === 404)
+    return t('This survey link is unavailable.', 'رابط الاستبيان غير متاح.');
+  if (error?.status === 429)
+    return t(
+      'Too many requests. Please try again shortly.',
+      'طلبات كثيرة. يرجى المحاولة بعد قليل.',
+    );
+  return t(
+    'The survey could not be loaded. Please try again.',
+    'تعذر تحميل الاستبيان. يرجى المحاولة مرة أخرى.',
+  );
+}
+
 const newSubmissionId = () =>
   globalThis.crypto?.randomUUID?.() ||
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 
-function PageFrame({ title, subtitle, children, actions }) {
+function PageFrame({ title, subtitle, children, actions, language }) {
   return (
-    <main style={{ maxWidth: 1120, margin: '0 auto', padding: '28px 24px 60px', color: '#20263a' }}>
+    <main
+      lang={language}
+      dir={language && (language === 'ar' ? 'rtl' : 'ltr')}
+      style={{ maxWidth: 1120, margin: '0 auto', padding: '28px 24px 60px', color: '#20263a' }}
+    >
       <header
         style={{
           display: 'flex',
@@ -96,10 +128,10 @@ function Notice({ error, success }) {
     </div>
   ) : null;
 }
-function Loading() {
+function Loading({ children = 'Loading…' }) {
   return (
     <div style={panel} role="status">
-      Loading…
+      {children}
     </div>
   );
 }
@@ -281,7 +313,142 @@ function DataTable({ columns, rows, onRow }) {
   );
 }
 
-export default function ConnectedFeaturePage({ route, language = 'en' }) {
+function SurveyScopeFields({ draft, setDraft, branches, branchIds, setBranchIds, t }) {
+  return (
+    <>
+      <fieldset style={{ ...field, border: 0, padding: 0, marginInline: 0 }}>
+        <legend>{t('Survey languages', 'لغات الاستبيان')}</legend>
+        {['en', 'ar'].map((locale) => {
+          const checked = draft.languages.includes(locale);
+          return (
+            <label key={locale} lang={locale}>
+              <input
+                type="checkbox"
+                checked={checked}
+                disabled={checked && draft.languages.length === 1}
+                onChange={(event) => {
+                  const languages = event.target.checked
+                    ? [...draft.languages, locale]
+                    : draft.languages.filter((value) => value !== locale);
+                  setDraft({
+                    ...draft,
+                    languages,
+                    defaultLanguage: languages.includes(draft.defaultLanguage)
+                      ? draft.defaultLanguage
+                      : languages[0],
+                  });
+                }}
+              />{' '}
+              {locale === 'ar' ? 'العربية' : 'English'}
+            </label>
+          );
+        })}
+      </fieldset>
+      <label style={field}>
+        {t('Default language', 'اللغة الافتراضية')}
+        <select
+          style={input}
+          value={draft.defaultLanguage}
+          onChange={(event) => setDraft({ ...draft, defaultLanguage: event.target.value })}
+        >
+          {draft.languages.map((locale) => (
+            <option key={locale} value={locale} lang={locale}>
+              {locale === 'ar' ? 'العربية' : 'English'}
+            </option>
+          ))}
+        </select>
+      </label>
+      {branches.length > 0 && (
+        <fieldset style={{ ...field, border: 0, padding: 0, marginInline: 0 }}>
+          <legend>{t('Survey branches', 'فروع الاستبيان')}</legend>
+          {branches.map((branch) => (
+            <label key={branch.id}>
+              <input
+                type="checkbox"
+                checked={branchIds.includes(branch.id)}
+                onChange={(event) =>
+                  setBranchIds(
+                    event.target.checked
+                      ? [...branchIds, branch.id]
+                      : branchIds.filter((id) => id !== branch.id),
+                  )
+                }
+              />{' '}
+              <bdi>{branch.name}</bdi>
+            </label>
+          ))}
+        </fieldset>
+      )}
+    </>
+  );
+}
+
+function ReportQuality({ report, t }) {
+  if (!report || report.qualityAccepted === true) return null;
+  return (
+    <p style={muted}>
+      {report.qualityStatus === 'baseline'
+        ? t(
+            'Experimental AI output. Quality has not been accepted.',
+            'مخرجات ذكاء اصطناعي تجريبية. لم تُقبل جودتها بعد.',
+          )
+        : t(
+            'AI quality has not been verified for this saved report.',
+            'لم تُتحقق جودة الذكاء الاصطناعي لهذا التقرير المحفوظ.',
+          )}
+    </p>
+  );
+}
+
+function ReportContent({ report, t }) {
+  if (!report) return null;
+  return (
+    <section style={panel}>
+      <ReportQuality report={report} t={t} />
+      <p dir="auto">{report.executiveSummary}</p>
+      <MetricGrid
+        data={{
+          period: report.periodCovered,
+          responses: report.totalReviewsAnalyzed,
+          analyzedTextCount: report.analyzedTextCount,
+        }}
+      />
+      {[
+        [t('Strengths', 'نقاط القوة'), report.strengths],
+        [t('Problems', 'المشكلات'), report.problems],
+        [t('Suggested actions', 'الإجراءات المقترحة'), report.suggestedActions],
+      ]
+        .filter(([, claims]) => claims?.length)
+        .map(([title, claims]) => (
+          <section key={title}>
+            <h3>{title}</h3>
+            <ul>
+              {claims.map((claim, index) => (
+                <li key={index}>
+                  <p dir="auto">{claim.text || claim.suggestion}</p>
+                  {claim.metricsText && <p dir="auto">{claim.metricsText}</p>}
+                  {claim.citations?.map((citation, i) => (
+                    <blockquote key={i} dir="auto">
+                      {citation.quote}{' '}
+                      {/^[a-f0-9]{24}$/i.test(citation.responseId || '') && (
+                        <a
+                          href={'#/feedback-details?id=' + encodeURIComponent(citation.responseId)}
+                        >
+                          {t('Feedback', 'الرد')} {citation.number && <bdi>#{citation.number}</bdi>}
+                        </a>
+                      )}
+                    </blockquote>
+                  ))}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+    </section>
+  );
+}
+
+export default function ConnectedFeaturePage({ route, language = 'en', workspace }) {
   const [data, setData] = useState(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
@@ -305,9 +472,9 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     surveyId: '',
     startDate: '',
     endDate: '',
-    from: '',
-    to: '',
   }));
+  const [reportDates, setReportDates] = useState({ from: '', to: '' });
+  const [generatedReport, setGeneratedReport] = useState(null);
   const [selected, setSelected] = useState(() =>
       new URLSearchParams(location.hash.split('?')[1] || '').get('create') === '1'
         ? 'create'
@@ -329,163 +496,180 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     options: [],
   });
   const [editingQuestion, setEditingQuestion] = useState(null);
-  const [reportId, setReportId] = useState('');
+  const [selectedBranches, setSelectedBranches] = useState(undefined);
   const [formAnswers, setFormAnswers] = useState({});
   const [respondent, setRespondent] = useState({ name: '', email: '' });
-  const [publicState, setPublicState] = useState(null);
   const [submissionId, setSubmissionId] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [copiedSurveyCode, setCopiedSurveyCode] = useState('');
   const ar = language === 'ar';
   const t = useCallback((en, arabic) => (ar ? arabic : en), [ar]);
-  const run = useCallback(async (fn) => {
-    setBusy(true);
-    setError('');
-    setSuccess('');
-    try {
-      const result = await fn();
-      setData(result);
-      return result;
-    } catch (e) {
-      setError(messageOf(e));
-      return null;
-    } finally {
-      setBusy(false);
-    }
-  }, []);
-  const surveyId = new URLSearchParams(location.hash.split('?')[1] || '').get('id');
-  const shortCode =
-    new URLSearchParams(location.hash.split('?')[1] || '').get('code') ||
-    new URLSearchParams(location.search).get('code');
-  const publicBranch = new URLSearchParams(location.hash.split('?')[1] || '').get('branch');
+  const latestLoad = useRef(null);
+  const publicSubmit = useRef(null);
+  const reportGeneration = useRef(null);
+  useEffect(
+    () => () => {
+      publicSubmit.current?.abort();
+      reportGeneration.current?.abort();
+    },
+    [],
+  );
+  const load = useCallback(() => latestLoad.current?.(), []);
+  const [loading, setLoading] = useState(true);
+  const params = new URLSearchParams(location.hash.split('?')[1] || '');
+  const surveyId = params.get('id');
+  const shortCode = params.get('code') || new URLSearchParams(location.search).get('code');
+  const publicBranch = params.get('branch');
+  const publicState = route === 'public-survey' ? data : null;
+  const surveyLanguages = publicState?.survey?.languages || [
+    publicState?.survey?.defaultLanguage || 'en',
+  ];
+  const [chosenFormLanguage, setChosenFormLanguage] = useState(null);
+  const preferredFormLanguage =
+    chosenFormLanguage || params.get('lang') || new URLSearchParams(location.search).get('lang');
+  const formLanguage = surveyLanguages.includes(preferredFormLanguage)
+    ? preferredFormLanguage
+    : publicState?.survey?.defaultLanguage || 'en';
+  const formText = (en, arabic) => (formLanguage === 'ar' ? arabic : en);
+  const localized = (en, arabic) => (formLanguage === 'ar' ? arabic || en : en || arabic);
+  const activeBranches = (workspace?.branches || []).filter((branch) => branch.status === 'active');
+  const availableBranchIds = activeBranches.map((branch) => branch.id);
+  const branchIds =
+    selectedBranches ??
+    (route === 'surveys'
+      ? availableBranchIds
+      : (data?.branches?.items || [])
+          .map((branch) => branch.id)
+          .filter((id) => availableBranchIds.includes(id)));
+  const surveyScopeFields = (
+    <SurveyScopeFields
+      draft={draft}
+      setDraft={setDraft}
+      branches={activeBranches}
+      branchIds={branchIds}
+      setBranchIds={setSelectedBranches}
+      t={t}
+    />
+  );
 
-  const load = useCallback(async () => {
-    if (route === 'surveys')
-      return run(async () => {
+  const fetchFeature = useCallback(
+    async (signal) => {
+      const dates = {
+        startDate: filters.startDate || undefined,
+        endDate: filters.endDate || undefined,
+      };
+      const scope = { ...dates, branchId: filters.branchId || undefined };
+      if (route === 'surveys') {
         const [list, summary, templates] = await Promise.all([
-          surveyApi.list({
-            status: filters.status,
-            search: filters.search,
-            page: filters.page,
-            limit: filters.limit,
-          }),
-          surveyApi.summary(),
-          surveyApi.templates(),
+          surveyApi.list(
+            {
+              status: filters.status,
+              search: filters.search,
+              page: filters.page,
+              limit: filters.limit,
+            },
+            signal,
+          ),
+          surveyApi.summary(signal),
+          surveyApi.templates(signal),
         ]);
         return { list: unwrap(list), summary: unwrap(summary), templates: arr(unwrap(templates)) };
-      });
-    if (route === 'survey-edit' || route === 'survey-questions')
-      return run(async () => unwrap(await surveyApi.get(surveyId)));
-    if (route.startsWith('analytics'))
-      return run(async () => {
-        const q = {
-          startDate: filters.startDate || undefined,
-          endDate: filters.endDate || undefined,
-          branchId: filters.branchId || undefined,
-        };
-        const calls = await Promise.allSettled([
-          analyticsApi.overviewMetrics(q),
-          analyticsApi.overviewTrends(q),
-          analyticsApi.overviewSentiment(q),
-          analyticsApi.aspectScores(q),
-          analyticsApi.nextActions(q),
-          analyticsApi.sentimentSummary(q),
-        ]);
-        return Object.fromEntries(
-          ['metrics', 'trends', 'sentiment', 'aspects', 'actions', 'sentimentSummary'].map(
-            (k, i) => [
-              k,
-              calls[i].status === 'fulfilled'
-                ? unwrap(calls[i].value)
-                : { error: messageOf(calls[i].reason) },
-            ],
-          ),
-        );
-      });
-    if (route === 'dashboard' || route === 'overview')
-      return run(async () => {
-        const calls = await Promise.allSettled([
-          analyticsApi.overviewMetrics({
-            startDate: filters.startDate || undefined,
-            endDate: filters.endDate || undefined,
-            branchId: filters.branchId || undefined,
-          }),
-          analyticsApi.overviewTrends({
-            startDate: filters.startDate || undefined,
-            endDate: filters.endDate || undefined,
-            branchId: filters.branchId || undefined,
-          }),
-          analyticsApi.overviewSentiment({
-            startDate: filters.startDate || undefined,
-            endDate: filters.endDate || undefined,
-            branchId: filters.branchId || undefined,
-          }),
-          analyticsApi.overviewBranches(),
-          analyticsApi.aspectScores({
-            startDate: filters.startDate || undefined,
-            endDate: filters.endDate || undefined,
-            branchId: filters.branchId || undefined,
-          }),
-          analyticsApi.nextActions({
-            startDate: filters.startDate || undefined,
-            endDate: filters.endDate || undefined,
-            branchId: filters.branchId || undefined,
-          }),
-        ]);
-        return Object.fromEntries(
-          ['metrics', 'trends', 'sentiment', 'branches', 'aspects', 'actions'].map((k, i) => [
-            k,
-            calls[i].status === 'fulfilled'
-              ? unwrap(calls[i].value)
-              : { error: messageOf(calls[i].reason) },
-          ]),
-        );
-      });
-    if (route === 'action-board') return run(async () => unwrap(await analyticsApi.nextActions()));
-    if (route === 'reports') return run(async () => ({ reports: await reportsApi.list() }));
-    if (route === 'report-details')
-      return run(async () => await reportsApi.get(reportId || surveyId));
-    if (route === 'feedbacks' || route === 'feedbacks-empty')
-      return run(async () => {
-        const [list, filterData] = await Promise.all([
-          feedbackApi.list({
-            page: filters.page,
-            limit: filters.limit,
-            search: filters.search,
-            range: filters.range,
-            sentiment: filters.sentiment || undefined,
-            branchId: filters.branchId || undefined,
-            surveyId: filters.surveyId || undefined,
-          }),
-          feedbackApi.filters(),
-        ]);
-        return { list: unwrap(list), filters: unwrap(filterData) };
-      });
-    if (route === 'feedback-details') {
-      const id = new URLSearchParams(location.hash.split('?')[1] || '').get('id');
-      if (!/^[a-f0-9]{24}$/i.test(id || '')) {
-        setError(t('This feedback could not be loaded.', 'تعذر تحميل هذا الرد.'));
-        setData(null);
-        return null;
       }
-      return run(async () => {
-        const [detail, analysis] = await Promise.all([
-          feedbackApi.detail(id),
-          feedbackApi.analysis(id).catch(() => null),
+      if (route === 'survey-edit' || route === 'survey-questions')
+        return unwrap(await surveyApi.get(surveyId, signal));
+      if (route === 'analytics' || route === 'analytics-sentiment')
+        return loadSections({
+          summary: analyticsApi.sentimentSummary(scope, signal),
+          trends: analyticsApi.sentimentTrends(scope, signal),
+          responses: analyticsApi.sentimentResponses(scope, signal),
+        });
+      if (route === 'analytics-aspects')
+        return loadSections({
+          aspects: analyticsApi.aspectAnalysis(scope, signal),
+          scores: analyticsApi.aspectScoreComparison(scope, signal),
+        });
+      if (route === 'analytics-topics')
+        return loadSections({ topics: analyticsApi.topicsAndComplaints(scope, signal) });
+      if (route === 'analytics-trends')
+        return loadSections({ trends: analyticsApi.trendsAndSignals(scope, signal) });
+      if (route === 'analytics-comparison')
+        return loadSections({
+          comparison: analyticsApi.branchComparison(dates, signal),
+        });
+      if (route === 'dashboard' || route === 'overview')
+        return loadSections({
+          metrics: analyticsApi.overviewMetrics(scope, signal),
+          trends: analyticsApi.overviewTrends(scope, signal),
+          sentiment: analyticsApi.overviewSentiment(scope, signal),
+          branches: analyticsApi.overviewBranches({}, signal),
+          aspects: analyticsApi.aspectScores(scope, signal),
+          actions: analyticsApi.nextActions(scope, signal),
+        });
+      if (route === 'action-board') return unwrap(await analyticsApi.nextActions({}, signal));
+      if (route === 'reports') return reportsApi.listPage(filters.page, signal);
+      if (route === 'report-details') return reportsApi.get(surveyId, signal);
+      if (route === 'feedbacks' || route === 'feedbacks-empty') {
+        const query = {
+          search: filters.search,
+          range: filters.range,
+          sentiment: filters.sentiment || undefined,
+          branchId: filters.branchId || undefined,
+          surveyId: filters.surveyId || undefined,
+        };
+        const [list, filterData] = await Promise.all([
+          feedbackApi.list(
+            {
+              ...query,
+              page: filters.page,
+              limit: filters.limit,
+            },
+            signal,
+          ),
+          feedbackApi.filters(signal),
         ]);
-        return { detail: unwrap(detail), analysis: unwrap(analysis) };
-      });
-    }
-    if (route === 'public-survey')
-      return run(async () => {
-        if (!shortCode) throw new Error('Survey link is missing its code.');
-        const response = unwrap(await publicSurveyApi.get(shortCode, publicBranch));
-        setPublicState(response);
-        setSubmissionId(newSubmissionId());
-        return response;
-      });
-    return null;
-  }, [route, filters, run, surveyId, shortCode, publicBranch, reportId, t]);
+        return { list: unwrap(list), filters: unwrap(filterData), query };
+      }
+      if (route === 'public-survey') {
+        if (!shortCode) throw Object.assign(new Error(), { status: 404 });
+        return unwrap(await publicSurveyApi.get(shortCode, publicBranch, signal));
+      }
+      return null;
+    },
+    [route, filters, surveyId, shortCode, publicBranch],
+  );
+
+  useLayoutEffect(() => {
+    let request;
+    latestLoad.current = async () => {
+      request?.abort();
+      const controller = new AbortController();
+      request = controller;
+      const { signal } = controller;
+      setLoading(true);
+      setError('');
+      try {
+        const result = await fetchFeature(signal);
+        if (signal.aborted) return null;
+        setData(result);
+        if (route === 'public-survey') {
+          setFormAnswers({});
+          setSubmissionId(newSubmissionId());
+        }
+        return result;
+      } catch (failure) {
+        if (!signal.aborted)
+          setError(route === 'public-survey' ? publicSurveyError(failure, t) : messageOf(failure));
+        return null;
+      } finally {
+        if (!signal.aborted) setLoading(false);
+      }
+    };
+    return () => {
+      request?.abort();
+      latestLoad.current = null;
+    };
+  }, [fetchFeature, route, t]);
+
   async function copyPublicLink(code) {
     const url = connectedSurveyUrl(code);
     if (!url) {
@@ -495,7 +679,12 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     try {
       await navigator.clipboard.writeText(url);
       setError('');
-      setSuccess('Public survey link copied. Keep the original site origin.');
+      setSuccess(
+        t(
+          'Public survey link copied. Keep the original site origin.',
+          'تم نسخ رابط الاستبيان. استخدم عنوان الموقع الأصلي.',
+        ),
+      );
       setCopiedSurveyCode(code);
     } catch {
       setError(`Copy this public survey link manually: ${url}`);
@@ -503,9 +692,9 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
   }
   useEffect(() => {
     load();
-  }, [load]);
+  }, [fetchFeature, load, route, t]);
   useEffect(() => {
-    if (route === 'survey-edit' && data) {
+    if (['survey-edit', 'survey-questions'].includes(route) && data) {
       setDraft({
         name: data.name || '',
         message: data.message || '',
@@ -514,6 +703,7 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
         defaultLanguage: data.defaultLanguage || 'en',
         isAnonymous: data.isAnonymous !== false,
       });
+      setSelectedBranches(undefined);
     }
   }, [route, data]);
 
@@ -522,9 +712,13 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
       setError('Survey name is required.');
       return;
     }
+    if (selectedBranches?.length === 0) {
+      setError(t('Choose at least one branch.', 'اختر فرعًا واحدًا على الأقل.'));
+      return;
+    }
     setBusy(true);
     try {
-      const r = unwrap(await surveyApi.create(draft));
+      const r = unwrap(await surveyApi.create({ ...draft, branchIds: selectedBranches }));
       location.hash = `/survey-edit?id=${idOf(r)}`;
     } catch (e) {
       setError(messageOf(e));
@@ -533,11 +727,15 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     }
   }
   async function saveSurvey() {
+    if (selectedBranches?.length === 0) {
+      setError(t('Choose at least one branch.', 'اختر فرعًا واحدًا على الأقل.'));
+      return;
+    }
     setBusy(true);
     try {
-      await surveyApi.update(surveyId, draft);
-      setSuccess('Survey saved.');
+      await surveyApi.update(surveyId, { ...draft, branchIds: selectedBranches });
       await load();
+      setSuccess(t('Survey saved.', 'تم حفظ الاستبيان.'));
     } catch (e) {
       setError(messageOf(e));
     } finally {
@@ -545,8 +743,11 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     }
   }
   async function addQuestion() {
-    if (!surveyId || !questionDraft.questionTextEn.trim()) {
-      setError('Add an English question first.');
+    if (
+      !surveyId ||
+      !(questionDraft.questionTextEn.trim() || questionDraft.questionTextAr.trim())
+    ) {
+      setError(t('Enter question text.', 'أدخل نص السؤال.'));
       return;
     }
     setBusy(true);
@@ -613,29 +814,40 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     }
   }
   async function generateReport() {
-    if (Boolean(filters.from) !== Boolean(filters.to)) {
+    if (reportGeneration.current) return;
+    const { from, to } = reportDates;
+    if (Boolean(from) !== Boolean(to)) {
       setError('Choose both report dates or leave both empty.');
       return;
     }
-    if (filters.from && filters.to && filters.from > filters.to) {
+    if (from && to && from > to) {
       setError('The start date must be before the end date.');
       return;
     }
+    const controller = new AbortController();
+    reportGeneration.current = controller;
     setBusy(true);
     setError('');
     setSuccess('');
     try {
-      const r = await reportsApi.generate({
-        from: filters.from || undefined,
-        to: filters.to || undefined,
-        locale: language,
-      });
-      setData({ generated: unwrap(r), reports: await reportsApi.list() });
-      setSuccess('Report generated and saved.');
+      const report = await reportsApi.generate(
+        {
+          from: from || undefined,
+          to: to || undefined,
+          locale: language,
+        },
+        controller.signal,
+      );
+      if (controller.signal.aborted) return;
+      setGeneratedReport(report);
+      if (filters.page === 1) await load();
+      else setFilters((previous) => ({ ...previous, page: 1 }));
+      if (!controller.signal.aborted) setSuccess('Report generated and saved.');
     } catch (e) {
-      setError(messageOf(e));
+      if (!controller.signal.aborted) setError(messageOf(e));
     } finally {
-      setBusy(false);
+      reportGeneration.current = null;
+      if (!controller.signal.aborted) setBusy(false);
     }
   }
   function exportReports() {
@@ -647,13 +859,14 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     try {
       downloadReportsCsv(reports);
       setError('');
-      setSuccess('Saved report list exported as CSV.');
+      setSuccess('Current report page exported as CSV.');
     } catch {
       setError('The saved report list could not be exported.');
     }
   }
   async function submitPublic(e) {
     e.preventDefault();
+    if (publicSubmit.current || busy || loading || !submissionId) return;
     const q = publicState?.questions || [];
     const answers = q
       .map((item) => {
@@ -665,51 +878,81 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
           };
         return { questionId: idOf(item), value };
       })
-      .filter((a) => a.optionIds?.length > 0 || (a.value !== undefined && a.value !== ''));
+      .filter(
+        (a) => a.optionIds?.length > 0 || (a.value !== undefined && String(a.value).trim() !== ''),
+      );
+    const answeredIds = new Set(answers.map((answer) => answer.questionId));
+    if (q.some((item) => item.isRequired && !answeredIds.has(idOf(item)))) {
+      setError(
+        formText(
+          'Answer every required question before submitting.',
+          'أجب عن جميع الأسئلة المطلوبة قبل الإرسال.',
+        ),
+      );
+      return;
+    }
     if (!answers.length) {
       setError(
-        t(
+        formText(
           'Answer at least one question before submitting.',
           'أجبي عن سؤال واحد على الأقل قبل الإرسال.',
         ),
       );
       return;
     }
+    const controller = new AbortController();
+    publicSubmit.current = controller;
     setBusy(true);
+    setError('');
     try {
-      await publicSurveyApi.submit(shortCode, {
-        formVersion: publicState.formVersion,
-        submissionId,
-        branch: publicState.branch?.slug,
-        language: publicState.survey?.defaultLanguage || 'en',
-        channel: 'short_link',
-        answers,
-        respondent: publicState.survey?.isAnonymous
-          ? undefined
-          : {
-              ...(respondent.name.trim() ? { name: respondent.name.trim() } : {}),
-              ...(respondent.email.trim() ? { email: respondent.email.trim() } : {}),
-            },
-      });
-      setSuccess(publicState.survey?.thankYouMessage || 'Thank you for your feedback!');
+      await publicSurveyApi.submit(
+        shortCode,
+        {
+          formVersion: publicState.formVersion,
+          submissionId,
+          branch: publicState.branch?.slug,
+          language: formLanguage,
+          channel: 'short_link',
+          answers,
+          respondent: publicState.survey?.isAnonymous
+            ? undefined
+            : {
+                ...(respondent.name.trim() ? { name: respondent.name.trim() } : {}),
+                ...(respondent.email.trim() ? { email: respondent.email.trim() } : {}),
+              },
+        },
+        controller.signal,
+      );
+      if (controller.signal.aborted) return;
       setSubmitted(true);
       setFormAnswers({});
     } catch (e) {
+      if (controller.signal.aborted) return;
       if (e?.status === 409) {
-        await load();
+        setData(null);
+        const refreshed = await load();
+        if (refreshed?.state === 'open')
+          setError(
+            formText(
+              'The survey changed. Review the latest questions and submit again.',
+              'تغيّر الاستبيان. راجعي الأسئلة الحالية وأعيدي الإرسال.',
+            ),
+          );
+      } else if (e?.status === 404 || e?.status === 429) setError(publicSurveyError(e, formText));
+      else
         setError(
-          t(
-            'The survey changed. Review the latest questions and submit again.',
-            'تغيّر الاستبيان. راجعي الأسئلة الحالية وأعيدي الإرسال.',
+          formText(
+            'Feedback could not be submitted. Check your answers and try again.',
+            'تعذر إرسال الملاحظات. راجع إجاباتك وحاول مرة أخرى.',
           ),
         );
-      } else setError(messageOf(e));
     } finally {
-      setBusy(false);
+      publicSubmit.current = null;
+      if (!controller.signal.aborted) setBusy(false);
     }
   }
 
-  if (busy && !data && !publicState)
+  if (loading && !data && route !== 'public-survey')
     return (
       <PageFrame title={t('Loading', 'جار التحميل')}>
         <Loading />
@@ -775,6 +1018,7 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
                 ))}
               </select>
             </label>
+            {surveyScopeFields}
             <label>
               <input
                 type="checkbox"
@@ -835,25 +1079,17 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
                     >
                       Edit
                     </button>
-                    <button
-                      style={button}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        location.hash = `/public-survey?code=${encodeURIComponent(r.shortCode || '')}`;
-                      }}
-                    >
-                      Public link
-                    </button>
-                    {r.shortCode && (
-                      <button
-                        style={button}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          copyPublicLink(r.shortCode);
-                        }}
-                      >
-                        {copiedSurveyCode === r.shortCode ? 'Link copied' : 'Copy public link'}
-                      </button>
+                    {r.status !== 'draft' && r.shortCode && (
+                      <>
+                        <a style={button} href={connectedSurveyUrl(r.shortCode)}>
+                          {t('Public link', 'رابط الاستبيان')}
+                        </a>
+                        <button style={button} onClick={() => copyPublicLink(r.shortCode)}>
+                          {copiedSurveyCode === r.shortCode
+                            ? t('Link copied', 'تم نسخ الرابط')
+                            : t('Copy public link', 'نسخ رابط الاستبيان')}
+                        </button>
+                      </>
                     )}
                     {r.status === 'live' && (
                       <button
@@ -987,8 +1223,8 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               onClick={async () => {
                 try {
                   await surveyApi.publish(surveyId);
-                  setSuccess('Survey published.');
                   await load();
+                  setSuccess(t('Survey published.', 'تم نشر الاستبيان.'));
                 } catch (e) {
                   setError(messageOf(e));
                 }
@@ -1025,6 +1261,7 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               onChange={(e) => setDraft({ ...draft, thankYouMessage: e.target.value })}
             />
           </label>
+          {surveyScopeFields}
         </section>
         <section style={panel}>
           <h2>Questions ({questions.length})</h2>
@@ -1228,21 +1465,34 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
           {['multiple_choice', 'dropdown'].includes(questionDraft.type) && (
             <div>
               <h4>Options</h4>
-              {questionDraft.options.map((o, i) => (
-                <input
-                  key={i}
-                  style={{ ...input, marginBottom: 7 }}
-                  value={o.label.en}
-                  placeholder={`Option ${i + 1}`}
-                  onChange={(e) =>
-                    setQuestionDraft((q) => ({
-                      ...q,
-                      options: q.options.map((v, j) =>
-                        j === i ? { ...v, label: { ...v.label, en: e.target.value } } : v,
-                      ),
-                    }))
-                  }
-                />
+              {questionDraft.options.map((option, index) => (
+                <div key={index} style={{ display: 'grid', gap: 6, marginBottom: 7 }}>
+                  {draft.languages.map((locale) => (
+                    <label key={locale} style={field}>
+                      {locale === 'ar'
+                        ? `الخيار ${index + 1} بالعربية`
+                        : `Option ${index + 1} in English`}
+                      <input
+                        style={input}
+                        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                        value={option.label[locale]}
+                        onChange={(event) =>
+                          setQuestionDraft((current) => ({
+                            ...current,
+                            options: current.options.map((item, position) =>
+                              position === index
+                                ? {
+                                    ...item,
+                                    label: { ...item.label, [locale]: event.target.value },
+                                  }
+                                : item,
+                            ),
+                          }))
+                        }
+                      />
+                    </label>
+                  ))}
+                </div>
               ))}
               <button
                 style={button}
@@ -1267,31 +1517,57 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
     );
   }
   if (route === 'public-survey') {
-    const p = publicState || data;
+    const p = publicState;
     if (!p)
       return (
-        <PageFrame title="Survey">
+        <PageFrame title={t('Survey', 'الاستبيان')} language={language}>
           <Notice error={error} />
-          <Loading />
+          {loading && <Loading>{t('Loading survey…', 'جارٍ تحميل الاستبيان…')}</Loading>}
+          {error && (
+            <button style={button} onClick={load}>
+              {t('Retry', 'إعادة المحاولة')}
+            </button>
+          )}
         </PageFrame>
       );
+    const title = p.survey?.name || formText('Customer survey', 'استبيان العملاء');
+    const languageSelector = surveyLanguages.length > 1 && (
+      <label style={field}>
+        {formText('Survey language', 'لغة الاستبيان')}
+        <select
+          style={input}
+          value={formLanguage}
+          onChange={(event) => setChosenFormLanguage(event.target.value)}
+        >
+          {surveyLanguages.map((value) => (
+            <option key={value} value={value} lang={value}>
+              {value === 'ar' ? 'العربية' : 'English'}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
     if (submitted)
       return (
-        <PageFrame title={p.survey?.name || 'Survey'}>
-          <section style={panel}>
-            <h2>{success || 'Thank you for your feedback!'}</h2>
+        <PageFrame title={title} language={formLanguage}>
+          <section style={panel} role="status">
+            <h2 dir="auto">
+              {p.survey?.thankYouMessage ||
+                formText('Thank you for your feedback!', 'شكرًا على ملاحظاتك!')}
+            </h2>
           </section>
         </PageFrame>
       );
     if (p.state === 'branch_required')
       return (
-        <PageFrame title={p.survey?.name || 'Survey'}>
+        <PageFrame title={title} language={formLanguage} actions={languageSelector}>
           <section style={panel}>
-            <h2>Select your branch</h2>
+            <h2>{formText('Select your branch', 'اختر الفرع')}</h2>
             {(p.branches || []).map((b) => (
               <p key={b.slug}>
                 <a
-                  href={`#/public-survey?code=${encodeURIComponent(shortCode)}&branch=${encodeURIComponent(b.slug)}`}
+                  dir="auto"
+                  href={`#/public-survey?code=${encodeURIComponent(shortCode)}&branch=${encodeURIComponent(b.slug)}&lang=${formLanguage}`}
                 >
                   {b.name}
                 </a>
@@ -1302,123 +1578,161 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
       );
     if (p.state !== 'open')
       return (
-        <PageFrame title={p.survey?.name || 'Survey'}>
+        <PageFrame title={title} language={formLanguage} actions={languageSelector}>
           <Empty>
-            {p.state === 'paused'
-              ? 'This survey is paused.'
-              : p.state === 'closed'
-                ? 'This survey is closed.'
-                : 'This branch is unavailable.'}
+            {{
+              paused: formText('This survey is paused.', 'هذا الاستبيان متوقف مؤقتًا.'),
+              closed: formText('This survey is closed.', 'هذا الاستبيان مغلق.'),
+              branch_unavailable: formText('This branch is unavailable.', 'هذا الفرع غير متاح.'),
+            }[p.state] || formText('This survey is unavailable.', 'هذا الاستبيان غير متاح.')}
           </Empty>
         </PageFrame>
       );
     return (
       <PageFrame
-        title={p.survey?.name || 'Customer survey'}
-        subtitle={`${p.businessName || ''} · ${p.branch?.name || ''}`}
+        title={title}
+        language={formLanguage}
+        subtitle={[p.businessName, p.branch?.name].filter(Boolean).join(' · ')}
+        actions={languageSelector}
       >
-        <Notice error={error} success={success} />
+        <Notice error={error} />
         <form onSubmit={submitPublic} style={panel}>
-          <p>{p.survey?.welcomeMessage}</p>
-          {(p.questions || []).map((q, i) => (
-            <div key={idOf(q)} style={{ ...field, marginBottom: 20 }}>
-              <strong>
-                {i + 1}. {q.questionTextEn || q.questionTextAr}
+          {p.survey?.welcomeMessage && <p dir="auto">{p.survey.welcomeMessage}</p>}
+          {(p.questions || []).map((q, index) => {
+            const questionId = idOf(q);
+            const controlId = `survey-question-${questionId}`;
+            const value = formAnswers[questionId];
+            const setValue = (next) =>
+              setFormAnswers((answers) => ({ ...answers, [questionId]: next }));
+            const label = (
+              <>
+                {index + 1}. {localized(q.questionTextEn, q.questionTextAr)}
                 {q.isRequired ? ' *' : ''}
-              </strong>
-              {q.type === 'short_text' || q.type === 'long_text' ? (
-                q.type === 'long_text' ? (
-                  <textarea
-                    required={q.isRequired}
-                    style={input}
-                    value={formAnswers[idOf(q)] || ''}
-                    onChange={(e) => setFormAnswers((a) => ({ ...a, [idOf(q)]: e.target.value }))}
-                  />
-                ) : (
-                  <input
-                    required={q.isRequired}
-                    style={input}
-                    value={formAnswers[idOf(q)] || ''}
-                    onChange={(e) => setFormAnswers((a) => ({ ...a, [idOf(q)]: e.target.value }))}
-                  />
-                )
-              ) : q.type === 'rating' ? (
+              </>
+            );
+            const choiceLabel = (option) => localized(option.label?.en, option.label?.ar);
+            if (q.type === 'multiple_choice') {
+              const multiple = q.settings?.allowMultiple === true;
+              return (
+                <fieldset
+                  key={questionId}
+                  style={{ ...field, border: 0, padding: 0, marginInline: 0, marginBottom: 20 }}
+                >
+                  <legend style={{ fontWeight: 700 }}>{label}</legend>
+                  {(q.options || []).map((option) => {
+                    const optionId = idOf(option);
+                    return (
+                      <label key={optionId}>
+                        <input
+                          type={multiple ? 'checkbox' : 'radio'}
+                          name={controlId}
+                          checked={multiple ? (value || []).includes(optionId) : value === optionId}
+                          required={!multiple && q.isRequired}
+                          onChange={(event) => {
+                            if (!multiple) setValue(optionId);
+                            else if (event.target.checked) setValue([...(value || []), optionId]);
+                            else
+                              setValue((value || []).filter((existing) => existing !== optionId));
+                          }}
+                        />{' '}
+                        {choiceLabel(option)}
+                      </label>
+                    );
+                  })}
+                </fieldset>
+              );
+            }
+
+            const common = {
+              id: controlId,
+              required: q.isRequired,
+              style: input,
+              value: value ?? '',
+            };
+            const textChange = (event) => setValue(event.target.value);
+            const choicePrompt = formText('Choose an answer', 'اختر إجابة');
+            let control;
+            if (q.type === 'long_text' || q.type === 'short_text') {
+              const TextControl = q.type === 'long_text' ? 'textarea' : 'input';
+              control = (
+                <TextControl
+                  {...common}
+                  dir="auto"
+                  maxLength={q.settings?.maxLength}
+                  onChange={textChange}
+                />
+              );
+            } else if (q.type === 'rating') {
+              control = (
                 <select
-                  required={q.isRequired}
-                  style={input}
-                  value={formAnswers[idOf(q)] || ''}
-                  onChange={(e) =>
-                    setFormAnswers((a) => ({ ...a, [idOf(q)]: Number(e.target.value) }))
+                  {...common}
+                  onChange={(event) =>
+                    setValue(event.target.value ? Number(event.target.value) : undefined)
                   }
                 >
-                  <option value="">Choose rating</option>
-                  {Array.from({ length: q.settings?.stars || 5 }, (_, n) => (
-                    <option key={n + 1} value={n + 1}>
-                      {n + 1}
+                  <option value="">{formText('Choose rating', 'اختر التقييم')}</option>
+                  {Array.from({ length: q.settings?.stars || 5 }, (_, index) => index + 1).map(
+                    (rating) => (
+                      <option key={rating} value={rating}>
+                        {rating.toLocaleString(formLanguage)}
+                      </option>
+                    ),
+                  )}
+                </select>
+              );
+            } else if (q.type === 'yes_no') {
+              control = (
+                <select
+                  {...common}
+                  value={value === undefined ? '' : String(value)}
+                  onChange={(event) =>
+                    setValue(event.target.value ? event.target.value === 'true' : undefined)
+                  }
+                >
+                  <option value="">{choicePrompt}</option>
+                  <option value="true">{formText('Yes', 'نعم')}</option>
+                  <option value="false">{formText('No', 'لا')}</option>
+                </select>
+              );
+            } else if (q.type === 'dropdown') {
+              control = (
+                <select {...common} onChange={textChange}>
+                  <option value="">{choicePrompt}</option>
+                  {(q.options || []).map((option) => (
+                    <option key={idOf(option)} value={idOf(option)}>
+                      {choiceLabel(option)}
                     </option>
                   ))}
                 </select>
-              ) : q.type === 'yes_no' ? (
-                <select
-                  required={q.isRequired}
-                  style={input}
-                  value={formAnswers[idOf(q)] === undefined ? '' : String(formAnswers[idOf(q)])}
-                  onChange={(e) =>
-                    setFormAnswers((a) => ({ ...a, [idOf(q)]: e.target.value === 'true' }))
-                  }
-                >
-                  <option value="">Choose</option>
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              ) : (
-                <div>
-                  {(q.options || []).map((o) => (
-                    <label key={idOf(o)} style={{ display: 'block', margin: '7px 0' }}>
-                      <input
-                        type={
-                          q.type === 'multiple_choice' && q.settings?.allowMultiple
-                            ? 'checkbox'
-                            : 'radio'
-                        }
-                        name={idOf(q)}
-                        checked={(Array.isArray(formAnswers[idOf(q)])
-                          ? formAnswers[idOf(q)]
-                          : [formAnswers[idOf(q)]]
-                        ).includes(idOf(o))}
-                        onChange={(e) =>
-                          setFormAnswers((a) => ({
-                            ...a,
-                            [idOf(q)]:
-                              q.type === 'multiple_choice' && q.settings?.allowMultiple
-                                ? e.target.checked
-                                  ? [...(a[idOf(q)] || []), idOf(o)]
-                                  : (a[idOf(q)] || []).filter((x) => x !== idOf(o))
-                                : idOf(o),
-                          }))
-                        }
-                      />{' '}
-                      {o.label?.en || o.label?.ar}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+              );
+            } else return null;
+            return (
+              <div key={questionId} style={{ ...field, marginBottom: 20 }}>
+                <label htmlFor={controlId} style={{ fontWeight: 700 }}>
+                  {label}
+                </label>
+                {control}
+              </div>
+            );
+          })}
           {!p.survey?.isAnonymous && (
             <>
               <label style={field}>
-                Name
+                {formText('Name', 'الاسم')}
                 <input
                   style={input}
+                  autoComplete="name"
+                  dir="auto"
                   value={respondent.name}
                   onChange={(e) => setRespondent((r) => ({ ...r, name: e.target.value }))}
                 />
               </label>
               <label style={field}>
-                Email
+                {formText('Email', 'البريد الإلكتروني')}
                 <input
                   type="email"
+                  autoComplete="email"
+                  dir="ltr"
                   style={input}
                   value={respondent.email}
                   onChange={(e) => setRespondent((r) => ({ ...r, email: e.target.value }))}
@@ -1426,8 +1740,10 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               </label>
             </>
           )}
-          <button style={primary} disabled={busy}>
-            Submit feedback
+          <button style={primary} disabled={busy || loading}>
+            {busy
+              ? formText('Submitting…', 'جارٍ الإرسال…')
+              : formText('Submit feedback', 'إرسال الملاحظات')}
           </button>
         </form>
       </PageFrame>
@@ -1453,13 +1769,16 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
             </button>
           </div>
           {actions.length ? (
-            <ol style={{ lineHeight: 1.8 }}>
-              {actions.map((item, index) => (
-                <li key={`${index}-${String(item)}`}>
-                  {typeof item === 'string' ? item : <StructuredData value={item} />}
-                </li>
-              ))}
-            </ol>
+            <>
+              <ReportQuality report={data} t={t} />
+              <ol style={{ lineHeight: 1.8 }}>
+                {actions.map((item, index) => (
+                  <li key={index} dir="auto">
+                    {typeof item === 'string' ? item : <StructuredData value={item} />}
+                  </li>
+                ))}
+              </ol>
+            </>
           ) : (
             <Empty>
               No saved recommendations yet. Actions appear when a generated report includes them.
@@ -1471,16 +1790,40 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
   }
   if (route === 'dashboard' || route === 'overview' || route.startsWith('analytics')) {
     const sections = data || {};
+    const analytics = route.startsWith('analytics');
     return (
-      <PageFrame
-        title={route.startsWith('analytics') ? 'Analytics' : 'Overview'}
-        subtitle="Live workspace data from your account APIs"
-      >
+      <PageFrame title={analytics ? t('Analytics', 'التحليلات') : t('Overview', 'نظرة عامة')}>
         <Notice error={error} />
+        {analytics && (
+          <nav
+            aria-label={t('Analytics views', 'أقسام التحليلات')}
+            style={{ ...panel, display: 'flex', gap: 12, flexWrap: 'wrap' }}
+          >
+            {[
+              ['sentiment', t('Sentiment', 'المشاعر')],
+              ['aspects', t('Aspects', 'الجوانب')],
+              ['topics', t('Topics', 'الموضوعات')],
+              ['trends', t('Trends', 'الاتجاهات')],
+              ['comparison', t('Branch comparison', 'مقارنة الفروع')],
+            ].map(([view, label]) => (
+              <a
+                key={view}
+                href={'#/analytics-' + view}
+                aria-current={
+                  route === 'analytics-' + view || (route === 'analytics' && view === 'sentiment')
+                    ? 'page'
+                    : undefined
+                }
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+        )}
         <section style={panel}>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'end' }}>
             <label style={field}>
-              From
+              {t('From', 'من')}
               <input
                 type="date"
                 style={input}
@@ -1489,7 +1832,7 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               />
             </label>
             <label style={field}>
-              To
+              {t('To', 'إلى')}
               <input
                 type="date"
                 style={input}
@@ -1498,7 +1841,7 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               />
             </label>
             <button style={primary} onClick={load}>
-              Apply date range
+              {t('Apply date range', 'تطبيق الفترة')}
             </button>
           </div>
         </section>
@@ -1530,7 +1873,7 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
           }
         >
           <Notice error={error} />
-          <StructuredData value={data} />
+          <ReportContent report={data} t={t} />
         </PageFrame>
       );
     return (
@@ -1539,8 +1882,8 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
         subtitle="Generate and review saved reports"
         actions={
           <span style={{ display: 'flex', gap: 8 }}>
-            <button style={button} onClick={exportReports} disabled={!reports.length}>
-              Export report list
+            <button style={button} onClick={exportReports} disabled={!reports.length || loading}>
+              Export current page
             </button>
             <button style={primary} disabled={busy} onClick={generateReport}>
               Generate report
@@ -1556,8 +1899,8 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               <input
                 type="date"
                 style={input}
-                value={filters.from}
-                onChange={(e) => setFilters((f) => ({ ...f, from: e.target.value }))}
+                value={reportDates.from}
+                onChange={(e) => setReportDates((f) => ({ ...f, from: e.target.value }))}
               />
             </label>
             <label style={field}>
@@ -1565,17 +1908,17 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               <input
                 type="date"
                 style={input}
-                value={filters.to}
-                onChange={(e) => setFilters((f) => ({ ...f, to: e.target.value }))}
+                value={reportDates.to}
+                onChange={(e) => setReportDates((f) => ({ ...f, to: e.target.value }))}
               />
             </label>
             <span style={muted}>Leave dates empty to use the latest 30 days.</span>
           </div>
         </section>
-        {data?.generated && (
+        {generatedReport && (
           <section style={panel}>
             <h2>New report generated</h2>
-            <StructuredData value={data.generated} />
+            <ReportContent report={generatedReport} t={t} />
           </section>
         )}
         <DataTable
@@ -1583,6 +1926,16 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
             { key: 'reportName', label: 'Report' },
             { key: 'periodCovered', label: 'Period' },
             { key: 'totalReviewsAnalyzed', label: 'Responses' },
+            {
+              key: 'qualityStatus',
+              label: t('AI quality', 'جودة الذكاء الاصطناعي'),
+              render: (report) =>
+                report.qualityAccepted === true
+                  ? t('Accepted', 'مقبولة')
+                  : report.qualityStatus === 'baseline'
+                    ? t('Experimental', 'تجريبية')
+                    : t('Unverified', 'غير متحقق منها'),
+            },
             { key: 'createdAt', label: 'Created', render: (r) => date(r.createdAt) },
             {
               key: 'open',
@@ -1591,7 +1944,6 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
                 <button
                   style={button}
                   onClick={() => {
-                    setReportId(idOf(r));
                     location.hash = `/report-details?id=${idOf(r)}`;
                   }}
                 >
@@ -1602,6 +1954,28 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
           ]}
           rows={reports}
         />
+        <nav
+          aria-label={t('Report pages', 'صفحات التقارير')}
+          style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'flex-end' }}
+        >
+          <span>
+            {t('Page', 'صفحة')} {data?.pagination?.page || filters.page}
+          </span>
+          <button
+            style={button}
+            disabled={busy || loading || filters.page <= 1}
+            onClick={() => setFilters((previous) => ({ ...previous, page: previous.page - 1 }))}
+          >
+            {t('Previous', 'السابق')}
+          </button>
+          <button
+            style={button}
+            disabled={busy || loading || !data?.pagination?.hasMore}
+            onClick={() => setFilters((previous) => ({ ...previous, page: previous.page + 1 }))}
+          >
+            {t('Next', 'التالي')}
+          </button>
+        </nav>
       </PageFrame>
     );
   }
@@ -1611,8 +1985,21 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
       ? payload
       : payload.feedbacks || payload.responses || payload.items || [];
     const pagination = payload.pagination || {};
+    if (payload.hasAnyResponses === false && !rows.length && !error) return <FeedbackList empty />;
     return (
-      <PageFrame title="Feedbacks" subtitle="Customer responses from your surveys">
+      <PageFrame
+        title="Feedbacks"
+        subtitle="Customer responses from your surveys"
+        actions={
+          !loading &&
+          !error &&
+          rows.length > 0 && (
+            <a style={button} href={feedbackApi.exportLink(data.query)} download>
+              {t('Export CSV', 'تصدير CSV')}
+            </a>
+          )
+        }
+      >
         <Notice error={error} />
         <section style={panel}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
@@ -1717,7 +2104,11 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
               rows={rows}
             />
           ) : (
-            <Empty>{t('No responses yet.', 'لا توجد ردود بعد.')}</Empty>
+            !error && (
+              <Empty>
+                {t('No responses match your filters.', 'لا توجد ردود تطابق عوامل التصفية.')}
+              </Empty>
+            )
           )}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
             <span style={muted}>Page {pagination.page || filters.page}</span>
@@ -1740,67 +2131,6 @@ export default function ConnectedFeaturePage({ route, language = 'en' }) {
             </button>
           </div>
         </section>
-      </PageFrame>
-    );
-  }
-  if (route === 'feedback-details') {
-    const d = data?.detail || {};
-    return (
-      <PageFrame
-        title="Feedback details"
-        actions={
-          <button style={button} onClick={() => (location.hash = '/feedbacks')}>
-            Back to feedbacks
-          </button>
-        }
-      >
-        <Notice error={error} />
-        <section style={panel}>
-          <MetricGrid
-            data={{
-              id: d.displayId || d.id,
-              submittedAt: date(d.submittedAt),
-              branch: d.branchName || d.branch?.name,
-              survey: d.surveyName || d.survey?.name,
-              analysisStatus: d.analysisStatus,
-            }}
-          />
-          <h2>Customer response</h2>
-          {d.respondent?.name && (
-            <p>
-              <strong>Respondent:</strong> {d.respondent.name}
-            </p>
-          )}
-          {d.original?.question && <strong>{d.original.question}</strong>}
-          <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>
-            {d.original?.text || 'No written comment was provided.'}
-          </p>
-          <p style={muted}>
-            Language: {d.language || '—'} · Channel: {d.channel || '—'}
-          </p>
-        </section>
-        {data?.analysis && (
-          <section style={panel}>
-            <h2>AI analysis</h2>
-            <StructuredData value={data.analysis} />
-          </section>
-        )}
-        {['failed', 'partial'].includes(d.analysisStatus) && (
-          <button
-            style={primary}
-            onClick={async () => {
-              try {
-                await feedbackApi.retryAnalysis(d.id);
-                setSuccess('Analysis retry requested.');
-                await load();
-              } catch (e) {
-                setError(messageOf(e));
-              }
-            }}
-          >
-            Retry analysis
-          </button>
-        )}
       </PageFrame>
     );
   }

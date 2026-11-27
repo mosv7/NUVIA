@@ -1,12 +1,14 @@
+const accepted = require('../services/acceptedAnalysis');
 const CustomerResponse = require('../models/customerResponse.model');
 const mongoose = require('mongoose');
 
 exports.getTopicsAndComplaints = async (req, res) => {
   try {
     const { businessId } = req.user;
-    const { branchId, surveyId, startDate, endDate, lang, selectedTopic, onlyComplaints } = req.query;
+    const { branchId, surveyId, startDate, endDate, lang, selectedTopic, onlyComplaints } =
+      req.query;
 
-    const matchStage = { businessId: new mongoose.Types.ObjectId(businessId) };
+    const matchStage = { businessId: new mongoose.Types.ObjectId(businessId), ...accepted };
 
     if (branchId && branchId !== 'all') {
       matchStage.branchId = new mongoose.Types.ObjectId(branchId);
@@ -19,15 +21,12 @@ exports.getTopicsAndComplaints = async (req, res) => {
       if (startDate) matchStage.submittedAt.$gte = new Date(startDate);
       if (endDate) {
         const endDateTime = new Date(endDate);
-        endDateTime.setHours(23, 59, 59, 999);
+        endDateTime.setUTCHours(23, 59, 59, 999);
         matchStage.submittedAt.$lte = endDateTime;
       }
     }
     if (lang && lang !== 'all') {
-      matchStage.$or = [
-        { language: lang },
-        { declaredLanguage: lang }
-      ];
+      matchStage.$or = [{ language: lang }, { declaredLanguage: lang }];
     }
 
     // Collecting data and calculating the negatives and positives for each topic
@@ -40,48 +39,46 @@ exports.getTopicsAndComplaints = async (req, res) => {
           totalMentions: { $sum: 1 },
           avgScore: { $avg: '$analysis.aspects.score' },
           negativeMentions: {
-            $sum: { $cond: [{ $eq: ['$analysis.aspects.polarity', 'negative'] }, 1, 0] }
+            $sum: { $cond: [{ $eq: ['$analysis.aspects.polarity', 'negative'] }, 1, 0] },
           },
           positiveMentions: {
-            $sum: { $cond: [{ $eq: ['$analysis.aspects.polarity', 'positive'] }, 1, 0] }
+            $sum: { $cond: [{ $eq: ['$analysis.aspects.polarity', 'positive'] }, 1, 0] },
           },
           sampleEvidence: { $first: '$analysis.aspects.evidence' },
-          isBeyondSurvey: { $first: '$analysis.aspects.isEmerging' }
-        }
+          isBeyondSurvey: { $first: '$analysis.aspects.isEmerging' },
+        },
       },
-      { $sort: { totalMentions: -1, avgScore: -1 } }
+      { $sort: { totalMentions: -1, avgScore: -1 } },
     ];
 
     let topicsData = await CustomerResponse.aggregate(pipeline);
 
     // If a request is made to filter for negative complaints only via the query (onlyComplaints=true)
     if (onlyComplaints === 'true') {
-      topicsData = topicsData.filter(t => t.negativeMentions > 0);
+      topicsData = topicsData.filter((t) => t.negativeMentions > 0);
     }
 
     const totalTopicsCount = topicsData.length;
     const totalMentionsSum = topicsData.reduce((acc, curr) => acc + curr.totalMentions, 0);
 
-   // 1. The most frequently occurring topic in general
+    // 1. The most frequently occurring topic in general
     const mostFrequent = topicsData.length > 0 ? topicsData[0] : null;
     const mostFrequentTopicName = mostFrequent ? mostFrequent._id : null;
-    const mostFrequentPercentage = (mostFrequent && totalMentionsSum > 0)
-      ? Number(((mostFrequent.totalMentions / totalMentionsSum) * 100).toFixed(1))
-      : 0;
+    const mostFrequentPercentage =
+      mostFrequent && totalMentionsSum > 0
+        ? Number(((mostFrequent.totalMentions / totalMentionsSum) * 100).toFixed(1))
+        : 0;
 
-    // 2. Filter the selectedComplaintCluster card to include the top actual negative topic (complaint)
-    const complaintTopics = topicsData.filter(t => t.negativeMentions > 0);
-    const topComplaint = complaintTopics.length > 0 ? complaintTopics[0] : null;
-
-    const targetComplaintName = selectedTopic || (topComplaint ? topComplaint._id : mostFrequentTopicName);
-    const selectedComplaintData = topicsData.find(t => t._id === targetComplaintName);
-    
-    const selectedComplaintMentions = selectedComplaintData ? selectedComplaintData.negativeMentions || selectedComplaintData.totalMentions : 0;
-    const selectedComplaintPercentage = (selectedComplaintData && totalMentionsSum > 0)
+    const complaintTopics = topicsData.filter((topic) => topic.negativeMentions > 0);
+    const selectedComplaint = selectedTopic
+      ? complaintTopics.find((topic) => topic._id === selectedTopic)
+      : complaintTopics.sort((left, right) => right.negativeMentions - left.negativeMentions)[0];
+    const selectedComplaintMentions = selectedComplaint?.negativeMentions ?? 0;
+    const selectedComplaintPercentage = totalMentionsSum
       ? Number(((selectedComplaintMentions / totalMentionsSum) * 100).toFixed(1))
       : 0;
 
-    const beyondSurveyCount = topicsData.filter(t => t.isBeyondSurvey === true).length;
+    const beyondSurveyCount = topicsData.filter((t) => t.isBeyondSurvey === true).length;
 
     res.status(200).json({
       success: true,
@@ -91,30 +88,29 @@ exports.getTopicsAndComplaints = async (req, res) => {
           mostFrequentTopic: {
             name: mostFrequentTopicName,
             mentions: mostFrequent ? mostFrequent.totalMentions : 0,
-            percentage: mostFrequentPercentage
+            percentage: mostFrequentPercentage,
           },
           selectedComplaintCluster: {
-            name: targetComplaintName,
+            name: selectedComplaint?._id ?? null,
             mentions: selectedComplaintMentions,
-            percentage: selectedComplaintPercentage
+            percentage: selectedComplaintPercentage,
           },
-          beyondSurveyOptions: beyondSurveyCount
+          beyondSurveyOptions: beyondSurveyCount,
         },
-        topics: topicsData.map(item => ({
+        topics: topicsData.map((item) => ({
           topicName: item._id,
           mentions: item.totalMentions,
           negativeMentions: item.negativeMentions,
           positiveMentions: item.positiveMentions,
-          score: Number(item.avgScore.toFixed(1)),
+          score: item.avgScore === null ? null : Number(item.avgScore.toFixed(1)),
           evidence: item.sampleEvidence,
-          isBeyondSurvey: item.isBeyondSurvey || false
-        }))
-      }
+          isBeyondSurvey: item.isBeyondSurvey || false,
+        })),
+      },
     });
-
   } catch (error) {
     console.error('Error in getTopicsAndComplaints:', error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
@@ -123,8 +119,9 @@ exports.getSelectedTopicDetails = async (req, res) => {
     const { businessId } = req.user;
     const { branchId, surveyId, startDate, endDate, topicName, lang } = req.query;
 
-    const matchStage = { 
-      businessId: new mongoose.Types.ObjectId(businessId)
+    const matchStage = {
+      businessId: new mongoose.Types.ObjectId(businessId),
+      ...accepted,
     };
 
     if (branchId && branchId !== 'all') {
@@ -138,15 +135,12 @@ exports.getSelectedTopicDetails = async (req, res) => {
       if (startDate) matchStage.submittedAt.$gte = new Date(startDate);
       if (endDate) {
         const endDateTime = new Date(endDate);
-        endDateTime.setHours(23, 59, 59, 999);
+        endDateTime.setUTCHours(23, 59, 59, 999);
         matchStage.submittedAt.$lte = endDateTime;
       }
     }
     if (lang && lang !== 'all') {
-      matchStage.$or = [
-        { language: lang },
-        { declaredLanguage: lang }
-      ];
+      matchStage.$or = [{ language: lang }, { declaredLanguage: lang }];
     }
 
     // 1. Determine the required aspect (if not provided by the user, dynamically select the most frequently occurring topic)
@@ -159,21 +153,21 @@ exports.getSelectedTopicDetails = async (req, res) => {
         {
           $group: {
             _id: '$analysis.aspects.name',
-            count: { $sum: 1 }
-          }
+            count: { $sum: 1 },
+          },
         },
         { $sort: { count: -1 } },
-        { $limit: 1 }
+        { $limit: 1 },
       ];
 
       const topTopicResult = await CustomerResponse.aggregate(topTopicPipeline);
-      
+
       if (topTopicResult.length > 0) {
         targetTopic = topTopicResult[0]._id;
       }
     }
 
-  // If there is no data or topics available at all
+    // If there is no data or topics available at all
     if (!targetTopic) {
       return res.status(200).json({
         success: true,
@@ -181,18 +175,18 @@ exports.getSelectedTopicDetails = async (req, res) => {
           topicName: null,
           totalTopicResponses: 0,
           branchDistribution: [],
-          relatedFeedbacks: []
-        }
+          relatedFeedbacks: [],
+        },
       });
     }
 
     // Adding the topic filter to the match stage
     const topicMatchStage = {
       ...matchStage,
-      'analysis.aspects.name': targetTopic
+      'analysis.aspects.name': targetTopic,
     };
 
-   // 2. Calculate the total number of replies related to this topic
+    // 2. Calculate the total number of replies related to this topic
     const totalTopicResponses = await CustomerResponse.countDocuments(topicMatchStage);
 
     // 3. Aggregating the distribution of branches
@@ -201,16 +195,16 @@ exports.getSelectedTopicDetails = async (req, res) => {
       {
         $group: {
           _id: '$branchId',
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
         $lookup: {
           from: 'branches',
           localField: '_id',
           foreignField: '_id',
-          as: 'branchInfo'
-        }
+          as: 'branchInfo',
+        },
       },
       { $unwind: '$branchInfo' },
       {
@@ -224,12 +218,12 @@ exports.getSelectedTopicDetails = async (req, res) => {
             $cond: [
               { $gt: [totalTopicResponses, 0] },
               { $round: [{ $multiply: [{ $divide: ['$count', totalTopicResponses] }, 100] }, 1] },
-              0
-            ]
-          }
-        }
+              0,
+            ],
+          },
+        },
       },
-      { $sort: { count: -1 } }
+      { $sort: { count: -1 } },
     ];
 
     const branchDistribution = await CustomerResponse.aggregate(branchPipeline);
@@ -241,21 +235,23 @@ exports.getSelectedTopicDetails = async (req, res) => {
       .sort({ submittedAt: -1 })
       .limit(5);
 
-    const relatedFeedbacks = rawFeedbacks.map(item => {
-      const aspect = item.analysis.aspects.find(a => a.name === targetTopic);
+    const relatedFeedbacks = rawFeedbacks.map((item) => {
+      const aspect = item.analysis.aspects.find((a) => a.name === targetTopic);
       return {
         feedbackId: item._id,
         number: item.number,
         submittedAt: item.submittedAt,
         language: item.language || item.declaredLanguage,
-        location: item.branchId ? {
-          branchName: item.branchId.name,
-          city: item.branchId.city,
-          address: item.branchId.address
-        } : null,
+        location: item.branchId
+          ? {
+              branchName: item.branchId.name,
+              city: item.branchId.city,
+              address: item.branchId.address,
+            }
+          : null,
         feedbackText: item.feedbackText,
         polarity: aspect ? aspect.polarity : 'neutral',
-        evidence: aspect ? aspect.evidence : null
+        evidence: aspect ? aspect.evidence : null,
       };
     });
 
@@ -264,19 +260,18 @@ exports.getSelectedTopicDetails = async (req, res) => {
       data: {
         topicName: targetTopic,
         totalTopicResponses,
-        branchDistribution: branchDistribution.map(b => ({
+        branchDistribution: branchDistribution.map((b) => ({
           branchId: b.branchId,
           branchName: b.branchName,
           location: b.city ? `${b.branchName} - ${b.city}` : b.branchName,
           count: b.count,
-          percentage: b.percentage
+          percentage: b.percentage,
         })),
-        relatedFeedbacks
-      }
+        relatedFeedbacks,
+      },
     });
-
   } catch (error) {
     console.error('Error in getSelectedTopicDetails:', error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };

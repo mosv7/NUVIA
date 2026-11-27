@@ -1,11 +1,22 @@
 import { useAuth } from '../../app/providers/AuthProvider.jsx';
 import { workspaceApi } from '../workspaces/api.js';
 import { settingsApi } from '../settings/api.js';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 import UiArrow from '../../components/ui/UiArrow.jsx';
 import { I, PreviewSelect } from './WorkspacePrimitives.jsx';
 import { words, tabs, initialBranches, currentPreviewRoute } from './workspace-data.js';
+
+const defaultAvatar = '/assets/dashboard/overview/account-avatar.svg';
+const countryCodes = {
+  Egypt: 'EG',
+  'United Kingdom': 'GB',
+  'Saudi Arabia': 'SA',
+  'United Arab Emirates': 'AE',
+};
+const countryNames = Object.fromEntries(
+  Object.entries(countryCodes).map(([name, code]) => [code, name]),
+);
 
 export default function useWorkspaceModel({ language, setLanguage }) {
   const auth = useAuth();
@@ -13,6 +24,11 @@ export default function useWorkspaceModel({ language, setLanguage }) {
   const savedWorkspace = auth?.workspace;
   const activeRequest = useRef(null);
   const requestGeneration = useRef(0);
+  const settingsMutation = useRef(null);
+  const profilePhotoReader = useRef(null);
+  const [settingsSaving, setSettingsSaving] = useState(false);
+  const [settingsLoad, setSettingsLoad] = useState(null);
+  const [routeHash, setRouteHash] = useState(() => location.hash);
   const [saving, setSaving] = useState(false);
   const branchView = (b) => ({
     ...b,
@@ -63,9 +79,11 @@ export default function useWorkspaceModel({ language, setLanguage }) {
       title: preview ? 'Founder & workspace owner' : 'Workspace owner',
       phone: preview ? '+20 100 123 4567' : '',
       country: preview ? 'Egypt' : '',
-      photo: '/assets/dashboard/overview/account-avatar.svg',
+      photo: defaultAvatar,
     }),
-    [draft, setDraft] = useState({}),
+    [draft, setDraft] = useState(() =>
+      preview && page === 'settings-profile' ? { ...account } : {},
+    ),
     [error, setError] = useState({}),
     [pending, setPending] = useState('');
   const [preferences, setPreferences] = useState({
@@ -79,8 +97,10 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     [toggles, setToggles] = useState({
       email: true,
       inapp: true,
-      feedback: true,
-      low: true,
+      emailFeedback: true,
+      emailLow: true,
+      inappFeedback: true,
+      inappLow: true,
       weekly: true,
       news: false,
       security: true,
@@ -89,7 +109,8 @@ export default function useWorkspaceModel({ language, setLanguage }) {
       popup: true,
     }),
     [switchDraft, setSwitchDraft] = useState(toggles),
-    [delivery, setDelivery] = useState('Daily digest'),
+    [savedDelivery, setSavedDelivery] = useState('Daily digest'),
+    [delivery, setDelivery] = useState(savedDelivery),
     [notificationTab, setNotificationTab] = useState('All'),
     [read, setRead] = useState([]),
     [sessions, setSessions] = useState(preview ? [1, 2, 3] : []),
@@ -99,6 +120,9 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     [recoveryCodes, setRecoveryCodes] = useState([]);
   const lang = language,
     setLang = setLanguage;
+  const settingsNeedsLoad = !preview && page.startsWith('settings') && page !== 'settings-password';
+  const settingsLoading = settingsNeedsLoad && settingsLoad?.hash !== routeHash;
+  const settingsLoadFailed = settingsNeedsLoad && !settingsLoading && settingsLoad.failed;
   const ar = lang === 'ar',
     t = (s) => (ar ? words[s] || s : s),
     L = (en, arabic) => (ar ? arabic : en),
@@ -109,77 +133,89 @@ export default function useWorkspaceModel({ language, setLanguage }) {
       setRow(null);
     },
     notify = (s) => setToast(t(s));
-  useEffect(() => {
+  useLayoutEffect(() => {
     const onHash = () => {
+      if (location.hash === routeHash) return;
+      settingsMutation.current?.abort();
+      settingsMutation.current = null;
+      profilePhotoReader.current?.abort();
+      profilePhotoReader.current = null;
+      setSettingsSaving(false);
+      setSettingsLoad(null);
+      setRouteHash(location.hash);
       const next = currentPreviewRoute();
       setPage(next);
+      const secretPages = ['settings-email', 'settings-password', 'settings-two-factor'];
+      if (secretPages.includes(page) || secretPages.includes(next)) setDraft({});
       if (next === 'business-add') setDraft({ name: '', industry: '' });
+      if (next === 'settings-profile' && preview) setDraft({ ...account });
+      setModal(null);
+      if (page === 'settings-two-factor') {
+        setCode('');
+        setRecoveryCodes([]);
+        setTwoFactorSetup(null);
+      }
+      if (next === 'settings-language') setPrefDraft(preferences);
+      if (next.startsWith('settings-notifications')) {
+        setSwitchDraft(toggles);
+        setDelivery(savedDelivery);
+      }
       setQuery('');
       setError({});
       window.scrollTo(0, 0);
     };
     addEventListener('hashchange', onHash);
     return () => removeEventListener('hashchange', onHash);
-  }, []);
+  }, [account, page, preferences, preview, routeHash, savedDelivery, toggles]);
+  useLayoutEffect(
+    () => () => {
+      settingsMutation.current?.abort();
+      settingsMutation.current = null;
+      profilePhotoReader.current?.abort();
+      profilePhotoReader.current = null;
+    },
+    [preview, auth?.user?.id],
+  );
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = ar ? 'rtl' : 'ltr';
   }, [lang, ar]);
   useEffect(() => {
-    if (preview || !page.startsWith('settings')) return;
+    if (!settingsNeedsLoad) return;
     const controller = new AbortController();
     const signal = controller.signal;
+    const isCurrent = () => !signal.aborted && location.hash === routeHash;
     const load = async () => {
       try {
-        if (['settings', 'settings-personal', 'settings-profile'].includes(page)) {
+        if (
+          ['settings', 'settings-personal', 'settings-account', 'settings-profile'].includes(page)
+        ) {
           const data = await settingsApi.account(signal);
-          if (signal.aborted) return;
+          if (!isCurrent()) return;
           setAccount((current) => ({
             ...current,
             name: data.name || '',
             email: data.email || '',
             phone: data.phone || '',
-            country:
-              { EG: 'Egypt', GB: 'United Kingdom', SA: 'Saudi Arabia', AE: 'United Arab Emirates' }[
-                data.country
-              ] ||
-              data.country ||
-              '',
+            country: countryNames[data.country] || data.country || '',
             title: data.jobTitle || '',
-            photo: data.avatarUrl || current.photo,
+            photo: data.avatarUrl || defaultAvatar,
           }));
           if (page === 'settings-profile')
             setDraft({
               name: data.name || '',
               phone: data.phone || '',
-              country:
-                {
-                  EG: 'Egypt',
-                  GB: 'United Kingdom',
-                  SA: 'Saudi Arabia',
-                  AE: 'United Arab Emirates',
-                }[data.country] ||
-                data.country ||
-                '',
+              country: countryNames[data.country] || data.country || '',
               title: data.jobTitle || '',
               photo: data.avatarUrl || '',
             });
         }
         if (page === 'settings-language') {
           const data = await settingsApi.language(signal);
-          if (signal.aborted) return;
+          if (!isCurrent()) return;
           const next = {
             language: (data.displayLanguage || 'en-GB').startsWith('ar') ? 'ar' : 'en',
-            region:
-              data.region === 'EG'
-                ? 'Egypt'
-                : data.region === 'GB'
-                  ? 'United Kingdom'
-                  : data.region === 'SA'
-                    ? 'Saudi Arabia'
-                    : data.region === 'AE'
-                      ? 'United Arab Emirates'
-                      : 'Egypt',
+            region: countryNames[data.region] || 'Egypt',
             zone: data.timeZone || 'Africa/Cairo',
             date: data.dateFormat || 'DD/MM/YYYY',
             time: data.timeFormat === '24h' ? '24-Hour' : '12-Hour',
@@ -189,7 +225,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
         }
         if (page.startsWith('settings-notifications')) {
           const data = await settingsApi.notifications(signal);
-          if (signal.aborted) return;
+          if (!isCurrent()) return;
           const next = {
             email: !!data.channels?.email,
             inapp: !!data.channels?.inApp,
@@ -206,35 +242,37 @@ export default function useWorkspaceModel({ language, setLanguage }) {
           };
           setToggles(next);
           setSwitchDraft(next);
-          setDelivery(
+          const nextDelivery =
             { instant: 'Immediately', 'daily_09:00': 'Daily digest', weekly: 'Weekly digest' }[
               data.email?.feedbackDelivery
-            ] || 'Daily digest',
-          );
+            ] || 'Daily digest';
+          setSavedDelivery(nextDelivery);
+          setDelivery(nextDelivery);
         }
         if (page === 'settings-email') {
           const data = await settingsApi.pendingEmailChange(signal);
-          if (!signal.aborted) setPending(data?.pendingEmail || '');
+          if (isCurrent()) setPending(data?.pendingEmail || '');
         }
         if (['settings-security', 'settings-devices', 'settings-two-factor'].includes(page)) {
           const data = await settingsApi.security(signal);
-          if (signal.aborted) return;
+          if (!isCurrent()) return;
           setTwoFA(!!data.twoFactorEnabled);
           const rows = await settingsApi.sessions(signal);
-          if (!signal.aborted) setSessions(Array.isArray(rows) ? rows : rows.sessions || []);
+          if (!isCurrent()) return;
+          setSessions(Array.isArray(rows) ? rows : rows.sessions || []);
           if (page === 'settings-two-factor' && !data.twoFactorEnabled) {
             const setup = await settingsApi.setupTwoFactor(signal);
-            if (!signal.aborted) setTwoFactorSetup(setup);
+            if (isCurrent()) setTwoFactorSetup(setup);
           }
         }
-      } catch (error) {
-        if (error.name !== 'AbortError')
-          setToast(language === 'ar' ? 'تعذر تحميل الإعدادات.' : 'Could not load settings.');
+        if (isCurrent()) setSettingsLoad({ hash: routeHash, failed: false });
+      } catch {
+        if (isCurrent()) setSettingsLoad({ hash: routeHash, failed: true });
       }
     };
     load();
     return () => controller.abort();
-  }, [page, preview, language]);
+  }, [page, routeHash, settingsNeedsLoad]);
 
   useEffect(() => {
     if (preview || page !== 'branch-history') return;
@@ -349,7 +387,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
     };
   }, [page, preview, savedWorkspace?.id, language]);
   async function persist(operation, destination) {
-    if (saving) return;
+    if (preview || saving) return;
     const generation = requestGeneration.current;
     const controller = new AbortController();
     activeRequest.current?.abort();
@@ -414,118 +452,204 @@ export default function useWorkspaceModel({ language, setLanguage }) {
         await auth.refresh();
       }
     }, 'branches');
-  const saveAccount = async () => {
+  async function mutateSettings(request, complete, failure, simulate) {
+    if (preview) {
+      simulate();
+      return;
+    }
+    if (
+      settingsLoading ||
+      settingsLoadFailed ||
+      settingsMutation.current ||
+      location.hash !== routeHash
+    )
+      return;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const isCurrent = () =>
+      settingsMutation.current === controller && !signal.aborted && location.hash === routeHash;
+    settingsMutation.current = controller;
+    setSettingsSaving(true);
     try {
-      const countryCodes = {
-        Egypt: 'EG',
-        'United Kingdom': 'GB',
-        'Saudi Arabia': 'SA',
-        'United Arab Emirates': 'AE',
-      };
-      let data = await settingsApi.updateAccount({
-        name: draft.name,
-        phone: draft.phone,
-        country: countryCodes[draft.country] || draft.country,
-        jobTitle: draft.title,
-      });
-      if (draft.photoFile) data = await settingsApi.setAvatar(draft.photoFile);
-      else if (
-        draft.photo === '' &&
-        account.photo &&
-        account.photo !== '/assets/dashboard/overview/account-avatar.svg'
-      )
-        data = await settingsApi.removeAvatar();
+      const result = await request(signal, isCurrent);
+      if (isCurrent()) complete(result);
+    } catch (error) {
+      if (isCurrent()) notify(typeof failure === 'function' ? failure(error) : failure);
+    } finally {
+      if (settingsMutation.current === controller) {
+        settingsMutation.current = null;
+        setSettingsSaving(false);
+      }
+    }
+  }
+  const saveAccount = () => {
+    const applyAccount = (data) =>
       setAccount((current) => ({
         ...current,
         name: data.name,
         phone: data.phone || '',
-        country:
-          { EG: 'Egypt', GB: 'United Kingdom', SA: 'Saudi Arabia', AE: 'United Arab Emirates' }[
-            data.country
-          ] ||
-          data.country ||
-          '',
+        country: countryNames[data.country] || data.country || '',
         title: data.jobTitle || '',
         email: data.email || current.email,
-        photo:
-          data.avatarUrl ||
-          (draft.photo === '' ? '/assets/dashboard/overview/account-avatar.svg' : current.photo),
+        photo: data.avatarUrl || defaultAvatar,
       }));
+    const finish = () => {
       setDraft({});
       notify('Changes saved');
       go('settings-personal');
-    } catch (error) {
-      setToast(
+    };
+    return mutateSettings(
+      async (signal, isCurrent) => {
+        const data = await settingsApi.updateAccount(
+          {
+            name: draft.name,
+            phone: draft.phone,
+            country: draft.country === 'Other' ? '' : countryCodes[draft.country] || draft.country,
+            jobTitle: draft.title,
+          },
+          signal,
+        );
+        if (!isCurrent()) return;
+        applyAccount(data);
+        if (draft.photoFile) return settingsApi.setAvatar(draft.photoFile, signal);
+        if (draft.photo === '' && data.avatarUrl) {
+          const result = await settingsApi.removeAvatar(signal);
+          return result.data;
+        }
+        return data;
+      },
+      (data) => {
+        applyAccount(data);
+        finish();
+      },
+      (error) =>
         error.message === 'NETWORK_ERROR'
-          ? 'Network error. Please try again.'
-          : 'Could not save account details.',
-      );
-    }
+          ? L('Network error. Please try again.', 'حدث خطأ في الشبكة. حاول مرة أخرى.')
+          : L('Could not save account details.', 'تعذر حفظ بيانات الحساب.'),
+      () => {
+        applyAccount({
+          name: draft.name,
+          phone: draft.phone,
+          country: draft.country,
+          jobTitle: draft.title,
+          avatarUrl: draft.photo,
+        });
+        finish();
+      },
+    );
   };
-  const saveEmailChange = async () => {
-    try {
-      const result = await settingsApi.requestEmailChange({
-        newEmail: draft.email,
-        currentPassword: draft.password,
-      });
-      setPending(result.pendingEmail || draft.email);
+  function setProfilePhoto(file) {
+    profilePhotoReader.current?.abort();
+    profilePhotoReader.current = null;
+    if (!file) {
+      setDraft((current) => ({ ...current, photo: '', photoFile: null }));
+      return;
+    }
+    const reader = new FileReader();
+    profilePhotoReader.current = reader;
+    setDraft((current) => ({ ...current, photoFile: file }));
+    reader.onload = () => {
+      if (profilePhotoReader.current === reader && location.hash === routeHash)
+        setDraft((current) =>
+          current.photoFile === file ? { ...current, photo: reader.result } : current,
+        );
+    };
+    reader.readAsDataURL(file);
+  }
+  const saveEmailChange = () => {
+    const finish = (pendingEmail) => {
+      setPending(pendingEmail || draft.email);
       setDraft({});
-      notify('Verification email sent. Check your new inbox.');
-    } catch (error) {
-      setToast(
+    };
+    return mutateSettings(
+      (signal) =>
+        settingsApi.requestEmailChange(
+          { newEmail: draft.email, currentPassword: draft.password },
+          signal,
+        ),
+      (result) => {
+        finish(result.pendingEmail);
+        notify(
+          L(
+            'Verification email sent. Check your new inbox.',
+            'تم إرسال بريد التأكيد. تحقق من بريدك الجديد.',
+          ),
+        );
+      },
+      (error) =>
         error.status === 502
-          ? 'Could not send the verification email.'
-          : 'Could not request email change. Check your password and email.',
-      );
-    }
+          ? L('Could not send the verification email.', 'تعذر إرسال بريد التأكيد.')
+          : L(
+              'Could not request email change. Check your password and email.',
+              'تعذر طلب تغيير البريد. تحقق من كلمة المرور والبريد.',
+            ),
+      () => {
+        finish(draft.email);
+        notify(L('Email change simulated in preview.', 'تمت محاكاة تغيير البريد في المعاينة.'));
+      },
+    );
   };
-  const cancelEmailChange = async () => {
-    try {
-      await settingsApi.cancelEmailChange();
+  const cancelEmailChange = () => {
+    const finish = () => {
       setPending('');
       notify('Email change cancelled');
-    } catch {
-      setToast('Could not cancel email change.');
-    }
+    };
+    return mutateSettings(
+      settingsApi.cancelEmailChange,
+      finish,
+      L('Could not cancel email change.', 'تعذر إلغاء تغيير البريد.'),
+      finish,
+    );
   };
-  const savePassword = async () => {
-    try {
-      await settingsApi.changePassword({
-        currentPassword: draft.current,
-        newPassword: draft.password,
-        confirmPassword: draft.confirm,
-      });
+  const savePassword = () => {
+    const finish = (message) => {
       setDraft({});
-      notify('Password updated successfully');
+      notify(message);
       go('settings-security');
-      await auth.refresh();
-    } catch (error) {
-      setToast(
+    };
+    return mutateSettings(
+      (signal) =>
+        settingsApi.changePassword(
+          {
+            currentPassword: draft.current,
+            newPassword: draft.password,
+            confirmPassword: draft.confirm,
+          },
+          signal,
+        ),
+      () => finish('Password updated successfully'),
+      (error) =>
         error.status === 401
-          ? 'Current password is incorrect.'
-          : 'Could not update password. Check the password requirements.',
-      );
-    }
+          ? L('Current password is incorrect.', 'كلمة المرور الحالية غير صحيحة.')
+          : L(
+              'Could not update password. Check the password requirements.',
+              'تعذر تحديث كلمة المرور. تحقق من المتطلبات.',
+            ),
+      () =>
+        finish(
+          L('Password update simulated in preview.', 'تمت محاكاة تغيير كلمة المرور في المعاينة.'),
+        ),
+    );
   };
   const languagePayload = (value) => ({
     displayLanguage: value.language === 'ar' ? 'ar-EG' : 'en-GB',
-    region:
-      { Egypt: 'EG', 'United Kingdom': 'GB', 'Saudi Arabia': 'SA', 'United Arab Emirates': 'AE' }[
-        value.region
-      ] || 'EG',
+    region: countryCodes[value.region] || 'EG',
     timeZone: value.zone,
     dateFormat: value.date,
     timeFormat: value.time === '24-Hour' ? '24h' : '12h',
   });
-  const saveLanguage = async () => {
-    try {
-      await settingsApi.updateLanguage(languagePayload(prefDraft));
+  const saveLanguage = () => {
+    const finish = () => {
       setPreferences({ ...prefDraft });
       setLang(prefDraft.language);
       notify('Changes saved');
-    } catch {
-      setToast('Could not save language preferences.');
-    }
+    };
+    return mutateSettings(
+      (signal) => settingsApi.updateLanguage(languagePayload(prefDraft), signal),
+      finish,
+      L('Could not save language preferences.', 'تعذر حفظ تفضيلات اللغة.'),
+      finish,
+    );
   };
   const notificationPayload = (value, pageName = page) => {
     if (pageName === 'settings-notifications')
@@ -553,58 +677,95 @@ export default function useWorkspaceModel({ language, setLanguage }) {
       },
     };
   };
-  const saveNotifications = async (pageName = page) => {
-    try {
-      await settingsApi.updateNotifications(notificationPayload(switchDraft, pageName));
+  const saveNotifications = (pageName = page) => {
+    const finish = () => {
       setToggles({ ...switchDraft });
+      if (pageName.endsWith('-email')) setSavedDelivery(delivery);
       notify('Changes saved');
       if (pageName !== 'settings-notifications') go('settings-notifications');
-    } catch {
-      setToast('Could not save notification preferences.');
-    }
+    };
+    return mutateSettings(
+      (signal) =>
+        settingsApi.updateNotifications(notificationPayload(switchDraft, pageName), signal),
+      finish,
+      L('Could not save notification preferences.', 'تعذر حفظ تفضيلات الإشعارات.'),
+      finish,
+    );
   };
-  const enableTwoFactor = async () => {
-    try {
-      const result = await settingsApi.enableTwoFactor({ code: code.trim() });
+  const enableTwoFactor = () => {
+    const finish = (codes, message) => {
       setTwoFA(true);
-      setRecoveryCodes(result.recoveryCodes || []);
+      setRecoveryCodes(codes);
       setTwoFactorSetup(null);
       setCode('');
-      notify('Two-factor authentication enabled. Save your recovery codes.');
-    } catch (error) {
-      setToast(error.message || 'Could not verify the authenticator code.');
-    }
+      notify(message);
+    };
+    return mutateSettings(
+      (signal) => settingsApi.enableTwoFactor({ code: code.trim() }, signal),
+      (result) =>
+        finish(
+          result.recoveryCodes || [],
+          L(
+            'Two-factor authentication enabled. Save your recovery codes.',
+            'تم تفعيل المصادقة الثنائية. احفظ رموز الاسترداد.',
+          ),
+        ),
+      L('Could not verify the authenticator code.', 'تعذر التحقق من رمز المصادقة.'),
+      () =>
+        finish(
+          [],
+          L(
+            'Two-factor setup simulated in preview.',
+            'تمت محاكاة تفعيل المصادقة الثنائية في المعاينة.',
+          ),
+        ),
+    );
   };
-  const disableTwoFactor = async () => {
-    try {
-      await settingsApi.disableTwoFactor({ password: draft.password, code: code.trim() });
+  const disableTwoFactor = () => {
+    const finish = (message) => {
       setTwoFA(false);
       setCode('');
       setDraft({});
-      notify('Two-factor authentication disabled.');
+      setRecoveryCodes([]);
+      notify(message);
       go('settings-security');
-    } catch (error) {
-      setToast(error.message || 'Could not disable two-factor authentication.');
-    }
+    };
+    return mutateSettings(
+      (signal) =>
+        settingsApi.disableTwoFactor({ password: draft.password, code: code.trim() }, signal),
+      () => finish(L('Two-factor authentication disabled.', 'تم إيقاف المصادقة الثنائية.')),
+      L('Could not disable two-factor authentication.', 'تعذر إيقاف المصادقة الثنائية.'),
+      () =>
+        finish(
+          L(
+            'Two-factor disable simulated in preview.',
+            'تمت محاكاة إيقاف المصادقة الثنائية في المعاينة.',
+          ),
+        ),
+    );
   };
-  const revokeSession = async (sessionId) => {
-    try {
-      await settingsApi.revokeSession(sessionId);
-      setSessions((rows) => rows.filter((row) => String(row.id || row._id) !== String(sessionId)));
-      notify('Session signed out.');
-    } catch (error) {
-      setToast(error.message || 'Could not sign out this session.');
-    }
-  };
-  const signOutAllSessions = async () => {
-    try {
-      await settingsApi.signOutAll();
-      await auth.refresh();
-      location.hash = '/login';
-    } catch (error) {
-      setToast(error.message || 'Could not sign out all devices.');
-    }
-  };
+  const revokeSession = (sessionId) =>
+    mutateSettings(
+      (signal) => settingsApi.revokeSession(sessionId, signal),
+      () => {
+        setSessions((rows) =>
+          rows.filter((row) => String(row.id || row._id) !== String(sessionId)),
+        );
+        notify(L('Session signed out.', 'تم تسجيل الخروج من الجلسة.'));
+      },
+      L('Could not sign out this session.', 'تعذر تسجيل خروج هذه الجلسة.'),
+      () => setModal({ type: 'session', id: sessionId }),
+    );
+  const signOutAllSessions = () =>
+    mutateSettings(
+      async (signal, isCurrent) => {
+        await settingsApi.signOutAll(signal);
+        if (isCurrent()) await auth.refresh();
+      },
+      () => go('login'),
+      L('Could not sign out all devices.', 'تعذر تسجيل الخروج من جميع الأجهزة.'),
+      () => setModal({ type: 'sessions' }),
+    );
   const businessPage = page.startsWith('business') || page.startsWith('branch'),
     settingsPage = page.startsWith('settings'),
     active = branches.filter((b) => !b.archived),
@@ -612,7 +773,7 @@ export default function useWorkspaceModel({ language, setLanguage }) {
   const btn = (text, action, primary = false, icon) => (
     <button
       type="button"
-      disabled={saving}
+      disabled={saving || settingsSaving}
       className={'button' + (primary ? ' primary' : '')}
       onClick={action}
     >
@@ -857,6 +1018,10 @@ export default function useWorkspaceModel({ language, setLanguage }) {
   return {
     preview,
     saving,
+    settingsLoading,
+    settingsLoadFailed,
+    settingsBusy: settingsLoading || settingsLoadFailed || settingsSaving,
+    setProfilePhoto,
     saveConnectedBusiness,
     saveConnectedBranch,
     archiveConnectedBranch,
