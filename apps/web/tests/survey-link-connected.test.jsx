@@ -15,7 +15,7 @@ afterEach(() => {
   });
 });
 
-it('copies a real shortCode as a same-origin public survey link', async () => {
+it('shares only live surveys and copies the selected server-generated branch link', async () => {
   vi.spyOn(authApi, 'session').mockResolvedValue({
     user: { id: 'owner', name: 'Actual Owner', emailVerified: true },
     workspace: {
@@ -46,6 +46,13 @@ it('copies a real shortCode as a same-origin public survey link', async () => {
   });
   vi.spyOn(surveyApi, 'summary').mockResolvedValue({});
   vi.spyOn(surveyApi, 'templates').mockResolvedValue([]);
+  const surveyUrl = 'https://customer.example/#/public-survey?code=abc123';
+  const branchUrl = `${surveyUrl}&branch=main`;
+  const share = vi.spyOn(surveyApi, 'share').mockResolvedValue({
+    survey: { name: 'Real survey' },
+    link: surveyUrl,
+    branches: [{ id: 'branch-id', name: 'Main', slug: 'main', link: branchUrl }],
+  });
   const writeText = vi.fn().mockResolvedValue();
   Object.defineProperty(navigator, 'clipboard', {
     value: { writeText },
@@ -54,17 +61,19 @@ it('copies a real shortCode as a same-origin public survey link', async () => {
 
   history.replaceState(null, '', '/#/surveys');
   render(<App />);
-  fireEvent.click(
-    await screen.findByRole('button', { name: 'Copy public link' }, undefined, { timeout: 5000 }),
+  expect(await screen.findAllByRole('link', { name: 'Share survey' })).toHaveLength(1);
+  expect(screen.getByText('Unpublished survey').closest('tr')).not.toHaveTextContent(
+    'Share survey',
   );
+  location.hash = screen.getByRole('link', { name: 'Share survey' }).hash;
 
-  await waitFor(() =>
-    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/#/public-survey?code=abc123`),
-  );
-  expect(screen.getByText('Unpublished survey').closest('tr')).not.toHaveTextContent('Public link');
-  expect(screen.getAllByRole('link', { name: 'Public link' })).toHaveLength(1);
-  expect(await screen.findByText(/Keep the original site origin/)).toBeVisible();
-  expect(screen.queryByText(/nuvia\.link/)).not.toBeInTheDocument();
+  const branch = await screen.findByRole('combobox', { name: 'Branch' });
+  expect(share).toHaveBeenCalledWith('507f1f77bcf86cd799439011', expect.any(AbortSignal));
+  fireEvent.change(branch, { target: { value: 'branch-id' } });
+  expect(screen.getByRole('link', { name: 'Open public link' })).toHaveAttribute('href', branchUrl);
+  fireEvent.click(screen.getByRole('button', { name: 'Copy public link' }));
+  await waitFor(() => expect(writeText).toHaveBeenCalledWith(branchUrl));
+  expect(await screen.findByRole('status')).toHaveTextContent('Public survey link copied.');
 });
 
 it('opens the real create-survey editor from the registered create action', async () => {

@@ -7,6 +7,7 @@ const os = require('node:os');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const { MongoMemoryReplSet } = require('mongodb-memory-server-core');
+const QRCode = require('qrcode');
 
 process.env.JWT_SECRET = 'isolated-tests-only-secret-at-least-thirty-two-characters';
 process.env.APP_ORIGIN = 'http://127.0.0.1:5173';
@@ -115,8 +116,14 @@ test('manual questions, templates, publishing, and foreign resource ownership', 
   }
   const created = await owner.mutate('post', '/api/surveys', { name: 'Manual survey' }).expect(201);
   const id = created.body.data.id;
-  const shortCode = (await require('../src/models/survey.model').findById(id)).shortCode;
+  const Survey = require('../src/models/survey.model');
+  const survey = await Survey.findById(id);
+  const { shortCode } = survey;
   await request(app).get(`/api/public/surveys/${shortCode}`).expect(404);
+  const sharePath = `/api/surveys/${id}/share`;
+  const qrPath = `/api/surveys/${id}/qr`;
+  await request(app).get(sharePath).expect(401);
+  await owner.agent.get(sharePath).expect(409);
   await owner.mutate('post', `/api/surveys/${id}/publish`, {}).expect(422);
   const added = await owner
     .mutate('post', `/api/surveys/${id}/questions`, {
@@ -127,15 +134,86 @@ test('manual questions, templates, publishing, and foreign resource ownership', 
     .expect(201);
   assert.equal(added.body.data.questionTextEn, 'Any comments?');
   await owner.mutate('post', `/api/surveys/${id}/publish`, {}).expect(200);
+  const share = await owner.agent.get(sharePath).set('Host', 'other.example').expect(200);
+  assert.equal(share.headers['cache-control'], 'no-store');
+  assert.equal(share.body.data.link, `${process.env.APP_ORIGIN}/#/public-survey?code=${shortCode}`);
+  const [branch] = share.body.data.branches;
+  assert.equal(branch.link, `${share.body.data.link}&branch=${branch.slug}`);
+  const qr = await owner.agent.get(`${qrPath}?branchId=${branch.id}&format=png`).expect(200);
+  assert.match(qr.headers['content-type'], /^image\/png/);
+  assert.match(qr.headers['content-disposition'], /^attachment;/);
+  assert.equal(qr.body.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+  const token = crypto
+    .createHmac('sha256', process.env.JWT_SECRET)
+    .update(`nuvia-survey-qr:v1:${id}:${branch.id}`)
+    .digest('hex');
+  assert.deepEqual(
+    qr.body,
+    await QRCode.toBuffer(`${branch.link}&qr=${token}`, {
+      width: 512,
+      margin: 4,
+      errorCorrectionLevel: 'M',
+    }),
+  );
+  await owner.agent.get(`${qrPath}?format=pdf`).expect(400);
+  await owner.agent.get(`${qrPath}?format=png&format=png`).expect(400);
+  await owner.agent.get(`${qrPath}?branchId=${new mongoose.Types.ObjectId()}`).expect(404);
+  await other.agent.get(sharePath).expect(404);
+  await other.agent.get(qrPath).expect(404);
   const publicSurvey = await request(app).get(`/api/public/surveys/${shortCode}`).expect(200);
   assert.equal(publicSurvey.body.data.state, 'open');
   assert.equal(publicSurvey.body.data.questions[0].questionTextEn, 'Any comments?');
   assert.equal(publicSurvey.body.data.businessId, undefined);
+  const submitPath = `/api/public/surveys/${shortCode}/responses`;
+  const body = {
+    formVersion: publicSurvey.body.data.formVersion,
+    branch: branch.slug,
+    answers: [{ questionId: added.body.data.id, value: 'Synthetic feedback' }],
+  };
+  const fromQr = { ...body, submissionId: 'share-qr-submission', qrToken: token };
+  await request(app).post(submitPath).send(fromQr).expect(201);
+  await request(app).post(submitPath).send(fromQr).expect(200);
+  await request(app)
+    .post(submitPath)
+    .send({ ...body, submissionId: 'share-link-submission', channel: 'qr_code' })
+    .expect(201);
+  const stored = await require('../src/models/customerResponse.model')
+    .find({ surveyId: id })
+    .sort({ number: 1 })
+    .lean();
+  assert.deepEqual(
+    stored.map((response) => response.channel),
+    ['qr_code', 'short_link'],
+  );
+  const Branch = require('../src/models/branch.model');
+  const [legacy, archived] = await Branch.create([
+    { businessId: survey.businessId, name: 'Legacy branch' },
+    { businessId: survey.businessId, name: 'Archived branch', status: 'archived' },
+  ]);
+  await Branch.updateOne({ _id: legacy._id }, { $unset: { slug: 1 } });
+  await Survey.updateOne(
+    { _id: id },
+    { $push: { branchIds: { $each: [legacy._id, archived._id] } } },
+  );
+  const assigned = await owner.agent.get(sharePath).expect(200);
+  assert.deepEqual(assigned.body.data.branches, [branch]);
+  await owner.agent.get(`${qrPath}?branchId=${legacy.id}`).expect(404);
+  await owner.agent.get(`${qrPath}?branchId=${archived.id}`).expect(404);
+  assert.equal((await Branch.findById(legacy._id).lean()).slug, undefined);
+  const picker = await request(app).get(`/api/public/surveys/${shortCode}`).expect(200);
+  assert.equal(picker.body.data.state, 'branch_required');
+  assert.deepEqual(picker.body.data.branches, [{ name: branch.name, slug: branch.slug }]);
   await request(app).get(`/api/public/surveys/${shortCode}?branch=foreign-branch`).expect(404);
   await owner.mutate('patch', `/api/surveys/${id}/status`, { status: 'paused' }).expect(200);
+  await owner.agent.get(sharePath).expect(409);
+  await owner.agent.get(qrPath).expect(409);
   const paused = await request(app).get(`/api/public/surveys/${shortCode}`).expect(200);
   assert.equal(paused.body.data.state, 'paused');
   assert.equal(paused.body.data.questions, undefined);
+  await owner.mutate('patch', `/api/surveys/${id}/status`, { status: 'closed' }).expect(200);
+  await owner.agent.get(sharePath).expect(409);
+  const closed = await request(app).get(`/api/public/surveys/${shortCode}`).expect(200);
+  assert.equal(closed.body.data.state, 'closed');
   await other.agent.get(`/api/surveys/${id}`).expect(404);
   await other.mutate('patch', `/api/surveys/${id}`, { name: 'Foreign edit' }).expect(404);
   await other.mutate('post', `/api/surveys/${id}/questions`, { type: 'rating' }).expect(404);
@@ -224,8 +302,12 @@ test('file-mode recovery sends a working reset URL without exposing account exis
   const messages = fs
     .readdirSync(mailbox)
     .map((name) => JSON.parse(fs.readFileSync(path.join(mailbox, name), 'utf8')));
-  const message = messages.find((item) => item.to === 'mail@example.test');
-  assert.ok(message.text.includes(`${process.env.APP_ORIGIN}/#/reset?token=`));
+  const message = messages.find(
+    (item) =>
+      item.to === 'mail@example.test' &&
+      item.text.includes(`${process.env.APP_ORIGIN}/#/reset?token=`),
+  );
+  assert.ok(message);
   const token = message.text.match(/token=([a-f0-9]{64})/)[1];
   await mutate('post', '/api/auth/reset-password', {
     token,

@@ -4,6 +4,8 @@ const BusinessOwner = require('../models/businessOwner.model');
 const { resolveIdentity } = require('../middlewares/auth.middleware');
 const { setAuthCookie, clearAuthCookie, ensureCsrfToken } = require('../utils/browserSession');
 const { handleError } = require('../utils/errors');
+const { mailDeliveryAvailable } = require('../utils/mailer');
+const { scheduleVerification, verifyEmail } = require('../services/emailVerification.service');
 
 const register = async (req, res) => {
   try {
@@ -69,6 +71,27 @@ module.exports = {
   register,
   login,
   getMe,
+  resendVerification: (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (!mailDeliveryAvailable()) {
+      return res
+        .status(503)
+        .json({ code: 'MAIL_UNAVAILABLE', message: 'Email delivery is unavailable' });
+    }
+    scheduleVerification(req.body.email);
+    return res.status(202).json({ message: 'Verification request accepted' });
+  },
+  verifyEmail: async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    try {
+      if (await verifyEmail(req.body.token)) return res.json({ data: { emailVerified: true } });
+      return res
+        .status(400)
+        .json({ code: 'INVALID_TOKEN', message: 'This link is invalid or has expired' });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  },
   getSession: async (req, res) => {
     const csrfToken = ensureCsrfToken(req, res);
     res.set('Cache-Control', 'no-store');

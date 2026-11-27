@@ -7,6 +7,7 @@ import { runAccountScenario } from './accounts.spec.mjs';
 import { runSecurityScenario } from './security.spec.mjs';
 import { runAssistantScenario } from './assistant.spec.mjs';
 import { runSurveyScenario } from './survey.spec.mjs';
+import { runSignupVerificationScenario } from './signup-verification.spec.mjs';
 const fixture = await startConnectedFixture();
 let browser;
 try {
@@ -26,6 +27,7 @@ try {
   await runSecurityScenario({ browser, ...fixture, output });
   await runAssistantScenario({ browser, ...fixture, output });
   await runSurveyScenario({ browser, ...fixture, output });
+  await runSignupVerificationScenario({ browser, ...fixture, output });
 } finally {
   await browser?.close();
   await fixture.close();

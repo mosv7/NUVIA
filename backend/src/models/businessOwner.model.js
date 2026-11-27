@@ -27,6 +27,13 @@ const businessOwnerSchema = new mongoose.Schema(
       updatedAt: { type: Date },
     },
     emailVerified: { type: Boolean, required: true, default: false },
+    emailVerification: {
+      type: new mongoose.Schema(
+        { email: String, tokenHash: String, expiresAt: Date, requestedAt: Date },
+        { _id: false },
+      ),
+      select: false,
+    },
     passwordChangedAt: { type: Date },
 
     language: {
@@ -72,5 +79,7 @@ const businessOwnerSchema = new mongoose.Schema(
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );
+
+businessOwnerSchema.index({ 'emailVerification.tokenHash': 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.model('BusinessOwner', businessOwnerSchema);

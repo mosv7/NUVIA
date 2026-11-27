@@ -6,7 +6,7 @@ import { reportsApi } from '../reports/api.js';
 import { downloadReportsCsv } from '../reports/export.js';
 import { FeedbackList } from '../feedback/FeedbackScreens.jsx';
 import { feedbackApi } from '../feedback/api.js';
-import { connectedSurveyUrl } from '../../config/links.js';
+import { queryString } from '../../lib/http/query.js';
 
 const panel = {
   background: '#fff',
@@ -278,7 +278,7 @@ function DataTable({ columns, rows, onRow }) {
               <th
                 key={c.key}
                 style={{
-                  textAlign: 'left',
+                  textAlign: 'start',
                   padding: 13,
                   borderBottom: '1px solid #e7eaf0',
                   color: '#687187',
@@ -448,6 +448,117 @@ function ReportContent({ report, t }) {
   );
 }
 
+function SurveyShare({ surveyId, share, t }) {
+  const [branchId, setBranchId] = useState('');
+  const [notice, setNotice] = useState(null);
+  const [downloading, setDownloading] = useState(false);
+  const downloadRequest = useRef(null);
+  useEffect(() => () => downloadRequest.current?.abort(), []);
+
+  const branch = share.branches.find((item) => item.id === branchId);
+  const link = branch?.link || share.link;
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(link);
+      setNotice({ link, success: t('Public survey link copied.', 'تم نسخ رابط الاستبيان.') });
+    } catch {
+      setNotice({
+        link,
+        error: t(
+          'Select the public link and copy it manually.',
+          'حدد رابط الاستبيان وانسخه يدويًا.',
+        ),
+      });
+    }
+  }
+
+  async function downloadQr() {
+    if (downloadRequest.current) return;
+    const controller = new AbortController();
+    downloadRequest.current = controller;
+    setDownloading(true);
+    setNotice(null);
+    try {
+      const png = await surveyApi.qr(surveyId, branch?.id, controller.signal);
+      if (controller.signal.aborted) return;
+      if (png.type !== 'image/png') throw new Error('Invalid PNG response');
+      const url = URL.createObjectURL(png);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'survey-qr.png';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    } catch (failure) {
+      if (!controller.signal.aborted) {
+        setNotice({
+          link,
+          error:
+            failure?.status === 409
+              ? t(
+                  'Sharing is unavailable. Check the survey status and assigned branches.',
+                  'المشاركة غير متاحة. تحقق من حالة الاستبيان والفروع المخصصة له.',
+                )
+              : t(
+                  'Could not download the QR code. Try again.',
+                  'تعذر تنزيل رمز QR. حاول مرة أخرى.',
+                ),
+        });
+      }
+    } finally {
+      downloadRequest.current = null;
+      if (!controller.signal.aborted) setDownloading(false);
+    }
+  }
+
+  return (
+    <section style={panel}>
+      <h2>{share.survey.name}</h2>
+      {share.branches.length > 0 && (
+        <label style={field}>
+          {t('Branch', 'الفرع')}
+          <select
+            style={input}
+            value={branchId}
+            disabled={downloading}
+            onChange={(event) => {
+              setNotice(null);
+              setBranchId(event.target.value);
+            }}
+          >
+            <option value="">{t('All assigned branches', 'كل الفروع المخصصة')}</option>
+            {share.branches.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <label style={field}>
+        {t('Public link', 'رابط الاستبيان')}
+        <input style={input} type="url" dir="ltr" readOnly value={link} />
+      </label>
+      {notice?.link === link && <Notice error={notice.error} success={notice.success} />}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <a style={button} href={link}>
+          {t('Open public link', 'افتح رابط الاستبيان')}
+        </a>
+        <button style={button} onClick={copyLink}>
+          {t('Copy public link', 'انسخ رابط الاستبيان')}
+        </button>
+        <button style={primary} onClick={downloadQr} disabled={downloading}>
+          {downloading
+            ? t('Preparing QR code…', 'جارٍ تجهيز رمز QR…')
+            : t('Download QR as PNG', 'نزّل رمز QR بصيغة PNG')}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 export default function ConnectedFeaturePage({ route, language = 'en', workspace }) {
   const [data, setData] = useState(null),
     [busy, setBusy] = useState(false),
@@ -468,6 +579,9 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
     limit: 10,
     range: '30d',
     sentiment: '',
+    language: '',
+    aspect: '',
+    sort: '',
     branchId: '',
     surveyId: '',
     startDate: '',
@@ -501,7 +615,6 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
   const [respondent, setRespondent] = useState({ name: '', email: '' });
   const [submissionId, setSubmissionId] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const [copiedSurveyCode, setCopiedSurveyCode] = useState('');
   const ar = language === 'ar';
   const t = useCallback((en, arabic) => (ar ? arabic : en), [ar]);
   const latestLoad = useRef(null);
@@ -520,6 +633,8 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
   const surveyId = params.get('id');
   const shortCode = params.get('code') || new URLSearchParams(location.search).get('code');
   const publicBranch = params.get('branch');
+  const qrParam = params.get('qr') || '';
+  const qrToken = /^[a-f0-9]{64}$/.test(qrParam) ? qrParam : undefined;
   const publicState = route === 'public-survey' ? data : null;
   const surveyLanguages = publicState?.survey?.languages || [
     publicState?.survey?.defaultLanguage || 'en',
@@ -577,6 +692,7 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
       }
       if (route === 'survey-edit' || route === 'survey-questions')
         return unwrap(await surveyApi.get(surveyId, signal));
+      if (route === 'survey-share') return unwrap(await surveyApi.share(surveyId, signal));
       if (route === 'analytics' || route === 'analytics-sentiment')
         return loadSections({
           summary: analyticsApi.sentimentSummary(scope, signal),
@@ -613,6 +729,9 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
           search: filters.search,
           range: filters.range,
           sentiment: filters.sentiment || undefined,
+          language: filters.language || undefined,
+          aspect: filters.aspect || undefined,
+          sort: filters.sort || undefined,
           branchId: filters.branchId || undefined,
           surveyId: filters.surveyId || undefined,
         };
@@ -658,7 +777,21 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
         return result;
       } catch (failure) {
         if (!signal.aborted)
-          setError(route === 'public-survey' ? publicSurveyError(failure, t) : messageOf(failure));
+          setError(
+            route === 'public-survey'
+              ? publicSurveyError(failure, t)
+              : route === 'survey-share'
+                ? failure?.status === 409
+                  ? t(
+                      'A share link is unavailable for this survey. Check its status and assigned branches.',
+                      'رابط المشاركة غير متاح. تحقق من حالة الاستبيان والفروع المخصصة له.',
+                    )
+                  : t(
+                      'Could not load survey sharing. Try again.',
+                      'تعذر تحميل مشاركة الاستبيان. حاول مرة أخرى.',
+                    )
+                : messageOf(failure),
+          );
         return null;
       } finally {
         if (!signal.aborted) setLoading(false);
@@ -670,26 +803,6 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
     };
   }, [fetchFeature, route, t]);
 
-  async function copyPublicLink(code) {
-    const url = connectedSurveyUrl(code);
-    if (!url) {
-      setError('A public link is not available for this survey.');
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      setError('');
-      setSuccess(
-        t(
-          'Public survey link copied. Keep the original site origin.',
-          'تم نسخ رابط الاستبيان. استخدم عنوان الموقع الأصلي.',
-        ),
-      );
-      setCopiedSurveyCode(code);
-    } catch {
-      setError(`Copy this public survey link manually: ${url}`);
-    }
-  }
   useEffect(() => {
     load();
   }, [fetchFeature, load, route, t]);
@@ -912,7 +1025,7 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
           submissionId,
           branch: publicState.branch?.slug,
           language: formLanguage,
-          channel: 'short_link',
+          qrToken,
           answers,
           respondent: publicState.survey?.isAnonymous
             ? undefined
@@ -950,6 +1063,26 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
       publicSubmit.current = null;
       if (!controller.signal.aborted) setBusy(false);
     }
+  }
+
+  if (route === 'survey-share') {
+    return (
+      <PageFrame
+        title={t('Share survey', 'مشاركة الاستبيان')}
+        language={language}
+        actions={
+          <a style={button} href="#/surveys">
+            {t('Back to surveys', 'العودة إلى الاستبيانات')}
+          </a>
+        }
+      >
+        <Notice error={error} />
+        {loading && (
+          <Loading>{t('Loading sharing options…', 'جارٍ تحميل خيارات المشاركة…')}</Loading>
+        )}
+        {!loading && !error && data && <SurveyShare surveyId={surveyId} share={data} t={t} />}
+      </PageFrame>
+    );
   }
 
   if (loading && !data && route !== 'public-survey')
@@ -1079,17 +1212,10 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
                     >
                       Edit
                     </button>
-                    {r.status !== 'draft' && r.shortCode && (
-                      <>
-                        <a style={button} href={connectedSurveyUrl(r.shortCode)}>
-                          {t('Public link', 'رابط الاستبيان')}
-                        </a>
-                        <button style={button} onClick={() => copyPublicLink(r.shortCode)}>
-                          {copiedSurveyCode === r.shortCode
-                            ? t('Link copied', 'تم نسخ الرابط')
-                            : t('Copy public link', 'نسخ رابط الاستبيان')}
-                        </button>
-                      </>
+                    {r.status === 'live' && (
+                      <a style={button} href={`#/survey-share${queryString({ id: idOf(r) })}`}>
+                        {t('Share survey', 'مشاركة الاستبيان')}
+                      </a>
                     )}
                     {r.status === 'live' && (
                       <button
@@ -1567,7 +1693,7 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
               <p key={b.slug}>
                 <a
                   dir="auto"
-                  href={`#/public-survey?code=${encodeURIComponent(shortCode)}&branch=${encodeURIComponent(b.slug)}&lang=${formLanguage}`}
+                  href={`#/public-survey${queryString({ code: shortCode, branch: b.slug, lang: formLanguage, qr: qrToken })}`}
                 >
                   {b.name}
                 </a>
@@ -1986,10 +2112,94 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
       : payload.feedbacks || payload.responses || payload.items || [];
     const pagination = payload.pagination || {};
     if (payload.hasAnyResponses === false && !rows.length && !error) return <FeedbackList empty />;
+    const setFilter = (key, value) =>
+      setFilters((previous) => ({ ...previous, [key]: value, page: 1 }));
+    const sentimentLabels = {
+      positive: t('Positive', 'إيجابي'),
+      negative: t('Negative', 'سلبي'),
+      neutral: t('Neutral', 'محايد'),
+      mixed: t('Mixed', 'مختلط'),
+    };
+    const analysisLabels = {
+      pending: t('Queued', 'في الانتظار'),
+      processing: t('Processing', 'جارٍ التحليل'),
+      completed: t('Completed', 'مكتمل'),
+      partial: t('Partial', 'جزئي'),
+      failed: t('Failed', 'تعذر التحليل'),
+      skipped: t('Skipped', 'تم التخطي'),
+    };
+    const filterData = data?.filters || {};
+    const localizedChoices = (choices, labels) =>
+      choices.map((value) => [value, labels[value] || value]);
+    const namedChoices = (items) => (items || []).map(({ id, name }) => [id, name]);
+    const controls = [
+      [
+        'range',
+        t('Date range', 'الفترة الزمنية'),
+        [
+          ['7d', t('Last 7 days', 'آخر ٧ أيام')],
+          ['30d', t('Last 30 days', 'آخر ٣٠ يومًا')],
+          ['90d', t('Last 90 days', 'آخر ٩٠ يومًا')],
+          ['all', t('All time', 'كل الفترات')],
+        ],
+      ],
+      [
+        'sentiment',
+        t('Sentiment', 'الانطباع'),
+        [
+          ['', t('All sentiments', 'كل الانطباعات')],
+          ...localizedChoices(
+            filterData.sentiments || Object.keys(sentimentLabels),
+            sentimentLabels,
+          ),
+        ],
+      ],
+      [
+        'language',
+        t('Response language', 'لغة الرد'),
+        [
+          ['', t('All languages', 'كل اللغات')],
+          ...localizedChoices(filterData.languages || [], {
+            en: t('English', 'الإنجليزية'),
+            ar: t('Arabic', 'العربية'),
+          }),
+        ],
+      ],
+      [
+        'aspect',
+        t('Aspect', 'الجانب'),
+        [
+          ['', t('All aspects', 'كل الجوانب')],
+          ...(filterData.aspects || []).map(({ name }) => [name, name]),
+        ],
+      ],
+      [
+        'branchId',
+        t('Branch', 'الفرع'),
+        [['', t('All branches', 'كل الفروع')], ...namedChoices(filterData.branches)],
+      ],
+      [
+        'surveyId',
+        t('Survey', 'الاستبيان'),
+        [['', t('All surveys', 'كل الاستبيانات')], ...namedChoices(filterData.surveys)],
+      ],
+      [
+        'sort',
+        t('Sort by date', 'الترتيب حسب التاريخ'),
+        [
+          ['', t('Newest first', 'الأحدث أولًا')],
+          ['oldest', t('Oldest first', 'الأقدم أولًا')],
+        ],
+      ],
+    ];
+    const displayDate = new Intl.DateTimeFormat(language === 'ar' ? 'ar-EG' : 'en', {
+      timeZone: 'UTC',
+    });
     return (
       <PageFrame
-        title="Feedbacks"
-        subtitle="Customer responses from your surveys"
+        title={t('Feedbacks', 'الردود')}
+        subtitle={t('Customer responses from your surveys', 'ردود العملاء على استبياناتك')}
+        language={language}
         actions={
           !loading &&
           !error &&
@@ -2002,64 +2212,36 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
       >
         <Notice error={error} />
         <section style={panel}>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <div
+            role="group"
+            aria-label={t('Feedback filters', 'عوامل تصفية الردود')}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}
+          >
             <input
               style={{ ...input, maxWidth: 240 }}
-              placeholder="Search feedback"
+              placeholder={t('Search feedback', 'ابحث في الردود')}
+              aria-label={t('Search feedback', 'ابحث في الردود')}
+              maxLength={100}
               value={filters.search}
-              onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))}
+              onChange={(event) => setFilter('search', event.target.value)}
             />
-            <select
-              style={{ ...input, maxWidth: 130 }}
-              value={filters.range}
-              onChange={(e) => setFilters((f) => ({ ...f, range: e.target.value, page: 1 }))}
-            >
-              {['7d', '30d', '90d', 'all'].map((x) => (
-                <option key={x} value={x}>
-                  {x === 'all' ? 'All time' : x}
-                </option>
-              ))}
-            </select>
-            <select
-              style={{ ...input, maxWidth: 150 }}
-              value={filters.sentiment}
-              onChange={(e) => setFilters((f) => ({ ...f, sentiment: e.target.value, page: 1 }))}
-            >
-              <option value="">All sentiment</option>
-              {(data?.filters?.sentiments || ['positive', 'neutral', 'negative', 'mixed']).map(
-                (x) => (
-                  <option key={x} value={x}>
-                    {x}
+            {controls.map(([key, label, choices]) => (
+              <select
+                key={key}
+                style={{ ...input, width: 'auto', maxWidth: '100%' }}
+                aria-label={label}
+                value={filters[key]}
+                onChange={(event) => setFilter(key, event.target.value)}
+              >
+                {choices.map(([value, name]) => (
+                  <option key={value} value={value}>
+                    {name}
                   </option>
-                ),
-              )}
-            </select>
-            <select
-              style={{ ...input, maxWidth: 180 }}
-              value={filters.branchId}
-              onChange={(e) => setFilters((f) => ({ ...f, branchId: e.target.value, page: 1 }))}
-            >
-              <option value="">All branches</option>
-              {(data?.filters?.branches || []).map((x) => (
-                <option key={x.id} value={x.id}>
-                  {x.name}
-                </option>
-              ))}
-            </select>
-            <select
-              style={{ ...input, maxWidth: 180 }}
-              value={filters.surveyId}
-              onChange={(e) => setFilters((f) => ({ ...f, surveyId: e.target.value, page: 1 }))}
-            >
-              <option value="">All surveys</option>
-              {(data?.filters?.surveys || []).map((x) => (
-                <option key={x.id} value={x.id}>
-                  {x.name}
-                </option>
-              ))}
-            </select>
+                ))}
+              </select>
+            ))}
             <button style={button} onClick={load}>
-              Apply filters
+              {t('Apply filters', 'تطبيق الفلاتر')}
             </button>
           </div>
           {rows.length ? (
@@ -2067,26 +2249,54 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
               columns={[
                 {
                   key: 'displayId',
-                  label: 'ID',
+                  label: t('ID', 'الرقم'),
                   render: (r) => r.displayId || r.number || idOf(r),
                 },
                 {
                   key: 'survey',
-                  label: 'Survey',
+                  label: t('Survey', 'الاستبيان'),
                   render: (r) => r.surveyName || r.survey?.name || '—',
                 },
                 {
                   key: 'branch',
-                  label: 'Branch',
+                  label: t('Branch', 'الفرع'),
                   render: (r) => r.branchName || r.branch?.name || '—',
                 },
-                { key: 'preview', label: 'Customer feedback', render: (r) => r.preview || '—' },
-                { key: 'sentiment', label: 'Sentiment', render: (r) => r.sentiment || '—' },
-                { key: 'submittedAt', label: 'Date', render: (r) => date(r.submittedAt) },
+                {
+                  key: 'preview',
+                  label: t('Customer feedback', 'ملاحظات العميل'),
+                  render: (row) => <span dir="auto">{row.preview || '—'}</span>,
+                },
+                {
+                  key: 'sentiment',
+                  label: t('Sentiment', 'الانطباع'),
+                  render: (row) =>
+                    row.sentiment ? (
+                      <>
+                        {sentimentLabels[row.sentiment] || '—'}
+                        {!row.qualityAccepted && (
+                          <small style={{ ...muted, display: 'block' }}>
+                            {row.qualityStatus === 'baseline'
+                              ? t('Experimental', 'تجريبي')
+                              : t('Unverified', 'غير معتمد')}
+                          </small>
+                        )}
+                      </>
+                    ) : (
+                      '—'
+                    ),
+                },
+                {
+                  key: 'submittedAt',
+                  label: t('Date', 'التاريخ'),
+                  render: (row) =>
+                    row.submittedAt ? displayDate.format(new Date(row.submittedAt)) : '—',
+                },
                 {
                   key: 'analysisStatus',
-                  label: 'Analysis',
-                  render: (r) => r.analysisStatus || r.analysis?.status || '—',
+                  label: t('Analysis', 'التحليل'),
+                  render: (row) =>
+                    analysisLabels[row.analysisStatus || row.analysis?.status] || '—',
                 },
                 {
                   key: 'open',
@@ -2096,7 +2306,7 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
                       style={button}
                       onClick={() => (location.hash = `/feedback-details?id=${idOf(r)}`)}
                     >
-                      Details
+                      {t('Details', 'التفاصيل')}
                     </button>
                   ),
                 },
@@ -2111,13 +2321,15 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
             )
           )}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
-            <span style={muted}>Page {pagination.page || filters.page}</span>
+            <span style={muted}>
+              {t('Page', 'الصفحة')} {pagination.page || filters.page}
+            </span>
             <button
               style={button}
               disabled={filters.page <= 1}
               onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
             >
-              Previous
+              {t('Previous', 'السابق')}
             </button>
             <button
               style={button}
@@ -2127,7 +2339,7 @@ export default function ConnectedFeaturePage({ route, language = 'en', workspace
               }
               onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
             >
-              Next
+              {t('Next', 'التالي')}
             </button>
           </div>
         </section>

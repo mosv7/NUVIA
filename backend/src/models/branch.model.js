@@ -6,7 +6,7 @@ const branchSchema = new mongoose.Schema(
   {
     businessId: { type: mongoose.Schema.Types.ObjectId, ref: 'Business', required: true },
     name: { type: String, required: true, trim: true, maxlength: 150 },
-    // Used in the per-branch survey link: <base>/<shortCode>/<slug>. Generated automatically.
+    // Used as the branch parameter in the public survey link. Generated automatically.
     slug: { type: String, lowercase: true, trim: true, maxlength: 150 },
     country: { type: String, trim: true, maxlength: 100 },
     city: { type: String, trim: true, maxlength: 100 },

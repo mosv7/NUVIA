@@ -2,7 +2,7 @@
 
 The sole backend is `backend/`. Prefix **`/api`**; JSON, ObjectId resource IDs and UTC timestamps. The previous `/api/v1` account/workspace API has been removed; it is not a compatibility route.
 
-Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspace,csrfToken}` with null identity when anonymous; browser mutations send exact `Origin` and `X-CSRF-Token`. Bearer JWT authentication remains available for API clients. Do not store browser tokens/passwords in local storage. Registration signs in directly; email verification/resend is unavailable.
+Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspace,csrfToken}` with null identity when anonymous; browser mutations send exact `Origin` and `X-CSRF-Token`. Bearer JWT authentication remains available for API clients. Do not store browser tokens/passwords in local storage. Registration signs in directly. Address verification uses a separate mail proof and preserves the current session.
 
 | Method           | Path                                                                       | Purpose                                                                |
 | ---------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
@@ -30,13 +30,38 @@ Browser auth uses protected cookies. GET `/auth/session` returns `{user,workspac
 | PUT              | `/surveys/:id/questions/reorder`                                           | Reorder questions                                                      |
 | PATCH/DELETE     | `/surveys/:id/questions/:questionId`                                       | Edit/delete question                                                   |
 | POST             | `/surveys/:id/questions/:questionId/duplicate`                             | Duplicate question                                                     |
+| GET              | `/surveys/:id/share`                                                       | Public link and eligible branch links for an owned live survey         |
+| GET              | `/surveys/:id/qr`                                                          | PNG attachment for an owned live survey                                |
 | GET              | `/health/live`, `/health/ready`                                            | Process / database readiness                                           |
 
 Request validation and business errors follow the backend route/service contracts in `backend/src`. Business/branch/survey resources are scoped through the authenticated owner's business. Role checks are present; a team membership management product is not implemented. Browser adapters translate backend fields into the existing screen model. Public DTO declarations/constants live in `packages/shared-types`.
 
 Publishing persists survey status. The connected public form collects responses through the versioned submission contract below. Survey management CSV is separate from feedback export. [AI integration APIs](ai.md) exist under `/api/ai`, with authenticated FastAPI transport and independent capability/quality gates. The connected owner assistant uses the retrieval contract below.
 
+Share metadata returns `{data:{survey:{id,name},link,branches:[{id,name,slug,link}]}}`.
+Links use the configured app origin and the `/#/public-survey` route. Branch links require
+an active assigned branch with a stored slug. QR downloads accept optional `branchId` and
+`format=png` and return a 512-pixel PNG attachment. Both routes return 404 for foreign
+surveys and 409 if the survey is unavailable for sharing. A branch that cannot receive
+its own link returns 404 on the QR endpoint. Both results use `Cache-Control: no-store`.
+Previously shared links still use the survey's current public availability state.
+
 Reset tokens are single-use. Development file mail writes private `{text}` messages directly to root `.local/mail` without a worker. SMTP requires explicit configuration and testing. Old UUID account/workspace data is not automatically migrated into the ObjectId backend. Read [backend operations](../development/backend.md) before choosing a database.
+
+## Signup email verification
+
+POST `/auth/resend-verification` accepts `{email}`. With mail configured, it
+returns a generic 202 for requests that pass validation and IP rate limiting.
+A verified or unknown address receives the same response. Per-owner cooldown
+is ten minutes. An unconfigured delivery service returns 503
+`MAIL_UNAVAILABLE`. Registration requests a proof when mail is configured and
+still completes sign-in if sending fails.
+
+POST `/auth/verify-email` accepts `{token}` and returns
+`{data:{emailVerified:true}}`. The hashed proof expires after 24 hours and
+verifies only the address it was issued for. Invalid, expired, or already used
+tokens return 400 `INVALID_TOKEN`. Verification creates no session. A browser
+needs the same Origin and CSRF controls as other public account mutations.
 
 ## Settings and security
 
@@ -78,7 +103,6 @@ Email links use `APP_ORIGIN/#/confirm-email?token=...`; the browser removes the 
   "submissionId": "<8-64-character id generated once for this form>",
   "branch": "branch-slug",
   "language": "en",
-  "channel": "short_link",
   "answers": [
     { "questionId": "<ObjectId>", "value": "Written feedback" },
     { "questionId": "<ObjectId>", "value": 4 },
@@ -88,7 +112,14 @@ Email links use `APP_ORIGIN/#/confirm-email?token=...`; the browser removes the 
 }
 ```
 
-`value` is a string for short/long text, an integer from 1 through the configured star maximum for rating, or a boolean for yes/no. Choice/dropdown answers use optionIds belonging to that question; only allowMultiple choice questions accept several options. Required, unknown, duplicate, invalid-type, option and length checks are enforced by the server. At most 50 answer entries and 10,000 written characters are accepted. Branch may be omitted only when one active branch can be resolved. `language`/`channel` are optional en/ar and short_link/qr_code; stored text language uses a character heuristic, not an assessed language model. Optional respondent `{name,email}` is stored only for non-anonymous forms.
+`value` is a string for short/long text, an integer from 1 through the configured star maximum for rating, or a boolean for yes/no. Choice/dropdown answers use optionIds belonging to that question; only allowMultiple choice questions accept several options. Required, unknown, duplicate, invalid-type, option and length checks are enforced by the server. At most 50 answer entries and 10,000 written characters are accepted. Branch may be omitted only when one active branch can be resolved. `language` is optional en/ar. Stored text language uses a character heuristic. Optional respondent `{name,email}` is stored only for non-anonymous forms.
+
+The public form forwards the `qr` parameter from a generated QR link as an optional
+`qrToken` (64 lowercase hexadecimal characters). The server verifies the signature
+against the survey and branch before storing `channel=qr_code`. Other submissions
+are attributed to `short_link`, including older clients that send only `channel`.
+Attribution covers submitted responses from an issued link. Opening or scanning a
+QR code does not increment a counter.
 
 A new response returns201; repeating the same survey/submissionId returns200 with the original thank-you message and no new row. Generate a fresh ID for a new form; never reuse one for a different customer submission. Invalid shape/version format returns400, unknown/draft form404, and stale formVersion or closed/unavailable form409. On stale409, reload and show the refreshed form; never silently reinterpret an answer against edited questions.
 
@@ -108,6 +139,8 @@ All `/feedbacks` routes require a current authenticated owner business. Foreign 
 | GET    | `/feedbacks/:id`                | Original stored text/question, respondent display and previous/next IDs      |
 | GET    | `/feedbacks/:id/analysis`       | Pollable stored status, sentiment, aspect quotes and safe quality provenance |
 | POST   | `/feedbacks/:id/analysis/retry` | 202 with pending status; only failed/partial written responses, otherwise409 |
+
+List items include safe `qualityStatus` and `qualityAccepted` for stored analysis. CSV includes analysis quality.
 
 List/export filters: `range=7d|30d|90d|all` (default30d), `from`/`to` as UTC calendar days inclusive, `sentiment`, `language`, `aspect`, `branchId`, `surveyId`, literal `search` (text or feedback number), `sort=newest|oldest`. List adds `page` (default1) and `limit` (default8, maximum50). Detail navigation follows newest-first order across the business, independently of list filters.
 

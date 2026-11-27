@@ -189,3 +189,33 @@ it('rejects a missing owned detail id without showing a sample or the empty list
     screen.queryByRole('heading', { name: 'Your first response starts here' }),
   ).not.toBeInTheDocument();
 });
+
+it('localizes the owned response list and keeps the API and CSV language and aspect scopes aligned', async () => {
+  vi.spyOn(authApi, 'session').mockResolvedValue(ownerSession());
+  const list = vi.spyOn(feedbackApi, 'list').mockResolvedValue({
+    items: [
+      { id: 'response', preview: 'الخدمة جيدة', sentiment: 'positive', qualityStatus: 'baseline' },
+    ],
+    hasAnyResponses: true,
+  });
+  vi.spyOn(feedbackApi, 'filters').mockResolvedValue({
+    languages: ['ar', 'en'],
+    aspects: [{ name: 'Service', count: 1 }],
+  });
+  history.replaceState(null, '', '/?lang=ar#/feedbacks');
+  render(<App />);
+  expect(await screen.findByText('الخدمة جيدة')).toBeVisible();
+  expect(screen.getByText('تجريبي')).toBeVisible();
+  fireEvent.change(screen.getByRole('combobox', { name: 'لغة الرد' }), { target: { value: 'ar' } });
+  fireEvent.change(await screen.findByRole('combobox', { name: 'الجانب' }), {
+    target: { value: 'Service' },
+  });
+  expect(list).toHaveBeenLastCalledWith(
+    expect.objectContaining({ language: 'ar', aspect: 'Service', page: 1 }),
+    expect.any(AbortSignal),
+  );
+  expect(await screen.findByRole('link', { name: 'تصدير CSV' })).toHaveAttribute(
+    'href',
+    expect.stringMatching(/language=ar&aspect=Service/u),
+  );
+});

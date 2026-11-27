@@ -6,7 +6,7 @@ const validate = require('../middlewares/validation.middleware');
 const v = require('../validations/survey.validation');
 const survey = require('../controllers/survey.controller');
 const question = require('../controllers/question.controller');
-// const share = require("../controllers/share.controller");
+const share = require('../controllers/share.controller');
 
 const router = express.Router();
 
@@ -66,8 +66,7 @@ router.post(
   question.duplicate,
 );
 
-// Share survey screen
-// router.get("/:id/share", canRead, v.surveyId, validate, share.getShare);
-// router.get("/:id/qr", canRead, v.surveyId, v.qrQuery, validate, share.getQr);
+router.get('/:id/share', canRead, v.surveyId, validate, share.getShare);
+router.get('/:id/qr', canRead, v.surveyId, v.qrQuery, validate, share.getQr);
 
 module.exports = router;

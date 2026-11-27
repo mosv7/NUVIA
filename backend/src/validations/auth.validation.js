@@ -88,10 +88,24 @@ const resetPasswordValidation = [
   confirmationRule(),
 ];
 
+const resendVerificationValidation = [
+  body('email').isString().bail().trim().isLength({ max: 255 }).isEmail().normalizeEmail(),
+];
+
+const verifyEmailValidation = [
+  body('token')
+    .isString()
+    .bail()
+    .isLength({ min: 64, max: 64 })
+    .matches(/^[a-f0-9]{64}$/),
+];
+
 module.exports = {
   registerValidation,
   loginValidation,
   forgotPasswordValidation,
   verifyResetTokenValidation,
   resetPasswordValidation,
+  resendVerificationValidation,
+  verifyEmailValidation,
 };

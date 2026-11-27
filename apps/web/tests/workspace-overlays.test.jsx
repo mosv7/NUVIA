@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProductProvider, useProductView } from '../src/app/providers/ProductProvider.jsx';
 import Assistant from '../src/features/ai-analysis/preview/Assistant.jsx';
+import WorkspaceShell from '../src/components/layout/WorkspaceShell.jsx';
 function Trigger() {
   const { openTopbar } = useProductView();
   return (
@@ -82,4 +83,41 @@ it('Escape closes the account menu and restores its trigger', async () => {
     screen.queryByRole('button', { name: 'View profile', exact: true }),
   ).not.toBeInTheDocument();
   expect(trigger).toHaveFocus();
+});
+
+it.each([
+  ['en', 'Feedbacks', 'Search unavailable'],
+  ['ar', 'آراء العملاء', 'البحث غير متاح'],
+])('shows honest connected navigation and search in %s', (language, feedbackLabel, searchLabel) => {
+  render(
+    <ProductProvider language={language} preview={false}>
+      <WorkspaceShell />
+    </ProductProvider>,
+  );
+
+  const navigation = screen.getByRole('navigation');
+  expect(navigation.querySelector('[data-name="Unread count"]')).toBeNull();
+  expect(screen.getByRole('button', { name: feedbackLabel, exact: true })).toBeVisible();
+
+  const search = screen.getByRole('textbox', { name: searchLabel });
+  expect(search).toBeDisabled();
+  expect(search).toHaveAttribute('placeholder', searchLabel);
+  expect(screen.queryByText('⌘ K')).not.toBeInTheDocument();
+});
+
+it('keeps sample feedback counts and keyboard search in the design preview', async () => {
+  const user = userEvent.setup();
+  render(
+    <ProductProvider language="en" preview>
+      <WorkspaceShell />
+    </ProductProvider>,
+  );
+
+  expect(screen.getByRole('button', { name: 'Feedbacks 12' })).toBeVisible();
+  expect(screen.getByText('⌘ K')).toBeVisible();
+  const search = screen.getByRole('combobox', { name: 'Search across pages' });
+  await user.keyboard('{Control>}k{/Control}');
+  expect(search).toHaveFocus();
+  await user.type(search, 'feedbacks');
+  expect(screen.getByRole('listbox')).toBeVisible();
 });

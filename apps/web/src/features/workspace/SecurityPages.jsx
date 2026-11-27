@@ -6,6 +6,7 @@ export default function renderSecurityPages(model) {
     L,
     preview,
     account,
+    emailVerificationAvailable,
     actions,
     ar,
     btn,
@@ -34,6 +35,7 @@ export default function renderSecurityPages(model) {
     signOutAllSessions,
     validate,
   } = model;
+  const canVerifyEmail = !preview && emailVerificationAvailable && !account.emailVerified;
   let content;
   if (page === 'settings-security')
     content = (
@@ -54,12 +56,12 @@ export default function renderSecurityPages(model) {
                 <strong>{L('Strengthen your account security', 'عزز أمان حسابك')}</strong>
                 <p>
                   {L(
-                    preview
+                    account.emailVerified
                       ? 'Your email is verified. Add two-factor authentication for an extra layer of protection.'
-                      : 'Two-factor authentication is available. Email verification for new accounts is not currently supported.',
-                    preview
+                      : 'Add two-factor authentication for an extra layer of protection.',
+                    account.emailVerified
                       ? 'بريدك مؤكد. أضف المصادقة الثنائية لمزيد من الحماية.'
-                      : 'المصادقة الثنائية متاحة، لكن تأكيد البريد للحسابات الجديدة غير متاح حاليًا.',
+                      : 'أضف المصادقة الثنائية لمزيد من الحماية.',
                   )}
                 </p>
               </div>
@@ -99,9 +101,18 @@ export default function renderSecurityPages(model) {
                   <p>{account.email}</p>
                 </div>
                 <div className="verification-actions">
-                  <span className={'badge ' + (preview ? 'green' : 'neutral')}>
-                    {preview ? L('Verified', 'مؤكد') : L('Not available', 'غير متاح')}
+                  <span className={'badge ' + (account.emailVerified ? 'green' : 'neutral')}>
+                    {account.emailVerified
+                      ? L('Verified', 'مؤكد')
+                      : canVerifyEmail
+                        ? L('Unverified', 'غير مؤكد')
+                        : L('Not available', 'غير متاح')}
                   </span>
+                  {canVerifyEmail &&
+                    linkAction(
+                      L('Verify email address', 'تأكيد البريد الإلكتروني'),
+                      'verify-email',
+                    )}
                   {linkAction(L('Manage email', 'إدارة البريد'), 'settings-email')}
                 </div>
               </div>

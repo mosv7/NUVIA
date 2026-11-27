@@ -253,7 +253,7 @@ const requestEmailChange = async (ownerId, { newEmail, currentPassword }) => {
   const token = crypto.randomBytes(32).toString('hex');
   const expiresAt = new Date(Date.now() + EMAIL_LINK_HOURS * 60 * 60 * 1000);
 
-  // Also serves "Resend verification email": the old link stops working.
+  // A new email-change request replaces any pending address change.
   await EmailChange.findOneAndUpdate(
     { ownerId },
     { ownerId, newEmail, tokenHash: sha256(token), expiresAt },
@@ -298,7 +298,11 @@ const confirmEmailChange = async (token) => {
       owner.email = pending.newEmail;
       owner.emailVerified = true;
       await owner.save({ session });
-      await BusinessOwner.updateOne({ _id: owner._id }, { $inc: { tokenVersion: 1 } }, { session });
+      await BusinessOwner.updateOne(
+        { _id: owner._id },
+        { $inc: { tokenVersion: 1 }, $unset: { emailVerification: 1 } },
+        { session },
+      );
       await sessions.revokeAll(owner._id, null, session);
       await require('../models/passwordReset.model').deleteMany({ email: oldEmail }, { session });
     });

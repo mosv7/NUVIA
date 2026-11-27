@@ -60,7 +60,42 @@ it('submits every answer with a stable submission id through the connected publi
   expect(body.submissionId).toMatch(/^[A-Za-z0-9-]{8,64}$/);
   expect(body.answers).toEqual([{ questionId, optionIds: [optionId] }]);
   expect(body.branch).toBe('main');
+  expect(body.qrToken).toBeUndefined();
   expect(await screen.findByText('Thank you!')).toBeVisible();
+});
+
+it('keeps QR attribution when the customer selects a branch', async () => {
+  const qrToken = 'a'.repeat(64);
+  vi.spyOn(authApi, 'session').mockResolvedValue(null);
+  vi.spyOn(publicSurveyApi, 'get')
+    .mockResolvedValueOnce({
+      state: 'branch_required',
+      survey: { name: 'Customer survey' },
+      branches: [{ name: 'Main', slug: 'main' }],
+    })
+    .mockResolvedValueOnce({
+      state: 'open',
+      formVersion: 'b'.repeat(64),
+      survey: { name: 'Customer survey', isAnonymous: true },
+      branch: { name: 'Main', slug: 'main' },
+      questions: [{ id: questionId, type: 'short_text', questionTextEn: 'Your feedback' }],
+    });
+  const submit = vi.spyOn(publicSurveyApi, 'submit').mockResolvedValue({});
+  history.replaceState(null, '', `/#/public-survey?code=abc123&qr=${qrToken}`);
+  render(<App />);
+
+  location.hash = (await screen.findByRole('link', { name: 'Main' })).hash;
+  fireEvent.change(await screen.findByRole('textbox', { name: /Your feedback/ }), {
+    target: { value: 'Good' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Submit feedback' }));
+  await waitFor(() =>
+    expect(submit).toHaveBeenCalledWith(
+      'abc123',
+      expect.objectContaining({ branch: 'main', qrToken, formVersion: 'b'.repeat(64) }),
+      expect.any(AbortSignal),
+    ),
+  );
 });
 
 it('uses the Arabic form language and labels, and omits cleared optional answers', async () => {

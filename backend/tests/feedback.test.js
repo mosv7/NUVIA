@@ -192,7 +192,14 @@ test('retry is owned, clears prior result and only one concurrent retry wins', a
   assert.equal(stored.analysis.summary, undefined);
 });
 test('feedback list search treats regex operators literally and business scope applies', async () => {
-  const own = await response({ feedbackText: 'literal a+b' });
+  const own = await response({
+    feedbackText: 'literal a+b',
+    analysis: {
+      status: 'completed',
+      overallSentiment: 'positive',
+      provenance: { qualityStatus: 'baseline', qualityAccepted: false },
+    },
+  });
   await response({ feedbackText: 'literal a+b' });
   const result = await feedback.list(
     { businessId: own.businessId },
@@ -203,6 +210,11 @@ test('feedback list search treats regex operators literally and business scope a
   await assert.rejects(feedback.getById({ businessId: new mongoose.Types.ObjectId() }, own._id), {
     statusCode: 404,
   });
+  assert.equal(result.items[0].qualityStatus, 'baseline');
+  assert.equal(result.items[0].qualityAccepted, false);
+  const csv = await feedback.exportCsv({ businessId: own.businessId }, { range: 'all' });
+  assert.match(csv, /Sentiment,Analysis quality,Aspects/u);
+  assert.match(csv, /Positive,baseline,/u);
 });
 test('partial analysis is a valid persisted lifecycle state', async () => {
   const doc = await response({ analysis: { status: 'partial' } });

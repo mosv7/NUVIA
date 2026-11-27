@@ -64,6 +64,15 @@ function navigate(destination) {
   });
 }
 
+it.each([false, true])('offers the workspace search shortcut only in preview (%s)', (preview) => {
+  auth.preview = preview;
+  history.replaceState(null, '', preview ? '/preview/#/settings' : '/#/settings');
+  const { result } = renderHook(() => useWorkspaceModel({ language: 'en' }));
+
+  fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+  expect(result.current.modal).toEqual(preview ? { type: 'search' } : null);
+});
+
 it('simulates signing out preview devices without reaching the account', () => {
   auth.preview = true;
   history.replaceState(null, '', '/preview/#/settings-devices');

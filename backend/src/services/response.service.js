@@ -10,6 +10,7 @@ const { detectLanguage } = require('../utils/language');
 const { loadQuestions } = require('./question.service');
 const { runBusinessMutation } = require('./businessMutation');
 const { snapshotForm } = require('./formRevision');
+const { isIssuedQrToken } = require('../utils/surveyLinks');
 const MAX_TEXT_TOTAL = 10000;
 
 const requiredError = (question) => ({
@@ -183,7 +184,7 @@ const submitInTransaction = async (shortCode, body, session) => {
     number: await Counter.next(`feedback:${survey.businessId}`, session),
     formVersion,
     formSnapshot,
-    channel: body.channel === 'qr_code' ? 'qr_code' : 'short_link',
+    channel: isIssuedQrToken(body.qrToken, survey._id, branch._id) ? 'qr_code' : 'short_link',
     answers,
     feedbackText,
     language: detectLanguage(feedbackText, declaredLanguage || survey.defaultLanguage),

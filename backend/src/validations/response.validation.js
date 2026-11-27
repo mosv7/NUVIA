@@ -21,6 +21,11 @@ const submitResponse = [
     .withMessage('Invalid branch'),
   body('language').optional({ values: 'null' }).isIn(LANGUAGE).withMessage('Unsupported language'),
   body('channel').optional({ values: 'null' }).isIn(CHANNEL_TYPE).withMessage('Invalid channel'),
+  body('qrToken')
+    .optional()
+    .isString()
+    .matches(/^[a-f0-9]{64}$/)
+    .withMessage('Invalid QR token'),
   body('submissionId')
     .optional({ values: 'null' })
     .isString()

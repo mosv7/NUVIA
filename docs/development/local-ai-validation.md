@@ -185,3 +185,17 @@ format, build, frozen pnpm install and proxy lifecycle passed. Independent revie
 confirmed that baseline does not bypass validation and found no material issue.
 Public settings/body/token contracts retain their existing protection. No UI,
 collection, persistence, clustering or RAG feature was added by this opt-in.
+
+## Connected-workspace follow-up diagnostic
+
+On November 27, 2026, an authenticated local FastAPI run used the existing
+hash-verified model packages with synthetic text. Four local baseline operations
+returned valid responses: analysis, reports, survey suggestions, and answers.
+All four retained `quality_accepted=false`. Strict mode reported the local models
+as unassessed. Summary generation returned unavailable with its provider disabled.
+
+The DeBERTa pipeline matched 7 of 10 expected sentiment labels. It matched all
+five English labels and two of five Arabic labels. It missed the Arabic neutral
+case and both Arabic mixed cases. This small diagnostic does not measure
+representative production accuracy. The runtime threshold and acceptance gates
+were preserved.

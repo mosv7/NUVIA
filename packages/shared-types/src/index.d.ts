@@ -7,7 +7,8 @@ export interface UserView {
   name: string;
   email: string;
   locale: Locale;
-  emailVerificationAvailable: false;
+  emailVerified: boolean;
+  emailVerificationAvailable: boolean;
 }
 
 export interface BranchView {

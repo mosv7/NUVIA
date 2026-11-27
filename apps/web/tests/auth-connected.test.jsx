@@ -176,13 +176,41 @@ it('account-backed Overview uses saved business labels and hides sample feedback
   expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeVisible();
   expect(logout).toHaveBeenCalledTimes(1);
 }, 20000);
-it('marks old real verification links under development without consuming tokens', async () => {
-  const verify = vi.spyOn(authApi, 'verify');
+it('removes a verification token from the URL and waits for explicit confirmation', async () => {
+  const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ data: { emailVerified: true } });
   open('verify-email?token=' + 'a'.repeat(64));
-  expect(
-    await screen.findByRole('heading', { name: 'Email verification is under development' }),
-  ).toBeVisible();
+  const button = await screen.findByRole('button', { name: 'Confirm email address' });
+  expect(location.hash).toBe('#/verify-email');
+  expect(JSON.stringify(history.state)).not.toContain('a'.repeat(64));
   expect(verify).not.toHaveBeenCalled();
+  fireEvent.click(button);
+  expect(await screen.findByRole('heading', { name: 'Email verified' })).toBeVisible();
+  expect(
+    screen.getByText('The email address associated with this link is verified.'),
+  ).toBeVisible();
+  expect(verify).toHaveBeenCalledWith('a'.repeat(64), expect.any(AbortSignal));
+});
+
+it('cancels a pending verification when another link opens on the same route', async () => {
+  let finishFirst;
+  const verify = vi.spyOn(authApi, 'verify').mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finishFirst = resolve;
+      }),
+  );
+  open('verify-email?token=' + 'a'.repeat(64));
+  fireEvent.click(await screen.findByRole('button', { name: 'Confirm email address' }));
+  const [, signal] = verify.mock.calls[0];
+  await act(async () => {
+    location.hash = '/verify-email?token=' + 'b'.repeat(64);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  });
+  expect(location.hash).toBe('#/verify-email');
+  expect(JSON.stringify(history.state)).not.toContain('b'.repeat(64));
+  expect(signal.aborted).toBe(true);
+  await act(async () => finishFirst({ data: { emailVerified: true } }));
+  expect(screen.getByRole('button', { name: 'Confirm email address' })).toBeEnabled();
 });
 it('preview verification never bootstraps sessions or sends real verification requests', async () => {
   const verify = vi.spyOn(authApi, 'verify').mockResolvedValue({ status: 'verified' });

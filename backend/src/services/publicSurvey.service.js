@@ -62,7 +62,11 @@ const readPublicSurvey = async (shortCode, branchSlug, session) => {
     if (active.length === 0) return { state: 'branch_unavailable', ...base };
     if (active.length === 1)
       branch = active[0]; // single-branch survey: skip the picker
-    else return { state: 'branch_required', ...base, branches: active.map(toBranch) };
+    else {
+      const choices = active.filter((item) => item.slug).map(toBranch);
+      if (choices.length === 0) return { state: 'branch_unavailable', ...base };
+      return { state: 'branch_required', ...base, branches: choices };
+    }
   }
 
   const { formVersion, formSnapshot } = snapshotForm(
